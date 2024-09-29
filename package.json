@@ -1,0 +1,47 @@
+{
+  "name": "raven-url-shortener",
+  "author": "Florian Trayon (https://github.com/FlorianLeChat)",
+  "license": "MIT",
+  "private": true,
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FlorianLeChat/Raven-Url-Shortener.git"
+  },
+  "bugs": {
+    "url": "https://github.com/FlorianLeChat/Raven-Url-Shortener/issues"
+  },
+  "dependencies": {
+    "next": "~14.2"
+  },
+  "devDependencies": {
+    "@types/node": "~22.5",
+    "@types/react": "~18.3",
+    "clsx": "~2.1",
+    "postcss": "~8.4",
+    "prettier": "~3.3",
+    "typescript": "~5.5",
+    "tailwindcss": "~3.4",
+    "autoprefixer": "~10.4",
+    "tailwind-merge": "~2.5",
+    "eslint-config-next": "~14.2",
+    "eslint-config-airbnb": "~19.0",
+    "@total-typescript/ts-reset": "~0.6",
+    "prettier-plugin-tailwindcss": "~0.6",
+    "@typescript-eslint/eslint-plugin": "~8.3"
+  },
+  "engines": {
+    "node": ">=18.0",
+    "npm": ">=8.6"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "lint": "eslint . --fix --ext .js,.jsx,.ts,.tsx",
+    "build": "next build",
+    "start": "next start",
+    "pretty": "prettier --write \"**/*.{js,jsx,ts,tsx}\""
+  },
+  "browserslist": [
+    "defaults"
+  ]
+}
