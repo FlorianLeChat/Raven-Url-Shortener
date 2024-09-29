@@ -1,0 +1,52 @@
+{
+	"ignorePatterns": ["next-env.d.ts", "*.d.ts", "*.config.js"],
+	"parserOptions": {
+		"project": ["./tsconfig.json"]
+	},
+	"globals": {
+		"JSX": "readonly",
+		"NodeJS": "readonly"
+	},
+	"extends": ["next/core-web-vitals", "next/typescript", "plugin:@typescript-eslint/recommended", "plugin:@typescript-eslint/strict", "plugin:jsx-a11y/strict", "airbnb"],
+	"plugins": ["@typescript-eslint"],
+	"parser": "@typescript-eslint/parser",
+	"rules": {
+		"indent": ["error", "tab", { "SwitchCase": 1 }],
+		"quotes": ["error", "double"],
+		"no-tabs": ["error", { "allowIndentationTabs": true }],
+		"eol-last": ["error", "never"],
+		"no-shadow": "off", // -> @typescript-eslint/no-shadow
+		"camelcase": ["error", { "properties": "never", "ignoreImports": true, "ignoreDestructuring": false }],
+		"no-plusplus": "off",
+		"brace-style": ["error", "allman"],
+		"comma-dangle": ["error", "never"],
+		"no-unused-vars": "off", // -> @typescript-eslint/no-unused-vars
+		"linebreak-style": "off",
+		"space-in-parens": ["error", "always"],
+		"no-param-reassign": ["error", { "props": false }],
+		"operator-linebreak": ["error", "before", { "overrides": { "=": "after" } }],
+		"no-underscore-dangle": ["error", { "allow": ["_def", "_count", "__NEXT_ROUTER_BASEPATH"] }], // https://github.com/vercel/next.js/issues/52201#issuecomment-1620629437
+		"object-curly-newline": ["error", { "ImportDeclaration": { "minProperties": 0 }}],
+		"array-bracket-spacing": ["error", "always"],
+		"template-curly-spacing": ["error", "always"],
+		"computed-property-spacing": ["error", "always"],
+
+		"import/extensions": ["error", "never", { "json": "ignorePackages" }],
+		"import/prefer-default-export": "off",
+		"import/no-extraneous-dependencies": "off",
+
+		"jsx-a11y/html-has-lang": "off", // Layout avec Google Fonts
+
+		"@typescript-eslint/no-shadow": "error",
+
+		"react/no-danger": "off", // https://github.com/pacocoursey/next-themes/blob/cd67bfa20ef6ea78a814d65625c530baae4075ef/packages/next-themes/src/index.tsx#L267
+		"react/jsx-indent": ["error", "tab"],
+		"react/jsx-indent-props": ["error", "tab"],
+		"react/react-in-jsx-scope": "off", // https://stackoverflow.com/a/61160875
+		"react/require-default-props": ["error", { "functions": "defaultArguments" }], // https://github.com/jsx-eslint/eslint-plugin-react/issues/2396
+		"react/jsx-filename-extension": [1, { "extensions": [".jsx", ".tsx"] }],
+		"react/jsx-props-no-spreading": "off",
+		"react/jsx-one-expression-per-line": "off",
+		"react/no-unstable-nested-components": "off" // https://next-intl-docs.vercel.app/docs/usage/messages#rich-text
+	}
+}
