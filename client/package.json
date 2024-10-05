@@ -15,12 +15,12 @@
     "next": "~14.2"
   },
   "devDependencies": {
-    "@types/node": "~22.5",
+    "@types/node": "~22.7",
     "@types/react": "~18.3",
     "clsx": "~2.1",
     "postcss": "~8.4",
     "prettier": "~3.3",
-    "typescript": "~5.5",
+    "typescript": "~5.6",
     "tailwindcss": "~3.4",
     "autoprefixer": "~10.4",
     "tailwind-merge": "~2.5",
@@ -29,7 +29,7 @@
     "eslint-plugin-tailwindcss": "~3.17",
     "@total-typescript/ts-reset": "~0.6",
     "prettier-plugin-tailwindcss": "~0.6",
-    "@typescript-eslint/eslint-plugin": "~8.3"
+    "@typescript-eslint/eslint-plugin": "~8.8"
   },
   "engines": {
     "node": ">=18.0",
