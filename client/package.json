@@ -18,10 +18,12 @@
     "@types/node": "~22.7",
     "@types/react": "~18.3",
     "clsx": "~2.1",
+    "husky": "~9.1",
     "postcss": "~8.4",
     "prettier": "~3.3",
     "typescript": "~5.6",
     "tailwindcss": "~3.4",
+    "lint-staged": "~15.2",
     "autoprefixer": "~10.4",
     "tailwind-merge": "~2.5",
     "eslint-config-next": "~14.2",
@@ -40,7 +42,9 @@
     "lint": "eslint . --fix --ext .js,.jsx,.ts,.tsx",
     "build": "next build",
     "start": "next start",
-    "pretty": "prettier --write \"**/*.{js,jsx,ts,tsx}\""
+    "pretty": "prettier --write \"**/*.{js,jsx,ts,tsx}\"",
+    "prepare": "cd .. && husky",
+    "lint-staged": "lint-staged"
   },
   "browserslist": [
     "defaults"
