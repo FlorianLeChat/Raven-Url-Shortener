@@ -39,7 +39,7 @@
     "npm": ">=8.6"
   },
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbo",
     "lint": "eslint . --fix --ext .js,.jsx,.ts,.tsx",
     "build": "next build",
     "start": "next start",
