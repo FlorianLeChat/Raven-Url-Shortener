@@ -8,7 +8,13 @@
 import type { ReactNode } from "react";
 import { NextUIProvider as Provider } from "@nextui-org/react";
 
-export function NextUIProvider( { children }: { children: ReactNode } )
+export function NextUIProvider( {
+	children,
+	className
+}: {
+	children: ReactNode;
+	className: string;
+} )
 {
-	return <Provider>{children}</Provider>;
+	return <Provider className={className}>{children}</Provider>;
 }
