@@ -1,64 +1,146 @@
+//
+// Route vers la page principale du site.
+//  Source : https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts#pages
+//
+
+// Importation des dépendances.
+import { lazy } from "react";
+import { Button } from "@nextui-org/button";
+import { ArrowRight, Code, Eye, Lock, Palette, Smile, Zap } from "lucide-react";
+
+// Importation des composants.
+const Footer = lazy( () => import( "./components/Footer" ) );
+const FeatureCard = lazy( () => import( "./components/FeatureCard" ) );
+
+// Liste des fonctionnalités.
+const features = [
+	{
+		id: 1,
+		title: "Sécurisé de bout en bout",
+		description:
+			"Toutes les données sont chiffrées et stockées sur des serveurs sécurisés et à l'abri des regards indiscrets.",
+		icon: <Lock />
+	},
+	{
+		id: 2,
+		title: "Interface ergonomique",
+		description:
+			"L'interface est conçue pour être simple et ergonomique pour tous les utilisateurs, même pour vos grands-parents.",
+		icon: <Smile />
+	},
+	{
+		id: 3,
+		title: "Respect de la vie privée",
+		description:
+			"Vos données sont stockées sur des serveurs basés en Europe conformément au RGPD pour garantir une intégrité et une confidentialité totale.",
+		icon: <Eye />
+	},
+	{
+		id: 4,
+		title: "Haute performance",
+		description:
+			"Nos serveurs sont prévus pour garantir une performance optimale et une disponibilité maximale.",
+		icon: <Zap />
+	},
+	{
+		id: 5,
+		title: "Grande personnalisation",
+		description:
+			"Notre service propose une grande personnalisation lors de la création des raccourcis vers vos liens Internet.",
+		icon: <Palette />
+	},
+	{
+		id: 6,
+		title: "Ouvert aux développeurs",
+		description:
+			"Notre API est ouverte à tous les développeurs qui souhaitent intégrer notre service dans leurs applications.",
+		icon: <Code />
+	}
+];
+
 export default function Home()
 {
 	return (
-		<div className="grid min-h-screen grid-rows-[20px_1fr_20px] items-center justify-items-center gap-16 p-8 pb-20 font-[family-name:var(--font-geist-sans)] sm:p-20">
-			<main className="row-start-2 flex flex-col items-center gap-8 sm:items-start">
-				<ol className="list-inside list-decimal text-center font-[family-name:var(--font-geist-mono)] text-sm sm:text-left">
-					<li className="mb-2">
-						Get started by editing{" "}
-						<code className="rounded bg-black/[.05] px-1 py-0.5 font-semibold dark:bg-white/[.06]">
-							app/page.tsx
-						</code>
-						.
-					</li>
-					<li>Save and see your changes instantly.</li>
-				</ol>
+		<>
+			{/* En-tête de la page */}
+			<header className="container mx-auto max-w-[1440px] p-4 md:p-8">
+				<h1 className="inline text-4xl font-semibold tracking-tight lg:text-6xl">
+					Bienvenue sur
+				</h1>
 
-				<div className="flex flex-col items-center gap-4 sm:flex-row">
-					<a
-						className="bg-foreground text-background flex h-10 items-center justify-center gap-2 rounded-full border border-solid border-transparent px-4 text-sm transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] sm:h-12 sm:px-5 sm:text-base"
-						href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-						target="_blank"
-						rel="noopener noreferrer"
+				<h1 className="mt-2 block bg-gradient-to-b from-[#5EA2EF] to-[#0072F5] bg-clip-text text-4xl font-semibold tracking-tight text-transparent lg:text-6xl">
+					Raven Url Shortener.
+				</h1>
+
+				<p className="text-default-500 my-2 block w-full max-w-full text-lg font-normal md:w-1/2 lg:text-xl">
+					Un raccourcisseur de liens Internet simple, sécurisé et
+					entièrement personnalisable, conçu pour protéger votre
+					confidentialité.
+				</p>
+			</header>
+
+			{/* Contenu de la page */}
+			<main className="container mx-auto max-w-[1440px] p-4 !pt-0 md:p-8">
+				{/* Présentation des fonctionnalités */}
+				<section className="mb-4 md:mb-8">
+					<header className="mb-4 md:mb-8">
+						<h1 className="inline text-2xl font-semibold tracking-tight lg:text-4xl">
+							Vous allez&nbsp;
+						</h1>
+						<h1 className="inline bg-gradient-to-b from-[#FF72E1] to-[#F54C7A] bg-clip-text text-2xl font-semibold tracking-tight text-transparent lg:text-4xl">
+							adorer&nbsp;
+						</h1>
+						<h1 className="inline text-2xl font-semibold tracking-tight lg:text-4xl">
+							nos fonctionnalités.
+						</h1>
+					</header>
+
+					<article className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+						{features.map( ( { id, title, description, icon } ) => (
+							<FeatureCard
+								key={id}
+								icon={icon}
+								title={title}
+								description={description}
+							/>
+						) )}
+					</article>
+				</section>
+
+				{/* Redirection vers le formulaire de création */}
+				<section>
+					<header className="mb-4 md:mb-6">
+						<h1 className="inline text-2xl font-semibold tracking-tight lg:text-4xl">
+							Prêt à&nbsp;
+						</h1>
+						<h1 className="inline bg-gradient-to-b from-[#FF705B] to-[#FFB457] bg-clip-text text-2xl font-semibold tracking-tight text-transparent lg:text-4xl">
+							commencer&nbsp;
+						</h1>
+						<h1 className="inline text-2xl font-semibold tracking-tight lg:text-4xl">
+							?
+						</h1>
+					</header>
+
+					<Button
+						size="lg"
+						color="primary"
+						variant="shadow"
+						className="block"
+						endContent={(
+							<ArrowRight
+								width={20}
+								height={20}
+								className="ml-2 inline-block align-sub"
+							/>
+						)}
 					>
-						Deploy now
-					</a>
-					<a
-						className="flex h-10 items-center justify-center rounded-full border border-solid border-black/[.08] px-4 text-sm transition-colors hover:border-transparent hover:bg-[#f2f2f2] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] sm:h-12 sm:min-w-44 sm:px-5 sm:text-base"
-						href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						Read our docs
-					</a>
-				</div>
+						Allons-y&nbsp;!
+					</Button>
+				</section>
 			</main>
-			<footer className="row-start-3 flex flex-wrap items-center justify-center gap-6">
-				<a
-					className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-					href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					Learn
-				</a>
-				<a
-					className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-					href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					Examples
-				</a>
-				<a
-					className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-					href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					Go to nextjs.org →
-				</a>
-			</footer>
-		</div>
+
+			{/* Pied de page */}
+			<Footer />
+		</>
 	);
 }
