@@ -18,7 +18,7 @@ const features = [
 		id: 1,
 		title: "Sécurisé de bout en bout",
 		description:
-			"Toutes les données sont chiffrées et stockées sur des serveurs sécurisés et à l'abri des regards indiscrets.",
+			"Toutes les données transmises entre votre navigateur et nos serveurs sont chiffrées pour garantir une sécurité maximale.",
 		icon: <Lock />
 	},
 	{
@@ -39,14 +39,14 @@ const features = [
 		id: 4,
 		title: "Haute performance",
 		description:
-			"Nos serveurs sont prévus pour garantir une performance optimale et une disponibilité maximale.",
+			"Nos serveurs sont prévus pour garantir une performance optimale et une disponibilité maximale pour tous les utilisateurs.",
 		icon: <Zap />
 	},
 	{
 		id: 5,
-		title: "Grande personnalisation",
+		title: "Personnalisation multiple",
 		description:
-			"Notre service propose une grande personnalisation lors de la création des raccourcis vers vos liens Internet.",
+			"Notre service propose une grande variétés d'options de personnalisation lors de la création des raccourcis vers vos liens Internet.",
 		icon: <Palette />
 	},
 	{
@@ -64,11 +64,11 @@ export default function Home()
 		<>
 			{/* En-tête de la page */}
 			<header className="container mx-auto max-w-[1440px] p-4 md:p-8">
-				<h1 className="inline text-4xl font-semibold tracking-tight lg:text-6xl">
+				<h1 className="inline text-4xl font-semibold tracking-tight lg:text-5xl">
 					Bienvenue sur
 				</h1>
 
-				<h1 className="mt-2 block bg-gradient-to-b from-[#5EA2EF] to-[#0072F5] bg-clip-text text-4xl font-semibold tracking-tight text-transparent lg:text-6xl">
+				<h1 className="mt-2 block bg-gradient-to-b from-[#5EA2EF] to-[#0072F5] bg-clip-text text-4xl font-semibold tracking-tight text-transparent lg:text-5xl">
 					Raven Url Shortener.
 				</h1>
 
@@ -84,14 +84,14 @@ export default function Home()
 				{/* Présentation des fonctionnalités */}
 				<section className="mb-4 md:mb-8">
 					<header className="mb-4 md:mb-8">
-						<h1 className="inline text-2xl font-semibold tracking-tight lg:text-4xl">
+						<h1 className="inline text-2xl font-semibold tracking-tight lg:text-3xl">
 							Vous allez&nbsp;
 						</h1>
-						<h1 className="inline bg-gradient-to-b from-[#FF72E1] to-[#F54C7A] bg-clip-text text-2xl font-semibold tracking-tight text-transparent lg:text-4xl">
+						<h1 className="inline bg-gradient-to-b from-[#FF72E1] to-[#F54C7A] bg-clip-text text-2xl font-semibold tracking-tight text-transparent lg:text-3xl">
 							adorer&nbsp;
 						</h1>
-						<h1 className="inline text-2xl font-semibold tracking-tight lg:text-4xl">
-							nos fonctionnalités.
+						<h1 className="inline text-2xl font-semibold tracking-tight lg:text-3xl">
+							notre service.
 						</h1>
 					</header>
 
@@ -110,20 +110,20 @@ export default function Home()
 				{/* Redirection vers le formulaire de création */}
 				<section>
 					<header className="mb-4 md:mb-6">
-						<h1 className="inline text-2xl font-semibold tracking-tight lg:text-4xl">
+						<h1 className="inline text-2xl font-semibold tracking-tight lg:text-3xl">
 							Prêt à&nbsp;
 						</h1>
-						<h1 className="inline bg-gradient-to-b from-[#FF705B] to-[#FFB457] bg-clip-text text-2xl font-semibold tracking-tight text-transparent lg:text-4xl">
+						<h1 className="inline bg-gradient-to-b from-[#6FEE8D] to-[#17c964] bg-clip-text text-2xl font-semibold tracking-tight text-transparent lg:text-3xl">
 							commencer&nbsp;
 						</h1>
-						<h1 className="inline text-2xl font-semibold tracking-tight lg:text-4xl">
+						<h1 className="inline text-2xl font-semibold tracking-tight lg:text-3xl">
 							?
 						</h1>
 					</header>
 
 					<Button
 						size="lg"
-						color="primary"
+						color="success"
 						variant="shadow"
 						className="block"
 						endContent={(
