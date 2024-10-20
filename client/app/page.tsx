@@ -5,12 +5,12 @@
 
 // Importation des dépendances.
 import { lazy } from "react";
-import { Button } from "@nextui-org/button";
-import { ArrowRight, Code, Eye, Lock, Palette, Smile, Zap } from "lucide-react";
+import { Code, Eye, Lock, Palette, Smile, Zap } from "lucide-react";
 
 // Importation des composants.
 const Footer = lazy( () => import( "./components/Footer" ) );
 const FeatureCard = lazy( () => import( "./components/FeatureCard" ) );
+const GatewayButton = lazy( () => import( "./components/GatewayButton" ) );
 
 // Liste des fonctionnalités.
 const features = [
@@ -121,21 +121,7 @@ export default function Home()
 						</h1>
 					</header>
 
-					<Button
-						size="lg"
-						color="success"
-						variant="shadow"
-						className="block"
-						endContent={(
-							<ArrowRight
-								width={20}
-								height={20}
-								className="ml-2 inline-block align-sub"
-							/>
-						)}
-					>
-						Allons-y&nbsp;!
-					</Button>
+					<GatewayButton />
 				</section>
 			</main>
 
