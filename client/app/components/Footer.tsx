@@ -21,7 +21,7 @@ export default function Footer()
 				les{" "}
 				<Link
 					href="https://policies.google.com/privacy"
-					className="text-sm"
+					className="text-warning text-sm"
 					isExternal
 					showAnchorIcon
 				>
@@ -30,7 +30,7 @@ export default function Footer()
 				et les{" "}
 				<Link
 					href="https://policies.google.com/terms"
-					className="text-sm"
+					className="text-warning text-sm"
 					isExternal
 					showAnchorIcon
 				>
