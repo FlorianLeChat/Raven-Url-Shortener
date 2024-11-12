@@ -12,12 +12,12 @@
     "url": "https://github.com/FlorianLeChat/Raven-Url-Shortener/issues"
   },
   "dependencies": {
-    "next": "~14.2",
+    "next": "~15.0",
     "framer-motion": "~11.11",
     "@nextui-org/react": "~2.4"
   },
   "devDependencies": {
-    "@types/node": "~22.7",
+    "@types/node": "~22.8",
     "@types/react": "~18.3",
     "clsx": "~2.1",
     "husky": "~9.1",
@@ -28,12 +28,12 @@
     "lint-staged": "~15.2",
     "autoprefixer": "~10.4",
     "lucide-react": "~0.446",
-    "eslint-config-next": "~14.2",
+    "eslint-config-next": "~15.0",
     "eslint-config-airbnb": "~19.0",
     "eslint-plugin-tailwindcss": "~3.17",
     "@total-typescript/ts-reset": "~0.6",
     "prettier-plugin-tailwindcss": "~0.6",
-    "@typescript-eslint/eslint-plugin": "~8.8"
+    "@typescript-eslint/eslint-plugin": "~8.12"
   },
   "engines": {
     "node": ">=18.0",
