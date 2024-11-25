@@ -14,7 +14,9 @@
   "dependencies": {
     "next": "~15.0",
     "framer-motion": "~11.11",
-    "@nextui-org/react": "~2.4"
+    "@react-aria/i18n": "~3.12",
+    "@nextui-org/react": "~2.4",
+    "@internationalized/date": "~3.6"
   },
   "devDependencies": {
     "@types/node": "~22.8",
