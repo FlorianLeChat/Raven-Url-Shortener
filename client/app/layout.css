@@ -1,3 +1,36 @@
+/* Déclaration des règles Tailwind CSS */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Sélection des textes */
+::selection
+{
+	@apply bg-primary text-primary-foreground;
+}
+
+/* Badge de Google reCAPTCHA
+	Source : https://developers.google.com/recaptcha/docs/faq#id-like-to-hide-the-recaptcha-badge.-what-is-allowed */
+.grecaptcha-badge
+{
+	@apply hidden;
+}
+
+/* Barre de défilement du navigateur */
+::-webkit-scrollbar
+{
+	/* Conteneur */
+	@apply w-3;
+}
+
+::-webkit-scrollbar-track
+{
+	/* Chemin */
+	@apply bg-default-400/10;
+}
+
+::-webkit-scrollbar-thumb
+{
+	/* Boutons haut/bas */
+	@apply bg-primary hover:bg-primary/90;
+}
