@@ -21,10 +21,10 @@ export default function FeatureCard( {
 	return (
 		<Card
 			isBlurred
-			className="dark:bg-default-400/10 border-transparent bg-white backdrop-blur-lg backdrop-saturate-[1.8]"
+			className="border-transparent bg-white backdrop-blur-lg backdrop-saturate-[1.8] dark:bg-default-400/10"
 		>
 			<CardHeader className="gap-2 pb-0">
-				<div className="text-primary-500 rounded-full p-2 dark:bg-transparent">
+				<div className="rounded-full p-2 text-primary-500 dark:bg-transparent">
 					{icon}
 				</div>
 
@@ -32,7 +32,7 @@ export default function FeatureCard( {
 			</CardHeader>
 
 			<CardBody className="pt-1">
-				<p className="text-default-500 text-base font-normal">
+				<p className="text-base font-normal text-default-500">
 					{description}
 				</p>
 			</CardBody>

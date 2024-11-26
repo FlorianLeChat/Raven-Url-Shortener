@@ -14,7 +14,7 @@ export default function Header()
 				Raven Url Shortener.
 			</h1>
 
-			<p className="text-default-500 my-2 block w-full max-w-full text-lg font-normal md:w-1/2 lg:text-xl">
+			<p className="my-2 block w-full max-w-full text-lg font-normal text-default-500 md:w-1/2 lg:text-xl">
 				Un raccourcisseur de liens Internet simple, sécurisé et
 				entièrement personnalisable, conçu pour protéger votre
 				confidentialité.
