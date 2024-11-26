@@ -7,7 +7,7 @@ import { lazy } from "react";
 import { headers } from "next/headers";
 
 // Importation des composants.
-import ServerProvider from "../components/server-provider";
+import ServerProvider from "@/components/server-provider";
 
 const Header = lazy( () => import( "../components/header" ) );
 const Footer = lazy( () => import( "../components/footer" ) );
@@ -16,9 +16,9 @@ const FormContainer = lazy( () => import( "./components/form-container" ) );
 export default async function Page()
 {
 	// Déclaration des constantes.
-	const options = Intl.DateTimeFormat().resolvedOptions();
 	const requestHeaders = await headers();
 	const baseDomain = `${ requestHeaders.get( "x-forwarded-proto" ) || "http" }://${ requestHeaders.get( "host" ) }/`;
+	const options = Intl.DateTimeFormat().resolvedOptions();
 
 	// Récupération du fuseau horaire actuel et de son décalage.
 	//  Décalage en minutes (exemple : -60 pour UTC+1) et conversion en heures.
