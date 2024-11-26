@@ -5,7 +5,10 @@
 		"lib": ["dom", "dom.iterable", "esnext"],
 		"jsx": "preserve",
 		"paths": {
-			"@/*": ["./*"]
+			"@/*": ["./*"],
+			"@/app/*": ["./app/*"],
+			"@/config/*": ["./config/*"],
+			"@/components/*": ["./app/components/*"],
 		},
 		"noEmit": true,
 		"strict": true,
