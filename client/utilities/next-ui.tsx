@@ -11,10 +11,10 @@ import { NextUIProvider as Provider } from "@nextui-org/react";
 export function NextUIProvider( {
 	children,
 	className
-}: {
+}: Readonly<{
 	children: ReactNode;
 	className: string;
-} )
+}> )
 {
 	return <Provider className={className}>{children}</Provider>;
 }
