@@ -20,7 +20,7 @@ const inter = Inter( {
 	display: "swap"
 } );
 
-export default function Layout( { children }: { children: ReactNode } )
+export default function Layout( { children }: Readonly<{ children: ReactNode }> )
 {
 	return (
 		<html lang="fr" className={`text-foreground dark ${ inter.className }`}>

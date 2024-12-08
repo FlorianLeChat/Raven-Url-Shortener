@@ -15,10 +15,10 @@ export const ServerContext = createContext<ServerContextProps | null>( null );
 export default function ServerProvider( {
 	children,
 	value
-}: {
+}: Readonly<{
 	children: ReactNode;
 	value: ServerProviderProps["value"];
-} )
+}> )
 {
 	return (
 		<ServerContext.Provider value={value}>

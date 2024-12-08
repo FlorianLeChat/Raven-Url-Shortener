@@ -11,11 +11,11 @@ export default function FeatureCard( {
 	title,
 	description,
 	icon
-}: {
+}: Readonly<{
 	title: string;
 	description: string;
 	icon: ReactNode;
-} )
+}> )
 {
 	// Affichage du rendu HTML du composant.
 	return (
