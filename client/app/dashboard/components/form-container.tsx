@@ -11,14 +11,12 @@ import { Link,
 	Card,
 	CardBody,
 	Progress,
-	Accordion,
 	CardHeader,
 	CardFooter } from "@nextui-org/react";
 
 const InputOptions = lazy( () => import( "./input-options" ) );
 const SubmitButtons = lazy( () => import( "./submit-buttons" ) );
-const SecurityOptions = lazy( () => import( "./security-options" ) );
-const TrackingOptions = lazy( () => import( "./tracking-options" ) );
+const CheckboxOptions = lazy( () => import( "./checkbox-options" ) );
 
 export default function FormContainer()
 {
@@ -32,10 +30,10 @@ export default function FormContainer()
 		>
 			<CardHeader
 				as="header"
-				className="gap-2 bg-[#0072F5] p-4 text-white"
+				className="gap-3 bg-[#0072F5] p-4 text-white"
 			>
 				{/* Astuce d'utilisation */}
-				<Info className="inline-block" />
+				<Info className="inline-block min-w-[24px]" />
 				Vous pouvez à tout moment modifier les paramètres de votre lien,
 				même après sa création.
 			</CardHeader>
@@ -44,20 +42,14 @@ export default function FormContainer()
 				{/* Options de saisie */}
 				<InputOptions />
 
-				<Accordion
-					as="article"
-					variant="splitted"
-					className="p-0 lg:w-1/2"
-				>
-					{/* Options de sécurité */}
-					<SecurityOptions />
-
-					{/* Options de suivi et de statistiques */}
-					<TrackingOptions />
-				</Accordion>
+				{/* Options additionnelles */}
+				<CheckboxOptions />
 			</CardBody>
 
-			<CardFooter as="footer" className="justify-between gap-2">
+			<CardFooter
+				as="footer"
+				className="justify-between gap-4 max-sm:flex-col"
+			>
 				{/* Boutons de soumission */}
 				<SubmitButtons />
 
