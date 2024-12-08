@@ -22,13 +22,15 @@ export default function InputOptions()
 
 	// Affichage du rendu HTML du composant.
 	return (
-		<article className="flex flex-col gap-5 lg:w-1/2">
+		<ul className="flex flex-col gap-5 lg:w-1/2">
 			{/* Lien à raccourcir */}
 			<Input
+				as="li"
 				size="lg"
 				type="url"
 				label="Lien Internet à raccourcir"
 				required
+				className="w-100"
 				isRequired
 				isClearable
 				placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
@@ -40,17 +42,18 @@ export default function InputOptions()
 						des raisons de sécurité.
 					</>
 				)}
-				className="w-100"
 				labelPlacement="outside"
 				startContent={<Link2 className="mr-1" />}
 			/>
 
 			{/* Slug personnalisé */}
 			<Input
+				as="li"
 				type="url"
 				size="lg"
 				label="Slug personnalisé"
 				maxLength={50}
+				isClearable
 				placeholder="my-super-slug"
 				description={(
 					<>
@@ -71,9 +74,11 @@ export default function InputOptions()
 
 			{/* Date de publication */}
 			<DatePicker
+				as="li"
 				size="lg"
 				label="Date d'expiration"
 				maxValue={maxTime}
+				className="!pb-9"
 				description={(
 					<>
 						Votre lien sera automatiquement{" "}
@@ -87,6 +92,6 @@ export default function InputOptions()
 				showMonthAndYearPickers
 				suppressHydrationWarning
 			/>
-		</article>
+		</ul>
 	);
 }
