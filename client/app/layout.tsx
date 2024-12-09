@@ -11,7 +11,7 @@ import "./layout.css";
 import { Inter } from "next/font/google";
 import type { ReactNode } from "react";
 
-// Importation des fonctions utilitaires.s
+// Importation des fonctions utilitaires.
 import { NextUIProvider } from "../utilities/next-ui";
 
 // Création des polices de caractères.

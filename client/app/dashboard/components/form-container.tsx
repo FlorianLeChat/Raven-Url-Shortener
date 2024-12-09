@@ -13,6 +13,7 @@ import { Link,
 	Progress,
 	CardHeader,
 	CardFooter } from "@nextui-org/react";
+import { I18nProvider } from "@react-aria/i18n";
 
 const InputOptions = lazy( () => import( "./input-options" ) );
 const SubmitButtons = lazy( () => import( "./submit-buttons" ) );
@@ -39,11 +40,14 @@ export default function FormContainer()
 			</CardHeader>
 
 			<CardBody className="gap-10 p-4 pr-0 lg:flex-row">
-				{/* Options de saisie */}
-				<InputOptions />
+				{/* Utilisation de i18n */}
+				<I18nProvider>
+					{/* Options de saisie */}
+					<InputOptions />
 
-				{/* Options additionnelles */}
-				<CheckboxOptions />
+					{/* Options additionnelles */}
+					<CheckboxOptions />
+				</I18nProvider>
 			</CardBody>
 
 			<CardFooter
