@@ -4,23 +4,63 @@
 
 "use client";
 
-import { lazy } from "react";
-import { Info } from "lucide-react";
 import { Link,
 	User,
 	Card,
+	Button,
 	CardBody,
 	Progress,
 	CardHeader,
 	CardFooter } from "@nextui-org/react";
 import { I18nProvider } from "@react-aria/i18n";
+import { WandSparkles, Info } from "lucide-react";
+import { lazy, useRef, useState } from "react";
 
 const InputOptions = lazy( () => import( "./input-options" ) );
-const SubmitButtons = lazy( () => import( "./submit-buttons" ) );
 const CheckboxOptions = lazy( () => import( "./checkbox-options" ) );
 
 export default function FormContainer()
 {
+	// Déclaration des variables d'état.
+	const submitButton = useRef<HTMLButtonElement | null>( null );
+	const [ isLoading, setIsLoading ] = useState( false );
+
+	// Simulation d'une requête HTTP au serveur.
+	//  Source : https://github.com/nextui-org/nextui/blob/1485eca48fce8a0acc42fe40590b828c1a90ff48/apps/docs/components/demos/custom-button.tsx#L11-L36
+	const simulateRequest = async () =>
+	{
+		// Calcul de la position du bouton de soumission.
+		const { clientWidth, clientHeight } = document.documentElement;
+		const boundingBox = submitButton.current?.getBoundingClientRect?.();
+
+		const targetX = boundingBox?.x ?? 0;
+		const targetY = boundingBox?.y ?? 0;
+		const targetWidth = boundingBox?.width ?? 0;
+
+		// Lancement de l'animation de confettis.
+		const targetCenterX = targetX + targetWidth / 2;
+		const confetti = ( await import( "canvas-confetti" ) ).default;
+
+		confetti( {
+			origin: {
+				y: targetY / clientHeight,
+				x: targetCenterX / clientWidth
+			},
+			spread: 70,
+			zIndex: 999,
+			particleCount: 100,
+			disableForReducedMotion: true
+		} );
+
+		// Affichage de l'état de chargement.
+		setIsLoading( true );
+
+		setTimeout( () =>
+		{
+			setIsLoading( false );
+		}, 3000 );
+	};
+
 	// Affichage du rendu HTML du composant.
 	return (
 		<Card
@@ -55,15 +95,27 @@ export default function FormContainer()
 				className="justify-between gap-4 max-sm:flex-col"
 			>
 				{/* Boutons de soumission */}
-				<SubmitButtons />
+				<Button
+					ref={submitButton}
+					size="lg"
+					color="success"
+					variant="shadow"
+					onClick={simulateRequest}
+					isLoading={isLoading}
+					startContent={isLoading ? null : <WandSparkles />}
+				>
+					Créer un nouveau raccourci
+				</Button>
 
 				{/* Barre de progression */}
-				<Progress
-					size="sm"
-					label="Contact du serveur... (Essai 1/3)"
-					className="max-w-md"
-					isIndeterminate
-				/>
+				{isLoading && (
+					<Progress
+						size="sm"
+						label="Contact du serveur... (Essai 1/3)"
+						className="max-w-md"
+						isIndeterminate
+					/>
+				)}
 
 				{/* Carte du créateur */}
 				<div className="mr-1 flex items-center gap-2">
@@ -72,7 +124,7 @@ export default function FormContainer()
 						name="Florian Trayon"
 						description={(
 							<Link
-								href="https://twitter.com/jrgarciadev"
+								href="https://www.florian-dev.fr/"
 								size="sm"
 								isExternal
 							>
