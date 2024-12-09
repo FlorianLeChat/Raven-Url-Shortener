@@ -89,6 +89,7 @@ export default function InputOptions()
 					</>
 				)}
 				labelPlacement="outside"
+				disableAnimation
 				showMonthAndYearPickers
 				suppressHydrationWarning
 			/>
