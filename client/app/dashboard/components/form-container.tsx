@@ -38,7 +38,7 @@ export default function FormContainer()
 				même après sa création.
 			</CardHeader>
 
-			<CardBody className="gap-10 p-4 lg:flex-row">
+			<CardBody className="gap-10 p-4 pr-0 lg:flex-row">
 				{/* Options de saisie */}
 				<InputOptions />
 
