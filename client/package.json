@@ -13,8 +13,6 @@
   },
   "dependencies": {
     "next": "~15.0",
-    "framer-motion": "~11.13",
-    "canvas-confetti": "~1.9",
     "@react-aria/i18n": "~3.12",
     "@nextui-org/react": "~2.6",
     "@internationalized/date": "~3.6"
@@ -32,6 +30,8 @@
     "lint-staged": "~15.2",
     "autoprefixer": "~10.4",
     "lucide-react": "~0.446",
+    "framer-motion": "~11.13",
+    "canvas-confetti": "~1.9",
     "eslint-config-next": "~15.0",
     "eslint-config-airbnb": "~19.0",
     "eslint-plugin-tailwindcss": "~3.17",
