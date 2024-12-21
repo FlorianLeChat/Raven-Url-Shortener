@@ -6,9 +6,9 @@
 		"jsx": "preserve",
 		"paths": {
 			"@/*": ["./*"],
-			"@/app/*": ["./app/*"],
-			"@/config/*": ["./config/*"],
-			"@/components/*": ["./app/components/*"],
+			"@/app/*": ["./app/[locale]/*"],
+			"@/config/*": ["./app/config/*"],
+			"@/components/*": ["./app/[locale]/components/*"],
 		},
 		"noEmit": true,
 		"strict": true,
