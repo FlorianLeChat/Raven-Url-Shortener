@@ -43,8 +43,8 @@ export default function FormContainer()
 
 		confetti( {
 			origin: {
-				y: targetY / clientHeight,
-				x: targetCenterX / clientWidth
+				x: targetCenterX / clientWidth,
+				y: targetY / clientHeight
 			},
 			spread: 70,
 			zIndex: 999,
@@ -100,7 +100,7 @@ export default function FormContainer()
 					size="lg"
 					color="success"
 					variant="shadow"
-					onClick={simulateRequest}
+					onPress={simulateRequest}
 					isLoading={isLoading}
 					startContent={isLoading ? null : <WandSparkles />}
 				>
@@ -119,7 +119,7 @@ export default function FormContainer()
 
 				{/* Carte du créateur */}
 				<div className="mr-1 flex items-center gap-2">
-					Made with ❤️ by{" "}
+					Fait avec ❤️ par{" "}
 					<User
 						name="Florian Trayon"
 						description={(
