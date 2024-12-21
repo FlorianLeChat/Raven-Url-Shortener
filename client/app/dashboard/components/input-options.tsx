@@ -49,7 +49,6 @@ export default function InputOptions()
 			{/* Slug personnalisé */}
 			<Input
 				as="li"
-				type="url"
 				size="lg"
 				label="Slug personnalisé"
 				maxLength={50}

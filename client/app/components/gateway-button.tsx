@@ -35,7 +35,7 @@ export default function GatewayButton()
 		<Button
 			size="lg"
 			color="success"
-			onClick={() => setIsLoading( true )}
+			onPress={() => setIsLoading( true )}
 			variant="shadow"
 			isLoading={isLoading}
 			endContent={<ArrowRight width={20} height={20} />}
