@@ -5,17 +5,28 @@
 // Importation des dépendances.
 import { lazy } from "react";
 import { headers } from "next/headers";
+import { setRequestLocale } from "next-intl/server";
 
 // Importation des composants.
 import ServerProvider from "@/components/server-provider";
 
-const Header = lazy( () => import( "../components/header" ) );
-const Footer = lazy( () => import( "../components/footer" ) );
+const Header = lazy( () => import( "@/components/header" ) );
+const Footer = lazy( () => import( "@/components/footer" ) );
 const FormContainer = lazy( () => import( "./components/form-container" ) );
 const ActionButtons = lazy( () => import( "./components/action-buttons" ) );
 
-export default async function Page()
+// Affichage de la page.
+export default async function Page( {
+	params
+}: Readonly<{
+	params: Promise<{ locale: string }>;
+}> )
 {
+	// Définition de la langue de la page.
+	const { locale } = await params;
+
+	setRequestLocale( locale );
+
 	// Déclaration des constantes.
 	const requestHeaders = await headers();
 	const baseDomain = `${ requestHeaders.get( "x-forwarded-proto" ) ?? "http" }://${ requestHeaders.get( "host" ) }/`;
