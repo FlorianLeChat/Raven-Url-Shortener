@@ -7,11 +7,24 @@
 import "@total-typescript/ts-reset";
 
 // Importation des dépendances.
+import pick from "lodash/pick";
 import { Inter } from "next/font/google";
+import { NextIntlClientProvider } from "next-intl";
 import { Suspense, type ReactNode } from "react";
+import { getMessages, setRequestLocale } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
+import { logger } from "@/utilities/pino";
+import { getLanguages } from "@/utilities/i18n";
 import { NextUIProvider } from "@/utilities/next-ui";
+
+// Génération des paramètres pour les pages statiques.
+const languages = getLanguages();
+
+export function generateStaticParams()
+{
+	return languages.map( ( locale ) => ( { locale } ) );
+}
 
 // Création des polices de caractères.
 const inter = Inter( {
@@ -19,11 +32,30 @@ const inter = Inter( {
 	display: "swap"
 } );
 
-export default function Layout( { children }: Readonly<{ children: ReactNode }> )
+export default async function Layout( {
+	children,
+	params
+}: Readonly<{
+	children: ReactNode;
+	params: Promise<{ locale: string }>;
+}> )
 {
+	// Définition de la langue de la page.
+	const { locale } = await params;
+	const messages = await getMessages();
+
+	setRequestLocale( locale );
+
+	// Vérification du support de la langue.
+	if ( !languages.includes( locale ) )
+	{
+		logger.error( { source: __dirname, locale }, "Unsupported language" );
+		return null;
+	}
+
 	return (
 		<html
-			lang="fr"
+			lang={locale}
 			className={`text-foreground light:bg-[whitesmoke] ${ inter.className }`}
 			suppressHydrationWarning
 		>
@@ -96,11 +128,22 @@ export default function Layout( { children }: Readonly<{ children: ReactNode }> 
 						</svg>
 					</a>
 
-					{/* Utilisation de NextUI */}
-					<NextUIProvider className="flex min-h-screen flex-col">
-						{/* Composant enfant */}
-						{children}
-					</NextUIProvider>
+					{/* Utilisation des traductions */}
+					<NextIntlClientProvider
+						locale={locale}
+						messages={pick(
+							messages,
+							"consentModal",
+							"preferencesModal"
+						)}
+						timeZone={process.env.TZ}
+					>
+						{/* Utilisation de NextUI */}
+						<NextUIProvider className="flex min-h-screen flex-col">
+							{/* Composant enfant */}
+							{children}
+						</NextUIProvider>
+					</NextIntlClientProvider>
 				</Suspense>
 			</body>
 		</html>

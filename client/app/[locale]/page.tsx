@@ -5,6 +5,7 @@
 
 // Importation des dépendances.
 import { lazy } from "react";
+import { setRequestLocale } from "next-intl/server";
 
 // Importation de la configuration.
 import { features } from "@/config/features";
@@ -15,8 +16,19 @@ const Footer = lazy( () => import( "./components/footer" ) );
 const FeatureCard = lazy( () => import( "./components/feature-card" ) );
 const GatewayButton = lazy( () => import( "./components/gateway-button" ) );
 
-export default function Home()
+// Affichage de la page.
+export default async function Page( {
+	params
+}: Readonly<{
+	params: Promise<{ locale: string }>;
+}> )
 {
+	// Définition de la langue de la page.
+	const { locale } = await params;
+
+	setRequestLocale( locale );
+
+	// Affichage du rendu HTML de la page.
 	return (
 		<>
 			{/* En-tête de la page */}
