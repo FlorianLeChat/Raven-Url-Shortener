@@ -23,7 +23,34 @@ const inter = Inter( {
 export default function Layout( { children }: Readonly<{ children: ReactNode }> )
 {
 	return (
-		<html lang="fr" className={`text-foreground dark ${ inter.className }`}>
+		<html
+			lang="fr"
+			className={`text-foreground light:bg-[whitesmoke] ${ inter.className }`}
+			suppressHydrationWarning
+		>
+			{/* En-tête de la page */}
+			<head>
+				{/* Mise à jour de l'apparence */}
+				<script
+					dangerouslySetInnerHTML={{
+						__html: `
+							// Application du thème préféré par le navigateur.
+							const element = document.documentElement;
+							const target = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+
+							element.classList.remove("light", "dark");
+							element.classList.add(target);
+							element.style.colorScheme = target;
+
+							if (target === "dark") {
+								element.classList.add("cc--darkmode");
+							}
+						`
+					}}
+				/>
+			</head>
+
+			{/* Corps de la page */}
 			<body>
 				{/* Vidéo en arrière-plan */}
 				<video

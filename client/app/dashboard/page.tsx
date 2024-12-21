@@ -12,6 +12,7 @@ import ServerProvider from "@/components/server-provider";
 const Header = lazy( () => import( "../components/header" ) );
 const Footer = lazy( () => import( "../components/footer" ) );
 const FormContainer = lazy( () => import( "./components/form-container" ) );
+const ActionButtons = lazy( () => import( "./components/action-buttons" ) );
 
 export default async function Page()
 {
@@ -42,6 +43,7 @@ export default async function Page()
 			{/* Contenu de la page */}
 			<main className="container mx-auto max-w-[1440px] p-4 pt-0 md:p-8 md:pt-0">
 				<ServerProvider value={serverData}>
+					<ActionButtons />
 					<FormContainer />
 				</ServerProvider>
 			</main>
