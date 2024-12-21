@@ -5,8 +5,7 @@
 "use client";
 
 import { createContext, type ReactNode } from "react";
-import type { ServerContextProps,
-	ServerProviderProps } from "../interfaces/ServerProperties";
+import type { ServerContextProps, ServerProviderProps } from "@/interfaces/ServerProperties";
 
 // Exportation du context du composant.
 export const ServerContext = createContext<ServerContextProps | null>( null );
