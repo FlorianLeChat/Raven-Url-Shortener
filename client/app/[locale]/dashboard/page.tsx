@@ -54,7 +54,10 @@ export default async function Page( {
 			{/* Contenu de la page */}
 			<main className="container mx-auto max-w-[1440px] p-4 pt-0 md:p-8 md:pt-0">
 				<ServerProvider value={serverData}>
+					{/* Boutons d'action */}
 					<ActionButtons />
+
+					{/* Conteneur du formulaire */}
 					<FormContainer />
 				</ServerProvider>
 			</main>

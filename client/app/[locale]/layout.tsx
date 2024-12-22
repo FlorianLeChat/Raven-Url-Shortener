@@ -10,13 +10,16 @@ import "@total-typescript/ts-reset";
 import pick from "lodash/pick";
 import { Inter } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
-import { Suspense, type ReactNode } from "react";
 import { getMessages, setRequestLocale } from "next-intl/server";
+import { lazy, Suspense, type ReactNode } from "react";
 
 // Importation des fonctions utilitaires.
 import { logger } from "@/utilities/pino";
 import { getLanguages } from "@/utilities/i18n";
 import { NextUIProvider } from "@/utilities/next-ui";
+
+// Importation des composants.
+const CookieConsent = lazy( () => import( "@/components/cookie-consent" ) );
 
 // Génération des paramètres pour les pages statiques.
 const languages = getLanguages();
@@ -143,6 +146,9 @@ export default async function Layout( {
 							{/* Composant enfant */}
 							{children}
 						</NextUIProvider>
+
+						{/* Consentement des cookies */}
+						<CookieConsent />
 					</NextIntlClientProvider>
 				</Suspense>
 			</body>

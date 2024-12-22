@@ -5,6 +5,7 @@
 //
 
 import "./layout.css";
+import "vanilla-cookieconsent/dist/cookieconsent.css";
 
 import { Inter } from "next/font/google";
 import { logger } from "@/utilities/pino";
