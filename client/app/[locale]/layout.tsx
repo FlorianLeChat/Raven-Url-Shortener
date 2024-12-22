@@ -16,10 +16,29 @@ import { lazy, Suspense, type ReactNode } from "react";
 // Importation des fonctions utilitaires.
 import { logger } from "@/utilities/pino";
 import { getLanguages } from "@/utilities/i18n";
+import { fetchMetadata } from "@/utilities/metadata";
 import { NextUIProvider } from "@/utilities/next-ui";
+
+// Importation des types.
+import type { Viewport } from "next";
 
 // Importation des composants.
 const CookieConsent = lazy( () => import( "@/components/cookie-consent" ) );
+
+// Déclaration des paramètres d'affichage.
+export const viewport: Viewport = {
+	viewportFit: "cover",
+	themeColor: [
+		{ media: "(prefers-color-scheme: light)", color: "#c2d0e0" },
+		{ media: "(prefers-color-scheme: dark)", color: "#0072f5" }
+	]
+};
+
+// Déclaration des propriétés de la page.
+export async function generateMetadata()
+{
+	return fetchMetadata();
+}
 
 // Génération des paramètres pour les pages statiques.
 const languages = getLanguages();
