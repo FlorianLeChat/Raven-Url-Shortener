@@ -28,6 +28,7 @@
     "@types/canvas-confetti": "~1.6",
     "clsx": "~2.1",
     "husky": "~9.1",
+    "cspell": "~8.17",
     "postcss": "~8.4",
     "prettier": "~3.4",
     "deepmerge": "~4.3",
@@ -38,6 +39,7 @@
     "lucide-react": "~0.449",
     "framer-motion": "~11.15",
     "canvas-confetti": "~1.9",
+    "@cspell/dict-fr-fr": "~2.2",
     "eslint-config-next": "~15.1",
     "eslint-config-airbnb": "~19.0",
     "eslint-plugin-tailwindcss": "~3.17",
@@ -56,7 +58,8 @@
     "start": "next start",
     "pretty": "prettier --write \"**/*.{js,jsx,ts,tsx}\"",
     "prepare": "cd .. && husky",
-    "lint-staged": "lint-staged"
+    "lint-staged": "lint-staged",
+    "check-spell": "cspell locales/** --show-context --show-suggestions"
   },
   "browserslist": [
     "defaults"
