@@ -59,7 +59,7 @@ export default async function Layout( {
 	return (
 		<html
 			lang={locale}
-			className={`text-foreground light:bg-[whitesmoke] ${ inter.className }`}
+			className={`text-foreground antialiased light:bg-[whitesmoke] ${ inter.className }`}
 			suppressHydrationWarning
 		>
 			{/* En-tête de la page */}
