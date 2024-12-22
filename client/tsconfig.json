@@ -7,7 +7,6 @@
 		"paths": {
 			"@/*": ["./*"],
 			"@/app/*": ["./app/[locale]/*"],
-			"@/config/*": ["./app/config/*"],
 			"@/components/*": ["./app/[locale]/components/*"],
 		},
 		"noEmit": true,
