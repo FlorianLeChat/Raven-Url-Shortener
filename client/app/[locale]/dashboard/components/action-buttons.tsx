@@ -4,10 +4,11 @@
 
 "use client";
 
+import { useRouter } from "next/navigation";
+import { showPreferences } from "vanilla-cookieconsent";
+import { useEffect, useState } from "react";
 import { ButtonGroup, Button, Link } from "@nextui-org/react";
 import { Cookie, HandHelping, House, SunMoon } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 
 export default function ActionButtons()
 {
@@ -46,10 +47,14 @@ export default function ActionButtons()
 				onPress={() => router.push( "/" )}
 				startContent={<House />}
 			>
-				Retour à la page d&lsquo;accueil
+				Retour à l&lsquo;accueil
 			</Button>
 
-			<Button variant="flat" startContent={<Cookie />}>
+			<Button
+				variant="flat"
+				onPress={() => showPreferences()}
+				startContent={<Cookie />}
+			>
 				Gestion des cookies
 			</Button>
 
