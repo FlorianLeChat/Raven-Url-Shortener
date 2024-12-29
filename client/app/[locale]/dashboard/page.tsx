@@ -11,7 +11,6 @@ import { setRequestLocale } from "next-intl/server";
 import ServerProvider from "@/components/server-provider";
 
 const Header = lazy( () => import( "@/components/header" ) );
-const Footer = lazy( () => import( "@/components/footer" ) );
 const FormContainer = lazy( () => import( "./components/form-container" ) );
 const ActionButtons = lazy( () => import( "./components/action-buttons" ) );
 
@@ -61,9 +60,6 @@ export default async function Page( {
 					<FormContainer />
 				</ServerProvider>
 			</main>
-
-			{/* Pied de page */}
-			<Footer />
 		</>
 	);
 }

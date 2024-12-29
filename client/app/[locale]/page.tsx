@@ -12,7 +12,6 @@ import { features } from "@/config/features";
 
 // Importation des composants.
 const Header = lazy( () => import( "./components/header" ) );
-const Footer = lazy( () => import( "./components/footer" ) );
 const FeatureCard = lazy( () => import( "./components/feature-card" ) );
 const GatewayButton = lazy( () => import( "./components/gateway-button" ) );
 
@@ -83,9 +82,6 @@ export default async function Page( {
 					<GatewayButton />
 				</section>
 			</main>
-
-			{/* Pied de page */}
-			<Footer />
 		</>
 	);
 }
