@@ -22,7 +22,7 @@ export default function InputOptions()
 
 	// Affichage du rendu HTML du composant.
 	return (
-		<ul className="flex flex-col gap-5 lg:w-1/2">
+		<ul className="flex flex-col gap-5 md:mr-4 lg:w-1/2">
 			{/* Lien à raccourcir */}
 			<Input
 				as="li"

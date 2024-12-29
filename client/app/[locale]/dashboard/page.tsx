@@ -51,7 +51,7 @@ export default async function Page( {
 			<Header />
 
 			{/* Contenu de la page */}
-			<main className="container mx-auto max-w-[1440px] p-4 pt-0 md:p-8 md:pt-0">
+			<main className="container mx-auto max-w-[1440px] p-4 pb-8 pt-0 md:p-8 md:pt-0">
 				<ServerProvider value={serverData}>
 					{/* Boutons d'action */}
 					<ActionButtons />

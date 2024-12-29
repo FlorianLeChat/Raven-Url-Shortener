@@ -5,11 +5,11 @@
 "use client";
 
 import { ChartLine, Shield, Zap } from "lucide-react";
-import { Checkbox,
-	Chip,
-	AccordionItem,
+import { Chip,
+	Alert,
+	Checkbox,
 	Accordion,
-	Alert } from "@nextui-org/react";
+	AccordionItem } from "@nextui-org/react";
 
 export default function CheckboxOptions()
 {
@@ -18,8 +18,8 @@ export default function CheckboxOptions()
 		<Accordion
 			as="ul"
 			variant="splitted"
+			className="max-h-[382px] overflow-y-auto p-0 md:ml-4 lg:w-1/2"
 			keepContentMounted
-			className="max-h-[382px] overflow-y-auto p-0 pr-4 lg:w-1/2"
 		>
 			{/* Protection et sécurité */}
 			<AccordionItem
@@ -33,6 +33,7 @@ export default function CheckboxOptions()
 						<span className="text-danger">vos visiteurs</span>.
 					</>
 				)}
+				className="shadow"
 				aria-label="Protection et sécurité"
 				startContent={<Shield className="mr-1 text-danger" />}
 			>
@@ -52,7 +53,7 @@ export default function CheckboxOptions()
 						<p>
 							Activer la protection par mot de passe
 							<br />
-							<small className="text-tiny text-default-500">
+							<small className="inline-block text-tiny leading-5 text-default-500">
 								Les visiteurs devront saisir un mot de passe que
 								vous aurez défini pour accéder à votre lien.
 								Cette mesure permet de sécuriser votre lien et
@@ -76,7 +77,7 @@ export default function CheckboxOptions()
 						<p>
 							Activer la protection via Google reCAPTCHA
 							<br />
-							<small className="text-tiny text-default-500">
+							<small className="inline-block text-tiny leading-5 text-default-500">
 								Les visiteurs devront résoudre un défi reCAPTCHA
 								pour accéder à votre lien. Cette mesure aide à
 								protéger votre lien contre les robots et les
@@ -99,13 +100,39 @@ export default function CheckboxOptions()
 				>
 					<p>Acheminer via un serveur mandataire (proxy)</p>
 
-					<small className="text-tiny text-default-500">
+					<small className="inline-block text-tiny leading-5 text-default-500">
 						L&lsquo;accès à votre lien passera par un serveur
 						passerelle, ce qui permettra de contourner les
 						restrictions de certains réseaux tout en protégeant
 						votre adresse IP contre le suivi de votre activité en
 						ligne.
 					</small>
+				</Checkbox>
+
+				{/* Gestion via API */}
+				<Checkbox
+					value="api-management"
+					className="w-100 m-0 mb-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent bg-content1 p-4 hover:bg-content2 data-[selected=true]:border-primary"
+					aria-label="Gérer le lien via une API"
+				>
+					<div className="flex justify-between gap-2">
+						<p>
+							Activer la gestion via une API
+							<br />
+							<small className="inline-block text-tiny leading-5 text-default-500">
+								La gestion de votre lien pourra être effectuée à
+								distance à l&lsquo;aide d&lsquo;une interface de
+								programmation d&lsquo;applications (API), vous
+								permettant ainsi de contrôler son accès, ses
+								paramètres et d&lsquo;accéder à ses
+								statistiques.
+							</small>
+						</p>
+
+						<Chip color="secondary" size="sm" variant="flat">
+							Expérimental
+						</Chip>
+					</div>
 				</Checkbox>
 			</AccordionItem>
 
@@ -122,6 +149,7 @@ export default function CheckboxOptions()
 						audience.
 					</>
 				)}
+				className="shadow"
 				aria-label="Suivi et statistiques"
 				startContent={<ChartLine className="mr-1 text-success" />}
 			>
@@ -139,7 +167,7 @@ export default function CheckboxOptions()
 				>
 					<p>Compter le nombre d&lsquo;accès</p>
 
-					<small className="text-tiny text-default-500">
+					<small className="inline-block text-tiny leading-5 text-default-500">
 						Le nombre d&lsquo;accès sera enregistré et affiché dans
 						les statistiques de gestion de votre lien, vous
 						permettant ainsi de suivre sa popularité et son
@@ -155,7 +183,7 @@ export default function CheckboxOptions()
 				>
 					<p>Récupérer les données des visiteurs</p>
 
-					<small className="text-tiny text-default-500">
+					<small className="inline-block text-tiny leading-5 text-default-500">
 						Les données des navigateurs des visiteurs seront
 						collectées et affichées dans les statistiques de gestion
 						de votre lien, vous offrant une analyse détaillée de
@@ -177,6 +205,7 @@ export default function CheckboxOptions()
 						son rendement.
 					</>
 				)}
+				className="shadow"
 				aria-label="Performance et optimisation"
 				startContent={<Zap className="mr-1 text-warning" />}
 			>
@@ -184,13 +213,13 @@ export default function CheckboxOptions()
 				<Checkbox
 					value="cache-page"
 					className="w-100 m-0 mb-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent bg-content1 p-4 hover:bg-content2 data-[selected=true]:border-primary"
-					aria-label="Compter le nombre de clics et de vues"
+					aria-label="Mettre en cache la page"
 				>
 					<div className="flex justify-between gap-2">
 						<p>
 							Mise en cache de la page
 							<br />
-							<small className="text-tiny text-default-500">
+							<small className="inline-block text-tiny leading-5 text-default-500">
 								Lors de la création de votre lien, la page cible
 								sera mise en cache et sera servie pour les
 								visiteurs, ce qui permettra d&lsquo;accélérer le
