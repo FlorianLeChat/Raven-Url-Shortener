@@ -40,14 +40,16 @@ export default function ActionButtons()
 
 	// Affichage du rendu HTML du composant.
 	return (
-		<ButtonGroup className="-mt-10 mb-8">
+		<ButtonGroup className="mb-8">
 			<Button
 				as={Link}
 				variant="flat"
 				onPress={() => router.push( "/" )}
 				startContent={<House />}
 			>
-				Retour à l&lsquo;accueil
+				<span className="hidden md:inline">
+					Retour à l&lsquo;accueil
+				</span>
 			</Button>
 
 			<Button
@@ -55,7 +57,7 @@ export default function ActionButtons()
 				onPress={() => showPreferences()}
 				startContent={<Cookie />}
 			>
-				Gestion des cookies
+				<span className="hidden md:inline">Gestion des cookies</span>
 			</Button>
 
 			<Button
@@ -64,7 +66,9 @@ export default function ActionButtons()
 				isDisabled={theme === "N/A"}
 				startContent={<SunMoon />}
 			>
-				Basculer en thème {theme === "dark" ? "clair" : "sombre"}
+				<span className="hidden md:inline">
+					Basculer en thème {theme === "dark" ? "clair" : "sombre"}
+				</span>
 			</Button>
 
 			<Button
@@ -78,7 +82,7 @@ export default function ActionButtons()
 				startContent={<HandHelping />}
 				showAnchorIcon
 			>
-				Soutenir le projet
+				<span className="hidden md:inline">Soutenir le projet</span>
 			</Button>
 		</ButtonGroup>
 	);

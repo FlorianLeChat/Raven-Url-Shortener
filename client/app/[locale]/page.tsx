@@ -36,8 +36,8 @@ export default async function Page( {
 			{/* Contenu de la page */}
 			<main className="container mx-auto max-w-[1440px] p-4 !pt-0 md:p-8">
 				{/* Présentation des fonctionnalités */}
-				<section className="mb-4 md:mb-8">
-					<header className="mb-4 md:mb-8">
+				<section className="mb-8">
+					<header className="mb-8">
 						<h1 className="inline text-2xl font-semibold tracking-tight lg:text-3xl">
 							Vous allez&nbsp;
 						</h1>
@@ -64,8 +64,8 @@ export default async function Page( {
 				</section>
 
 				{/* Redirection vers le formulaire de création */}
-				<section>
-					<header className="mb-4 md:mb-6">
+				<section className="mb-8">
+					<header className="mb-6">
 						<h1 className="inline text-2xl font-semibold tracking-tight lg:text-3xl">
 							Prêt à&nbsp;
 						</h1>

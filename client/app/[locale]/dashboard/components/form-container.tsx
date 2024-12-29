@@ -69,17 +69,14 @@ export default function FormContainer()
 			isBlurred
 			isFooterBlurred
 		>
-			<CardHeader
-				as="header"
-				className="gap-3 bg-[#0072F5] p-4 text-white"
-			>
+			<CardHeader as="header" className="gap-3 bg-primary p-4 text-white">
 				{/* Astuce d'utilisation */}
 				<Info className="inline-block min-w-[24px]" />
-				Vous pouvez à tout moment modifier les paramètres de votre lien,
-				même après sa création.
+				Vous pourrez à tout moment modifier l&lsquo;ensemble des
+				paramètres de votre lien, même après sa création.
 			</CardHeader>
 
-			<CardBody className="gap-10 p-4 pr-0 lg:flex-row">
+			<CardBody className="p-4 max-md:gap-6 lg:flex-row">
 				{/* Utilisation de i18n */}
 				<I18nProvider>
 					{/* Options de saisie */}
