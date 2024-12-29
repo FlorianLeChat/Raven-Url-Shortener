@@ -1,0 +1,61 @@
+//
+// Route vers la page de récapitulatif de création d'un lien raccourci.
+//
+
+// Importation des dépendances.
+import qrCode from "qrcode";
+import { lazy } from "react";
+import { setRequestLocale } from "next-intl/server";
+
+// Importation des composants.
+const ActionButtons = lazy( () => import( "../components/action-buttons" ) );
+const SummaryContainer = lazy( () => import( "../components/summary-container" ) );
+
+// Affichage de la page.
+export default async function Page( {
+	params
+}: Readonly<{
+	params: Promise<{ locale: string }>;
+}> )
+{
+	// Définition de la langue de la page.
+	const { locale } = await params;
+
+	setRequestLocale( locale );
+
+	// Déclaration des constantes.
+	const url = await qrCode.toDataURL(
+		"https://www.youtube.com/watch?v=ttihjjCy-xc"
+	);
+
+	// Affichage du rendu HTML de la page.
+	return (
+		<>
+			{/* En-tête de la page */}
+			<header className="container mx-auto max-w-[1440px] p-4 md:p-8">
+				<h1 className="inline bg-gradient-to-b from-[#FF72E1] to-[#F54C7A] bg-clip-text text-4xl font-semibold tracking-tight text-transparent lg:text-5xl">
+					Merci !
+				</h1>
+
+				<h2 className="mt-2 text-3xl font-semibold tracking-tight lg:text-4xl">
+					Votre lien est prêt pour être distribué.
+				</h2>
+
+				<p className="my-2 w-full max-w-full text-lg font-normal text-default-500 md:w-1/2 lg:text-xl">
+					Vous retrouverez ci-dessous un récapitulatif des
+					informations, des paramètres et des actions possibles pour
+					votre lien raccourci.
+				</p>
+			</header>
+
+			{/* Contenu de la page */}
+			<main className="container mx-auto max-w-[1440px] p-4 pb-8 pt-0 md:p-8 md:pt-0">
+				{/* Boutons d'action */}
+				<ActionButtons />
+
+				{/* Conteneur du récapitulatif */}
+				<SummaryContainer qrCode={url} />
+			</main>
+		</>
+	);
+}
