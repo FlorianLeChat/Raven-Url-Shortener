@@ -23,6 +23,7 @@ import { NextUIProvider } from "@/utilities/next-ui";
 import type { Viewport } from "next";
 
 // Importation des composants.
+const Footer = lazy( () => import( "@/components/footer" ) );
 const CookieConsent = lazy( () => import( "@/components/cookie-consent" ) );
 
 // Déclaration des paramètres d'affichage.
@@ -164,6 +165,9 @@ export default async function Layout( {
 						<NextUIProvider className="flex min-h-screen flex-col">
 							{/* Composant enfant */}
 							{children}
+
+							{/* Pied de page */}
+							<Footer />
 						</NextUIProvider>
 
 						{/* Consentement des cookies */}
