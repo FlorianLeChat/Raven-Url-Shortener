@@ -28,6 +28,7 @@ export default function InputOptions()
 				as="li"
 				size="lg"
 				type="url"
+				name="url"
 				label="Lien Internet à raccourcir"
 				required
 				className="w-100"
@@ -50,6 +51,7 @@ export default function InputOptions()
 			<Input
 				as="li"
 				size="lg"
+				name="slug"
 				label="Slug personnalisé"
 				maxLength={50}
 				isClearable
@@ -75,6 +77,7 @@ export default function InputOptions()
 			<DatePicker
 				as="li"
 				size="lg"
+				name="expiration"
 				label="Date d'expiration"
 				maxValue={maxTime}
 				className="!pb-9"
