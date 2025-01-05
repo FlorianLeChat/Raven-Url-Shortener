@@ -8,13 +8,6 @@ import Script from "next/script";
 import type { CookieValue } from "vanilla-cookieconsent";
 import { useState, useEffect, useCallback } from "react";
 
-declare global {
-	// Déclaration du contexte global du navigateur.
-	interface Window {
-		setupRecaptcha: () => void;
-	}
-}
-
 export default function Recaptcha()
 {
 	// Déclaration des variables d'état.
@@ -23,7 +16,6 @@ export default function Recaptcha()
 	// Déclaration des constantes.
 	const recaptchaUrl = new URL( "https://www.google.com/recaptcha/api.js" );
 	recaptchaUrl.searchParams.append( "render", process.env.NEXT_PUBLIC_RECAPTCHA_PUBLIC_KEY ?? "" );
-	recaptchaUrl.searchParams.append( "onload", "setupRecaptcha" );
 
 	// Activation des services Google reCAPTCHA au consentement des cookies.
 	const onConsent = useCallback( ( event: CustomEventInit<{ cookie: CookieValue }> ) =>
