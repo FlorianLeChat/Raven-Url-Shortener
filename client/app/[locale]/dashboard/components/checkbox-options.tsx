@@ -46,7 +46,7 @@ export default function CheckboxOptions()
 
 				{/* Sécurisation par mot de passe */}
 				<Checkbox
-					value="password-protection"
+					name="password-protection"
 					className="w-100 m-0 mt-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
 					aria-label="Activer la protection par mot de passe"
 				>
@@ -70,7 +70,7 @@ export default function CheckboxOptions()
 
 				{/* Sécurisation via Google reCAPTCHA */}
 				<Checkbox
-					value="captcha-protection"
+					name="captcha-protection"
 					className="w-100 m-0 my-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
 					aria-label="Activer la protection via Google reCAPTCHA"
 				>
@@ -95,7 +95,7 @@ export default function CheckboxOptions()
 
 				{/* Accès via un serveur proxy */}
 				<Checkbox
-					value="proxy-server"
+					name="proxy-server"
 					className="w-100 m-0 mb-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
 					aria-label="Compter le nombre de clics et de vues"
 				>
@@ -112,7 +112,7 @@ export default function CheckboxOptions()
 
 				{/* Gestion via API */}
 				<Checkbox
-					value="api-management"
+					name="api-management"
 					className="w-100 m-0 mb-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
 					aria-label="Gérer le lien via une API"
 				>
@@ -162,7 +162,7 @@ export default function CheckboxOptions()
 
 				{/* Comptage du nombre d'accès */}
 				<Checkbox
-					value="clicks-views"
+					name="clicks-views"
 					className="w-100 m-0 mt-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
 					aria-label="Compter le nombre de clics et de vues"
 				>
@@ -178,7 +178,7 @@ export default function CheckboxOptions()
 
 				{/* Récupération des données des visiteurs */}
 				<Checkbox
-					value="client-data"
+					name="client-data"
 					className="w-100 m-0 my-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
 					aria-label="Récupérer les données des visiteurs"
 				>
@@ -212,7 +212,7 @@ export default function CheckboxOptions()
 			>
 				{/* Mise en cache de la page */}
 				<Checkbox
-					value="cache-page"
+					name="cache-page"
 					className="w-100 m-0 mb-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
 					aria-label="Mettre en cache la page"
 				>
