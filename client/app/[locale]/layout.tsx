@@ -9,6 +9,7 @@ import "@total-typescript/ts-reset";
 // Importation des dépendances.
 import pick from "lodash/pick";
 import { Inter } from "next/font/google";
+import { headers } from "next/headers";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { lazy, Suspense, type ReactNode } from "react";
@@ -23,6 +24,8 @@ import { NextUIProvider } from "@/utilities/next-ui";
 import type { Viewport } from "next";
 
 // Importation des composants.
+import ServerProvider from "@/components/server-provider";
+
 const Footer = lazy( () => import( "@/components/footer" ) );
 const CookieConsent = lazy( () => import( "@/components/cookie-consent" ) );
 
@@ -76,6 +79,25 @@ export default async function Layout( {
 		return null;
 	}
 
+	// Déclaration des constantes.
+	const requestHeaders = await headers();
+	const baseDomain = `${ requestHeaders.get( "x-forwarded-proto" ) ?? "http" }://${ requestHeaders.get( "host" ) }/`;
+	const options = Intl.DateTimeFormat().resolvedOptions();
+
+	// Récupération du fuseau horaire actuel et de son décalage.
+	//  Décalage en minutes (exemple : -60 pour UTC+1) et conversion en heures.
+	const offsetMinutes = new Date().getTimezoneOffset();
+	const offsetHours = -offsetMinutes / 60;
+	const offsetString = `UTC${ offsetHours >= 0 ? "+" : "" }${ offsetHours }`;
+
+	// Définition des données du serveur.
+	const serverData = {
+		domain: baseDomain,
+		offset: offsetString,
+		timezone: process.env.TZ ?? options.timeZone
+	};
+
+	// Affichage du rendu HTML de la page.
 	return (
 		<html
 			lang={locale}
@@ -163,8 +185,10 @@ export default async function Layout( {
 					>
 						{/* Utilisation de NextUI */}
 						<NextUIProvider className="flex min-h-screen flex-col">
-							{/* Composant enfant */}
-							{children}
+							<ServerProvider value={serverData}>
+								{/* Composant enfant */}
+								{children}
+							</ServerProvider>
 
 							{/* Pied de page */}
 							<Footer />
