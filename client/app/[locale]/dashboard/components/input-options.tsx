@@ -35,12 +35,12 @@ export default function InputOptions()
 				isClearable
 				placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
 				description={(
-					<>
+					<p className="text-default-500">
 						Votre lien doit commencer par <strong>http://</strong>{" "}
 						ou <strong>https://</strong> et doit être accessible
 						publiquement. Les autres protocoles sont ignorés pour
 						des raisons de sécurité.
-					</>
+					</p>
 				)}
 				labelPlacement="outside"
 				startContent={<Link2 className="mr-1" />}
@@ -55,13 +55,13 @@ export default function InputOptions()
 				isClearable
 				placeholder="my-super-slug"
 				description={(
-					<>
+					<p className="text-default-500">
 						Un slug est une chaîne de caractères qui identifie de{" "}
 						<strong>manière unique</strong> une ressource sur
 						Internet. Vous avez la possibilité de personnaliser le
 						slug de votre lien pour le rendre plus facile à
 						mémoriser.
-					</>
+					</p>
 				)}
 				startContent={(
 					<span className="pointer-events-none whitespace-nowrap text-default-400">
@@ -79,13 +79,13 @@ export default function InputOptions()
 				maxValue={maxTime}
 				className="!pb-9"
 				description={(
-					<>
+					<p className="text-default-500">
 						Votre lien sera automatiquement{" "}
 						<strong>désactivé</strong> et <strong>supprimé</strong>{" "}
 						après cette date. Le fuseau horaire actuellement utilisé
 						est <strong>{serverData?.offset}</strong> (
 						{serverData?.timezone}).
-					</>
+					</p>
 				)}
 				labelPlacement="outside"
 				showMonthAndYearPickers

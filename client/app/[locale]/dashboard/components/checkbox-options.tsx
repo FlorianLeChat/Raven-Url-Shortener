@@ -4,12 +4,12 @@
 
 "use client";
 
-import { ChartLine, Shield, Zap } from "lucide-react";
 import { Chip,
 	Alert,
 	Checkbox,
 	Accordion,
 	AccordionItem } from "@nextui-org/react";
+import { ChartLine, Shield, Zap } from "lucide-react";
 
 export default function CheckboxOptions()
 {
@@ -18,7 +18,8 @@ export default function CheckboxOptions()
 		<Accordion
 			as="ul"
 			variant="splitted"
-			className="max-h-[382px] overflow-y-auto p-0 md:ml-4 lg:w-1/2"
+			className="max-h-[382px] overflow-y-auto p-1 md:ml-4 lg:w-1/2"
+			isDisabled={process.env.NEXT_PUBLIC_ENV === "production"}
 			keepContentMounted
 		>
 			{/* Protection et sécurité */}
@@ -33,7 +34,7 @@ export default function CheckboxOptions()
 						<span className="text-danger">vos visiteurs</span>.
 					</>
 				)}
-				className="shadow"
+				className="bg-content2/50 shadow-md"
 				aria-label="Protection et sécurité"
 				startContent={<Shield className="mr-1 text-danger" />}
 			>
@@ -46,7 +47,7 @@ export default function CheckboxOptions()
 				{/* Sécurisation par mot de passe */}
 				<Checkbox
 					value="password-protection"
-					className="w-100 m-0 mt-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent bg-content1 p-4 hover:bg-content2 data-[selected=true]:border-primary"
+					className="w-100 m-0 mt-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
 					aria-label="Activer la protection par mot de passe"
 				>
 					<div className="flex justify-between gap-2">
@@ -70,7 +71,7 @@ export default function CheckboxOptions()
 				{/* Sécurisation via Google reCAPTCHA */}
 				<Checkbox
 					value="captcha-protection"
-					className="w-100 m-0 my-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent bg-content1 p-4 hover:bg-content2 data-[selected=true]:border-primary"
+					className="w-100 m-0 my-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
 					aria-label="Activer la protection via Google reCAPTCHA"
 				>
 					<div className="flex justify-between gap-2">
@@ -95,7 +96,7 @@ export default function CheckboxOptions()
 				{/* Accès via un serveur proxy */}
 				<Checkbox
 					value="proxy-server"
-					className="w-100 m-0 mb-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent bg-content1 p-4 hover:bg-content2 data-[selected=true]:border-primary"
+					className="w-100 m-0 mb-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
 					aria-label="Compter le nombre de clics et de vues"
 				>
 					<p>Acheminer via un serveur mandataire (proxy)</p>
@@ -112,7 +113,7 @@ export default function CheckboxOptions()
 				{/* Gestion via API */}
 				<Checkbox
 					value="api-management"
-					className="w-100 m-0 mb-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent bg-content1 p-4 hover:bg-content2 data-[selected=true]:border-primary"
+					className="w-100 m-0 mb-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
 					aria-label="Gérer le lien via une API"
 				>
 					<div className="flex justify-between gap-2">
@@ -149,7 +150,7 @@ export default function CheckboxOptions()
 						audience.
 					</>
 				)}
-				className="shadow"
+				className="bg-content2/50 shadow-md"
 				aria-label="Suivi et statistiques"
 				startContent={<ChartLine className="mr-1 text-success" />}
 			>
@@ -162,7 +163,7 @@ export default function CheckboxOptions()
 				{/* Comptage du nombre d'accès */}
 				<Checkbox
 					value="clicks-views"
-					className="w-100 m-0 mt-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent bg-content1 p-4 hover:bg-content2 data-[selected=true]:border-primary"
+					className="w-100 m-0 mt-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
 					aria-label="Compter le nombre de clics et de vues"
 				>
 					<p>Compter le nombre d&lsquo;accès</p>
@@ -178,7 +179,7 @@ export default function CheckboxOptions()
 				{/* Récupération des données des visiteurs */}
 				<Checkbox
 					value="client-data"
-					className="w-100 m-0 my-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent bg-content1 p-4 hover:bg-content2 data-[selected=true]:border-primary"
+					className="w-100 m-0 my-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
 					aria-label="Récupérer les données des visiteurs"
 				>
 					<p>Récupérer les données des visiteurs</p>
@@ -205,14 +206,14 @@ export default function CheckboxOptions()
 						son rendement.
 					</>
 				)}
-				className="shadow"
+				className="bg-content2/50 shadow-md"
 				aria-label="Performance et optimisation"
 				startContent={<Zap className="mr-1 text-warning" />}
 			>
 				{/* Mise en cache de la page */}
 				<Checkbox
 					value="cache-page"
-					className="w-100 m-0 mb-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent bg-content1 p-4 hover:bg-content2 data-[selected=true]:border-primary"
+					className="w-100 m-0 mb-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
 					aria-label="Mettre en cache la page"
 				>
 					<div className="flex justify-between gap-2">
