@@ -45,6 +45,7 @@ export default function ActionButtons()
 				as={Link}
 				variant="flat"
 				onPress={() => router.push( "/" )}
+				aria-label="Retour à l'accueil"
 				startContent={<House />}
 			>
 				<span className="hidden md:inline">
@@ -55,6 +56,7 @@ export default function ActionButtons()
 			<Button
 				variant="flat"
 				onPress={() => showPreferences()}
+				aria-label="Gestion des cookies"
 				startContent={<Cookie />}
 			>
 				<span className="hidden md:inline">Gestion des cookies</span>
@@ -64,6 +66,7 @@ export default function ActionButtons()
 				variant="flat"
 				onPress={toggleTheme}
 				isDisabled={theme === "N/A"}
+				aria-label={`Basculer en thème ${ theme === "dark" ? "clair" : "sombre" }`}
 				startContent={<SunMoon />}
 			>
 				<span className="hidden md:inline">
@@ -79,6 +82,7 @@ export default function ActionButtons()
 					"noopener noreferrer"
 				)}
 				variant="flat"
+				aria-label="Soutenir le projet"
 				startContent={<HandHelping />}
 				showAnchorIcon
 			>
