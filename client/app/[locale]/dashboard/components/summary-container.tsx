@@ -16,7 +16,7 @@ export default function SummaryContainer( {
 	return (
 		<Card
 			as="section"
-			className="bg-white dark:bg-default-400/10"
+			className="bg-white dark:bg-default-100/30"
 			isBlurred
 			isFooterBlurred
 		>

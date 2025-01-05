@@ -65,7 +65,7 @@ export default function FormContainer()
 	return (
 		<Card
 			as="section"
-			className="bg-white dark:bg-default-400/10"
+			className="bg-white dark:bg-default-100/30"
 			isBlurred
 			isFooterBlurred
 		>
@@ -89,7 +89,7 @@ export default function FormContainer()
 
 			<CardFooter
 				as="footer"
-				className="justify-between gap-4 max-sm:flex-col"
+				className="justify-between gap-4 bg-content2/50 max-sm:flex-col"
 			>
 				{/* Boutons de soumission */}
 				<Button
