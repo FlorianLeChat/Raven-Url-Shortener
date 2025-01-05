@@ -11,12 +11,12 @@ export default function Footer()
 	// Affichage du rendu HTML du composant.
 	return (
 		<footer className="container mx-auto mt-auto max-w-[1440px] p-4 !pt-0 md:p-8">
-			<p className="text-sm text-default-500 dark:text-default-400">
+			<p className="text-sm text-default-500">
 				© {new Date().getFullYear()} Raven Url Shortener. Tous droits
 				réservés.
 			</p>
 
-			<small className="text-sm text-default-500 dark:text-default-400">
+			<small className="text-sm text-default-500">
 				Ce site est protégé par reCAPTCHA sur lequel s&lsquo;appliquent
 				les{" "}
 				<Link
