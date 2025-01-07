@@ -1,0 +1,44 @@
+doctrine:
+    dbal:
+        url: "%env(DATABASE_TYPE)%://%env(DATABASE_USERNAME)%:%env(DATABASE_PASSWORD)%@%env(DATABASE_HOST)%:%env(DATABASE_PORT)%/%env(DATABASE_NAME)%"
+        server_version: mariadb-11.6.2
+        use_savepoints: true
+        profiling_collect_backtrace: "%kernel.debug%"
+    orm:
+        mappings:
+            App:
+                dir: "%kernel.project_dir%/src/Domain/Entity"
+                alias: App
+                prefix: "App\\Domain\\Entity"
+        auto_mapping: false
+        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        controller_resolver:
+        validate_xml_mapping: true
+        enable_lazy_ghost_objects: true
+        auto_generate_proxy_classes: true
+        report_fields_where_declared: true
+
+when@test:
+    doctrine:
+        dbal:
+            url: sqlite:///%kernel.project_dir%/var/data.db
+            dbname_suffix: "_test%env(default::TEST_TOKEN)%"
+
+when@prod:
+    doctrine:
+        orm:
+            proxy_dir: "%kernel.build_dir%/doctrine/orm/Proxies"
+            query_cache_driver:
+                type: pool
+                pool: doctrine.system_cache_pool
+            result_cache_driver:
+                type: pool
+                pool: doctrine.result_cache_pool
+            auto_generate_proxy_classes: false
+    framework:
+        cache:
+            pools:
+                doctrine.result_cache_pool:
+                    adapter: cache.app
+                doctrine.system_cache_pool:
+                    adapter: cache.system
