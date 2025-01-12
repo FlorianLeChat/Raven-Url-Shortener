@@ -8,8 +8,8 @@ services:
         command: >
             --requirepass ${REDIS_PASSWORD} --maxmemory 128mb --maxmemory-policy allkeys-lru
         volumes:
-            - ./docker/redis/config:/usr/local/etc/redis
-            - ./docker/redis/database:/data
+            - ./server/docker/redis/config:/usr/local/etc/redis
+            - ./server/docker/redis/database:/data
         healthcheck:
             test: redis-cli --raw incr ping
             retries: 3
@@ -22,7 +22,7 @@ services:
         image: postgres:alpine
         restart: always
         volumes:
-            - ./docker/postgres/database:/var/lib/postgresql/data
+            - ./server/docker/postgres/database:/var/lib/postgresql/data
         environment:
             POSTGRES_DB: ${DATABASE_NAME}
             POSTGRES_USER: ${DATABASE_USERNAME}
@@ -39,7 +39,7 @@ services:
         image: dpage/pgadmin4:latest
         restart: always
         volumes:
-            - ./docker/pgadmin/files:/var/lib/pgadmin
+            - ./server/docker/pgadmin/files:/var/lib/pgadmin
         depends_on:
             - postgres
         environment:

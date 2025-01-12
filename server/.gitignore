@@ -6,4 +6,7 @@
 /public/bundles/
 /var/
 /vendor/
+/docker/postgres/database/
+/docker/pgadmin/files/
+/docker/redis/database/
 ###< symfony/framework-bundle ###
