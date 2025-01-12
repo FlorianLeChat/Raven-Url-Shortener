@@ -1,0 +1,53 @@
+name: raven-url-shortener
+
+services:
+    # https://hub.docker.com/_/redis
+    redis:
+        image: redis:alpine
+        restart: always
+        command: >
+            --requirepass ${REDIS_PASSWORD} --maxmemory 128mb --maxmemory-policy allkeys-lru
+        volumes:
+            - ./docker/redis/config:/usr/local/etc/redis
+            - ./docker/redis/database:/data
+        healthcheck:
+            test: redis-cli --raw incr ping
+            retries: 3
+            timeout: 5s
+        ports:
+            - "6379:${REDIS_PORT}"
+
+    # https://hub.docker.com/_/postgres
+    postgres:
+        image: postgres:alpine
+        restart: always
+        volumes:
+            - ./docker/postgres/database:/var/lib/postgresql/data
+        environment:
+            POSTGRES_DB: ${DATABASE_NAME}
+            POSTGRES_USER: ${DATABASE_USERNAME}
+            POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+        healthcheck:
+            test: pg_isready --dbname=${DATABASE_NAME} --username=${DATABASE_USERNAME}
+            retries: 3
+            timeout: 5s
+        ports:
+            - "5432:${DATABASE_PORT}"
+
+    # https://hub.docker.com/r/dpage/pgadmin4/
+    pgadmin:
+        image: dpage/pgadmin4:latest
+        restart: always
+        volumes:
+            - ./docker/pgadmin/files:/var/lib/pgadmin
+        depends_on:
+            - postgres
+        environment:
+            PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+            PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+        healthcheck:
+            test: wget -O - http://localhost
+            retries: 3
+            timeout: 5s
+        ports:
+            - "8080:80"
