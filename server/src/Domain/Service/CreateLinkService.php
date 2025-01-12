@@ -1,9 +1,6 @@
 <?php
 
-//
-// Service de gestion des serveurs de jeu.
-//
-namespace App\Service;
+namespace App\Domain\Service;
 
 use DateTime;
 use App\Domain\Entity\Link;

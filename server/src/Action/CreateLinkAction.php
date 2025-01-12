@@ -2,17 +2,18 @@
 
 namespace App\Action;
 
-use App\Service\CreateLinkService;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Domain\Service\CreateLinkService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * Action pour la création d'un lien raccourci.
  */
-final class CreateLinkAction
+final class CreateLinkAction extends AbstractController
 {
 	/**
 	 * Constructeur de la classe.
