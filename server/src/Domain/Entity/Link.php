@@ -59,7 +59,7 @@ final class Link
 		return $this->url;
 	}
 
-	public function setUrl(string $url): static
+	public function setUrl(?string $url): static
 	{
 		$this->url = $url;
 
@@ -74,7 +74,7 @@ final class Link
 		return $this->slug;
 	}
 
-	public function setSlug(string $slug): static
+	public function setSlug(?string $slug): static
 	{
 		$this->slug = $slug;
 
@@ -89,7 +89,7 @@ final class Link
 		return $this->expiration;
 	}
 
-	public function setExpiration(DateTimeInterface $expiration): static
+	public function setExpiration(?DateTimeInterface $expiration): static
 	{
 		$this->expiration = $expiration;
 
