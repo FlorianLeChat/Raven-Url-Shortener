@@ -1,0 +1,53 @@
+# syntax=docker/dockerfile:1
+
+# Use an customized image of PHP
+# https://hub.docker.com/_/php
+FROM php:alpine
+
+# Install system and PHP dependencies
+# https://xdebug.org/docs/all_settings#mode
+ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+
+RUN apk add --no-cache bash && install-php-extensions zip pdo_mysql pdo_pgsql redis intl xdebug bcmath @composer && \
+	echo "xdebug.mode=develop,debug" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" && \
+	echo "xdebug.client_port=9003" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" && \
+	echo "xdebug.log=/tmp/xdebug.log" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" && \
+	echo "xdebug.start_with_request=yes" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" && \
+	echo "xdebug.client_host=host.docker.internal" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini"
+
+# Set the working directory to the website files
+WORKDIR /var/www/html
+
+# Add wait script to wait for other services to be ready
+ADD --chmod=0755 https://github.com/ufoscout/docker-compose-wait/releases/latest/download/wait /wait
+
+# Install Symfony CLI
+RUN curl -1sLf https://dl.cloudsmith.io/public/symfony/stable/setup.alpine.sh | bash && apk add --no-cache symfony-cli
+
+# Copy all files to the working directory
+COPY --chown=www-data:www-data . .
+
+# Use the default or custom PHP configuration (if exists)
+RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini" && \
+	if [ -f "docker/php.ini" ]; then \
+		mv "docker/php.ini" "$PHP_INI_DIR/php.ini"; \
+	fi
+
+# Change current user to www-data
+USER www-data
+
+# Find and replace some default environment variables
+RUN sed -i "s#APP_SECRET=secret#APP_SECRET=$(openssl rand -base64 32)#g" .env
+
+# Install all Composer dependencies
+# Use cache mount to speed up installation of existing dependencies
+RUN --mount=type=cache,target=.composer composer install
+
+# Use the PHP custom entrypoint
+# https://symfony.com/doc/current/deployment.html / https://symfony.com/doc/current/setup/file_permissions.html
+RUN echo '/wait && mkdir -p var/cache var/log && \
+	/usr/local/bin/php bin/console doctrine:database:create --no-interaction --if-not-exists && \
+	/usr/local/bin/php bin/console doctrine:schema:update --complete --force && \
+	symfony server:start --allow-all-ip' > docker/entrypoint.sh && chmod +x docker/entrypoint.sh
+
+CMD ["docker/entrypoint.sh"]

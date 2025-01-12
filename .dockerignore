@@ -1,0 +1,14 @@
+**/*.md
+**/.git*
+**/.dockerignore
+**/.editorconfig
+**/.gitattributes
+**/build
+**/bundles
+**/node_modules
+**/var
+**/vendor
+**/Dockerfile
+**/docker-*
+**/CODEOWNERS
+**/LICENSE

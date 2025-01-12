@@ -51,3 +51,27 @@ services:
             timeout: 5s
         ports:
             - "8080:80"
+
+    # https://github.com/FlorianLeChat/Raven-Url-Shortener
+    php:
+        image: raven-url-shortener
+        restart: always
+        develop:
+            watch:
+                - action: sync
+                  path: .
+                  target: /var/www/html
+        depends_on:
+            - redis
+            - postgres
+        environment:
+            - WAIT_HOSTS=redis:${REDIS_PORT}, postgres:${DATABASE_PORT}
+        healthcheck:
+            test: curl -f http://127.0.0.1:9000/ 2>&1 | grep "Connection reset by peer" || curl -f http://localhost:8000/
+            retries: 3
+            timeout: 5s
+        build:
+            context: ./server
+            dockerfile: ./docker/Dockerfile.${APP_ENV}
+        ports:
+            - "8000:8000"
