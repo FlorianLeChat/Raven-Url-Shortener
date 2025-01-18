@@ -124,4 +124,12 @@ final class Link
 
 		return $this;
 	}
+
+	/**
+	 * Conversion de l'entité en tableau.
+	 */
+	public function toArray(): array
+	{
+		return get_object_vars($this);
+	}
 }
