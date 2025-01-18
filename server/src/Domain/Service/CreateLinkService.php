@@ -4,11 +4,14 @@ namespace App\Domain\Service;
 
 use DateTime;
 use App\Domain\Entity\Link;
+use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Infrastructure\Repository\LinkRepository;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+
+use const App\LOG_FUNCTION;
 
 /**
  * Service de création de liens raccourcis.
@@ -24,6 +27,7 @@ final class CreateLinkService
 	 * Constructeur de la classe.
 	 */
 	public function __construct(
+		private readonly LoggerInterface $logger,
 		private readonly ValidatorInterface $validator,
 		private readonly EntityManagerInterface $entityManager
 	) {
@@ -35,6 +39,8 @@ final class CreateLinkService
 	 */
 	private function validateLink(Link $link): void
 	{
+		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+
 		$violations = $this->validator->validate($link);
 
 		if (count($violations) > 0)
@@ -48,10 +54,12 @@ final class CreateLinkService
 	 */
 	public function createLink(Request $request): Link
 	{
+		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+
 		$link = new Link();
 		$link->setUrl($request->request->get("url"));
 		$link->setSlug($request->request->get("slug"));
-		$link->setExpiration(new DateTime($request->request->get("expiration")));
+		$link->setExpiration(!empty($expiration) ? new DateTime($expiration) : null);
 
 		$this->validateLink($link);
 
