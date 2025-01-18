@@ -43,9 +43,13 @@ final class CreateLinkService
 
 		$violations = $this->validator->validate($link);
 
+		foreach ($violations as $violation) {
+			$errors[$violation->getPropertyPath()][] = $violation->getMessage();
+		}
+
 		if (count($violations) > 0)
 		{
-			throw new BadRequestHttpException($violations->get(0)->getMessage());
+			throw new BadRequestHttpException(json_encode($errors));
 		}
 	}
 
