@@ -2,6 +2,7 @@
 
 namespace App\Infrastructure\EventListener;
 
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
@@ -14,7 +15,14 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 final class ExceptionListener
 {
 	/**
-	 * Instanciation de la classe.
+	 * Constructeur de la classe.
+	 */
+	public function __construct(
+		private readonly LoggerInterface $logger
+	) {}
+
+	/**
+	 * Appel de l'écouteur d'événements.
 	 */
 	public function __invoke(ExceptionEvent $event): void
 	{
@@ -23,6 +31,12 @@ final class ExceptionListener
 		$response = new JsonResponse([
 			"code" => $exception->getCode(),
 			"message" => $exception->getMessage()
+		]);
+
+		$this->logger->error($response->getContent(), [
+			"file" => $exception->getFile(),
+			"line" => $exception->getLine(),
+			"code" => $exception->getCode()
 		]);
 
 		if ($exception instanceof HttpExceptionInterface)

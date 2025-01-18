@@ -5,6 +5,9 @@ namespace App;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 
+// Définition du format des journaux d'événements de l'application.
+const LOG_FUNCTION = '> file %s - namespace %s - function %s - line %s';
+
 final class Kernel extends BaseKernel
 {
 	use MicroKernelTrait;
