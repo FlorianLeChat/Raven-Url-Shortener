@@ -56,10 +56,13 @@ final class CreateLinkService
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
+		$expiration = $request->request->get("expiration");
+
 		$link = new Link();
 		$link->setUrl($request->request->get("url"));
 		$link->setSlug($request->request->get("slug"));
 		$link->setExpiration(!empty($expiration) ? new DateTime($expiration) : null);
+		$link->setCreatedAt(new DateTime());
 
 		$this->validateLink($link);
 
