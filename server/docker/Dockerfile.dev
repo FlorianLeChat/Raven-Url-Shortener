@@ -47,7 +47,7 @@ RUN --mount=type=cache,target=.composer composer install
 # https://symfony.com/doc/current/deployment.html / https://symfony.com/doc/current/setup/file_permissions.html
 RUN echo '/wait && mkdir -p var/cache var/log && \
 	/usr/local/bin/php bin/console doctrine:database:create --no-interaction --if-not-exists && \
-	/usr/local/bin/php bin/console doctrine:schema:update --complete --force && \
+	/usr/local/bin/php bin/console doctrine:schema:update --force && \
 	symfony server:stop && symfony server:start --allow-all-ip' > docker/entrypoint.sh && chmod +x docker/entrypoint.sh
 
 CMD ["docker/entrypoint.sh"]
