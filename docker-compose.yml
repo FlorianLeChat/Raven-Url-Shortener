@@ -59,7 +59,7 @@ services:
         develop:
             watch:
                 - action: sync
-                  path: .
+                  path: ./server
                   target: /var/www/html
         depends_on:
             - redis
