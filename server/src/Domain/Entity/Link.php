@@ -28,20 +28,19 @@ final class Link
 	#[Assert\NotBlank]
 	private ?string $url = null;
 
-	#[ORM\Column(type: Types::STRING, length: 50)]
-	#[Assert\Length(max: 50)]
+	#[ORM\Column(type: Types::STRING, length: 50, nullable: true)]
+	#[Assert\Length(min: 1, max: 50)]
 	private ?string $slug = null;
 
-	#[ORM\Column(type: Types::DATETIME_MUTABLE)]
-	#[Assert\Type("\DateTimeInterface")]
+	#[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
 	#[Assert\Range(min: "-1 day", max: "+1 year")]
 	private ?DateTimeInterface $expiration = null;
 
-	#[ORM\Column]
-	private ?\DateTimeImmutable $createdAt = null;
+	#[ORM\Column(type: Types::DATETIME_MUTABLE)]
+	private ?DateTimeInterface $createdAt = null;
 
-	#[ORM\Column]
-	private ?\DateTimeImmutable $updatedAt = null;
+	#[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+	private ?DateTimeInterface $updatedAt = null;
 
 	/**
 	 * Définition ou récupération de l'identifiant du lien.
@@ -84,7 +83,7 @@ final class Link
 	/**
 	 * Définition ou récupération de la date d'expiration du lien.
 	 */
-	public function getExpiration(): ?string
+	public function getExpiration(): ?DateTimeInterface
 	{
 		return $this->expiration;
 	}
@@ -99,12 +98,12 @@ final class Link
 	/**
 	 * Définition ou récupération de la date de création du lien.
 	 */
-	public function getCreatedAt(): ?\DateTimeImmutable
+	public function getCreatedAt(): ?DateTimeInterface
 	{
 		return $this->createdAt;
 	}
 
-	public function setCreatedAt(\DateTimeImmutable $createdAt): static
+	public function setCreatedAt(?DateTimeInterface $createdAt): static
 	{
 		$this->createdAt = $createdAt;
 
@@ -114,12 +113,12 @@ final class Link
 	/**
 	 * Définition ou récupération de la date de dernière modification du lien.
 	 */
-	public function getUpdatedAt(): ?\DateTimeImmutable
+	public function getUpdatedAt(): ?DateTimeInterface
 	{
 		return $this->updatedAt;
 	}
 
-	public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
+	public function setUpdatedAt(DateTimeInterface $updatedAt): static
 	{
 		$this->updatedAt = $updatedAt;
 
