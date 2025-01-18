@@ -13,9 +13,12 @@ import { Form,
 	CardBody,
 	CardHeader,
 	CardFooter } from "@nextui-org/react";
+import { useRouter } from "next/navigation";
 import { I18nProvider } from "@react-aria/i18n";
 import { Info, WandSparkles } from "lucide-react";
 import { lazy, useRef, useState, type FormEvent } from "react";
+
+import { createLink } from "../actions/create-link";
 import { checkRecaptcha } from "../actions/check-recaptcha";
 
 const InputOptions = lazy( () => import( "./input-options" ) );
@@ -24,10 +27,9 @@ const CheckboxOptions = lazy( () => import( "./checkbox-options" ) );
 export default function FormContainer()
 {
 	// Déclaration des variables d'état.
+	const router = useRouter();
 	const submitButton = useRef<HTMLButtonElement | null>( null );
-	const [ stepName, setStepName ] = useState(
-		"Récupération du jeton reCAPTCHA..."
-	);
+	const [ stepName, setStepName ] = useState( "Récupération du jeton reCAPTCHA..." );
 	const [ isLoading, setIsLoading ] = useState( false );
 
 	// Récupération du jeton d'authentification reCAPTCHA.
@@ -110,33 +112,37 @@ export default function FormContainer()
 		setIsLoading( true );
 
 		// Récupération du jeton reCAPTCHA et vérification de sa validité.
-		const token = await getRecaptcha();
+		const data = new FormData( event.currentTarget );
+		const token = ( await getRecaptcha() ) as string|undefined;
 
 		setStepName( "Vérification du jeton reCAPTCHA..." );
 
-		const response = await checkRecaptcha( token );
+		const recaptchaResponse = await checkRecaptcha( token );
 
-		if ( response )
+		if ( !recaptchaResponse.state )
 		{
-			alert( response );
+			alert( recaptchaResponse.message );
 			resetFormState();
 			return;
 		}
 
 		// Requête de création d'un nouveau raccourci.
-		const data = Object.fromEntries( new FormData( event.currentTarget ) );
-
-		console.log( 1, data );
-
 		setStepName( "Requête de création du raccourci..." );
 
-		setTimeout( () =>
-		{
-			resetFormState();
-		}, 3000 );
+		const createState = await createLink( data );
 
-		// Lancement des confettis.
+		if ( !createState.state )
+		{
+			alert( createState.message );
+			return;
+		}
+
+		// Lancement des confettis et redirection.
 		await throwConfetti();
+
+		setStepName( "Redirection vers le récapitulatif..." );
+
+		router.push( `/dashboard/${ createState.data }` );
 	};
 
 	// Affichage du rendu HTML du composant.
