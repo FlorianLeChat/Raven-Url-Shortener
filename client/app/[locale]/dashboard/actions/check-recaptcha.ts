@@ -5,14 +5,18 @@
 
 "use server";
 
+import { logger } from "@/utilities/pino";
 import type { RecaptchaResponse } from "@/interfaces/Recaptcha";
 
-export async function checkRecaptcha( token: unknown )
+export async function checkRecaptcha( token?: string )
 {
 	// Vérification de la validité du jeton reCAPTCHA.
 	if ( !token )
 	{
-		return "Le jeton reCAPTCHA est manquant ou invalide.";
+		return {
+			state: false,
+			message: "Le jeton reCAPTCHA est manquant ou invalide."
+		};
 	}
 
 	// Vérification de la validité du jeton reCAPTCHA.
@@ -27,19 +31,37 @@ export async function checkRecaptcha( token: unknown )
 		const json = ( await data.json() ) as RecaptchaResponse;
 		const isInvalidResponse = !json.success || json.score < 0.7;
 
+		logger.info(
+			{ source: __dirname, json },
+			"reCAPTCHA verification response."
+		);
+
 		if ( isInvalidResponse )
 		{
 			// En cas de score insuffisant ou si la réponse est invalide,
 			//  on bloque la requête courante.
-			return "La vérification reCAPTCHA a échouée.";
+			return {
+				state: false,
+				message: "La vérification reCAPTCHA a échouée."
+			};
 		}
 	}
 	else
 	{
-		// En cas d'erreur lors de la vérification du jeton reCAPTCHA,
-		return "Une erreur s'est produite lors de la vérification du jeton reCAPTCHA.";
+		// En cas d'erreur lors de la vérification du jeton reCAPTCHA.
+		logger.error(
+			{ source: __dirname, status: data.status },
+			"An error occurred while checking the reCAPTCHA token."
+		);
+
+		return {
+			state: false,
+			message: "Une erreur s'est produite lors de la vérification du jeton reCAPTCHA."
+		};
 	}
 
 	// Tout s'est bien passé.
-	return undefined;
+	return {
+		state: true
+	};
 }
