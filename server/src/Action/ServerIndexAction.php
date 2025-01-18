@@ -25,7 +25,7 @@ final class ServerIndexAction extends AbstractController
 	/**
 	 * Récupération de l'état de santé du serveur.
 	 */
-	#[Route("/")]
+	#[Route("/", methods: ["GET"], stateless: true)]
 	public function getHealthCheck(Request $request): Response
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
