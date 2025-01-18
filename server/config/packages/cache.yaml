@@ -1,0 +1,15 @@
+framework:
+    cache:
+        app: cache_pool
+        pools:
+            cache_pool:
+                adapters:
+                  - {name: cache.adapter.redis, provider: "redis://%env(REDIS_USERNAME)%:%env(REDIS_PASSWORD)%@%env(REDIS_HOST)%:%env(REDIS_PORT)%/"}
+                  - {name: cache.adapter.doctrine_dbal}
+                  - {name: cache.adapter.filesystem}
+        system: cache.adapter.system
+
+when@test:
+    framework:
+        cache:
+            app: cache.adapter.filesystem
