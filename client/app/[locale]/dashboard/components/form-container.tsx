@@ -134,6 +134,7 @@ export default function FormContainer()
 		if ( !createState.state || "message" in createState )
 		{
 			alert( createState.message );
+			resetFormState();
 			return;
 		}
 
