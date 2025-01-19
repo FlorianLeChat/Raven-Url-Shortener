@@ -5,6 +5,8 @@
 "use server";
 
 import { logger } from "@/utilities/pino";
+import type { LinkProperties } from "@/interfaces/LinkProperties";
+import type { ErrorProperties } from "@/interfaces/ErrorProperties";
 
 export async function createLink( data: FormData )
 {
@@ -30,29 +32,28 @@ export async function createLink( data: FormData )
 
 	try
 	{
-		const json = ( await response.json() ) as {
-			id?: string;
-			message?: string;
-		};
+		const json = ( await response.json() ) as LinkProperties | ErrorProperties;
 
 		logger.info(
 			{ source: __dirname, json },
 			"Short link creation response."
 		);
 
-		if ( response.ok )
+		if ( response.ok && "id" in json )
 		{
 			// Tout s'est bien passé.
 			return {
 				state: true,
-				data: json.id
+				data: json
 			};
 		}
 
 		// En cas d'erreur lors de la création du raccourci,
 		return {
 			state: false,
-			message: json.message ?? "Une erreur est survenue lors de la création du raccourci."
+			message: "message" in json
+				? json.message
+				: "Une erreur est survenue lors de la création du raccourci."
 		};
 	}
 	catch ( error )
