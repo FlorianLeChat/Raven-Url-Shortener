@@ -6,7 +6,7 @@
 "use server";
 
 import { logger } from "@/utilities/pino";
-import type { RecaptchaResponse } from "@/interfaces/Recaptcha";
+import type { RecaptchaValidation } from "@/interfaces/RecaptchaValidation";
 
 export async function checkRecaptcha( token?: string )
 {
@@ -28,7 +28,7 @@ export async function checkRecaptcha( token?: string )
 	if ( data.ok )
 	{
 		// Vérification du score de confiance attribué à l'utilisateur.
-		const json = ( await data.json() ) as RecaptchaResponse;
+		const json = ( await data.json() ) as RecaptchaValidation;
 		const isInvalidResponse = !json.success || json.score < 0.7;
 
 		logger.info(
