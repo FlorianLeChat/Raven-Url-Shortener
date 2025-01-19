@@ -47,7 +47,7 @@ final class CreateLinkService
 			$errors[$violation->getPropertyPath()][] = $violation->getMessage();
 		}
 
-		if (count($violations) > 0)
+		if (!empty($violations))
 		{
 			throw new BadRequestHttpException(json_encode($errors));
 		}
@@ -61,11 +61,10 @@ final class CreateLinkService
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
 		$result = $this->repository->findOneBy(["slug" => $slug]);
-		$isFound = !empty($result);
 
-		if ($isFound)
+		if (!empty($result))
 		{
-			throw new BadRequestHttpException("Slug already exists");
+			throw new BadRequestHttpException(json_encode(["slug" => "duplicated_slug"]));
 		}
 	}
 

@@ -23,19 +23,18 @@ final class Link
 	private ?Uuid $id = null;
 
 	#[ORM\Column(type: Types::TEXT)]
-	#[Assert\Url]
-	#[Assert\NotNull]
-	#[Assert\NotBlank]
+	#[Assert\Url(requireTld: true, message: "invalid_url")]
+	#[Assert\NotNull(message: "missing_url")]
+	#[Assert\NotBlank(message: "missing_url")]
 	private ?string $url = null;
 
 	#[ORM\Column(type: Types::STRING, length: 50)]
-	#[Assert\Regex(pattern: "/^[a-z0-9-]+$/")]
-	#[Assert\Length(min: 1, max: 50)]
-	#[Assert\NoSuspiciousCharacters]
+	#[Assert\Regex(pattern: "/^[a-z0-9-]+$/", message: "invalid_slug")]
+	#[Assert\Length(min: 1, max: 50, minMessage: "too_short_slug", maxMessage: "too_long_slug")]
 	private ?string $slug = null;
 
 	#[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-	#[Assert\Range(min: "-1 day", max: "+1 year")]
+	#[Assert\Range(min: "-1 day", max: "+1 year", notInRangeMessage: "invalid_expiration")]
 	private ?DateTimeInterface $expiration = null;
 
 	#[ORM\Column(type: Types::DATETIME_MUTABLE)]
