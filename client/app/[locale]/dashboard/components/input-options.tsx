@@ -13,9 +13,9 @@ import { ServerContext } from "@/components/server-provider";
 export default function InputOptions()
 {
 	// Déclaration des constantes.
-	const maxTime = now( getLocalTimeZone() ).add( {
-		years: 1
-	} );
+	const dateNow = now( getLocalTimeZone() );
+	const minTime = dateNow.add( { days: 1 } );
+	const maxTime = dateNow.add( { years: 1 } );
 
 	// Déclaration des variables d'état.
 	const serverData = useContext( ServerContext );
@@ -79,6 +79,7 @@ export default function InputOptions()
 				size="lg"
 				name="expiration"
 				label="Date d'expiration"
+				minValue={minTime}
 				maxValue={maxTime}
 				className="!pb-9"
 				description={(
