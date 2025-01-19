@@ -20,7 +20,7 @@ export async function createLink( data: FormData )
 	} );
 
 	logger.debug(
-		{ source: __dirname, data },
+		{ source: __dirname, data: Array.from( data.entries() ) },
 		"Form data before sending to the server."
 	);
 
