@@ -47,7 +47,7 @@ final class CreateLinkService
 			$errors[$violation->getPropertyPath()][] = $violation->getMessage();
 		}
 
-		if (!empty($violations))
+		if (!empty($errors))
 		{
 			throw new BadRequestHttpException(json_encode($errors));
 		}
