@@ -4,20 +4,33 @@
 
 "use client";
 
+import { lazy } from "react";
 import NextImage from "next/image";
+import { useLocale } from "next-intl";
 import { CircleCheckBig } from "lucide-react";
-import { lazy, useContext } from "react";
+import type { LinkProperties } from "@/interfaces/LinkProperties";
 import { Card, Image, Snippet, CardBody, CardHeader } from "@heroui/react";
-import { ServerContext } from "../../components/server-provider";
 
 const SummaryActions = lazy( () => import( "./summary-actions" ) );
 
 export default function SummaryContainer( {
-	qrCode
-}: Readonly<{ qrCode: string }> )
+	domain,
+	details
+}: Readonly<{ domain: string; details: LinkProperties }> )
 {
 	// Déclaration des variables d'état.
-	const serverData = useContext( ServerContext );
+	const locale = useLocale();
+
+	// Déclaration des constantes.
+	const rawDate = new Date( details.createdAt.date );
+	const formattedDate = new Intl.DateTimeFormat( locale, {
+		year: "numeric",
+		month: "long",
+		day: "numeric",
+		hour: "2-digit",
+		minute: "2-digit",
+		second: "2-digit"
+	} ).format( rawDate );
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -33,13 +46,13 @@ export default function SummaryContainer( {
 			>
 				{/* Date de création */}
 				<CircleCheckBig className="inline-block min-w-[24px]" />
-				Votre lien a été créé le 23 septembre 2021 à 14:37:42.
+				Votre lien a été créé le {formattedDate}.
 			</CardHeader>
 
 			<CardBody className="flex-col gap-5 p-4 xl:flex-row">
 				<Image
 					as={NextImage}
-					src={qrCode}
+					src={details.qrCode ?? ""}
 					alt="Code QR de votre lien raccourci"
 					width={200}
 					height={200}
@@ -53,11 +66,11 @@ export default function SummaryContainer( {
 					</h3>
 
 					<Snippet size="lg" className="overflow-auto" hideSymbol>
-						{`${ serverData?.domain }1A7hby`}
+						{`${ domain }1A7hby`}
 					</Snippet>
 
 					<Snippet size="lg" className="overflow-auto" hideSymbol>
-						{`${ serverData?.domain }dffbd949-5144-477f-b94e-f6b63ec5b412`}
+						{domain + details.id}
 					</Snippet>
 
 					<p className="text-sm text-default-500">
