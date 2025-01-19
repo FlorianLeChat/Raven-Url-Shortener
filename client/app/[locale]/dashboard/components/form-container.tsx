@@ -131,7 +131,7 @@ export default function FormContainer()
 
 		const createState = await createLink( data );
 
-		if ( !createState.state )
+		if ( !createState.state || "message" in createState )
 		{
 			alert( createState.message );
 			return;
@@ -142,7 +142,7 @@ export default function FormContainer()
 
 		setStepName( "Redirection vers le récapitulatif..." );
 
-		router.push( `/dashboard/${ createState.data }` );
+		router.push( `/dashboard/${ createState.data.id }` );
 	};
 
 	// Affichage du rendu HTML du composant.
