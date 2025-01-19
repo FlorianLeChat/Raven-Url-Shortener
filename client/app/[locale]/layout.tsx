@@ -18,7 +18,7 @@ import { lazy, Suspense, type ReactNode } from "react";
 import { logger } from "@/utilities/pino";
 import { getLanguages } from "@/utilities/i18n";
 import { fetchMetadata } from "@/utilities/metadata";
-import { NextUIProvider } from "@/utilities/next-ui";
+import { HeroUIProvider } from "@/utilities/hero-ui";
 
 // Importation des types.
 import type { Viewport } from "next";
@@ -184,8 +184,8 @@ export default async function Layout( {
 						)}
 						timeZone={process.env.TZ}
 					>
-						{/* Utilisation de NextUI */}
-						<NextUIProvider className="flex min-h-screen flex-col">
+						{/* Utilisation de HeroUI */}
+						<HeroUIProvider className="flex min-h-screen flex-col">
 							<ServerProvider value={serverData}>
 								{/* Composant enfant */}
 								{children}
@@ -193,7 +193,7 @@ export default async function Layout( {
 
 							{/* Pied de page */}
 							<Footer />
-						</NextUIProvider>
+						</HeroUIProvider>
 
 						{/* Consentement des cookies */}
 						<CookieConsent />

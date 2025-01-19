@@ -7,7 +7,7 @@
 import NextImage from "next/image";
 import { CircleCheckBig } from "lucide-react";
 import { lazy, useContext } from "react";
-import { Card, Image, Snippet, CardBody, CardHeader } from "@nextui-org/react";
+import { Card, Image, Snippet, CardBody, CardHeader } from "@heroui/react";
 import { ServerContext } from "../../components/server-provider";
 
 const SummaryActions = lazy( () => import( "./summary-actions" ) );

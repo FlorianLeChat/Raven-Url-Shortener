@@ -7,7 +7,7 @@
 import { useRouter } from "next/navigation";
 import { showPreferences } from "vanilla-cookieconsent";
 import { useEffect, useState } from "react";
-import { ButtonGroup, Button, Link } from "@nextui-org/react";
+import { ButtonGroup, Button, Link } from "@heroui/react";
 import { Cookie, HandHelping, House, SunMoon } from "lucide-react";
 
 export default function ActionButtons()

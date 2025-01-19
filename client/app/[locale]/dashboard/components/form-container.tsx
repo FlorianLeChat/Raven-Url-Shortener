@@ -12,7 +12,7 @@ import { Form,
 	Progress,
 	CardBody,
 	CardHeader,
-	CardFooter } from "@nextui-org/react";
+	CardFooter } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { I18nProvider } from "@react-aria/i18n";
 import { Info, WandSparkles } from "lucide-react";
@@ -68,7 +68,7 @@ export default function FormContainer()
 	};
 
 	// Lance une animation de confettis lors de la soumission du formulaire.
-	//  Source : https://github.com/nextui-org/nextui/blob/1485eca48fce8a0acc42fe40590b828c1a90ff48/apps/docs/components/demos/custom-button.tsx#L11-L36
+	//  Source : https://github.com/heroui-inc/heroui/blob/1485eca48fce8a0acc42fe40590b828c1a90ff48/apps/docs/components/demos/custom-button.tsx#L11-L36
 	const throwConfetti = async () =>
 	{
 		// Calcul de la position du bouton de soumission.
@@ -113,7 +113,7 @@ export default function FormContainer()
 
 		// Récupération du jeton reCAPTCHA et vérification de sa validité.
 		const data = new FormData( event.currentTarget );
-		const token = ( await getRecaptcha() ) as string|undefined;
+		const token = ( await getRecaptcha() ) as string | undefined;
 
 		setStepName( "Vérification du jeton reCAPTCHA..." );
 

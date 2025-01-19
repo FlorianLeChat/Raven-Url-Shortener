@@ -8,7 +8,7 @@ import { Chip,
 	Alert,
 	Checkbox,
 	Accordion,
-	AccordionItem } from "@nextui-org/react";
+	AccordionItem } from "@heroui/react";
 import { ChartLine, Shield, Zap } from "lucide-react";
 
 export default function CheckboxOptions()

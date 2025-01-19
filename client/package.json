@@ -18,8 +18,8 @@
     "lodash": "~4.17",
     "next-intl": "~3.26",
     "pino-pretty": "~13.0",
+    "@heroui/react": "~2.6",
     "@react-aria/i18n": "~3.12",
-    "@nextui-org/react": "~2.6",
     "@internationalized/date": "~3.6"
   },
   "devDependencies": {

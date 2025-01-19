@@ -1,4 +1,4 @@
-import { nextui } from "@nextui-org/react";
+import { heroui } from "@heroui/react";
 import type { Config } from "tailwindcss";
 
 export default {
@@ -18,8 +18,8 @@ export default {
 	},
 	content: [
 		"./app/**/*.{ts,tsx}",
-		"./node_modules/@nextui-org/theme/dist/**/*.{js,jsx,ts,tsx,mdx}"
+		"./node_modules/@heroui/theme/dist/**/*.{js,jsx,ts,tsx,mdx}"
 	],
-	plugins: [ nextui() ],
+	plugins: [ heroui() ],
 	darkMode: "class"
 } satisfies Config;
