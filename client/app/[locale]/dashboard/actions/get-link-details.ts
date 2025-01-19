@@ -20,7 +20,7 @@ export async function getLinkDetails( id?: string )
 	}
 
 	// Envoi de la requête HTTP de récupération des informations du raccourci.
-	const response = await fetch( `http://localhost:8000/api/link/${ id }` );
+	const response = await fetch( `${ process.env.NEXT_PUBLIC_BACKEND_URL }/api/link/${ id }` );
 
 	try
 	{

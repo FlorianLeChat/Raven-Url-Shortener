@@ -25,7 +25,7 @@ export async function createLink( data: FormData )
 	);
 
 	// Envoi de la requête HTTP de création d'un nouveau raccourci.
-	const response = await fetch( "http://localhost:8000/api/link", {
+	const response = await fetch( `${ process.env.NEXT_PUBLIC_BACKEND_URL }/api/link`, {
 		body: data,
 		method: "POST"
 	} );
