@@ -5,7 +5,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { Card, CardHeader, CardBody } from "@nextui-org/react";
+import { Card, CardHeader, CardBody } from "@heroui/react";
 
 export default function FeatureCard( {
 	title,

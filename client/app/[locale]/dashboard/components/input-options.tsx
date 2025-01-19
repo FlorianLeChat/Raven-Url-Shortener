@@ -6,7 +6,7 @@
 
 import { Link2 } from "lucide-react";
 import { useContext } from "react";
-import { DatePicker, Input } from "@nextui-org/react";
+import { DatePicker, Input } from "@heroui/react";
 import { getLocalTimeZone, now } from "@internationalized/date";
 import { ServerContext } from "@/components/server-provider";
 
