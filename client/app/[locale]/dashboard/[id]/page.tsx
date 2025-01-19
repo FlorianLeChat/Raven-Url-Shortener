@@ -5,7 +5,10 @@
 // Importation des dépendances.
 import qrCode from "qrcode";
 import { lazy } from "react";
+import { notFound } from "next/navigation";
+import { getDomain } from "@/utilities/server";
 import { setRequestLocale } from "next-intl/server";
+import { getLinkDetails } from "../actions/get-link-details";
 
 // Importation des composants.
 const ActionButtons = lazy( () => import( "../components/action-buttons" ) );
@@ -15,18 +18,28 @@ const SummaryContainer = lazy( () => import( "../components/summary-container" )
 export default async function Page( {
 	params
 }: Readonly<{
-	params: Promise<{ locale: string }>;
+	params: Promise<{ id: string; locale: string }>;
 }> )
 {
 	// Définition de la langue de la page.
-	const { locale } = await params;
+	const { id, locale } = await params;
 
 	setRequestLocale( locale );
 
 	// Déclaration des constantes.
-	const url = await qrCode.toDataURL(
-		"https://www.youtube.com/watch?v=ttihjjCy-xc"
-	);
+	const details = await getLinkDetails( id );
+
+	// Vérification de l'état de la réponse
+	//  pour afficher le message d'erreur.
+	if ( !details.state || "message" in details )
+	{
+		notFound();
+	}
+
+	// Génération du code QR.
+	const domain = await getDomain();
+
+	details.data.qrCode = await qrCode.toDataURL( domain + id );
 
 	// Affichage du rendu HTML de la page.
 	return (
@@ -54,7 +67,7 @@ export default async function Page( {
 				<ActionButtons />
 
 				{/* Conteneur du récapitulatif */}
-				<SummaryContainer qrCode={url} />
+				<SummaryContainer domain={domain} details={details.data} />
 			</main>
 		</>
 	);
