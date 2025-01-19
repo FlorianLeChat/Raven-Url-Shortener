@@ -29,7 +29,9 @@ final class Link
 	private ?string $url = null;
 
 	#[ORM\Column(type: Types::STRING, length: 50)]
+	#[Assert\Regex(pattern: "/^[a-z0-9-]+$/")]
 	#[Assert\Length(min: 1, max: 50)]
+	#[Assert\NoSuspiciousCharacters]
 	private ?string $slug = null;
 
 	#[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
