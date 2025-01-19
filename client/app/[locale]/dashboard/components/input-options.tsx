@@ -30,6 +30,7 @@ export default function InputOptions()
 				type="url"
 				name="url"
 				label="Lien Internet à raccourcir"
+				pattern="https?://.*"
 				required
 				className="w-100"
 				isRequired
