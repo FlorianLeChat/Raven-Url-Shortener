@@ -9,13 +9,15 @@ import "@total-typescript/ts-reset";
 // Importation des dépendances.
 import pick from "lodash/pick";
 import { Inter } from "next/font/google";
-import { headers } from "next/headers";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { lazy, Suspense, type ReactNode } from "react";
 
 // Importation des fonctions utilitaires.
 import { logger } from "@/utilities/pino";
+import { getDomain,
+	getTimeZoneName,
+	getTimeZoneOffset } from "@/utilities/server";
 import { getLanguages } from "@/utilities/i18n";
 import { fetchMetadata } from "@/utilities/metadata";
 import { HeroUIProvider } from "@/utilities/hero-ui";
@@ -80,22 +82,11 @@ export default async function Layout( {
 		return null;
 	}
 
-	// Déclaration des constantes.
-	const requestHeaders = await headers();
-	const baseDomain = `${ requestHeaders.get( "x-forwarded-proto" ) ?? "http" }://${ requestHeaders.get( "host" ) }/`;
-	const options = Intl.DateTimeFormat().resolvedOptions();
-
-	// Récupération du fuseau horaire actuel et de son décalage.
-	//  Décalage en minutes (exemple : -60 pour UTC+1) et conversion en heures.
-	const offsetMinutes = new Date().getTimezoneOffset();
-	const offsetHours = -offsetMinutes / 60;
-	const offsetString = `UTC${ offsetHours >= 0 ? "+" : "" }${ offsetHours }`;
-
 	// Définition des données du serveur.
 	const serverData = {
-		domain: baseDomain,
-		offset: offsetString,
-		timezone: process.env.TZ ?? options.timeZone
+		domain: await getDomain(),
+		offset: getTimeZoneOffset(),
+		timezone: getTimeZoneName()
 	};
 
 	// Affichage du rendu HTML de la page.
