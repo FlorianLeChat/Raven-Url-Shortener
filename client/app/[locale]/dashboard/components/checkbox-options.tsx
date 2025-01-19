@@ -4,12 +4,8 @@
 
 "use client";
 
-import { Chip,
-	Alert,
-	Checkbox,
-	Accordion,
-	AccordionItem } from "@heroui/react";
 import { ChartLine, Shield, Zap } from "lucide-react";
+import { Chip, Alert, Checkbox, Accordion, AccordionItem } from "@heroui/react";
 
 export default function CheckboxOptions()
 {
@@ -18,7 +14,7 @@ export default function CheckboxOptions()
 		<Accordion
 			as="ul"
 			variant="splitted"
-			className="max-h-[382px] overflow-y-auto p-1 md:ml-4 lg:w-1/2"
+			className="overflow-y-auto p-1 lg:ml-4 lg:max-h-[382px] lg:w-1/2"
 			isDisabled={process.env.NEXT_PUBLIC_ENV === "production"}
 			keepContentMounted
 		>
