@@ -54,16 +54,34 @@ final class CreateLinkService
 	}
 
 	/**
+	 * Vérifie si un slug existe déjà dans la base de données.
+	 */
+	private function checkSlug(string $slug): void
+	{
+		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+
+		$result = $this->repository->findOneBy(["slug" => $slug]);
+		$isFound = !empty($result);
+
+		if ($isFound)
+		{
+			throw new BadRequestHttpException("Slug already exists");
+		}
+	}
+
+	/**
 	 * Création d'un slug aléatoire.
 	 */
 	private function createRandomSlug(): string
 	{
+		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+
 		$slug = "";
 		$characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-		for ($i = 0; $i < mt_rand(5, 10); $i++)
+		for ($i = 0; $i < mt_rand(5, 20); $i++)
 		{
-			$slug .= $characters[rand(0, strlen($characters) - 1)];
+			$slug .= $characters[mt_rand(0, strlen($characters) - 1)];
 		}
 
 		return $slug;
@@ -85,6 +103,7 @@ final class CreateLinkService
 		$link->setCreatedAt(new DateTime());
 
 		$this->validateLink($link);
+		$this->checkSlug($link->getSlug());
 
 		$this->repository->create($link, true);
 
