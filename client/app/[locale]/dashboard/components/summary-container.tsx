@@ -66,7 +66,7 @@ export default function SummaryContainer( {
 					</h3>
 
 					<Snippet size="lg" className="overflow-auto" hideSymbol>
-						{`${ domain }1A7hby`}
+						{domain + details.slug}
 					</Snippet>
 
 					<Snippet size="lg" className="overflow-auto" hideSymbol>
