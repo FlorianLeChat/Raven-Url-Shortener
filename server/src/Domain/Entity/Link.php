@@ -18,8 +18,8 @@ final class Link
 {
 	#[ORM\Id]
 	#[ORM\Column(type: UuidType::NAME, unique: true)]
-	#[ORM\GeneratedValue(strategy: 'CUSTOM')]
-	#[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
+	#[ORM\GeneratedValue(strategy: "CUSTOM")]
+	#[ORM\CustomIdGenerator(class: "doctrine.uuid_generator")]
 	private ?Uuid $id = null;
 
 	#[ORM\Column(type: Types::TEXT)]
@@ -28,7 +28,7 @@ final class Link
 	#[Assert\NotBlank]
 	private ?string $url = null;
 
-	#[ORM\Column(type: Types::STRING, length: 50, nullable: true)]
+	#[ORM\Column(type: Types::STRING, length: 50)]
 	#[Assert\Length(min: 1, max: 50)]
 	private ?string $slug = null;
 

@@ -54,6 +54,22 @@ final class CreateLinkService
 	}
 
 	/**
+	 * Création d'un slug aléatoire.
+	 */
+	private function createRandomSlug(): string
+	{
+		$slug = "";
+		$characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+		for ($i = 0; $i < mt_rand(5, 10); $i++)
+		{
+			$slug .= $characters[rand(0, strlen($characters) - 1)];
+		}
+
+		return $slug;
+	}
+
+	/**
 	 * Création d'un lien raccourci.
 	 */
 	public function createLink(Request $request): Link
@@ -64,7 +80,7 @@ final class CreateLinkService
 
 		$link = new Link();
 		$link->setUrl($request->request->get("url"));
-		$link->setSlug($request->request->get("slug"));
+		$link->setSlug($request->request->get("slug", $this->createRandomSlug()));
 		$link->setExpiration(!empty($expiration) ? new DateTime($expiration) : null);
 		$link->setCreatedAt(new DateTime());
 

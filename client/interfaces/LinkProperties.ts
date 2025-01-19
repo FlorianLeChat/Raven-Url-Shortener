@@ -9,7 +9,7 @@ export interface LinkProperties {
 	url: string;
 
 	// Slug personnalisé du lien.
-	slug: string | null | undefined;
+	slug: string;
 
 	// Code QR du lien.
 	qrCode: string | null | undefined;
