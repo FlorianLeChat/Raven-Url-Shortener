@@ -29,12 +29,12 @@ final class Link
 	private ?string $url = null;
 
 	#[ORM\Column(type: Types::STRING, length: 50)]
-	#[Assert\Regex(pattern: "/^[a-z0-9-]+$/", message: "invalid_slug")]
+	#[Assert\Regex(pattern: "/^[a-zA-Z0-9-]+$/", message: "invalid_slug")]
 	#[Assert\Length(min: 1, max: 50, minMessage: "too_short_slug", maxMessage: "too_long_slug")]
 	private ?string $slug = null;
 
 	#[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-	#[Assert\Range(min: "-1 day", max: "+1 year", notInRangeMessage: "invalid_expiration")]
+	#[Assert\Range(min: "tomorrow", max: "+1 year", notInRangeMessage: "invalid_expiration")]
 	private ?DateTimeInterface $expiration = null;
 
 	#[ORM\Column(type: Types::DATETIME_MUTABLE)]
