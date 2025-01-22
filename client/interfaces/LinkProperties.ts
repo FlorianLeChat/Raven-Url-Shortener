@@ -25,7 +25,7 @@ export interface LinkProperties {
 	};
 
 	// Date de dernière mise à jour du lien.
-	updatedAt: {
+	updatedAt?: {
 		date: string;
 		timezone_type: number;
 		timezone: string;

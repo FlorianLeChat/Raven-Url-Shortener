@@ -7,6 +7,7 @@
 import { lazy } from "react";
 import NextImage from "next/image";
 import { useLocale } from "next-intl";
+import { formatDate } from "@/utilities/date";
 import { CircleCheckBig } from "lucide-react";
 import type { LinkProperties } from "@/interfaces/LinkProperties";
 import { Card, Image, Snippet, CardBody, CardHeader } from "@heroui/react";
@@ -21,16 +22,23 @@ export default function SummaryContainer( {
 	// Déclaration des variables d'état.
 	const locale = useLocale();
 
-	// Déclaration des constantes.
-	const rawDate = new Date( details.createdAt.date );
-	const formattedDate = new Intl.DateTimeFormat( locale, {
-		year: "numeric",
-		month: "long",
-		day: "numeric",
-		hour: "2-digit",
-		minute: "2-digit",
-		second: "2-digit"
-	} ).format( rawDate );
+	// Dates de création et de dernière mise à jour du lien.
+	const createDate = formatDate( new Date( details.createdAt.date ), locale );
+	const updateDate = details.updatedAt?.date
+		? formatDate( new Date( details.updatedAt.date ), locale )
+		: "jamais";
+
+	// Message contenant les dates de création et de mise à jour.
+	let dateMessage = `Votre lien raccourci a été créé le ${ createDate }`;
+
+	if ( details.updatedAt?.date )
+	{
+		dateMessage += `, mis à jour le ${ updateDate }.`;
+	}
+	else
+	{
+		dateMessage += ".";
+	}
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -46,7 +54,7 @@ export default function SummaryContainer( {
 			>
 				{/* Date de création */}
 				<CircleCheckBig className="inline-block min-w-[24px]" />
-				Votre lien a été créé le {formattedDate}.
+				{dateMessage}
 			</CardHeader>
 
 			<CardBody className="flex-col gap-5 p-4 xl:flex-row">
