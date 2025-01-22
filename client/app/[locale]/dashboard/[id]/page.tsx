@@ -5,9 +5,9 @@
 // Importation des dépendances.
 import qrCode from "qrcode";
 import { lazy } from "react";
-import { notFound } from "next/navigation";
 import { getDomain } from "@/utilities/server";
 import { setRequestLocale } from "next-intl/server";
+import { redirect, RedirectType } from "next/navigation";
 import { getLinkDetails } from "../actions/get-link-details";
 
 // Importation des composants.
@@ -33,7 +33,7 @@ export default async function Page( {
 	//  pour afficher le message d'erreur.
 	if ( !details.state || "message" in details )
 	{
-		notFound();
+		redirect( "/dashboard", RedirectType.push );
 	}
 
 	// Génération du code QR.
