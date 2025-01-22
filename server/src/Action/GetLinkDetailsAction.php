@@ -22,9 +22,7 @@ final class GetLinkDetailsAction extends AbstractController
 	 * Constructeur de la classe.
 	 */
 	public function __construct(
-		private readonly LoggerInterface $logger,
-		private readonly ValidatorInterface $validator,
-		private readonly EntityManagerInterface $entityManager
+		private readonly LoggerInterface $logger
 	) {}
 
 	/**

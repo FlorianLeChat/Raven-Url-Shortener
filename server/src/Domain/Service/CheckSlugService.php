@@ -27,7 +27,7 @@ final class CheckSlugService
 		private readonly LoggerInterface $logger,
 		private readonly EntityManagerInterface $entityManager
 	) {
-		$this->repository = $entityManager->getRepository(Link::class);
+		$this->repository = $this->entityManager->getRepository(Link::class);
 	}
 
 	/**

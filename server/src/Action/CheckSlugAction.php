@@ -37,6 +37,6 @@ final class CheckSlugAction extends AbstractController
 
 		$isAvailable = $service->checkSlug($request);
 
-		return new JsonResponse([ "available" => $isAvailable ], JsonResponse::HTTP_OK);
+		return new JsonResponse(["available" => $isAvailable], JsonResponse::HTTP_OK);
 	}
 }
