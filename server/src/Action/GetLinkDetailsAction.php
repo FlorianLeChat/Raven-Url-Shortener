@@ -4,12 +4,10 @@ namespace App\Action;
 
 use App\Domain\Entity\Link;
 use Psr\Log\LoggerInterface;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpKernel\Attribute\Cache;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 use const App\LOG_FUNCTION;
@@ -29,8 +27,8 @@ final class GetLinkDetailsAction extends AbstractController
 	/**
 	 * Récupération des informations d'un lien raccourci.
 	 */
-	#[Route("/api/link/{uuid}", methods: ["GET"], stateless: true)]
 	#[Cache(public: true, maxage: 3600, mustRevalidate: true)]
+	#[Route("/api/link/{uuid}", methods: ["GET"], stateless: true)]
 	public function getLinkDetails(#[MapEntity(id: "uuid")] Link $link): JsonResponse
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
