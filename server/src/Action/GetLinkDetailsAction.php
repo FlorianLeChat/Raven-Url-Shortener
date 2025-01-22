@@ -30,7 +30,7 @@ final class GetLinkDetailsAction extends AbstractController
 	 * Récupération des informations d'un lien raccourci.
 	 */
 	#[Route("/api/link/{uuid}", methods: ["GET"], stateless: true)]
-	#[Cache(public: true, max_age: 3600, mustRevalidate: true)]
+	#[Cache(public: true, maxage: 3600, mustRevalidate: true)]
 	public function getLinkDetails(#[MapEntity(id: "uuid")] Link $link): JsonResponse
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
