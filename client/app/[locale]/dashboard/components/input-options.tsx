@@ -5,10 +5,12 @@
 "use client";
 
 import { Link2 } from "lucide-react";
-import { useContext } from "react";
+import { lazy, useContext } from "react";
 import { DatePicker, Input } from "@heroui/react";
 import { getLocalTimeZone, now } from "@internationalized/date";
 import { ServerContext } from "@/components/server-provider";
+
+const SlugValidation = lazy( () => import( "./slug-validation" ) );
 
 export default function InputOptions()
 {
@@ -49,30 +51,7 @@ export default function InputOptions()
 			/>
 
 			{/* Slug personnalisé */}
-			<Input
-				as="li"
-				size="lg"
-				name="slug"
-				label="Slug personnalisé"
-				maxLength={50}
-				isClearable
-				placeholder="my-super-slug"
-				description={(
-					<p className="text-default-500">
-						Un slug est une chaîne de caractères qui identifie de{" "}
-						<strong>manière unique</strong> une ressource sur
-						Internet. Vous avez la possibilité de personnaliser le
-						slug de votre lien pour le rendre plus facile à
-						mémoriser.
-					</p>
-				)}
-				startContent={(
-					<span className="pointer-events-none whitespace-nowrap text-default-400">
-						{serverData?.domain}
-					</span>
-				)}
-				labelPlacement="outside"
-			/>
+			<SlugValidation />
 
 			{/* Date de publication */}
 			<DatePicker
