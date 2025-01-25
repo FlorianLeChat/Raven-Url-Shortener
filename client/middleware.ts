@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { getLanguages } from "./utilities/i18n";
 import { getLinkDetails } from "./app/[locale]/dashboard/actions/get-link-details";
+import { trustedDomains } from "./config/domains";
 
 export default async function middleware( request: NextRequest )
 {
@@ -24,8 +25,16 @@ export default async function middleware( request: NextRequest )
 
 		if ( details.state && details.data )
 		{
-			// Redirection vers la page de redirection.
-			return NextResponse.redirect( new URL( `/go/${ details.data.id }`, request.nextUrl ) );
+			const domains = trustedDomains.join( "|" );
+
+			if ( new RegExp( domains ).test( details.data.url ) )
+			{
+				// Le domaine est de confiance, redirection automatique.
+				return NextResponse.redirect( new URL( details.data.url, request.nextUrl ) );
+			}
+
+			// Redirection vers la page d'avertissement.
+			return NextResponse.redirect( new URL( `/redirect/${ pathName }`, request.nextUrl ) );
 		}
 	}
 
