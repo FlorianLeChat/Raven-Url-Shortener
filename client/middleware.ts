@@ -25,7 +25,9 @@ export default async function middleware( request: NextRequest )
 
 		if ( details.state && details.data )
 		{
-			const domains = trustedDomains.join( "|" );
+			const domains = trustedDomains
+				.map( ( domain ) => `^https?:\\/\\/(www\\.)?${ domain.replace( ".", "\\." ) }(\\/|$)` )
+				.join( "|" );
 
 			if ( new RegExp( domains ).test( details.data.url ) )
 			{
