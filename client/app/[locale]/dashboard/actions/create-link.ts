@@ -5,6 +5,7 @@
 "use server";
 
 import { logger } from "@/utilities/pino";
+import { captureException } from "@sentry/nextjs";
 import type { LinkProperties } from "@/interfaces/LinkProperties";
 import type { ErrorProperties } from "@/interfaces/ErrorProperties";
 
@@ -60,6 +61,8 @@ export async function createLink( data: FormData )
 	{
 		// En cas d'erreur lors de la création du raccourci,
 		//  ou lors de la conversion de la réponse en JSON.
+		captureException( error );
+
 		logger.error(
 			{ source: __dirname, error },
 			"An error occurred while creating the short link."
