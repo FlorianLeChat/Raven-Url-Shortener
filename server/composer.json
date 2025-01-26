@@ -20,6 +20,8 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
 
+        "sentry/sentry-symfony": "5.1.*",
+
         "doctrine/orm": "3.3.*",
         "doctrine/dbal": "3.*",
         "doctrine/annotations": "2.0.*",

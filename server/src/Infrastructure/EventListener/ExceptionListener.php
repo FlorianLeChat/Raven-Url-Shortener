@@ -33,6 +33,8 @@ final class ExceptionListener
 			"message" => $exception->getMessage()
 		]);
 
+		\Sentry\captureException($exception);
+
 		$this->logger->error($response->getContent(), [
 			"file" => $exception->getFile(),
 			"line" => $exception->getLine(),
