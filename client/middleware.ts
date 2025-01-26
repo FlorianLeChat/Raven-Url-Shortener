@@ -8,6 +8,9 @@ import { getLanguages } from "./utilities/i18n";
 import { getLinkDetails } from "./app/[locale]/dashboard/actions/get-link-details";
 import { trustedDomains } from "./config/domains";
 
+// Préfixes des routes de l'application.
+const routePrefixes = [ "dashboard/", "redirect/", "manager/" ];
+
 export default async function middleware( request: NextRequest )
 {
 	// Vérification à l'accès d'un lien raccourci.
@@ -17,8 +20,10 @@ export default async function middleware( request: NextRequest )
 	const pathName = request.nextUrl.pathname.slice( 1 );
 	const isValidUuid = uuidPattern.test( pathName );
 	const isMaybeSlug = pathName.length <= 50 && slugPattern.test( pathName );
+	const isUnknownRoute = !routePrefixes.some( ( prefix ) => pathName.startsWith( prefix ) );
+	const shouldCheckPath = isValidUuid || isMaybeSlug;
 
-	if ( isValidUuid || isMaybeSlug )
+	if ( shouldCheckPath && !isUnknownRoute )
 	{
 		// Le lien contient un UUID ou ressemble à un slug.
 		const details = await getLinkDetails( pathName );
