@@ -19,6 +19,7 @@
     "next-intl": "~3.26",
     "pino-pretty": "~13.0",
     "@heroui/react": "~2.6",
+    "@sentry/nextjs": "~8.51",
     "@react-aria/i18n": "~3.12",
     "@internationalized/date": "~3.6"
   },
