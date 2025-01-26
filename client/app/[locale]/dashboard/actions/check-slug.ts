@@ -5,6 +5,7 @@
 "use server";
 
 import { logger } from "@/utilities/pino";
+import { captureException } from "@sentry/nextjs";
 import type { ErrorProperties } from "@/interfaces/ErrorProperties";
 
 export async function checkSlug( slug?: string )
@@ -59,6 +60,8 @@ export async function checkSlug( slug?: string )
 	{
 		// En cas d'erreur lors de la récupération de la disponibilité
 		//  du slug ou lors de la conversion de la réponse en JSON.
+		captureException( error );
+
 		logger.error(
 			{ source: __dirname, error },
 			"An error occurred while fetching the slug availability."
