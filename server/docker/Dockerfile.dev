@@ -4,11 +4,11 @@
 # https://hub.docker.com/_/php
 FROM php:alpine
 
-# Install system and PHP dependencies
+# Install system and PHP extensions
 # https://xdebug.org/docs/all_settings#mode
 ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 
-RUN apk add --no-cache bash && \
+RUN apk add --no-cache bash supercronic && \
 	install-php-extensions zip pdo_mysql pdo_pgsql redis intl xdebug bcmath excimer @composer && \
 	echo "xdebug.mode=develop,debug" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" && \
 	echo "xdebug.client_port=9003" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" && \
@@ -18,6 +18,10 @@ RUN apk add --no-cache bash && \
 
 # Set the working directory to the website files
 WORKDIR /var/www/html
+
+# Add some cronjobs for Symfony custom commands
+# https://github.com/webdevops/Dockerfile/issues/280#issuecomment-1311681838
+RUN echo "0 0 * * * /usr/local/bin/php /var/www/html/bin/console app:shortcut-cleanup > /dev/null 2>&1" >> /var/spool/cron/crontabs/www-data
 
 # Add wait script to wait for other services to be ready
 ADD --chmod=0755 https://github.com/ufoscout/docker-compose-wait/releases/latest/download/wait /wait
@@ -46,6 +50,7 @@ RUN --mount=type=cache,target=.composer composer install
 RUN echo '/wait && mkdir -p var/cache var/log && \
 	/usr/local/bin/php bin/console doctrine:database:create --no-interaction --if-not-exists && \
 	/usr/local/bin/php bin/console doctrine:schema:update --force && \
+	supercronic /etc/crontabs/www-data & \
 	rm -rf ~/.symfony5/ && symfony server:start --allow-all-ip' > docker/entrypoint.sh && chmod +x docker/entrypoint.sh
 
 CMD ["docker/entrypoint.sh"]
