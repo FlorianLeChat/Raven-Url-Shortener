@@ -53,8 +53,29 @@ services:
             - "8080:80"
 
     # https://github.com/FlorianLeChat/Raven-Url-Shortener
+    node:
+        image: raven-url-shortener-frontend
+        restart: always
+        develop:
+            watch:
+                - action: sync
+                  path: .
+                  target: /usr/src/app
+        depends_on:
+            - php
+        healthcheck:
+            test: wget -O - http://localhost:3000
+            retries: 3
+            timeout: 5s
+        build:
+            context: ./client
+            dockerfile: ./docker/Dockerfile.${NEXT_PUBLIC_ENV}
+        ports:
+            - "3000:3000"
+
+    # https://github.com/FlorianLeChat/Raven-Url-Shortener
     php:
-        image: raven-url-shortener
+        image: raven-url-shortener-backend
         restart: always
         develop:
             watch:
