@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Commande pour le nettoyage des liens raccourcis expirés.
  */
-#[AsCommand("app:shortcup-cleanup", "Deletes expired shortcut links from the database.")]
+#[AsCommand("app:shortcut-cleanup", "Deletes expired shortcut links from the database.")]
 final class OutdatedShortcutCleanup extends Command
 {
 	/**

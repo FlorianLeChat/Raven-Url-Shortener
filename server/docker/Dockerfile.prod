@@ -4,6 +4,9 @@
 # https://hub.docker.com/_/php
 FROM php:fpm-alpine
 
+# Install system dependencies
+RUN apk add --no-cache supercronic
+
 # Install some PHP extensions
 ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 
@@ -11,6 +14,10 @@ RUN install-php-extensions zip pdo_mysql pdo_pgsql redis opcache intl bcmath exc
 
 # Set the working directory to the website files
 WORKDIR /var/www/html
+
+# Add some cronjobs for Symfony custom commands
+# https://github.com/webdevops/Dockerfile/issues/280#issuecomment-1311681838
+RUN echo "0 0 * * * /usr/local/bin/php /var/www/html/bin/console app:shortcut-cleanup > /dev/null 2>&1" >> /var/spool/cron/crontabs/www-data
 
 # Add wait script to wait for other services to be ready
 ADD --chmod=0755 https://github.com/ufoscout/docker-compose-wait/releases/latest/download/wait /wait
@@ -44,6 +51,6 @@ RUN echo '/wait && mkdir -p var/cache var/log && \
 	/usr/local/bin/php bin/console cache:clear && composer dump-env prod && \
 	/usr/local/bin/php bin/console doctrine:database:create --no-interaction --if-not-exists && \
 	/usr/local/bin/php bin/console doctrine:schema:update --force && \
-	php-fpm' > docker/entrypoint.sh && chmod +x docker/entrypoint.sh
+	supercronic /etc/crontabs/www-data & php-fpm' > docker/entrypoint.sh && chmod +x docker/entrypoint.sh
 
 CMD ["docker/entrypoint.sh"]
