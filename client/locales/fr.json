@@ -1,7 +1,172 @@
 {
+	"index": {
+		"title": "Vous êtes sur",
+		"description": "Un raccourcisseur de liens Internet simple, sécurisé et entièrement personnalisable, conçu pour protéger votre confidentialité.",
+		"features": {
+			"title": "<h1>Vous allez</h1> <pink>adorer</pink> <h1>notre service</h1>.",
+			"title_1": "Sécurisé de bout en bout",
+			"title_2": "Interface ergonomique",
+			"title_3": "Respect de la vie privée",
+			"title_4": "Haute performance",
+			"title_5": "Personnalisation multiple",
+			"title_6": "Ouvert aux développeurs",
+			"description_1": "Toutes les données transmises entre votre navigateur et nos serveurs sont chiffrées pour garantir une sécurité maximale.",
+			"description_2": "L'interface est conçue pour être simple et ergonomique pour tous les utilisateurs, même pour vos grands-parents.",
+			"description_3": "Vos données sont stockées sur des serveurs basés en Europe conformément au RGPD pour garantir une intégrité et une confidentialité totale.",
+			"description_4": "Nos serveurs sont prévus pour garantir une performance optimale et une disponibilité maximale pour tous les utilisateurs.",
+			"description_5": "Notre service propose une grande variétés d'options de personnalisation lors de la création des raccourcis vers vos liens Internet.",
+			"description_6": "Notre API est ouverte à tous les développeurs qui souhaitent intégrer notre service dans leurs applications."
+		},
+		"ready": {
+			"title": "<h1>Prêt à</h1> <green>commencer</green> <h1>?</h1>",
+			"button": "Allons-y !"
+		}
+	},
+	"header": {
+		"home": "Accueil",
+		"dashboard": "Tableau de bord",
+		"summary": "Résumé",
+		"redirection": "Redirection",
+		"manager": "Gestionnaire de lien"
+	},
+	"navigation": {
+		"home": "Retour à la page d'accueil",
+		"cookies": "Gestion des cookies",
+		"light_theme": "Basculer en thème clair",
+		"dark_theme": "Basculer en thème sombre",
+		"support": "Supporter le projet"
+	},
+	"dashboard": {
+		"title": "À vous de jouer !",
+		"subtitle": "Votre lien n'attend que vous.",
+		"description": "Vous pouvez dès à présent façonner le comportement de votre lien raccourci en le personnalisant selon vos besoins et vos envies.",
+		"hint": "Vous pourrez à tout moment modifier l'ensemble des paramètres de votre lien, même après sa création.",
+		"url_label": "Lien Internet à raccourcir",
+		"url_description": "Votre lien doit commencer par <strong>http://</strong> ou <strong>https://</strong> et doit être accessible publiquement. Les autres protocoles sont ignorés pour des raisons de sécurité.",
+		"slug_label": "Slug personnalisé",
+		"slug_description": "Un slug est une chaîne de caractères qui identifie de <strong>manière unique</strong> une ressource sur Internet. Vous avez la possibilité de personnaliser le slug de votre lien pour le rendre plus facile à mémoriser.",
+		"expiration_label": "Date d'expiration",
+		"expiration_description": "Votre lien sera automatiquement <strong>désactivé</strong> et <strong>supprimé</strong> après cette date. Le fuseau horaire actuellement utilisé est <strong>{offset}</strong> ({timezone}).",
+		"submit_button": "Créer un nouveau raccourci",
+		"steps": {
+			"fetch_recaptcha": "Récupération du jeton reCAPTCHA...",
+			"check_recaptcha": "Vérification du jeton reCAPTCHA...",
+			"creation_request": "Requête de création du raccourci...",
+			"summary_redirect": "Redirection vers le récapitulatif..."
+		},
+		"categories": {
+			"recommended_label": "Recommandé",
+			"experimental_label": "Expérimental",
+			"security": {
+				"title": "Protection et sécurité",
+				"description": "Ces paramètres vous permettent de sécuriser l'accès à votre lien pour <danger>vous</danger> et <danger>vos visiteurs</danger>.",
+				"warning_label": "Attention requise",
+				"warning_description": "Certains paramètres peuvent rendre votre lien inaccessible. Veuillez les configurer avec précaution.",
+				"options": {
+					"password": {
+						"label": "Activer la protection par mot de passe",
+						"description": "Les visiteurs devront saisir un mot de passe que vous aurez défini pour accéder à votre lien. Cette mesure permet de sécuriser votre lien et de prévenir tout accès non autorisé."
+					},
+					"recaptcha": {
+						"label": "Activer la protection via Google reCAPTCHA",
+						"description": "Les visiteurs devront résoudre un défi reCAPTCHA pour accéder à votre lien. Cette mesure aide à protéger votre lien contre les robots et les logiciels malveillants, garantissant ainsi une sécurité accrue."
+					},
+					"proxy": {
+						"label": "Acheminer via un serveur mandataire (proxy)",
+						"description": "L'accès à votre lien passera par un serveur passerelle, ce qui permettra de contourner les restrictions de certains réseaux tout en protégeant votre adresse IP contre le suivi de votre activité en ligne."
+					},
+					"api": {
+						"label": "Activer la gestion via une API",
+						"description": "La gestion de votre lien pourra être effectuée à distance à l'aide d'une interface de programmation d'applications (API), vous permettant ainsi de contrôler son accès, ses paramètres et d'accéder à ses statistiques."
+					}
+				}
+			},
+			"statistics": {
+				"title": "Statistiques et suivi",
+				"description": "Ces paramètres permettent de <success>suivre</success> les performances de votre lien et d'en <success>analyser</success> son audience.",
+				"warning_label": "Note importante",
+				"warning_description": "En fonction de votre position géographique, certains paramètres peuvent déclencher l'acceptation de consentements supplémentaires lors de l'accès au lien par vos visiteurs.",
+				"options": {
+					"access_count": {
+						"label": "Compter le nombre d'accès",
+						"description": "Le nombre d'accès sera enregistré et affiché dans les statistiques de gestion de votre lien, vous permettant ainsi de suivre sa popularité et son audience."
+					},
+					"visitor_data": {
+						"label": "Collecter les données des visiteurs",
+						"description": "Les données des navigateurs des visiteurs seront collectées et affichées dans les statistiques de gestion de votre lien, vous offrant une analyse détaillée de leur activité."
+					}
+				}
+			},
+			"performance": {
+				"title": "Performance et optimisation",
+				"description": "Ces paramètres permettent de <warning>booster</warning> la vitesse de chargement de votre lien et <warning>d'améliorer</warning> l'expérience utilisateur.",
+				"options": {
+					"cache": {
+						"label": "Mise en cache de la page",
+						"description": "Lors de la création de votre lien, la page cible sera mise en cache et sera servie pour les visiteurs, ce qui permettra d'accélérer le chargement de la page."
+					},
+					"domain": {
+						"label": "Utiliser un domaine personnalisé",
+						"description": "Votre lien sera accessible via un domaine personnalisé que vous aurez configuré, ce qui permettra de renforcer votre identité en ligne et d'améliorer la confiance de vos visiteurs."
+					}
+				}
+			}
+		}
+	},
+	"summary": {
+		"title": "Merci !",
+		"subtitle": "Votre lien est prêt pour être distribué.",
+		"description": "Vous retrouverez ci-dessous un récapitulatif des informations, des paramètres et des actions possibles pour votre lien raccourci.",
+		"hint": "Votre lien raccourci a été créé le {createDate}{isUpdated, select, true { et mis à jour le {updateDate}} other {}}.",
+		"qr_code": "Code QR de votre lien raccourci",
+		"links_label": "Liens à votre disposition",
+		"links_description": "Ces liens Internet sont disponibles pour toute la durée de vie de votre lien raccourci.<br></br>Vous pouvez les utiliser sans restriction.",
+		"actions": {
+			"title": "Actions disponibles",
+			"wip": "Ces options sont en cours de développement. Elles seront disponibles prochainement.",
+			"administration": "Administration",
+			"statistics": "Statistiques",
+			"regenerate": "Régénérer",
+			"remove": "Supprimer"
+		}
+	},
+	"redirect": {
+		"title": "Une seconde...",
+		"subtitle": "Vous allez être redirigé vers la page demandée.",
+		"description": "Veuillez noter que vous allez être redirigé vers une autre page Web en dehors de Raven Url Shortener. <strong>Cette page n'est pas hébergée par nos soins et nous ne sommes pas responsables de son contenu</strong>.",
+		"hint": "Ce lien raccourci a été créé le {createDate}{isUpdated, select, true { et mis à jour le {updateDate}} other {}}.",
+		"redirection": "Vous allez être redirigé vers :",
+		"accept": "Accepter la redirection",
+		"report": "Signaler ce lien raccourci"
+	},
+	"footer": {
+		"made_with_love": "Fait avec ❤️ par",
+		"rights_reserved": "Tous droits réservés",
+		"recaptcha_protected": "Ce site est protégé par reCAPTCHA sur lequel s'appliquent les <a1>politiques de confidentialité</a1> et les <a2>conditions d'utilisation</a2> de Google."
+	},
+	"errors": {
+		"recaptcha": {
+			"missing_or_invalid": "Le jeton reCAPTCHA que vous avez fourni est manquant ou invalide. Veuillez réessayer.",
+			"score_invalid": "Le score reCAPTCHA que vous avez obtenu est invalide. Veuillez réessayer.",
+			"check_failed": "La vérification du jeton reCAPTCHA a échoué. Veuillez réessayer."
+		},
+		"slug": {
+			"missing_or_invalid": "Le slug personnalisé est manquant ou invalide. Veuillez réessayer.",
+			"check_failed": "La vérification du slug personnalisé a échoué. Veuillez réessayer."
+		},
+		"generic_unknown": "Une erreur inconnue s'est produite lors du traitement de votre demande. Veuillez réessayer.",
+		"already_used_slug": "Le slug personnalisé que vous avez choisi est déjà utilisé par un autre lien. Veuillez en choisir un autre.",
+		"duplicated_slug": "Le slug que vous avez choisi est déjà utilisé par un autre lien. Veuillez en choisir un autre.",
+		"invalid_url": "Le lien que vous avez saisi est invalide. Veuillez vérifier qu'il commence par <strong>http://</strong> ou <strong>https://</strong> et qu'il est accessible publiquement.",
+		"missing_url": "Le lien que vous avez saisi est manquant. Veuillez le renseigner pour continuer.",
+		"invalid_slug": "Le slug que vous avez saisi est invalide. Veuillez vérifier qu'il ne contient que des caractères alphanumériques et des tirets.",
+		"too_short_slug": "Le slug que vous avez saisi est trop court. Veuillez en choisir un plus long.",
+		"too_long_slug": "Le slug que vous avez saisi est trop long. Veuillez en choisir un plus court.",
+		"invalid_expiration": "La date d'expiration que vous avez saisie est invalide."
+	},
 	"consentModal": {
 		"title": "Voulez-vous un cookie ? 🍪",
-		"footer": "<a href=\"legal/privacy\" target=\"_blank\">Politique de confidentialité</a><a href=\"legal/terms\" target=\"_blank\">Conditions d'utilisation</a>",
+		"footer": "<a href=\"/legal\" target=\"blank\">Mentions légales</a>",
 		"description": "Notre site Internet utilise des cookies de suivi pour comprendre comment vous interagissez avec lui. Le suivi ne sera activé que si vous l'acceptez explicitement.",
 		"acceptAllBtn": "Tout accepter",
 		"acceptNecessaryBtn": "Tout refuser",

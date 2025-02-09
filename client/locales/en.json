@@ -1,7 +1,172 @@
 {
+	"index": {
+		"title": "You are on",
+		"description": "A simple, secure, and fully customizable URL shortener designed to protect your privacy.",
+		"features": {
+			"title": "<h1>You are going</h1> <pink>to love</pink> <h1>our service</h1>.",
+			"title_1": "End-to-end secure",
+			"title_2": "User-friendly interface",
+			"title_3": "Respect for privacy",
+			"title_4": "High performance",
+			"title_5": "Multiple customization options",
+			"title_6": "Developer friendly",
+			"description_1": "All data transmitted between your browser and our servers is encrypted to ensure maximum security.",
+			"description_2": "The interface is designed to be simple and user-friendly for all users, even for your grandparents.",
+			"description_3": "Your data is stored on servers based in Europe in accordance with GDPR to ensure complete integrity and confidentiality.",
+			"description_4": "Our servers are designed to provide optimal performance and maximum availability for all users.",
+			"description_5": "Our service offers a wide variety of customization options when creating shortened links for your URLs.",
+			"description_6": "Our API is open to all developers who wish to integrate our service into their applications."
+		},
+		"ready": {
+			"title": "<h1>Ready to</h1> <green>get started</green> <h1>?</h1>",
+			"button": "Let's go!"
+		}
+	},
+	"header": {
+		"home": "Home",
+		"dashboard": "Dashboard",
+		"summary": "Summary",
+		"redirection": "Redirection",
+		"manager": "Link Manager"
+	},
+	"navigation": {
+		"home": "Return to homepage",
+		"cookies": "Cookie management",
+		"light_theme": "Switch to light theme",
+		"dark_theme": "Switch to dark theme",
+		"support": "Support the project"
+	},
+	"dashboard": {
+		"title": "Let's get started!",
+		"subtitle": "Your link is waiting for you.",
+		"description": "You can now shape the behavior of your shortened link by customizing it to your needs and preferences.",
+		"hint": "You can modify all settings of your link at any time, even after its creation.",
+		"url_label": "URL to shorten",
+		"url_description": "Your URL must start with <strong>http://</strong> or <strong>https://</strong> and must be publicly accessible. Other protocols are ignored for security reasons.",
+		"slug_label": "Custom slug",
+		"slug_description": "A slug is a string that uniquely identifies a resource on the Internet. You have the option to customize your link's slug to make it easier to remember.",
+		"expiration_label": "Expiration date",
+		"expiration_description": "Your link will be automatically <strong>disabled</strong> and <strong>deleted</strong> after this date. The current timezone in use is <strong>{offset}</strong> ({timezone}).",
+		"submit_button": "Create a new short URL",
+		"steps": {
+			"fetch_recaptcha": "Fetching the reCAPTCHA token...",
+			"check_recaptcha": "Verifying the reCAPTCHA token...",
+			"creation_request": "Submitting the shortcut creation request...",
+			"summary_redirect": "Redirecting to the summary..."
+		},
+		"categories": {
+			"recommended_label": "Recommended",
+			"experimental_label": "Experimental",
+			"security": {
+				"title": "Protection and security",
+				"description": "These settings allow you to secure access to your link for <danger>you</danger> and <danger>your visitors</danger>.",
+				"warning_label": "Caution required",
+				"warning_description": "Some settings may make your link inaccessible. Please configure them carefully.",
+				"options": {
+					"password": {
+					"label": "Enable password protection",
+					"description": "Visitors will have to enter a password that you define to access your link. This measure secures your link and prevents unauthorized access."
+					},
+					"recaptcha": {
+					"label": "Enable protection via Google reCAPTCHA",
+					"description": "Visitors will need to solve a reCAPTCHA challenge to access your link. This measure helps protect your link from bots and malware, ensuring enhanced security."
+					},
+					"proxy": {
+					"label": "Route through a proxy server",
+					"description": "Access to your link will be routed through a proxy server, allowing you to bypass restrictions on certain networks while protecting your IP address from being tracked online."
+					},
+					"api": {
+					"label": "Enable API management",
+					"description": "Your link can be managed remotely via an API, allowing you to control access, settings, and view its statistics."
+					}
+				}
+			},
+			"statistics": {
+				"title": "Statistics and tracking",
+				"description": "These settings allow you to <success>track</success> your link's performance and <success>analyze</success> its audience.",
+				"warning_label": "Important note",
+				"warning_description": "Depending on your geographic location, some settings may trigger the need for additional consent from your visitors when accessing the link.",
+				"options": {
+					"access_count": {
+						"label": "Count accesses",
+						"description": "The number of accesses will be recorded and displayed in your link management statistics, allowing you to track its popularity and audience."
+					},
+					"visitor_data": {
+						"label": "Collect visitor data",
+						"description": "Visitors' browser data will be collected and displayed in your link management statistics, providing you with a detailed analysis of their activity."
+					}
+				}
+			},
+			"performance": {
+				"title": "Performance and optimization",
+				"description": "These settings allow you to <warning>boost</warning> your link's loading speed and <warning>enhance</warning> the user experience.",
+				"options": {
+					"cache": {
+						"label": "Page caching",
+						"description": "When your link is created, the target page will be cached and served to visitors, speeding up page loading."
+					},
+					"domain": {
+						"label": "Use a custom domain",
+						"description": "Your link will be accessible via a custom domain that you configure, which will enhance your online identity and boost visitor trust."
+					}
+				}
+			}
+		}
+	},
+	"summary": {
+		"title": "Thank you!",
+		"subtitle": "Your link is ready to be shared.",
+		"description": "Below you'll find a summary of the information, settings, and available actions for your shortened link.",
+		"hint": "Your shortened link was created on {createDate}{isUpdated, select, true { and updated on {updateDate}} other {}}.",
+		"qr_code": "QR Code for your shortened link",
+		"links_label": "Available links",
+		"links_description": "These URLs are available for the entire lifespan of your shortened link.<br></br>You can use them without restrictions.",
+		"actions": {
+			"title": "Available actions",
+			"wip": "These options are currently under development. They will be available soon.",
+			"administration": "Administration",
+			"statistics": "Statistics",
+			"regenerate": "Regenerate",
+			"remove": "Delete"
+		}
+	},
+	"redirect": {
+		"title": "Just a moment...",
+		"subtitle": "You are being redirected to the requested page.",
+		"description": "Please note that you are being redirected to another webpage outside of Raven Url Shortener. <strong>This page is not hosted by us, and we are not responsible for its content</strong>.",
+		"hint": "This shortened link was created on {createDate}{isUpdated, select, true { and updated on {updateDate}} other {}}.",
+		"redirection": "You are being redirected to:",
+		"accept": "Accept redirection",
+		"report": "Report this shortened link"
+	},
+	"footer": {
+		"made_with_love": "Made with ❤️ by",
+		"rights_reserved": "All rights reserved",
+		"recaptcha_protected": "This site is protected by reCAPTCHA and the Google <a1>Privacy Policy</a1> and <a2>Terms of Service</a2> apply."
+	},
+	"errors": {
+		"recaptcha": {
+			"missing_or_invalid": "The reCAPTCHA token you provided is missing or invalid. Please try again.",
+			"score_invalid": "The reCAPTCHA score you obtained is invalid. Please try again.",
+			"check_failed": "The reCAPTCHA token verification failed. Please try again."
+		},
+		"slug": {
+			"missing_or_invalid": "The custom slug is missing or invalid. Please try again.",
+			"check_failed": "The custom slug verification failed. Please try again."
+		},
+		"generic_unknown": "An unknown error occurred while processing your request. Please try again.",
+		"already_used_slug": "The custom slug you chose is already used by another link. Please choose another one.",
+		"duplicated_slug": "The slug you chose is already used by another link. Please choose another one.",
+		"invalid_url": "The URL you entered is invalid. Please check that it starts with <strong>http://</strong> or <strong>https://</strong> and that it is publicly accessible.",
+		"missing_url": "The URL you entered is missing. Please provide it to continue.",
+		"invalid_slug": "The slug you entered is invalid. Please ensure it contains only alphanumeric characters and hyphens.",
+		"too_short_slug": "The slug you entered is too short. Please choose a longer one.",
+		"too_long_slug": "The slug you entered is too long. Please choose a shorter one.",
+		"invalid_expiration": "The expiration date you entered is invalid."
+	},
 	"consentModal": {
 		"title": "Do you want a cookie? 🍪",
-		"footer": "<a href=\"/legal/privacy\" target=\"_blank\">Privacy Policy</a><a href=\"/legal/terms\" target=\"_blank\">Terms of Service</a>",
+		"footer": "<a href=\"/legal\" target=\"blank\">Legal notices</a>",
 		"description": "Our website uses tracking cookies to understand how you interact with it. The tracking will be enabled only if you accept explicitly.",
 		"acceptAllBtn": "Accept all",
 		"acceptNecessaryBtn": "Reject all",
