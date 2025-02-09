@@ -5,6 +5,7 @@
 "use server";
 
 import { logger } from "@/utilities/pino";
+import { getTranslations } from "next-intl/server";
 import { captureException } from "@sentry/nextjs";
 import type { LinkProperties } from "@/interfaces/LinkProperties";
 import type { ErrorProperties } from "@/interfaces/ErrorProperties";
@@ -26,6 +27,7 @@ export async function createLink( data: FormData )
 	);
 
 	// Envoi de la requête HTTP de création d'un nouveau raccourci.
+	const messages = await getTranslations();
 	const response = await fetch( `${ process.env.NEXT_PUBLIC_BACKEND_URL }/api/link`, {
 		body: data,
 		method: "POST"
@@ -49,12 +51,21 @@ export async function createLink( data: FormData )
 			};
 		}
 
-		// En cas d'erreur lors de la création du raccourci,
+		// En cas d'erreur lors de la création du raccourci.
+		if ( "errors" in json && json.errors )
+		{
+			const keys = Object.keys( json.errors );
+			const error = json.errors[ keys[ 0 ] ];
+
+			return {
+				state: false,
+				message: messages( `errors.${ error[ 0 ].code }` )
+			};
+		}
+
 		return {
 			state: false,
-			message: "message" in json
-				? json.message
-				: "Une erreur est survenue lors de la création du raccourci."
+			message: messages( "errors.generic_unknown" )
 		};
 	}
 	catch ( error )
@@ -70,7 +81,7 @@ export async function createLink( data: FormData )
 
 		return {
 			state: false,
-			message: "Une erreur est survenue lors de la création du raccourci."
+			message: messages( "errors.generic_unknown" )
 		};
 	}
 }

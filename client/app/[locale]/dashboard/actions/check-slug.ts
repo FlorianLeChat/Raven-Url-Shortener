@@ -5,17 +5,20 @@
 "use server";
 
 import { logger } from "@/utilities/pino";
+import { getTranslations } from "next-intl/server";
 import { captureException } from "@sentry/nextjs";
 import type { ErrorProperties } from "@/interfaces/ErrorProperties";
 
 export async function checkSlug( slug?: string )
 {
 	// Vérification de la validité du slug personnalisé.
+	const messages = await getTranslations();
+
 	if ( !slug )
 	{
 		return {
 			state: false,
-			message: "Le slug personnalisé est manquant ou invalide."
+			message: messages( "errors.slug.missing_or_invalid" )
 		};
 	}
 
@@ -30,9 +33,7 @@ export async function checkSlug( slug?: string )
 
 	try
 	{
-		const json = ( await response.json() ) as
-			| { available: boolean }
-			| ErrorProperties;
+		const json = ( await response.json() ) as | { available: boolean } | ErrorProperties;
 
 		logger.info(
 			{ source: __dirname, json },
@@ -49,11 +50,20 @@ export async function checkSlug( slug?: string )
 		}
 
 		// En cas d'erreur lors de la récupération de la disponibilité du slug.
+		if ( "errors" in json && json.errors )
+		{
+			const keys = Object.keys( json.errors );
+			const error = json.errors[ keys[ 0 ] ];
+
+			return {
+				state: false,
+				message: messages( `errors.${ error[ 0 ].code }` )
+			};
+		}
+
 		return {
 			state: false,
-			message: "message" in json
-				? json.message
-				: "Une erreur est survenue lors de la récupération de la disponibilité du slug."
+			message: messages( "errors.slug.check_failed" )
 		};
 	}
 	catch ( error )
@@ -69,7 +79,7 @@ export async function checkSlug( slug?: string )
 
 		return {
 			state: false,
-			message: "Une erreur est survenue lors de la récupération de la disponibilité du slug."
+			message: messages( "errors.slug.check_failed" )
 		};
 	}
 }
