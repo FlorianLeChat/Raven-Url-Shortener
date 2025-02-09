@@ -5,6 +5,7 @@ namespace App\Infrastructure\EventListener;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use App\Infrastructure\Exception\DataValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 /**
@@ -27,13 +28,8 @@ final class ExceptionListener
 	public function __invoke(ExceptionEvent $event): void
 	{
 		// Génération de la réponse JSON.
+		$response = new JsonResponse();
 		$exception = $event->getThrowable();
-		$response = new JsonResponse([
-			"code" => $exception->getCode(),
-			"message" => $exception->getMessage()
-		]);
-
-		\Sentry\captureException($exception);
 
 		$this->logger->error($response->getContent(), [
 			"file" => $exception->getFile(),
@@ -43,7 +39,18 @@ final class ExceptionListener
 
 		if ($exception instanceof HttpExceptionInterface)
 		{
-			// Exception HTTP.
+			// Exception HTTP standard ou dérivée.
+			$data = [
+				"code" => $exception->getStatusCode(),
+				"message" => $exception->getMessage()
+			];
+
+			if ($exception instanceof DataValidationException)
+			{
+				$data["errors"] = $exception->getViolations();
+			}
+
+			$response->setData($data);
 			$response->setStatusCode($exception->getStatusCode());
 			$response->headers->replace($exception->getHeaders());
 			$response->headers->set("Content-Type", "application/json");
@@ -51,6 +58,11 @@ final class ExceptionListener
 		else
 		{
 			// Exception non gérée.
+			$response->setData([
+				"code" => JsonResponse::HTTP_INTERNAL_SERVER_ERROR,
+				"message" => $exception->getMessage()
+			]);
+
 			$response->setStatusCode(JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
 		}
 
