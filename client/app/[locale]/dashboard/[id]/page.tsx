@@ -5,14 +5,29 @@
 // Importation des dépendances.
 import qrCode from "qrcode";
 import { lazy } from "react";
-import { getDomain } from "@/utilities/server";
-import { setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
 import { redirect, RedirectType } from "next/navigation";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+
+// Importation des fonctions utilitaires.
+import { getDomain } from "@/utilities/server";
+import { fetchMetadata } from "@/utilities/metadata";
 import { getLinkDetails } from "../actions/get-link-details";
 
 // Importation des composants.
 const ActionButtons = lazy( () => import( "../components/action-buttons" ) );
 const SummaryContainer = lazy( () => import( "../components/summary-container" ) );
+
+// Déclaration des propriétés de la page.
+export async function generateMetadata(): Promise<Metadata>
+{
+	const metadata = await fetchMetadata();
+	const messages = await getTranslations();
+
+	return {
+		title: `${ messages( "header.summary" ) } – ${ metadata.title }`
+	};
+}
 
 // Affichage de la page.
 export default async function Page( {
@@ -28,6 +43,7 @@ export default async function Page( {
 
 	// Déclaration des constantes.
 	const details = await getLinkDetails( id );
+	const messages = await getTranslations();
 
 	// Vérification de l'état de la réponse
 	//  pour afficher le message d'erreur.
@@ -47,17 +63,15 @@ export default async function Page( {
 			{/* En-tête de la page */}
 			<header className="container mx-auto max-w-[1440px] p-4 md:p-8">
 				<h1 className="inline bg-gradient-to-b from-[#FF72E1] to-[#F54C7A] bg-clip-text text-4xl font-semibold tracking-tight text-transparent lg:text-5xl">
-					Merci !
+					{messages( "summary.title" )}
 				</h1>
 
 				<h2 className="mt-2 text-3xl font-semibold tracking-tight lg:text-4xl">
-					Votre lien est prêt pour être distribué.
+					{messages( "summary.subtitle" )}
 				</h2>
 
 				<p className="my-2 w-full max-w-full text-lg font-normal text-default-500 md:w-1/2 lg:text-xl">
-					Vous retrouverez ci-dessous un récapitulatif des
-					informations, des paramètres et des actions possibles pour
-					votre lien raccourci.
+					{messages( "summary.description" )}
 				</p>
 			</header>
 

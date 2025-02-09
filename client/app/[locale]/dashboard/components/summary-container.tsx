@@ -6,10 +6,10 @@
 
 import { lazy } from "react";
 import NextImage from "next/image";
-import { useLocale } from "next-intl";
 import { formatDate } from "@/utilities/date";
 import { CircleCheckBig } from "lucide-react";
 import type { LinkProperties } from "@/interfaces/LinkProperties";
+import { useLocale, useTranslations } from "next-intl";
 import { Card, Image, Snippet, CardBody, CardHeader } from "@heroui/react";
 
 const SummaryActions = lazy( () => import( "./summary-actions" ) );
@@ -21,24 +21,20 @@ export default function SummaryContainer( {
 {
 	// Déclaration des variables d'état.
 	const locale = useLocale();
+	const messages = useTranslations( "summary" );
 
 	// Dates de création et de dernière mise à jour du lien.
 	const createDate = formatDate( new Date( details.createdAt.date ), locale );
 	const updateDate = details.updatedAt?.date
 		? formatDate( new Date( details.updatedAt.date ), locale )
-		: "jamais";
+		: undefined;
 
 	// Message contenant les dates de création et de mise à jour.
-	let dateMessage = `Votre lien raccourci a été créé le ${ createDate }`;
-
-	if ( details.updatedAt?.date )
-	{
-		dateMessage += `, mis à jour le ${ updateDate }.`;
-	}
-	else
-	{
-		dateMessage += ".";
-	}
+	const dateMessage = messages( "hint", {
+		isUpdated: !!updateDate,
+		createDate,
+		updateDate
+	} );
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -61,7 +57,7 @@ export default function SummaryContainer( {
 				<Image
 					as={NextImage}
 					src={details.qrCode ?? ""}
-					alt="Code QR de votre lien raccourci"
+					alt={messages( "qr_code" )}
 					width={200}
 					height={200}
 					className="max-h-[200px] min-h-[200px] min-w-[200px] max-w-[200px]"
@@ -70,7 +66,7 @@ export default function SummaryContainer( {
 				{/* Liens de partage */}
 				<div className="flex max-w-full flex-col gap-3">
 					<h3 className="text-xl font-semibold">
-						Liens à votre disposition
+						{messages( "links_label" )}
 					</h3>
 
 					<Snippet size="lg" className="overflow-auto" hideSymbol>
@@ -82,10 +78,9 @@ export default function SummaryContainer( {
 					</Snippet>
 
 					<p className="text-sm text-default-500">
-						Ces liens Internet sont disponibles pour toute la durée
-						de vie de votre lien raccourci.
-						<br />
-						Vous pouvez les utiliser sans restriction.
+						{messages.rich( "links_description", {
+							br: () => <br />
+						} )}
 					</p>
 				</div>
 
