@@ -61,6 +61,8 @@ services:
                 - action: sync
                   path: .
                   target: /usr/src/app
+        volumes:
+            - ./client/logs:/usr/src/app/logs
         depends_on:
             - php
         healthcheck:
@@ -82,6 +84,8 @@ services:
                 - action: sync
                   path: ./server
                   target: /var/www/html
+        volumes:
+            - ./server/logs:/var/www/html/var/log
         depends_on:
             - redis
             - postgres
