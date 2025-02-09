@@ -4,11 +4,15 @@
 
 "use client";
 
+import { useTranslations } from "next-intl";
 import { ChartLine, Shield, Zap } from "lucide-react";
 import { Chip, Alert, Checkbox, Accordion, AccordionItem } from "@heroui/react";
 
 export default function CheckboxOptions()
 {
+	// Déclaration des variables d'état.
+	const messages = useTranslations( "dashboard.categories" );
+
 	// Affichage du rendu HTML du composant.
 	return (
 		<Accordion
@@ -21,45 +25,39 @@ export default function CheckboxOptions()
 			{/* Protection et sécurité */}
 			<AccordionItem
 				key="1"
-				title="Protection et sécurité"
-				subtitle={(
-					<>
-						Ces paramètres vous permettent de sécuriser
-						l&lsquo;accès à votre lien pour{" "}
-						<span className="text-danger">vous</span> et{" "}
-						<span className="text-danger">vos visiteurs</span>.
-					</>
-				)}
+				title={messages( "security.title" )}
+				subtitle={messages.rich( "security.description", {
+					danger: ( text ) => (
+						<span className="text-danger">{text}</span>
+					)
+				} )}
 				className="bg-content2/50 shadow-md"
-				aria-label="Protection et sécurité"
+				aria-label={messages( "security.title" )}
 				startContent={<Shield className="mr-1 text-danger" />}
 			>
 				<Alert
 					color="danger"
-					title={<strong>Attention requise</strong>}
-					description="Certains paramètres peuvent rendre votre lien inaccessible. Veuillez les configurer avec précaution."
+					title={<strong>{messages( "security.warning_label" )}</strong>}
+					description={messages( "security.warning_description" )}
 				/>
 
 				{/* Sécurisation par mot de passe */}
 				<Checkbox
 					name="password-protection"
 					className="w-100 m-0 mt-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
-					aria-label="Activer la protection par mot de passe"
+					aria-label={messages( "security.options.password.label" )}
 				>
 					<div className="flex justify-between gap-2">
 						<p>
-							Activer la protection par mot de passe
+							{messages( "security.options.password.label" )}
 							<br />
 							<small className="inline-block text-tiny leading-5 text-default-500">
-								Les visiteurs devront saisir un mot de passe que
-								vous aurez défini pour accéder à votre lien.
-								Cette mesure permet de sécuriser votre lien et
-								de prévenir tout accès non autorisé.
+								{messages( "security.options.password.description" )}
 							</small>
 						</p>
 
 						<Chip color="success" size="sm" variant="flat">
-							Recommandé
+							{messages( "recommended_label" )}
 						</Chip>
 					</div>
 				</Checkbox>
@@ -68,23 +66,20 @@ export default function CheckboxOptions()
 				<Checkbox
 					name="captcha-protection"
 					className="w-100 m-0 my-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
-					aria-label="Activer la protection via Google reCAPTCHA"
+					aria-label={messages( "security.options.recaptcha.label" )}
+					isDisabled={process.env.NEXT_PUBLIC_RECAPTCHA_ENABLED !== "true"}
 				>
 					<div className="flex justify-between gap-2">
 						<p>
-							Activer la protection via Google reCAPTCHA
+							{messages( "security.options.recaptcha.label" )}
 							<br />
 							<small className="inline-block text-tiny leading-5 text-default-500">
-								Les visiteurs devront résoudre un défi reCAPTCHA
-								pour accéder à votre lien. Cette mesure aide à
-								protéger votre lien contre les robots et les
-								logiciels malveillants, garantissant ainsi une
-								sécurité accrue.
+								{messages( "security.options.recaptcha.description" )}
 							</small>
 						</p>
 
 						<Chip color="success" size="sm" variant="flat">
-							Recommandé
+							{messages( "recommended_label" )}
 						</Chip>
 					</div>
 				</Checkbox>
@@ -93,16 +88,12 @@ export default function CheckboxOptions()
 				<Checkbox
 					name="proxy-server"
 					className="w-100 m-0 mb-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
-					aria-label="Compter le nombre de clics et de vues"
+					aria-label={messages( "security.options.proxy.label" )}
 				>
-					<p>Acheminer via un serveur mandataire (proxy)</p>
+					<p>{messages( "security.options.proxy.label" )}</p>
 
 					<small className="inline-block text-tiny leading-5 text-default-500">
-						L&lsquo;accès à votre lien passera par un serveur
-						passerelle, ce qui permettra de contourner les
-						restrictions de certains réseaux tout en protégeant
-						votre adresse IP contre le suivi de votre activité en
-						ligne.
+						{messages( "security.options.proxy.description" )}
 					</small>
 				</Checkbox>
 
@@ -110,24 +101,19 @@ export default function CheckboxOptions()
 				<Checkbox
 					name="api-management"
 					className="w-100 m-0 mb-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
-					aria-label="Gérer le lien via une API"
+					aria-label={messages( "security.options.api.label" )}
 				>
 					<div className="flex justify-between gap-2">
 						<p>
-							Activer la gestion via une API
+							{messages( "security.options.api.label" )}
 							<br />
 							<small className="inline-block text-tiny leading-5 text-default-500">
-								La gestion de votre lien pourra être effectuée à
-								distance à l&lsquo;aide d&lsquo;une interface de
-								programmation d&lsquo;applications (API), vous
-								permettant ainsi de contrôler son accès, ses
-								paramètres et d&lsquo;accéder à ses
-								statistiques.
+								{messages( "security.options.api.description" )}
 							</small>
 						</p>
 
 						<Chip color="secondary" size="sm" variant="flat">
-							Expérimental
+							{messages( "experimental_label" )}
 						</Chip>
 					</div>
 				</Checkbox>
@@ -136,39 +122,32 @@ export default function CheckboxOptions()
 			{/* Suivi et statistiques */}
 			<AccordionItem
 				key="2"
-				title="Suivi et statistiques"
-				subtitle={(
-					<>
-						Ces paramètres permettent de{" "}
-						<span className="text-success">suivre</span> les
-						performances de votre lien et d&lsquo;en{" "}
-						<span className="text-success">analyser</span> son
-						audience.
-					</>
-				)}
+				title={messages( "statistics.title" )}
+				subtitle={messages.rich( "statistics.description", {
+					success: ( text ) => (
+						<span className="text-success">{text}</span>
+					)
+				} )}
 				className="bg-content2/50 shadow-md"
-				aria-label="Suivi et statistiques"
+				aria-label={messages( "statistics.title" )}
 				startContent={<ChartLine className="mr-1 text-success" />}
 			>
 				<Alert
 					color="warning"
-					title={<strong>Note importante</strong>}
-					description="En fonction de votre position géographique, certains paramètres peuvent déclencher l'acceptation de consentements supplémentaires lors de l'accès au lien par vos visiteurs."
+					title={<strong>{messages( "statistics.warning_label" )}</strong>}
+					description={messages( "statistics.warning_description" )}
 				/>
 
 				{/* Comptage du nombre d'accès */}
 				<Checkbox
 					name="clicks-views"
 					className="w-100 m-0 mt-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
-					aria-label="Compter le nombre de clics et de vues"
+					aria-label={messages( "statistics.options.access_count.label" )}
 				>
-					<p>Compter le nombre d&lsquo;accès</p>
+					<p>{messages( "statistics.options.access_count.label" )}</p>
 
 					<small className="inline-block text-tiny leading-5 text-default-500">
-						Le nombre d&lsquo;accès sera enregistré et affiché dans
-						les statistiques de gestion de votre lien, vous
-						permettant ainsi de suivre sa popularité et son
-						audience.
+						{messages( "statistics.options.access_count.description" )}
 					</small>
 				</Checkbox>
 
@@ -176,15 +155,12 @@ export default function CheckboxOptions()
 				<Checkbox
 					name="client-data"
 					className="w-100 m-0 my-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
-					aria-label="Récupérer les données des visiteurs"
+					aria-label={messages( "statistics.options.visitor_data.label" )}
 				>
-					<p>Récupérer les données des visiteurs</p>
+					<p>{messages( "statistics.options.visitor_data.label" )}</p>
 
 					<small className="inline-block text-tiny leading-5 text-default-500">
-						Les données des navigateurs des visiteurs seront
-						collectées et affichées dans les statistiques de gestion
-						de votre lien, vous offrant une analyse détaillée de
-						leur activité.
+						{messages( "statistics.options.visitor_data.description" )}
 					</small>
 				</Checkbox>
 			</AccordionItem>
@@ -192,40 +168,33 @@ export default function CheckboxOptions()
 			{/* Performance et optimisation */}
 			<AccordionItem
 				key="3"
-				title="Performance et optimisation"
-				subtitle={(
-					<>
-						Ces paramètres permettent de{" "}
-						<span className="text-warning">booster</span> la vitesse
-						de chargement de votre lien et{" "}
-						<span className="text-warning">d&lsquo;optimiser</span>{" "}
-						son rendement.
-					</>
-				)}
+				title={messages( "performance.title" )}
+				subtitle={messages.rich( "performance.description", {
+					warning: ( text ) => (
+						<span className="text-warning">{text}</span>
+					)
+				} )}
 				className="bg-content2/50 shadow-md"
-				aria-label="Performance et optimisation"
+				aria-label={messages( "performance.title" )}
 				startContent={<Zap className="mr-1 text-warning" />}
 			>
 				{/* Mise en cache de la page */}
 				<Checkbox
 					name="cache-page"
 					className="w-100 m-0 mb-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
-					aria-label="Mettre en cache la page"
+					aria-label={messages( "performance.options.cache.label" )}
 				>
 					<div className="flex justify-between gap-2">
 						<p>
-							Mise en cache de la page
+							{messages( "performance.options.cache.label" )}
 							<br />
 							<small className="inline-block text-tiny leading-5 text-default-500">
-								Lors de la création de votre lien, la page cible
-								sera mise en cache et sera servie pour les
-								visiteurs, ce qui permettra d&lsquo;accélérer le
-								chargement de la page.
+								{messages( "performance.options.cache.description" )}
 							</small>
 						</p>
 
 						<Chip color="secondary" size="sm" variant="flat">
-							Expérimental
+							{messages( "experimental_label" )}
 						</Chip>
 					</div>
 				</Checkbox>

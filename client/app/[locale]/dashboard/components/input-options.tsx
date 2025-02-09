@@ -5,6 +5,7 @@
 "use client";
 
 import { Link2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { lazy, useContext } from "react";
 import { DatePicker, Input } from "@heroui/react";
 import { getLocalTimeZone, now } from "@internationalized/date";
@@ -20,6 +21,7 @@ export default function InputOptions()
 	const maxTime = dateNow.add( { years: 1 } );
 
 	// Déclaration des variables d'état.
+	const messages = useTranslations( "dashboard" );
 	const serverData = useContext( ServerContext );
 
 	// Affichage du rendu HTML du composant.
@@ -31,7 +33,7 @@ export default function InputOptions()
 				size="lg"
 				type="url"
 				name="url"
-				label="Lien Internet à raccourcir"
+				label={messages( "url_label" )}
 				pattern="https?://.*"
 				required
 				className="w-100"
@@ -40,10 +42,9 @@ export default function InputOptions()
 				placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
 				description={(
 					<p className="text-default-500">
-						Votre lien doit commencer par <strong>http://</strong>{" "}
-						ou <strong>https://</strong> et doit être accessible
-						publiquement. Les autres protocoles sont ignorés pour
-						des raisons de sécurité.
+						{messages.rich( "url_description", {
+							strong: ( chunks ) => <strong>{chunks}</strong>
+						} )}
 					</p>
 				)}
 				labelPlacement="outside"
@@ -58,17 +59,17 @@ export default function InputOptions()
 				as="li"
 				size="lg"
 				name="expiration"
-				label="Date d'expiration"
+				label={messages( "expiration_label" )}
 				minValue={minTime}
 				maxValue={maxTime}
 				className="!pb-9"
 				description={(
 					<p className="text-default-500">
-						Votre lien sera automatiquement{" "}
-						<strong>désactivé</strong> et <strong>supprimé</strong>{" "}
-						après cette date. Le fuseau horaire actuellement utilisé
-						est <strong>{serverData?.offset}</strong> (
-						{serverData?.timezone}).
+						{messages.rich( "expiration_description", {
+							strong: ( chunks ) => <strong>{chunks}</strong>,
+							offset: serverData?.offset,
+							timezone: serverData?.timezone
+						} )}
 					</p>
 				)}
 				labelPlacement="outside"

@@ -15,6 +15,7 @@ import { Form,
 	CardFooter } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { I18nProvider } from "@react-aria/i18n";
+import { useTranslations } from "next-intl";
 import { Info, WandSparkles } from "lucide-react";
 import { lazy, useRef, useState, type FormEvent } from "react";
 
@@ -29,7 +30,9 @@ export default function FormContainer()
 	// Déclaration des variables d'état.
 	const router = useRouter();
 	const submitButton = useRef<HTMLButtonElement | null>( null );
-	const [ stepName, setStepName ] = useState( "Récupération du jeton reCAPTCHA..." );
+	const footerMessages = useTranslations( "footer" );
+	const dashboardMessages = useTranslations( "dashboard" );
+	const [ stepName, setStepName ] = useState( dashboardMessages( "steps.fetch_recaptcha" ) );
 	const [ isLoading, setIsLoading ] = useState( false );
 
 	// Récupération du jeton d'authentification reCAPTCHA.
@@ -99,7 +102,7 @@ export default function FormContainer()
 	const resetFormState = () =>
 	{
 		setIsLoading( false );
-		setStepName( "Récupération d'un jeton reCAPTCHA..." );
+		setStepName( dashboardMessages( "steps.fetch_recaptcha" ) );
 	};
 
 	// Requête HTTP de création d'un nouveau raccourci
@@ -115,7 +118,7 @@ export default function FormContainer()
 		const data = new FormData( event.currentTarget );
 		const token = ( await getRecaptcha() ) as string | undefined;
 
-		setStepName( "Vérification du jeton reCAPTCHA..." );
+		setStepName( dashboardMessages( "steps.check_recaptcha" ) );
 
 		const recaptchaResponse = await checkRecaptcha( token );
 
@@ -127,7 +130,7 @@ export default function FormContainer()
 		}
 
 		// Requête de création d'un nouveau raccourci.
-		setStepName( "Requête de création du raccourci..." );
+		setStepName( dashboardMessages( "steps.creation_request" ) );
 
 		const createState = await createLink( data );
 
@@ -141,7 +144,7 @@ export default function FormContainer()
 		// Lancement des confettis et redirection.
 		await throwConfetti();
 
-		setStepName( "Redirection vers le récapitulatif..." );
+		setStepName( dashboardMessages( "steps.summary_redirect" ) );
 
 		router.push( `/dashboard/${ createState.data.id }` );
 	};
@@ -162,8 +165,7 @@ export default function FormContainer()
 				>
 					{/* Astuce d'utilisation */}
 					<Info className="inline-block min-w-[24px]" />
-					Vous pourrez à tout moment modifier l&lsquo;ensemble des
-					paramètres de votre lien, même après sa création.
+					{dashboardMessages( "hint" )}
 				</CardHeader>
 
 				<CardBody className="p-4 max-md:gap-6 lg:flex-row">
@@ -191,7 +193,7 @@ export default function FormContainer()
 						isLoading={isLoading}
 						startContent={isLoading ? null : <WandSparkles />}
 					>
-						Créer un nouveau raccourci
+						{dashboardMessages( "submit_button" )}
 					</Button>
 
 					{/* Barre de progression */}
@@ -206,7 +208,7 @@ export default function FormContainer()
 
 					{/* Carte du créateur */}
 					<div className="mr-1 flex items-center gap-2">
-						Fait avec ❤️ par{" "}
+						{footerMessages( "made_with_love" )}{" "}
 						<User
 							name="Florian Trayon"
 							description={(

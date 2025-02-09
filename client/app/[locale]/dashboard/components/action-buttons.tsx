@@ -5,6 +5,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { showPreferences } from "vanilla-cookieconsent";
 import { useEffect, useState } from "react";
 import { ButtonGroup, Button, Link } from "@heroui/react";
@@ -14,6 +15,7 @@ export default function ActionButtons()
 {
 	// Déclaration des variables d'état.
 	const router = useRouter();
+	const messages = useTranslations( "navigation" );
 	const [ theme, setTheme ] = useState( "N/A" );
 
 	// Mise à jour du thème de l'interface utilisateur.
@@ -45,32 +47,30 @@ export default function ActionButtons()
 				as={Link}
 				variant="flat"
 				onPress={() => router.push( "/" )}
-				aria-label="Retour à l'accueil"
+				aria-label={messages( "home" )}
 				startContent={<House />}
 			>
-				<span className="hidden md:inline">
-					Retour à l&lsquo;accueil
-				</span>
+				<span className="hidden md:inline">{messages( "home" )}</span>
 			</Button>
 
 			<Button
 				variant="flat"
 				onPress={() => showPreferences()}
-				aria-label="Gestion des cookies"
+				aria-label={messages( "cookies" )}
 				startContent={<Cookie />}
 			>
-				<span className="hidden md:inline">Gestion des cookies</span>
+				<span className="hidden md:inline">{messages( "cookies" )}</span>
 			</Button>
 
 			<Button
 				variant="flat"
 				onPress={toggleTheme}
 				isDisabled={theme === "N/A"}
-				aria-label={`Basculer en thème ${ theme === "dark" ? "clair" : "sombre" }`}
+				aria-label={messages( `${ theme === "dark" ? "light" : "dark" }_theme` )}
 				startContent={<SunMoon />}
 			>
 				<span className="hidden md:inline">
-					Basculer en thème {theme === "dark" ? "clair" : "sombre"}
+					{messages( `${ theme === "dark" ? "light" : "dark" }_theme` )}
 				</span>
 			</Button>
 
@@ -82,11 +82,11 @@ export default function ActionButtons()
 					"noopener noreferrer"
 				)}
 				variant="flat"
-				aria-label="Soutenir le projet"
+				aria-label={messages( "support" )}
 				startContent={<HandHelping />}
 				showAnchorIcon
 			>
-				<span className="hidden md:inline">Soutenir le projet</span>
+				<span className="hidden md:inline">{messages( "support" )}</span>
 			</Button>
 		</ButtonGroup>
 	);
