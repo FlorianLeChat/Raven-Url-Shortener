@@ -7,11 +7,13 @@
 import { Button } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function GatewayButton()
 {
 	// Déclaration des variables d'état.
 	const router = useRouter();
+	const messages = useTranslations( "index.ready" );
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -22,7 +24,7 @@ export default function GatewayButton()
 			variant="shadow"
 			endContent={<ArrowRight width={20} height={20} />}
 		>
-			Allons-y&nbsp;!
+			{messages( "button" )}
 		</Button>
 	);
 }
