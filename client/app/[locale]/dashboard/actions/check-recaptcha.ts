@@ -6,16 +6,19 @@
 "use server";
 
 import { logger } from "@/utilities/pino";
+import { getTranslations } from "next-intl/server";
 import type { RecaptchaValidation } from "@/interfaces/RecaptchaValidation";
 
 export async function checkRecaptcha( token?: string )
 {
 	// Vérification de la validité du jeton reCAPTCHA.
+	const messages = await getTranslations();
+
 	if ( !token )
 	{
 		return {
 			state: false,
-			message: "Le jeton reCAPTCHA est manquant ou invalide."
+			message: messages( "errors.recaptcha.missing_or_invalid" )
 		};
 	}
 
@@ -42,7 +45,7 @@ export async function checkRecaptcha( token?: string )
 			//  on bloque la requête courante.
 			return {
 				state: false,
-				message: "La vérification reCAPTCHA a échouée."
+				message: messages( "errors.recaptcha.score_invalid" )
 			};
 		}
 	}
@@ -56,7 +59,7 @@ export async function checkRecaptcha( token?: string )
 
 		return {
 			state: false,
-			message: "Une erreur s'est produite lors de la vérification du jeton reCAPTCHA."
+			message: messages( "errors.recaptcha.check_failed" )
 		};
 	}
 
