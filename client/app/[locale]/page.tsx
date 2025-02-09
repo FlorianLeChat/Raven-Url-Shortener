@@ -5,7 +5,8 @@
 
 // Importation des dépendances.
 import { lazy } from "react";
-import { setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 // Importation de la configuration.
 import { features } from "@/config/features";
@@ -17,6 +18,17 @@ import { fetchMetadata } from "@/utilities/metadata";
 const FeatureCard = lazy( () => import( "./components/feature-card" ) );
 const GatewayButton = lazy( () => import( "./components/gateway-button" ) );
 
+// Déclaration des propriétés de la page.
+export async function generateMetadata(): Promise<Metadata>
+{
+	const metadata = await fetchMetadata();
+	const messages = await getTranslations();
+
+	return {
+		title: `${ messages( "header.home" ) } – ${ metadata.title }`
+	};
+}
+
 // Affichage de la page.
 export default async function Page( {
 	params
@@ -24,13 +36,14 @@ export default async function Page( {
 	params: Promise<{ locale: string }>;
 }> )
 {
-	// Définition des constantes.
-	const metadata = await fetchMetadata();
-
 	// Définition de la langue de la page.
 	const { locale } = await params;
 
 	setRequestLocale( locale );
+
+	// Définition des constantes.
+	const metadata = await fetchMetadata();
+	const messages = await getTranslations();
 
 	// Affichage du rendu HTML de la page.
 	return (
@@ -38,17 +51,15 @@ export default async function Page( {
 			{/* En-tête de la page */}
 			<header className="container mx-auto max-w-[1440px] p-4 md:p-8">
 				<h1 className="inline text-4xl font-semibold tracking-tight lg:text-5xl">
-					Vous êtes sur
+					{messages( "index.title" )}
 				</h1>
 
 				<h2 className="mt-2 bg-gradient-to-b from-[#5EA2EF] to-[#0072F5] bg-clip-text text-4xl font-semibold tracking-tight text-transparent lg:text-5xl">
-					Raven Url Shortener.
+					{metadata.title as string}
 				</h2>
 
 				<p className="my-2 w-full max-w-full text-lg font-normal text-default-500 md:w-1/2 lg:text-xl">
-					Un raccourcisseur de liens Internet simple, sécurisé et
-					entièrement personnalisable, conçu pour protéger votre
-					confidentialité.
+					{messages( "index.description" )}
 				</p>
 
 				{/* Affichage de l'animation du logo vers le dépôt GitHub */}
@@ -87,17 +98,18 @@ export default async function Page( {
 				{/* Présentation des fonctionnalités */}
 				<section className="mb-8">
 					<header className="mb-8">
-						<h1 className="inline text-2xl font-semibold tracking-tight lg:text-3xl">
-							Vous allez&nbsp;
-						</h1>
-
-						<h1 className="inline bg-gradient-to-b from-[#FF72E1] to-[#F54C7A] bg-clip-text text-2xl font-semibold tracking-tight text-transparent lg:text-3xl">
-							adorer&nbsp;
-						</h1>
-
-						<h1 className="inline text-2xl font-semibold tracking-tight lg:text-3xl">
-							notre service.
-						</h1>
+						{messages.rich( "index.features.title", {
+							h1: ( children ) => (
+								<h1 className="inline text-2xl font-semibold tracking-tight lg:text-3xl">
+									{children}
+								</h1>
+							),
+							pink: ( children ) => (
+								<h1 className="inline bg-gradient-to-b from-[#FF72E1] to-[#F54C7A] bg-clip-text text-2xl font-semibold tracking-tight text-transparent lg:text-3xl">
+									{children}
+								</h1>
+							)
+						} )}
 					</header>
 
 					<article className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -105,8 +117,8 @@ export default async function Page( {
 							<FeatureCard
 								key={id}
 								icon={icon}
-								title={title}
-								description={description}
+								title={messages( title )}
+								description={messages( description )}
 							/>
 						) )}
 					</article>
@@ -115,17 +127,18 @@ export default async function Page( {
 				{/* Redirection vers le formulaire de création */}
 				<section className="mb-8">
 					<header className="mb-6">
-						<h1 className="inline text-2xl font-semibold tracking-tight lg:text-3xl">
-							Prêt à&nbsp;
-						</h1>
-
-						<h1 className="inline bg-gradient-to-b from-[#6FEE8D] to-[#17c964] bg-clip-text text-2xl font-semibold tracking-tight text-transparent lg:text-3xl">
-							commencer&nbsp;
-						</h1>
-
-						<h1 className="inline text-2xl font-semibold tracking-tight lg:text-3xl">
-							?
-						</h1>
+						{messages.rich( "index.ready.title", {
+							h1: ( children ) => (
+								<h1 className="inline text-2xl font-semibold tracking-tight lg:text-3xl">
+									{children}
+								</h1>
+							),
+							green: ( children ) => (
+								<h1 className="inline bg-gradient-to-b from-[#6FEE8D] to-[#17c964] bg-clip-text text-2xl font-semibold tracking-tight text-transparent lg:text-3xl">
+									{children}
+								</h1>
+							)
+						} )}
 					</header>
 
 					<GatewayButton />

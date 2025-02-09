@@ -140,6 +140,13 @@ export default async function Layout( {
 						locale={locale}
 						messages={pick(
 							messages,
+							"errors",
+							"footer",
+							"summary",
+							"redirect",
+							"dashboard",
+							"navigation",
+							"index.ready",
 							"consentModal",
 							"preferencesModal"
 						)}
