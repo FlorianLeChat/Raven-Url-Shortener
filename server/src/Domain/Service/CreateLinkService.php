@@ -8,8 +8,8 @@ use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Infrastructure\Repository\LinkRepository;
+use App\Infrastructure\Exception\DataValidationException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 use const App\LOG_FUNCTION;
 
@@ -44,12 +44,15 @@ final class CreateLinkService
 		$violations = $this->validator->validate($link);
 
 		foreach ($violations as $violation) {
-			$errors[$violation->getPropertyPath()][] = $violation->getMessage();
+			$errors[$violation->getPropertyPath()][] = [
+				"code" => $violation->getMessage(),
+				"message" => $violation->getMessage()
+			];
 		}
 
 		if (!empty($errors))
 		{
-			throw new BadRequestHttpException(json_encode($errors));
+			throw new DataValidationException($errors);
 		}
 	}
 
@@ -64,7 +67,12 @@ final class CreateLinkService
 
 		if (!empty($result))
 		{
-			throw new BadRequestHttpException(json_encode(["slug" => "duplicated_slug"]));
+			$response["slug"][] = [
+				"code" => "duplicated_slug",
+				"message" => "This custom slug is already in use by another link.",
+			];
+
+			throw new DataValidationException($response);
 		}
 	}
 
