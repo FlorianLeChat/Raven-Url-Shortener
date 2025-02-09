@@ -29,4 +29,4 @@ USER node
 #  before starting the production server
 RUN npm run build && npm prune --production
 
-CMD ["npm run start"]
+CMD ["npm", "run", "start"]
