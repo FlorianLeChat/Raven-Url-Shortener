@@ -8,6 +8,7 @@ use App\Domain\Service\CreateLinkService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -24,6 +25,7 @@ final class CreateLinkAction extends AbstractController
 	public function __construct(
 		private readonly LoggerInterface $logger,
 		private readonly ValidatorInterface $validator,
+		private readonly HttpClientInterface $httpClient,
 		private readonly EntityManagerInterface $entityManager
 	) {}
 
@@ -35,7 +37,7 @@ final class CreateLinkAction extends AbstractController
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
-		$service = new CreateLinkService($this->logger, $this->validator, $this->entityManager);
+		$service = new CreateLinkService($this->logger, $this->validator, $this->httpClient, $this->entityManager);
 
 		$link = $service->createLink($request);
 
