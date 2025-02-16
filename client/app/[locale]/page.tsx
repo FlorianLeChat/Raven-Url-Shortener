@@ -16,6 +16,7 @@ import { fetchMetadata } from "@/utilities/metadata";
 
 // Importation des composants.
 const FeatureCard = lazy( () => import( "./components/feature-card" ) );
+const LegalConsent = lazy( () => import( "./components/legal-consent" ) );
 const GatewayButton = lazy( () => import( "./components/gateway-button" ) );
 
 // Déclaration des propriétés de la page.
@@ -144,6 +145,9 @@ export default async function Page( {
 					<GatewayButton />
 				</section>
 			</main>
+
+			{/* Consentement de l'utilisateur */}
+			<LegalConsent />
 		</>
 	);
 }

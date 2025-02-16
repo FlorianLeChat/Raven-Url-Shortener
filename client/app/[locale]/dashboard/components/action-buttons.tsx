@@ -9,7 +9,7 @@ import { useTranslations } from "next-intl";
 import { showPreferences } from "vanilla-cookieconsent";
 import { useEffect, useState } from "react";
 import { ButtonGroup, Button, Link } from "@heroui/react";
-import { Cookie, HandHelping, House, SunMoon } from "lucide-react";
+import { Cookie, HandHelping, House, Scale, SunMoon } from "lucide-react";
 
 export default function ActionButtons()
 {
@@ -72,6 +72,16 @@ export default function ActionButtons()
 				<span className="hidden md:inline">
 					{messages( `${ theme === "dark" ? "light" : "dark" }_theme` )}
 				</span>
+			</Button>
+
+			<Button
+				as={Link}
+				onPress={() => router.push( "/legal" )}
+				variant="flat"
+				aria-label={messages( "legal" )}
+				startContent={<Scale />}
+			>
+				<span className="hidden md:inline">{messages( "legal" )}</span>
 			</Button>
 
 			<Button

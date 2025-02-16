@@ -148,6 +148,7 @@ export default async function Layout( {
 							"navigation",
 							"index.ready",
 							"consentModal",
+							"index.consent",
 							"preferencesModal"
 						)}
 						timeZone={process.env.TZ}
