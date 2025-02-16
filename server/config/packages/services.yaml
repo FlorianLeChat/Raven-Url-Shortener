@@ -1,2 +1,0 @@
-parameters:
-    app.timezone: "%env(APP_TIMEZONE)%"
