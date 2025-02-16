@@ -1,4 +1,0 @@
-# Docker volumes
-/docker/postgres/database/
-/docker/pgadmin/files/
-/docker/redis/database/
