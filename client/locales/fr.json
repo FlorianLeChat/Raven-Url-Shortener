@@ -157,7 +157,7 @@
 		"generic_unknown": "Une erreur inconnue s'est produite lors du traitement de votre demande. Veuillez réessayer.",
 		"already_used_slug": "Le slug personnalisé que vous avez choisi est déjà utilisé par un autre lien. Veuillez en choisir un autre.",
 		"duplicated_slug": "Le slug que vous avez choisi est déjà utilisé par un autre lien. Veuillez en choisir un autre.",
-		"invalid_url": "Le lien que vous avez saisi est invalide. Veuillez vérifier qu'il commence par <strong>http://</strong> ou <strong>https://</strong> et qu'il est accessible publiquement.",
+		"invalid_url": "Le lien que vous avez saisi est invalide. Veuillez vérifier qu'il commence par http:// ou https:// et qu'il est accessible publiquement.",
 		"missing_url": "Le lien que vous avez saisi est manquant. Veuillez le renseigner pour continuer.",
 		"invalid_slug": "Le slug que vous avez saisi est invalide. Veuillez vérifier qu'il ne contient que des caractères alphanumériques et des tirets.",
 		"too_short_slug": "Le slug que vous avez saisi est trop court. Veuillez en choisir un plus long.",
