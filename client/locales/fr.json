@@ -17,6 +17,13 @@
 			"description_5": "Notre service propose une grande variétés d'options de personnalisation lors de la création des raccourcis vers vos liens Internet.",
 			"description_6": "Notre API est ouverte à tous les développeurs qui souhaitent intégrer notre service dans leurs applications."
 		},
+		"consent": {
+			"title": "Acceptation des mentions légales",
+			"description": "L'utilisation de ce service est soumise à l'acceptation des mentions légales.",
+			"button": "Consulter nos mentions légales",
+			"accept": "Accepter et continuer",
+			"refuse": "Refuser et fermer"
+		},
 		"ready": {
 			"title": "<h1>Prêt à</h1> <green>commencer</green> <h1>?</h1>",
 			"button": "Allons-y !"
@@ -27,13 +34,15 @@
 		"dashboard": "Tableau de bord",
 		"summary": "Résumé",
 		"redirection": "Redirection",
-		"manager": "Gestionnaire de lien"
+		"manager": "Gestionnaire de lien",
+		"legal": "Mentions légales"
 	},
 	"navigation": {
 		"home": "Retour à la page d'accueil",
 		"cookies": "Gestion des cookies",
 		"light_theme": "Basculer en thème clair",
 		"dark_theme": "Basculer en thème sombre",
+		"legal": "Voir les mentions légales",
 		"support": "Supporter le projet"
 	},
 	"dashboard": {
@@ -139,6 +148,11 @@
 		"accept": "Accepter la redirection",
 		"report": "Signaler ce lien raccourci"
 	},
+	"legal": {
+		"title": "Zone sérieuse ici",
+		"subtitle": "Voici nos mentions légales.",
+		"description": "Les mentions légales sont des informations obligatoires que nous devons vous fournir pour garantir la transparence et la sécurité de notre service."
+	},
 	"footer": {
 		"made_with_love": "Fait avec ❤️ par",
 		"rights_reserved": "Tous droits réservés",
@@ -154,6 +168,7 @@
 			"missing_or_invalid": "Le slug personnalisé est manquant ou invalide. Veuillez réessayer.",
 			"check_failed": "La vérification du slug personnalisé a échoué. Veuillez réessayer."
 		},
+		"consent_required": "Vous devez accepter les mentions légales pour utiliser notre service.",
 		"generic_unknown": "Une erreur inconnue s'est produite lors du traitement de votre demande. Veuillez réessayer.",
 		"already_used_slug": "Le slug personnalisé que vous avez choisi est déjà utilisé par un autre lien. Veuillez en choisir un autre.",
 		"duplicated_slug": "Le slug que vous avez choisi est déjà utilisé par un autre lien. Veuillez en choisir un autre.",

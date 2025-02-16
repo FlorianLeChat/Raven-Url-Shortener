@@ -15,12 +15,25 @@ export default function GatewayButton()
 	const router = useRouter();
 	const messages = useTranslations( "index.ready" );
 
+	// Redirection vers le tableau de bord si le consentement est accepté.
+	const redirectToDashboard = () =>
+	{
+		if ( localStorage.getItem( "NEXT_CONSENT" ) )
+		{
+			router.push( "/dashboard" );
+		}
+		else
+		{
+			window.location.reload();
+		}
+	};
+
 	// Affichage du rendu HTML du composant.
 	return (
 		<Button
 			size="lg"
 			color="success"
-			onPress={() => router.push( "/dashboard" )}
+			onPress={redirectToDashboard}
 			variant="shadow"
 			endContent={<ArrowRight width={20} height={20} />}
 		>

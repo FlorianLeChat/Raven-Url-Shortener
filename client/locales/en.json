@@ -17,6 +17,13 @@
 			"description_5": "Our service offers a wide variety of customization options when creating shortened links for your URLs.",
 			"description_6": "Our API is open to all developers who wish to integrate our service into their applications."
 		},
+		"consent": {
+			"title": "Legal notice agreement",
+			"description": "By using this service, you agree to accept our legal notices.",
+			"button": "Consult our legal notices",
+			"accept": "Accept and continue",
+			"refuse": "Refuse and close"
+		},
 		"ready": {
 			"title": "<h1>Ready to</h1> <green>get started</green> <h1>?</h1>",
 			"button": "Let's go!"
@@ -27,13 +34,15 @@
 		"dashboard": "Dashboard",
 		"summary": "Summary",
 		"redirection": "Redirection",
-		"manager": "Link Manager"
+		"manager": "Link Manager",
+		"legal": "Legal notices"
 	},
 	"navigation": {
 		"home": "Return to homepage",
 		"cookies": "Cookie management",
 		"light_theme": "Switch to light theme",
 		"dark_theme": "Switch to dark theme",
+		"legal": "See legal notices",
 		"support": "Support the project"
 	},
 	"dashboard": {
@@ -139,6 +148,11 @@
 		"accept": "Accept redirection",
 		"report": "Report this shortened link"
 	},
+	"legal": {
+		"title": "Serious zone here",
+		"subtitle": "Below are our legal notices.",
+		"description": "Legal notices are mandatory information which we must provide to guarantee the transparency and security of our service."
+	},
 	"footer": {
 		"made_with_love": "Made with ❤️ by",
 		"rights_reserved": "All rights reserved",
@@ -154,6 +168,7 @@
 			"missing_or_invalid": "The custom slug is missing or invalid. Please try again.",
 			"check_failed": "The custom slug verification failed. Please try again."
 		},
+		"consent_required": "You must accept our legal notices to use our service.",
 		"generic_unknown": "An unknown error occurred while processing your request. Please try again.",
 		"already_used_slug": "The custom slug you chose is already used by another link. Please choose another one.",
 		"duplicated_slug": "The slug you chose is already used by another link. Please choose another one.",

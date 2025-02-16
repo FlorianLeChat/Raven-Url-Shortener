@@ -23,6 +23,7 @@ import { createLink } from "../actions/create-link";
 import { checkRecaptcha } from "../actions/check-recaptcha";
 
 const InputOptions = lazy( () => import( "./input-options" ) );
+const LegalConsent = lazy( () => import( "@/components/legal-consent" ) );
 const CheckboxOptions = lazy( () => import( "./checkbox-options" ) );
 
 export default function FormContainer()
@@ -108,8 +109,14 @@ export default function FormContainer()
 	//  auprès du back-end PHP.
 	const onSubmitForm = async ( event: FormEvent<HTMLFormElement> ) =>
 	{
-		// Affichage de l'état de chargement.
+		// Vérification du consentement de l'utilisateur.
 		event.preventDefault();
+
+		if ( !localStorage.getItem( "NEXT_CONSENT" ) )
+		{
+			alert( messages( "errors.consent_required" ) );
+			return;
+		}
 
 		setIsLoading( true );
 
@@ -194,6 +201,9 @@ export default function FormContainer()
 					>
 						{messages( "dashboard.submit_button" )}
 					</Button>
+
+					{/* Consentement de l'utilisateur */}
+					<LegalConsent />
 
 					{/* Barre de progression */}
 					{isLoading && (
