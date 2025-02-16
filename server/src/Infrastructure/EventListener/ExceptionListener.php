@@ -6,7 +6,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use App\Infrastructure\Exception\DataValidationException;
-use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * Écouteur d'événements pour la gestion des exceptions.
@@ -37,7 +37,7 @@ final class ExceptionListener
 			"code" => $exception->getCode()
 		]);
 
-		if ($exception instanceof HttpExceptionInterface)
+		if ($exception instanceof HttpException)
 		{
 			// Exception HTTP standard ou dérivée.
 			$data = [
