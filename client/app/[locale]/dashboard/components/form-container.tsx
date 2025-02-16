@@ -29,10 +29,9 @@ export default function FormContainer()
 {
 	// Déclaration des variables d'état.
 	const router = useRouter();
+	const messages = useTranslations();
 	const submitButton = useRef<HTMLButtonElement | null>( null );
-	const footerMessages = useTranslations( "footer" );
-	const dashboardMessages = useTranslations( "dashboard" );
-	const [ stepName, setStepName ] = useState( dashboardMessages( "steps.fetch_recaptcha" ) );
+	const [ stepName, setStepName ] = useState( messages( "dashboard.steps.fetch_recaptcha" ) );
 	const [ isLoading, setIsLoading ] = useState( false );
 
 	// Récupération du jeton d'authentification reCAPTCHA.
@@ -102,7 +101,7 @@ export default function FormContainer()
 	const resetFormState = () =>
 	{
 		setIsLoading( false );
-		setStepName( dashboardMessages( "steps.fetch_recaptcha" ) );
+		setStepName( messages( "dashboard.steps.fetch_recaptcha" ) );
 	};
 
 	// Requête HTTP de création d'un nouveau raccourci
@@ -118,7 +117,7 @@ export default function FormContainer()
 		const data = new FormData( event.currentTarget );
 		const token = ( await getRecaptcha() ) as string | undefined;
 
-		setStepName( dashboardMessages( "steps.check_recaptcha" ) );
+		setStepName( messages( "dashboard.steps.check_recaptcha" ) );
 
 		const recaptchaResponse = await checkRecaptcha( token );
 
@@ -130,7 +129,7 @@ export default function FormContainer()
 		}
 
 		// Requête de création d'un nouveau raccourci.
-		setStepName( dashboardMessages( "steps.creation_request" ) );
+		setStepName( messages( "dashboard.steps.creation_request" ) );
 
 		const createState = await createLink( data );
 
@@ -144,7 +143,7 @@ export default function FormContainer()
 		// Lancement des confettis et redirection.
 		await throwConfetti();
 
-		setStepName( dashboardMessages( "steps.summary_redirect" ) );
+		setStepName( messages( "dashboard.steps.summary_redirect" ) );
 
 		router.push( `/dashboard/${ createState.data.id }` );
 	};
@@ -165,7 +164,7 @@ export default function FormContainer()
 				>
 					{/* Astuce d'utilisation */}
 					<Info className="inline-block min-w-[24px]" />
-					{dashboardMessages( "hint" )}
+					{messages( "dashboard.hint" )}
 				</CardHeader>
 
 				<CardBody className="p-4 max-md:gap-6 lg:flex-row">
@@ -193,7 +192,7 @@ export default function FormContainer()
 						isLoading={isLoading}
 						startContent={isLoading ? null : <WandSparkles />}
 					>
-						{dashboardMessages( "submit_button" )}
+						{messages( "dashboard.submit_button" )}
 					</Button>
 
 					{/* Barre de progression */}
@@ -208,7 +207,7 @@ export default function FormContainer()
 
 					{/* Carte du créateur */}
 					<div className="mr-1 flex items-center gap-2">
-						{footerMessages( "made_with_love" )}{" "}
+						{messages( "footer.made_with_love" )}{" "}
 						<User
 							name="Florian Trayon"
 							description={(
