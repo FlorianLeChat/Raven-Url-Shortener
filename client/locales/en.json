@@ -157,12 +157,12 @@
 		"generic_unknown": "An unknown error occurred while processing your request. Please try again.",
 		"already_used_slug": "The custom slug you chose is already used by another link. Please choose another one.",
 		"duplicated_slug": "The slug you chose is already used by another link. Please choose another one.",
-		"invalid_url": "The URL you entered is invalid. Please check that it starts with <strong>http://</strong> or <strong>https://</strong> and that it is publicly accessible.",
-		"missing_url": "The URL you entered is missing. Please provide it to continue.",
-		"invalid_slug": "The slug you entered is invalid. Please ensure it contains only alphanumeric characters and hyphens.",
-		"too_short_slug": "The slug you entered is too short. Please choose a longer one.",
-		"too_long_slug": "The slug you entered is too long. Please choose a shorter one.",
-		"invalid_expiration": "The expiration date you entered is invalid."
+		"invalid_url": "The URL you provided is invalid. Please check that it starts with http:// or https:// and that it is publicly accessible.",
+		"missing_url": "The URL you provided is missing. Please provide it to continue.",
+		"invalid_slug": "The slug you provided is invalid. Please ensure it contains only alphanumeric characters and hyphens.",
+		"too_short_slug": "The slug you provided is too short. Please choose a longer one.",
+		"too_long_slug": "The slug you provided is too long. Please choose a shorter one.",
+		"invalid_expiration": "The expiration date you provided is invalid."
 	},
 	"consentModal": {
 		"title": "Do you want a cookie? 🍪",
