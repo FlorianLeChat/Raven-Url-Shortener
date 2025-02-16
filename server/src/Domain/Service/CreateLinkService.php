@@ -8,8 +8,10 @@ use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Infrastructure\Repository\LinkRepository;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 use App\Infrastructure\Exception\DataValidationException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 use const App\LOG_FUNCTION;
 
@@ -29,7 +31,8 @@ final class CreateLinkService
 	public function __construct(
 		private readonly LoggerInterface $logger,
 		private readonly ValidatorInterface $validator,
-		private readonly EntityManagerInterface $entityManager
+		private readonly HttpClientInterface $httpClient,
+		private readonly EntityManagerInterface $entityManager,
 	) {
 		$this->repository = $this->entityManager->getRepository(Link::class);
 	}
@@ -57,6 +60,36 @@ final class CreateLinkService
 	}
 
 	/**
+	 * Vérifie si une URL est accessible et valide.
+	 */
+	public function checkUrl(string $url): void
+	{
+		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+
+		try {
+			$response = $this->httpClient->request("GET", $url, [
+				"timeout" => 5,
+			]);
+
+			if ($response->getStatusCode() !== 200) {
+				$errors["url"][] = [
+					"code" => "unreachable_url",
+					"message" => "The specified URL is unreachable."
+				];
+
+				throw new DataValidationException($errors);
+			}
+		} catch (TransportExceptionInterface $exception) {
+			$errors["url"][] = [
+				"code" => "invalid_url",
+				"message" => $exception->getMessage()
+			];
+
+			throw new DataValidationException($errors);
+		}
+	}
+
+	/**
 	 * Vérifie si un slug existe déjà dans la base de données.
 	 */
 	private function checkSlug(string $slug): void
@@ -67,12 +100,12 @@ final class CreateLinkService
 
 		if (!empty($result))
 		{
-			$response["slug"][] = [
+			$errors["slug"][] = [
 				"code" => "duplicated_slug",
-				"message" => "This custom slug is already in use by another link.",
+				"message" => "This custom slug is already in use by another link."
 			];
 
-			throw new DataValidationException($response);
+			throw new DataValidationException($errors);
 		}
 	}
 
@@ -110,6 +143,7 @@ final class CreateLinkService
 		$link->setCreatedAt(new DateTime());
 
 		$this->validateLink($link);
+		$this->checkUrl($link->getUrl());
 		$this->checkSlug($link->getSlug());
 
 		$this->repository->create($link, true);
