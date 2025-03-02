@@ -3,12 +3,9 @@
 /.env.local.php
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
-/docker-compose.override.yml
 /public/bundles/
 /var/
 /logs/
 /vendor/
-/docker/postgres/database/
-/docker/pgadmin/files/
-/docker/redis/database/
+/docker/services/
 ###< symfony/framework-bundle ###
