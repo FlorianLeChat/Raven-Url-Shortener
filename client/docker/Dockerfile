@@ -25,5 +25,5 @@ RUN --mount=type=cache,target=.npm \
 # Use non-root user
 USER node
 
-# Start the development server
-CMD ["npm", "run", "dev"]
+# Build the entire project and remove all development dependencies
+RUN npm run build && npm prune --production
