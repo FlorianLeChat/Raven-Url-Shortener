@@ -10,8 +10,8 @@ composer install
 /usr/local/bin/php bin/console doctrine:database:create --no-interaction --if-not-exists
 /usr/local/bin/php bin/console doctrine:schema:update --force
 
-# Run background cron
-supercronic /etc/crontabs/www-data
+# Run cron service in background
+supercronic /etc/crontabs/www-data &
 
 # Clear previous Symfony local server cache
 rm -rf ~/.symfony5/
