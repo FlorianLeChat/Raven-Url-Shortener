@@ -8,21 +8,22 @@ services:
         command: >
             --requirepass ${REDIS_PASSWORD} --maxmemory 128mb --maxmemory-policy allkeys-lru
         volumes:
-            - ./server/docker/services/redis:/usr/local/etc/redis
+            - ./server/docker/services/cache:/usr/local/etc/redis
         healthcheck:
             test: redis-cli --raw incr ping
             retries: 3
             timeout: 5s
-        ports:
-            - "6379:${REDIS_PORT}"
+        expose:
+            - "${REDIS_PORT}"
 
     # https://hub.docker.com/_/postgres
     postgres:
         image: postgres:alpine
         restart: always
         volumes:
-            - ./server/docker/services/postgres:/var/lib/postgresql/data
+            - ./server/docker/services/database:/var/lib/postgresql/data
         environment:
+            TZ: ${TZ}
             POSTGRES_DB: ${DATABASE_NAME}
             POSTGRES_USER: ${DATABASE_USERNAME}
             POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
@@ -30,8 +31,8 @@ services:
             test: pg_isready --dbname=${DATABASE_NAME} --username=${DATABASE_USERNAME}
             retries: 3
             timeout: 5s
-        ports:
-            - "5432:${DATABASE_PORT}"
+        expose:
+            - "${DATABASE_PORT}"
 
     # https://hub.docker.com/r/dpage/pgadmin4/
     pgadmin:
@@ -55,11 +56,13 @@ services:
     node:
         image: raven-url-shortener-frontend
         restart: always
+        command: npm run start
         volumes:
             - ./client/logs:/usr/src/app/logs
-        command: npm run start
         depends_on:
             - php
+        environment:
+            TZ: ${TZ}
         healthcheck:
             test: wget -O - http://localhost:3000
             retries: 3
@@ -74,20 +77,21 @@ services:
     php:
         image: raven-url-shortener-backend
         restart: always
+        command: ./docker/scripts/production/entrypoint.sh
         volumes:
             - ./server/logs:/var/www/html/var/log
-        command: ./docker/scripts/production/entrypoint.sh
         depends_on:
             - redis
             - postgres
         environment:
-            - WAIT_HOSTS=redis:${REDIS_PORT}, postgres:${DATABASE_PORT}
+            TZ: ${TZ}
+            WAIT_HOSTS: redis:${REDIS_PORT}, postgres:${DATABASE_PORT}
         healthcheck:
-            test: curl -f http://localhost:8000/
+            test: curl -f http://127.0.0.1:9000/ 2>&1 | grep "Connection reset by peer"
             retries: 3
             timeout: 5s
         build:
             context: ./server
             dockerfile: ./docker/scripts/production/Dockerfile
         ports:
-            - "8000:8000"
+            - "9000:9000"
