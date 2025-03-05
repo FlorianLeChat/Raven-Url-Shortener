@@ -79,7 +79,7 @@ services:
         restart: always
         command: ./docker/scripts/production/entrypoint.sh
         volumes:
-            - ./server/logs:/var/www/html/var/log
+            - ./server/logs:/var/www/html/logs
         depends_on:
             - redis
             - postgres
