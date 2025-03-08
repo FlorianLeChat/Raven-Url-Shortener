@@ -4,6 +4,9 @@
 # https://hub.docker.com/_/node
 FROM node:lts-alpine
 
+# Install system dependencies
+RUN apk add --no-cache tzdata
+
 # Set the working directory to the website files
 WORKDIR /usr/src/app
 
