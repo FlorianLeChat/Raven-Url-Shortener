@@ -56,7 +56,7 @@ services:
     node:
         image: raven-url-shortener-frontend
         restart: always
-        command: npm run start
+        command: ./docker/scripts/entrypoint.sh
         volumes:
             - ./client/logs:/usr/src/app/logs
         depends_on:

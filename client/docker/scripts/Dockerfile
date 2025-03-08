@@ -5,7 +5,7 @@
 FROM node:lts-alpine
 
 # Install system dependencies
-RUN apk add --no-cache tzdata
+RUN apk add --no-cache logrotate supercronic tzdata
 
 # Set the working directory to the website files
 WORKDIR /usr/src/app
@@ -25,8 +25,13 @@ RUN --mount=type=cache,target=.npm \
 	npm set cache .npm && \
 	npm ci && chown -R node:node ./node_modules
 
+# Add some cronjobs for automated tasks
+RUN echo "0 0 * * * logrotate -f /usr/src/app/docker/configuration/logrotate.conf -s /usr/src/app/docker/configuration/logrotate.status > /dev/null 2>&1" >> /var/spool/cron/crontabs/node
+
 # Use non-root user
 USER node
 
-# Build the entire project and remove all development dependencies
-RUN npm run build && npm prune --production
+# Prepare project files and configuration to be built
+RUN npm run build && npm prune --production && \
+	chmod +x ./docker/scripts/entrypoint.sh && \
+	chmod 644 /usr/src/app/docker/configuration/logrotate.conf
