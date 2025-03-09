@@ -53,8 +53,17 @@ services:
     php:
         image: raven-url-shortener-backend
         command: ./docker/scripts/development/entrypoint.sh
+        develop:
+            watch:
+                - path: ./server
+                  action: sync
+                  target: /var/www/html
+                  ignore:
+                    - vendor/
+                - path: composer.lock
+                  action: rebuild
         volumes:
-            - ./server:/var/www/html
+            - ./server/logs:/var/www/html/logs
         depends_on:
             - redis
             - postgres

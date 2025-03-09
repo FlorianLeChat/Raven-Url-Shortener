@@ -26,6 +26,9 @@ RUN echo "0 0 * * * /usr/local/bin/php /var/www/html/bin/console app:shortcut-cl
 # Add wait script to wait for other services to be ready
 ADD --chmod=0755 https://github.com/ufoscout/docker-compose-wait/releases/latest/download/wait /wait
 
+# Copy all files to the working directory
+COPY --chown=www-data:www-data . .
+
 # Install Symfony CLI
 RUN curl -1sLf https://dl.cloudsmith.io/public/symfony/stable/setup.alpine.sh | bash && apk add --no-cache symfony-cli
 
