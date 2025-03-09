@@ -1,9 +1,5 @@
-**/.git*
-**/.husky
-**/.next
-**/.vscode
 **/docker/services
-**/node_modules
+**/logs
 **/tests
 **/var
 **/vendor
@@ -11,11 +7,7 @@
 **/*.neon
 **/*.xml.dist
 **/.dockerignore
-**/.editorconfig
-**/.gitattributes
 **/.gitignore
 **/Dockerfile
-**/compose.*
 **/CODEOWNERS
 **/LICENSE
-**/next-env.d.ts

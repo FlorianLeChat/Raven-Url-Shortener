@@ -1,0 +1,11 @@
+**/.next
+**/logs
+**/node_modules
+**/tests
+**/*.md
+**/.dockerignore
+**/.gitignore
+**/Dockerfile
+**/CODEOWNERS
+**/LICENSE
+**/next-env.d.ts
