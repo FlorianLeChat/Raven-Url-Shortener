@@ -180,6 +180,16 @@
 			"missing_or_invalid": "L'identifiant unique du lien est manquant ou invalide. Veuillez réessayer.",
 			"fetch_failed": "La récupération des informations du lien a échouée. Veuillez réessayer."
 		},
+		"redirection": {
+			"not-found": {
+				"title": "Lien introuvable",
+				"description": "Le lien raccourci que vous avez demandé est introuvable. Vérifiez son orthographe et réessayez."
+			},
+			"disabled": {
+				"title": "Lien désactivé",
+				"description": "Le lien raccourci que vous avez demandé a été désactivé par son propriétaire ou par un administrateur. Veuillez contacter le propriétaire pour plus d'informations."
+			}
+		},
 		"check_error": "Erreur lors de la vérification",
 		"creation_error": "Erreur lors de la création",
 		"consent_missing": "Consentement requis",
