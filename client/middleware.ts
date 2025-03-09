@@ -57,8 +57,5 @@ export default async function middleware( request: NextRequest )
 }
 
 export const config = {
-	matcher: [
-		"/",
-		"/((?!assets|locales|_next|_vercel|sitemap.xml|manifest.webmanifest).*)"
-	]
+	matcher: [ "/", "/((?!api|_next|_vercel|.*\\..*).*)" ]
 };
