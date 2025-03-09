@@ -9,6 +9,7 @@ import { Form,
 	User,
 	Card,
 	Button,
+	addToast,
 	Progress,
 	CardBody,
 	CardHeader,
@@ -114,7 +115,12 @@ export default function FormContainer()
 
 		if ( !localStorage.getItem( "NEXT_CONSENT" ) )
 		{
-			alert( messages( "errors.consent_required" ) );
+			addToast( {
+				color: "warning",
+				title: messages( "errors.consent_missing" ),
+				description: messages( "errors.consent_required" )
+			} );
+
 			return;
 		}
 
@@ -130,7 +136,12 @@ export default function FormContainer()
 
 		if ( !recaptchaResponse.state )
 		{
-			alert( recaptchaResponse.message );
+			addToast( {
+				color: "danger",
+				title: messages( "errors.check_error" ),
+				description: recaptchaResponse.message
+			} );
+
 			resetFormState();
 			return;
 		}
@@ -142,7 +153,12 @@ export default function FormContainer()
 
 		if ( !createState.state || "message" in createState )
 		{
-			alert( createState.message );
+			addToast( {
+				color: "danger",
+				title: messages( "errors.creation_error" ),
+				description: createState.message
+			} );
+
 			resetFormState();
 			return;
 		}

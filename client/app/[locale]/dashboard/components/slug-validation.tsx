@@ -4,7 +4,7 @@
 
 "use client";
 
-import { Input } from "@heroui/react";
+import { addToast, Input } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { useContext, useState } from "react";
 import { ServerContext } from "@/components/server-provider";
@@ -43,7 +43,12 @@ export default function SlugValidation()
 
 		if ( !validationCheck.state || "message" in validationCheck )
 		{
-			alert( validationCheck.message );
+			addToast( {
+				color: "danger",
+				title: messages( "errors.check_error" ),
+				description: validationCheck.message
+			} );
+
 			return;
 		}
 
