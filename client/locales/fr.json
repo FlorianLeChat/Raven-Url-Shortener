@@ -129,7 +129,7 @@
 		"hint": "Votre lien raccourci a été créé le {createDate}{isUpdated, select, true { et mis à jour le {updateDate}} other {}}.",
 		"qr_code": "Code QR de votre lien raccourci",
 		"links_label": "Liens à votre disposition",
-		"links_description": "Ces liens Internet sont disponibles pour toute la durée de vie de votre lien raccourci.<br></br>Vous pouvez les utiliser sans restriction.",
+		"links_description": "Ces liens Internet sont disponibles pour toute la durée de vie de votre lien raccourci.<br></br>Les liens qui n'ont pas été visités pendant une année seront automatiquement supprimés.",
 		"actions": {
 			"title": "Actions disponibles",
 			"wip": "Ces options sont en cours de développement. Elles seront disponibles prochainement.",

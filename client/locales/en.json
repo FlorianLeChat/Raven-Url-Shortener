@@ -128,8 +128,8 @@
 		"description": "Below you'll find a summary of the information, settings, and available actions for your shortened link.",
 		"hint": "Your shortened link was created on {createDate}{isUpdated, select, true { and updated on {updateDate}} other {}}.",
 		"qr_code": "QR Code for your shortened link",
-		"links_label": "Available links",
-		"links_description": "These URLs are available for the entire lifespan of your shortened link.<br></br>You can use them without restrictions.",
+		"links_label": "Available URLs",
+		"links_description": "URLs which have not been visited for one year will be automatically deleted.",
 		"actions": {
 			"title": "Available actions",
 			"wip": "These options are currently under development. They will be available soon.",

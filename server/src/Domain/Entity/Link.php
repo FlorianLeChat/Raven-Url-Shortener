@@ -38,6 +38,9 @@ final class Link
 	private ?DateTimeInterface $expiration = null;
 
 	#[ORM\Column(type: Types::DATETIME_MUTABLE)]
+	private ?DateTimeInterface $visitedAt = null;
+
+	#[ORM\Column(type: Types::DATETIME_MUTABLE)]
 	private ?DateTimeInterface $createdAt = null;
 
 	#[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
@@ -92,6 +95,21 @@ final class Link
 	public function setExpiration(?DateTimeInterface $expiration): static
 	{
 		$this->expiration = $expiration;
+
+		return $this;
+	}
+
+	/**
+	 * Définition ou récupération de la date de dernière visite du lien.
+	 */
+	public function getVisitedAt(): ?DateTimeInterface
+	{
+		return $this->visitedAt;
+	}
+
+	public function setVisitedAt(?DateTimeInterface $visitedAt): static
+	{
+		$this->visitedAt = $visitedAt;
 
 		return $this;
 	}
