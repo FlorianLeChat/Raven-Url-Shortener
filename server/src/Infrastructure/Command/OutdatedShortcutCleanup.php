@@ -34,8 +34,10 @@ final class OutdatedShortcutCleanup extends Command
 		// Récupération de tous les liens raccourcis expirés.
 		$repository = $this->entityManager->getRepository(Link::class);
 		$query = $repository->createQueryBuilder("u");
-		$query->where($query->expr()->lte("u.createdAt", ":past"))
-			->setParameter("past", new DateTime("-1 day"), Types::DATETIME_MUTABLE);
+		$query->where($query->expr()->lte("u.expiration", ":oneDayAgo"))
+			->andWhere($query->expr()->lte("u.visitedAt", ":oneYearAgo"))
+			->setParameter("oneDayAgo", new DateTime("-1 day"), Types::DATETIME_MUTABLE)
+			->setParameter("oneYearAgo", new DateTime("-1 year"), Types::DATETIME_MUTABLE);
 
 		// Parcours de tous les liens raccourcis expirés pour les supprimer.
 		$io = new SymfonyStyle($input, $output);
