@@ -8,6 +8,11 @@ import { logger } from "@/utilities/pino";
 import { getTranslations } from "next-intl/server";
 import type { ErrorProperties } from "@/interfaces/ErrorProperties";
 
+// Type de la réponse HTTP en provenance du back-end PHP.
+type SlugCheckResponse = ErrorProperties | {
+	available: boolean;
+};
+
 export async function checkSlug( slug?: string )
 {
 	// Vérification de la validité du slug personnalisé.
@@ -25,14 +30,13 @@ export async function checkSlug( slug?: string )
 	const formData = new FormData();
 	formData.append( "slug", slug );
 
-	const response = await fetch( `${ process.env.NEXT_PUBLIC_BACKEND_URL }/api/slug`, {
-		body: formData,
-		method: "POST"
-	} );
-
 	try
 	{
-		const json = ( await response.json() ) as | { available: boolean } | ErrorProperties;
+		const response = await fetch( `${ process.env.NEXT_PUBLIC_BACKEND_URL }/api/slug`, {
+			body: formData,
+			method: "POST"
+		} );
+		const json = ( await response.json() ) as SlugCheckResponse;
 
 		logger.info(
 			{ source: __dirname, json },
@@ -44,7 +48,7 @@ export async function checkSlug( slug?: string )
 			// Tout s'est bien passé.
 			return {
 				state: true,
-				isAvailable: json.available
+				available: json.available
 			};
 		}
 

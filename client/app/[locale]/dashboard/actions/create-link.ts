@@ -9,6 +9,9 @@ import { getTranslations } from "next-intl/server";
 import type { LinkProperties } from "@/interfaces/LinkProperties";
 import type { ErrorProperties } from "@/interfaces/ErrorProperties";
 
+// Type de la réponse HTTP en provenance du back-end PHP.
+type CreateLinkResponse = LinkProperties | ErrorProperties;
+
 export async function createLink( data: FormData )
 {
 	// Suppression de toutes les entrées vides.
@@ -27,14 +30,14 @@ export async function createLink( data: FormData )
 
 	// Envoi de la requête HTTP de création d'un nouveau raccourci.
 	const messages = await getTranslations();
-	const response = await fetch( `${ process.env.NEXT_PUBLIC_BACKEND_URL }/api/link`, {
-		body: data,
-		method: "POST"
-	} );
 
 	try
 	{
-		const json = ( await response.json() ) as LinkProperties | ErrorProperties;
+		const response = await fetch( `${ process.env.NEXT_PUBLIC_BACKEND_URL }/api/link`, {
+			body: data,
+			method: "POST"
+		} );
+		const json = ( await response.json() ) as CreateLinkResponse;
 
 		logger.info(
 			{ source: __dirname, json },
