@@ -180,6 +180,16 @@
 			"missing_or_invalid": "The link's unique identifier is missing or invalid. Please try again.",
 			"fetch_failed": "Link information fetching failed. Please try again."
 		},
+		"redirection": {
+			"not-found": {
+				"title": "Link not found",
+				"description": "The shortened link you requested is not found. Please check its spelling and try again."
+			},
+			"disabled": {
+				"title": "Link disabled",
+				"description": "The shortened link you requested has been disabled by its owner or an administrator. Please contact the owner for more information."
+			}
+		},
 		"check_error": "Error during verification",
 		"creation_error": "Error during creation",
 		"consent_missing": "Consent required",

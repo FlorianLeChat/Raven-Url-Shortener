@@ -44,11 +44,16 @@ export default async function Page( {
 	const details = await getLinkDetails( id );
 	const messages = await getTranslations();
 
-	// Vérification de l'état de la réponse
-	//  pour afficher le message d'erreur.
+	// Vérification de l'état de la réponse pour
+	//  rediriger l'utilisateur vers la page d'accueil.
 	if ( !details.state || "message" in details )
 	{
-		redirect( "/dashboard", RedirectType.push );
+		redirect( "?error=not-found", RedirectType.push );
+	}
+
+	if ( !details.data.enabled )
+	{
+		redirect( "?error=disabled", RedirectType.push );
 	}
 
 	// Affichage du rendu HTML de la page.

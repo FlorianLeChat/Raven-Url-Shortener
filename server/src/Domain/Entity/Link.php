@@ -33,6 +33,9 @@ final class Link
 	#[Assert\Length(min: 1, max: 50, minMessage: "too_short_slug", maxMessage: "too_long_slug")]
 	private ?string $slug = null;
 
+	#[ORM\Column(type: Types::BOOLEAN)]
+	private ?bool $enabled = true;
+
 	#[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
 	#[Assert\Range(min: "tomorrow", max: "+1 year", notInRangeMessage: "invalid_expiration")]
 	private ?DateTimeInterface $expiration = null;
@@ -80,6 +83,21 @@ final class Link
 	public function setSlug(?string $slug): static
 	{
 		$this->slug = $slug;
+
+		return $this;
+	}
+
+	/**
+	 * Définition ou récupération de l'état d'activation d'un lien.
+	 */
+	public function getEnabled(): ?string
+	{
+		return $this->enabled;
+	}
+
+	public function setEnabled(?bool $enabled): static
+	{
+		$this->enabled = $enabled;
 
 		return $this;
 	}

@@ -45,11 +45,16 @@ export default async function Page( {
 	const details = await getLinkDetails( id );
 	const messages = await getTranslations();
 
-	// Vérification de l'état de la réponse
-	//  pour afficher le message d'erreur.
+	// Vérification de l'état de la réponse pour
+	//  rediriger l'utilisateur vers le tableau de bord.
 	if ( !details.state || "message" in details )
 	{
-		redirect( "/dashboard", RedirectType.push );
+		redirect( "/dashboard?error=not-found", RedirectType.push );
+	}
+
+	if ( !details.data.enabled )
+	{
+		redirect( "/dashboard?error=disabled", RedirectType.push );
 	}
 
 	// Génération du code QR.
