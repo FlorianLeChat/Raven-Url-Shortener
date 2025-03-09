@@ -6,7 +6,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { HeroUIProvider as Provider } from "@heroui/react";
+import { HeroUIProvider as LayoutProvider, ToastProvider } from "@heroui/react";
 
 export function HeroUIProvider( {
 	children,
@@ -16,5 +16,16 @@ export function HeroUIProvider( {
 	className: string;
 }> )
 {
-	return <Provider className={className}>{children}</Provider>;
+	return (
+		<LayoutProvider className={className}>
+			<ToastProvider
+				placement="top-right"
+				toastProps={{
+					timeout: 10000
+				}}
+			/>
+
+			{children}
+		</LayoutProvider>
+	);
 }

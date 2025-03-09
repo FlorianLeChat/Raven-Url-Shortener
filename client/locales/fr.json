@@ -162,12 +162,19 @@
 		"recaptcha": {
 			"missing_or_invalid": "Le jeton reCAPTCHA que vous avez fourni est manquant ou invalide. Veuillez réessayer.",
 			"score_invalid": "Le score reCAPTCHA que vous avez obtenu est invalide. Veuillez réessayer.",
-			"check_failed": "La vérification du jeton reCAPTCHA a échoué. Veuillez réessayer."
+			"check_failed": "La vérification du jeton reCAPTCHA a échouée. Veuillez réessayer."
 		},
 		"slug": {
 			"missing_or_invalid": "Le slug personnalisé est manquant ou invalide. Veuillez réessayer.",
-			"check_failed": "La vérification du slug personnalisé a échoué. Veuillez réessayer."
+			"check_failed": "La vérification du slug personnalisé a échouée. Veuillez réessayer."
 		},
+		"link": {
+			"missing_or_invalid": "L'identifiant unique du lien est manquant ou invalide. Veuillez réessayer.",
+			"fetch_failed": "La récupération des informations du lien a échouée. Veuillez réessayer."
+		},
+		"check_error": "Erreur lors de la vérification",
+		"creation_error": "Erreur lors de la création",
+		"consent_missing": "Consentement requis",
 		"consent_required": "Vous devez accepter les mentions légales pour utiliser notre service.",
 		"generic_unknown": "Une erreur inconnue s'est produite lors du traitement de votre demande. Veuillez réessayer.",
 		"already_used_slug": "Le slug personnalisé que vous avez choisi est déjà utilisé par un autre lien. Veuillez en choisir un autre.",

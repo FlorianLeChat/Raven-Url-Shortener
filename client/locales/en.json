@@ -168,6 +168,13 @@
 			"missing_or_invalid": "The custom slug is missing or invalid. Please try again.",
 			"check_failed": "The custom slug verification failed. Please try again."
 		},
+		"link": {
+			"missing_or_invalid": "The link's unique identifier is missing or invalid. Please try again.",
+			"fetch_failed": "Link information fetching failed. Please try again."
+		},
+		"check_error": "Error during verification",
+		"creation_error": "Error during creation",
+		"consent_missing": "Consent required",
 		"consent_required": "You must accept our legal notices to use our service.",
 		"generic_unknown": "An unknown error occurred while processing your request. Please try again.",
 		"already_used_slug": "The custom slug you chose is already used by another link. Please choose another one.",
