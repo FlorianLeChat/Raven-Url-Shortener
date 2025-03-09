@@ -145,7 +145,15 @@
 		"description": "Veuillez noter que vous allez être redirigé vers une autre page Web en dehors de Raven Url Shortener. <strong>Cette page n'est pas hébergée par nos soins et nous ne sommes pas responsables de son contenu</strong>.",
 		"hint": "Ce lien raccourci a été créé le {createDate}{isUpdated, select, true { et mis à jour le {updateDate}} other {}}.",
 		"redirection": "Vous allez être redirigé vers :",
-		"accept": "Accepter la redirection",
+		"accept": {
+			"default": "Accepter la redirection...",
+			"only_once_title": "... uniquement cette fois-ci (par défaut)",
+			"only_once_description": "Vous acceptez la redirection uniquement cette fois-ci et vous serez notifié à nouveau la prochaine fois",
+			"only_this_url_title": "... et ne plus demander pour ce lien",
+			"only_this_url_description": "Vous acceptez la redirection uniquement pour ce lien et vous ne serez plus notifié à l'avenir",
+			"all_url_title": "... et ne plus demander pour tous les liens",
+			"all_url_description": "Vous acceptez la redirection pour tous les liens et vous ne serez plus notifié à l'avenir"
+		},
 		"report": "Signaler ce lien raccourci"
 	},
 	"legal": {
@@ -228,6 +236,12 @@
 							"domain": "Next Intl",
 							"description": "Cookie mis en place par <a href=\"https://next-intl-docs.vercel.app/\" target=\"_blank\">Next Intl</a>.",
 							"expiration": "Expire à la fin de la session."
+						},
+						{
+							"name": "NEXT_REDIRECT",
+							"domain": "Site Internet",
+							"description": "Cookie mis en place par le site Internet.",
+							"expiration": "Expire après 1 an."
 						}
 					]
 				}

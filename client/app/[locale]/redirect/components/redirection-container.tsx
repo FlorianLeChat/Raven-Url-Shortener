@@ -4,19 +4,20 @@
 
 "use client";
 
-import { useRouter } from "next/navigation";
+import { lazy } from "react";
 import { formatDate } from "@/utilities/date";
+import { History, Flag } from "lucide-react";
 import type { LinkProperties } from "@/interfaces/LinkProperties";
-import { Check, History, Flag } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { Card, Snippet, CardBody, CardHeader, Button } from "@heroui/react";
+
+const AcceptRedirection = lazy( () => import( "./accept-redirection" ) );
 
 export default function RedirectionContainer( {
 	details
 }: Readonly<{ details: LinkProperties }> )
 {
 	// Déclaration des variables d'état.
-	const router = useRouter();
 	const locale = useLocale();
 	const messages = useTranslations( "redirect" );
 
@@ -57,39 +58,32 @@ export default function RedirectionContainer( {
 						{messages( "redirection" )}
 					</h3>
 
-					<Snippet size="lg" hideSymbol>
+					<Snippet
+						size="lg"
+						hideSymbol
+						classNames={{
+							pre: "whitespace-normal"
+						}}
+					>
 						{details.url}
 					</Snippet>
 				</div>
 
 				{/* Actions rapides */}
-				<ul className="flex items-end">
-					<li className="flex flex-row gap-3">
-						<Button
-							size="lg"
-							color="success"
-							variant="shadow"
-							onPress={() => router.push( details.url )}
-							className="max-md:min-w-max"
-							aria-label={messages( "accept" )}
-							startContent={<Check />}
-						>
-							<span className="hidden md:inline">
-								{messages( "accept" )}
-							</span>
-						</Button>
+				<ul className="flex gap-3 max-md:flex-col md:items-end">
+					<li>
+						<AcceptRedirection details={details} />
+					</li>
 
+					<li>
 						<Button
 							size="lg"
 							color="danger"
 							variant="bordered"
-							className="max-md:min-w-max"
 							aria-label={messages( "report" )}
 							startContent={<Flag />}
 						>
-							<span className="hidden md:inline">
-								{messages( "report" )}
-							</span>
+							{messages( "report" )}
 						</Button>
 					</li>
 				</ul>
