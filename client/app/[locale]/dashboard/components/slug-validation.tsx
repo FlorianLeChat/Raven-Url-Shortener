@@ -52,7 +52,7 @@ export default function SlugValidation()
 			return;
 		}
 
-		setIsAvailable( validationCheck.isAvailable );
+		setIsAvailable( validationCheck.available );
 	}, 500 );
 
 	// Affichage du rendu HTML du composant.
