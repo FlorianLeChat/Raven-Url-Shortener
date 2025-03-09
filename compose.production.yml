@@ -23,7 +23,7 @@ services:
         volumes:
             - ./server/docker/services/database:/var/lib/postgresql/data
         environment:
-            TZ: ${TZ}
+            TZ: ${APP_TIMEZONE}
             POSTGRES_DB: ${DATABASE_NAME}
             POSTGRES_USER: ${DATABASE_USERNAME}
             POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
@@ -56,13 +56,13 @@ services:
     node:
         image: raven-url-shortener-frontend
         restart: always
-        command: ./docker/scripts/entrypoint.sh
+        command: ./client/docker/scripts/entrypoint.sh
         volumes:
             - ./client/logs:/usr/src/app/logs
         depends_on:
             - php
         environment:
-            TZ: ${TZ}
+            TZ: ${APP_TIMEZONE}
         healthcheck:
             test: wget -O - http://localhost:3000
             retries: 3
