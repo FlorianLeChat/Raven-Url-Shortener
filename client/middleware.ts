@@ -23,7 +23,7 @@ export default async function middleware( request: NextRequest )
 	const isUnknownRoute = !routePrefixes.some( ( prefix ) => pathName.startsWith( prefix ) );
 	const shouldCheckPath = isValidUuid || isMaybeSlug;
 
-	if ( shouldCheckPath && !isUnknownRoute )
+	if ( shouldCheckPath && isUnknownRoute )
 	{
 		// Le lien contient un UUID ou ressemble à un slug.
 		const details = await getLinkDetails( pathName );
@@ -33,10 +33,12 @@ export default async function middleware( request: NextRequest )
 			const domains = trustedDomains
 				.map( ( domain ) => `^https?:\\/\\/(www\\.)?${ domain.replace( ".", "\\." ) }(\\/|$)` )
 				.join( "|" );
+			const isTrustedDomain = new RegExp( domains ).test( details.data.url );
+			const hasRedirectionCookie = request.cookies.has( "NEXT_REDIRECTION" );
 
-			if ( new RegExp( domains ).test( details.data.url ) )
+			if ( isTrustedDomain || hasRedirectionCookie )
 			{
-				// Le domaine est de confiance, redirection automatique.
+				// Le domaine est de confiance ou l'utilisateur a accepté la redirection.
 				return NextResponse.redirect( new URL( details.data.url, request.nextUrl ) );
 			}
 
