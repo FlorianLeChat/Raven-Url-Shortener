@@ -36,7 +36,6 @@ export default function InputOptions()
 				label={messages( "url_label" )}
 				pattern="https?://.*"
 				required
-				className="w-100"
 				isRequired
 				isClearable
 				placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"

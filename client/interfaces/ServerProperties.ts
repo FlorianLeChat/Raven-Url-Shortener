@@ -3,13 +3,15 @@
 //
 import type { ReactNode } from "react";
 
-export interface ServerContextProps {
+export interface ServerContextProps
+{
 	domain: string;
 	offset: string;
 	timezone: string;
 }
 
-export interface ServerProviderProps {
+export interface ServerProviderProps
+{
 	children: ReactNode;
 	value: ServerContextProps;
 }
