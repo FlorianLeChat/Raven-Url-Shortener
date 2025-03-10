@@ -52,6 +52,22 @@ services:
         ports:
             - "8080:80"
 
+    # https://hub.docker.com/_/varnish
+    varnish:
+        image: varnish:alpine
+        depends_on:
+            - node
+        volumes:
+            - ./client/docker/configuration/default.vcl:/etc/varnish/default.vcl:ro
+        environment:
+            VARNISH_SIZE: 128m
+        healthcheck:
+            test: wget -O - http://localhost/
+            retries: 3
+            timeout: 5s
+        ports:
+            - "80:80"
+
     # https://github.com/FlorianLeChat/Raven-Url-Shortener
     node:
         image: raven-url-shortener-frontend
@@ -70,8 +86,8 @@ services:
         build:
             context: ./client
             dockerfile: ./docker/scripts/Dockerfile
-        ports:
-            - "3000:3000"
+        expose:
+            - "3000"
 
     # https://github.com/FlorianLeChat/Raven-Url-Shortener
     php:
