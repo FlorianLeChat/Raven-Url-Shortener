@@ -1,7 +1,8 @@
 //
 // Interface des propriétés pour les informations d'un lien raccourci.
 //
-export interface LinkProperties {
+export interface LinkProperties
+{
 	// Identifiant unique.
 	id: string;
 
