@@ -38,7 +38,7 @@ export default function Template( {
 				// Lien désactivé.
 				addToast( {
 					color: "danger",
-					title: "Lien désactivé",
+					title: messages( "disabled.title" ),
 					description: messages( "disabled.description" )
 				} );
 
