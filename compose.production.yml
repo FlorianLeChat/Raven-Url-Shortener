@@ -100,7 +100,7 @@ services:
             - redis
             - postgres
         environment:
-            TZ: ${TZ}
+            TZ: ${APP_TIMEZONE}
             WAIT_HOSTS: redis:${REDIS_PORT}, postgres:${DATABASE_PORT}
         healthcheck:
             test: curl -f http://127.0.0.1:9000/ 2>&1 | grep "Connection reset by peer"
