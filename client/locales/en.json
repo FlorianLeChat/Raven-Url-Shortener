@@ -147,6 +147,7 @@
 		"redirection": "You are being redirected to:",
 		"accept": {
 			"default": "Accept the redirection",
+			"options": "Redirection options",
 			"only_once_title": "... only this time (default)",
 			"only_once_description": "You accept the redirection only this time and you will be notified again next time",
 			"only_this_url_title": "... and never ask for this URL again",

@@ -85,7 +85,7 @@ export default function AcceptRedirection( {
 
 				<DropdownMenu
 					className="max-w-[350px]"
-					aria-label="Options de redirection"
+					aria-label={messages( "options" )}
 					selectionMode="single"
 					onSelectionChange={onAcceptRedirection}
 				>
