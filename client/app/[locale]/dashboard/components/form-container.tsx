@@ -16,6 +16,7 @@ import { Form,
 	CardFooter } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { I18nProvider } from "@react-aria/i18n";
+import { getRecaptcha } from "@/utilities/recaptcha";
 import { useTranslations } from "next-intl";
 import { Info, WandSparkles } from "lucide-react";
 import { lazy, useRef, useState, type FormEvent } from "react";
@@ -36,44 +37,9 @@ export default function FormContainer()
 	const [ stepName, setStepName ] = useState( messages( "dashboard.steps.fetch_recaptcha" ) );
 	const [ isLoading, setIsLoading ] = useState( false );
 
-	// Récupération du jeton d'authentification reCAPTCHA.
-	const getRecaptcha = async () =>
-	{
-		// Vérification de l'activation des vérifications reCAPTCHA.
-		if ( process.env.NEXT_PUBLIC_RECAPTCHA_ENABLED !== "true" )
-		{
-			return "";
-		}
-
-		// Vérification du fonctionnement du service reCAPTCHA dans
-		//  le navigateur de l'utilisateur.
-		if ( typeof window.grecaptcha === "undefined" )
-		{
-			return "";
-		}
-
-		// Création d'une promesse pour gérer le chargement des services
-		//  de Google reCAPTCHA.
-		return new Promise( ( resolve ) =>
-		{
-			// Attente de la disponibilité des services de Google reCAPTCHA.
-			window.grecaptcha.ready( async () =>
-			{
-				// Récupération du jeton d'authentification reCAPTCHA
-				//  auprès des serveurs de Google.
-				const token = await window.grecaptcha.execute(
-					process.env.NEXT_PUBLIC_RECAPTCHA_PUBLIC_KEY,
-					{ action: "submit" }
-				);
-
-				return resolve( token );
-			} );
-		} );
-	};
-
 	// Lance une animation de confettis lors de la soumission du formulaire.
 	//  Source : https://github.com/heroui-inc/heroui/blob/1485eca48fce8a0acc42fe40590b828c1a90ff48/apps/docs/components/demos/custom-button.tsx#L11-L36
-	const throwConfetti = async () =>
+	const throwConfettis = async () =>
 	{
 		// Calcul de la position du bouton de soumission.
 		const { clientWidth, clientHeight } = document.documentElement;
@@ -164,7 +130,7 @@ export default function FormContainer()
 		}
 
 		// Lancement des confettis et redirection.
-		await throwConfetti();
+		await throwConfettis();
 
 		setStepName( messages( "dashboard.steps.summary_redirect" ) );
 
