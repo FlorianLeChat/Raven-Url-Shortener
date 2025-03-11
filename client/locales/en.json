@@ -129,7 +129,7 @@
 		"hint": "Your shortened link was created on {createDate}{isUpdated, select, true { and updated on {updateDate}} other {}}.",
 		"qr_code": "QR Code for your shortened link",
 		"links_label": "Available URLs",
-		"links_description": "URLs which have not been visited for one year will be automatically deleted.",
+		"links_description": "These URLs are available for the entire lifespan of your shortened link.<br></br>Links which have not been visited for one year will be automatically deleted.",
 		"actions": {
 			"title": "Available actions",
 			"wip": "These options are currently under development. They will be available soon.",
@@ -154,7 +154,21 @@
 			"all_url_title": "... and never ask for all URLs",
 			"all_url_description": "You accept the redirection for all URLs and you will not be notified again"
 		},
-		"report": "Report this shortened link"
+		"report": {
+			"default": "Report this shortened link",
+			"success_title": "Report sent",
+			"success_description": "The report for this shortened link has been sent successfully. We will review your request and take the necessary actions.",
+			"warning_label": "Attention required",
+			"warning_description": "Any abusive or unfounded reports may result in a block of your IP address.",
+			"reason_label": "Report reason",
+			"reason_description": "Enter a reason to explain why you are reporting this shortened link. This information will be forwarded to the website administrator for evaluation.",
+			"reason_placeholder": "This link contains photos of raccoons...",
+			"email_label": "Email address (optional)",
+			"email_description": "If you wish to be informed of the follow-up to your report, enter your email address. This will be temporarily stored, will not be shared with third parties, and will be deleted once the report is processed.",
+			"email_placeholder": "name@domain.com",
+			"consent_label": "I accept the processing of my email address",
+			"submit_button": "Send the report"
+		}
 	},
 	"legal": {
 		"title": "Serious zone here",
@@ -180,6 +194,9 @@
 			"missing_or_invalid": "The link's unique identifier is missing or invalid. Please try again.",
 			"fetch_failed": "Link information fetching failed. Please try again."
 		},
+		"report": {
+			"send_failed": "Report sending for this shortened link failed. Please try again."
+		},
 		"redirection": {
 			"not-found": {
 				"title": "Link not found",
@@ -202,7 +219,12 @@
 		"invalid_slug": "The slug you provided is invalid. Please ensure it contains only alphanumeric characters and hyphens.",
 		"too_short_slug": "The slug you provided is too short. Please choose a longer one.",
 		"too_long_slug": "The slug you provided is too long. Please choose a shorter one.",
-		"invalid_expiration": "The expiration date you provided is invalid."
+		"invalid_expiration": "The expiration date you provided is invalid.",
+		"too_short_reason": "The reason you provided is too short. Please choose a longer one.",
+		"too_long_reason": "The reason you provided is too long. Please choose a shorter one.",
+		"invalid_email": "The email address you provided is invalid. Please check its format and try again.",
+		"too_short_email": "The email address you provided is too short. Please choose a longer one.",
+		"too_long_email": "The email address you provided is too long. Please choose a shorter one."
 	},
 	"consentModal": {
 		"title": "Do you want a cookie? 🍪",
