@@ -5,13 +5,14 @@
 "use client";
 
 import { lazy } from "react";
+import { History } from "lucide-react";
 import { formatDate } from "@/utilities/date";
-import { History, Flag } from "lucide-react";
 import type { LinkProperties } from "@/interfaces/LinkProperties";
 import { useLocale, useTranslations } from "next-intl";
-import { Card, Snippet, CardBody, CardHeader, Button } from "@heroui/react";
+import { Card, Snippet, CardBody, CardHeader } from "@heroui/react";
 
 const AcceptRedirection = lazy( () => import( "./accept-redirection" ) );
+const ReportRedirection = lazy( () => import( "./report-redirection" ) );
 
 export default function RedirectionContainer( {
 	details
@@ -76,15 +77,7 @@ export default function RedirectionContainer( {
 					</li>
 
 					<li>
-						<Button
-							size="lg"
-							color="danger"
-							variant="bordered"
-							aria-label={messages( "report" )}
-							startContent={<Flag />}
-						>
-							{messages( "report" )}
-						</Button>
+						<ReportRedirection id={details.id} />
 					</li>
 				</ul>
 			</CardBody>

@@ -154,7 +154,21 @@
 			"all_url_title": "... et ne plus demander pour tous les liens",
 			"all_url_description": "Vous acceptez la redirection pour tous les liens et vous ne serez plus notifié à l'avenir"
 		},
-		"report": "Signaler ce lien raccourci"
+		"report": {
+			"default": "Signaler ce lien raccourci",
+			"success_title": "Signalement envoyé",
+			"success_description": "Le signalement pour ce lien raccourci a été envoyé avec succès. Nous allons examiner votre demande et prendre les mesures nécessaires.",
+			"warning_label": "Attention requise",
+			"warning_description": "Tout signalement abusif ou non fondé peut entraîner un blocage de votre adresse IP.",
+			"reason_label": "Raison du signalement",
+			"reason_description": "Saisissez une description pour expliquer la raison de votre signalement. Cette information sera transmise à l'administrateur du site Internet pour évaluation.",
+			"reason_placeholder": "Ce lien contient des photos de ratons-laveurs...",
+			"email_label": "Adresse électronique (facultatif)",
+			"email_description": "Si vous souhaitez être informé de la suite donnée à votre signalement, saisissez votre adresse électronique. Celle-ci sera enregistrée temporairement, ne sera pas partagée à des tiers et sera supprimée une fois le signalement traité.",
+			"email_placeholder": "prenom.nom@domaine.fr",
+			"consent_label": "J'accepte le traitement de mon adresse électronique",
+			"submit_button": "Envoyer le signalement"
+		}
 	},
 	"legal": {
 		"title": "Zone sérieuse ici",
@@ -180,6 +194,9 @@
 			"missing_or_invalid": "L'identifiant unique du lien est manquant ou invalide. Veuillez réessayer.",
 			"fetch_failed": "La récupération des informations du lien a échouée. Veuillez réessayer."
 		},
+		"report": {
+			"send_failed": "L'envoi du signalement pour ce lien raccourci a échoué. Veuillez réessayer."
+		},
 		"redirection": {
 			"not-found": {
 				"title": "Lien introuvable",
@@ -202,7 +219,12 @@
 		"invalid_slug": "Le slug que vous avez saisi est invalide. Veuillez vérifier qu'il ne contient que des caractères alphanumériques et des tirets.",
 		"too_short_slug": "Le slug que vous avez saisi est trop court. Veuillez en choisir un plus long.",
 		"too_long_slug": "Le slug que vous avez saisi est trop long. Veuillez en choisir un plus court.",
-		"invalid_expiration": "La date d'expiration que vous avez saisie est invalide."
+		"invalid_expiration": "La date d'expiration que vous avez saisie est invalide.",
+		"too_short_reason": "La raison que vous avez saisie est trop courte. Veuillez en choisir une plus longue.",
+		"too_long_reason": "La raison que vous avez saisie est trop longue. Veuillez en choisir une plus courte.",
+		"invalid_email": "L'adresse électronique que vous avez saisie est invalide. Veuillez vérifier son format et réessayer.",
+		"too_short_email": "L'adresse électronique que vous avez saisie est trop courte. Veuillez en choisir une plus longue.",
+		"too_long_email": "L'adresse électronique que vous avez saisie est trop longue. Veuillez en choisir une plus courte."
 	},
 	"consentModal": {
 		"title": "Voulez-vous un cookie ? 🍪",
