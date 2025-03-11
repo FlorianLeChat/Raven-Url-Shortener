@@ -9,7 +9,7 @@ import { getLinkDetails } from "./app/[locale]/dashboard/actions/get-link-detail
 import { trustedDomains } from "./config/domains";
 
 // Préfixes des routes de l'application.
-const routePrefixes = [ "dashboard/", "redirect/", "manager/" ];
+const routePrefixes = [ "dashboard", "redirect", "manager" ];
 
 export default async function middleware( request: NextRequest )
 {
