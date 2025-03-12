@@ -14,7 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Entité pour les liens raccourcis.
  */
 #[ORM\Entity(repositoryClass: LinkRepository::class)]
-final class Link
+class Link
 {
 	#[ORM\Id]
 	#[ORM\Column(type: UuidType::NAME, unique: true)]
@@ -55,6 +55,13 @@ final class Link
 	public function getId(): Uuid
 	{
 		return $this->id;
+	}
+
+	public function setId(?Uuid $id): static
+	{
+		$this->id = $id;
+
+		return $this;
 	}
 
 	/**

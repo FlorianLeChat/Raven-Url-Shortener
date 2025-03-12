@@ -14,7 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Entité pour les signalements de liens raccourcis.
  */
 #[ORM\Entity(repositoryClass: ReportRepository::class)]
-final class Report
+class Report
 {
 	#[ORM\Id]
 	#[ORM\Column(type: UuidType::NAME, unique: true)]
