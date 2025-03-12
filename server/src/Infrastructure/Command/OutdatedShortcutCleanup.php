@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Command;
+namespace App\Infrastructure\Command;
 
 use DateTime;
 use App\Domain\Entity\Link;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
+use App\Infrastructure\Repository\LinkRepository;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -19,11 +21,43 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class OutdatedShortcutCleanup extends Command
 {
 	/**
+	 * Répertoire des méthodes pour les liens raccourcis.
+	 */
+	private readonly LinkRepository $repository;
+
+	/**
 	 * Initialisation des dépendances de la commande.
 	 */
 	public function __construct(private readonly EntityManagerInterface $entityManager)
 	{
+		$this->repository = $this->entityManager->getRepository(Link::class);
+
 		parent::__construct();
+	}
+
+	/**
+	 * Récupération de tous les liens raccourcis expirés
+	 *  depuis la base de données.
+	 */
+	private function getExpiredLinks()
+	{
+		$query = $this->repository->createQueryBuilder("u");
+		$query->where($query->expr()->lte("u.expiration", ":oneDayAgo"))
+			->orWhere($query->expr()->lte("u.visitedAt", ":oneYearAgo"))
+			->setParameter("oneDayAgo", new DateTime("-1 day"), Types::DATETIME_MUTABLE)
+			->setParameter("oneYearAgo", new DateTime("-1 year"), Types::DATETIME_MUTABLE);
+
+		return $query->getQuery()->getResult();
+	}
+
+	/**
+	 * Suppression d'un lien raccourci expiré avec journalisation.
+	 */
+	private function deleteExpiredLink(SymfonyStyle $io, Link $link)
+	{
+		$io->text(sprintf("Deleting shortcut \"%s (%s)\"...", $link->getUrl(), $link->getId()->toString()));
+
+		$this->entityManager->remove($link);
 	}
 
 	/**
@@ -31,28 +65,16 @@ final class OutdatedShortcutCleanup extends Command
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
-		// Récupération de tous les liens raccourcis expirés.
-		$repository = $this->entityManager->getRepository(Link::class);
-		$query = $repository->createQueryBuilder("u");
-		$query->where($query->expr()->lte("u.expiration", ":oneDayAgo"))
-			->andWhere($query->expr()->lte("u.visitedAt", ":oneYearAgo"))
-			->setParameter("oneDayAgo", new DateTime("-1 day"), Types::DATETIME_MUTABLE)
-			->setParameter("oneYearAgo", new DateTime("-1 year"), Types::DATETIME_MUTABLE);
-
-		// Parcours de tous les liens raccourcis expirés pour les supprimer.
 		$io = new SymfonyStyle($input, $output);
 		$count = 0;
 
-		foreach ($query->getQuery()->getResult() as $link)
+		foreach ($this->getExpiredLinks() as $link)
 		{
-			$io->text(sprintf("Deleting shortcut \"%s (%d)\"...", $link->getUrl(), $link->getId()));
-			$repository->remove($link);
+			$this->deleteExpiredLink($io, $link);
 
 			$count++;
 		}
 
-		// Sauvegarde des modifications dans la base de données
-		//  et fin de la commande.
 		$this->entityManager->flush();
 
 		$io->success("Deleted $count expired shortcut link(s).");
