@@ -8,7 +8,7 @@ const nextConfig: NextConfig = withNextIntl( {
 	rewrites: async () => [
 		{
 			source: "/api/:path*",
-			destination: `${ process.env.NEXT_PUBLIC_BACKEND_URL }/:path*`
+			destination: `${ process.env.NEXT_PUBLIC_BACKEND_URL }/api/:path*`
 		}
 	]
 } );
