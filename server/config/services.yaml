@@ -18,5 +18,7 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
+    App\Infrastructure\EventListener\RequestListener:
+        tags: [kernel.event_listener]
     App\Infrastructure\EventListener\ExceptionListener:
         tags: [kernel.event_listener]
