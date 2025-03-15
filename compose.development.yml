@@ -60,7 +60,7 @@ services:
                   target: /var/www/html
                   ignore:
                     - vendor/
-                - path: composer.lock
+                - path: ./server/composer.lock
                   action: rebuild
         volumes:
             - ./server/logs:/var/www/html/logs
