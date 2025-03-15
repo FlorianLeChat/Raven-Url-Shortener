@@ -1,5 +1,0 @@
-controllers:
-    type: attribute
-    resource:
-        path: ../src/Action/
-        namespace: App\Action
