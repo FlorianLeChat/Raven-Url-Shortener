@@ -20,7 +20,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 /**
  * Commande pour la génération d'un résumé des signalements d'utilisateurs.
  */
-#[AsCommand("app:reports-summary", "Creates a summary of user reports and sends it by email.")]
+#[AsCommand('app:reports-summary', 'Creates a summary of user reports and sends it by email.')]
 final class UserReportSummary extends Command
 {
 	/**
@@ -39,12 +39,12 @@ final class UserReportSummary extends Command
 	 */
 	private function createEmail(int $count)
 	{
-		$recipient = $this->parameters->get("app.smtp_user");
+		$recipient = $this->parameters->get('app.smtp_user');
 
 		return (new Email())
 			->to(new Address($recipient))
-			->text(sprintf("There are %d report(s) to review.", $count))
-			->subject("Report summary");
+			->text(sprintf('There are %d report(s) to review.', $count))
+			->subject('Report summary');
 	}
 
 	/**
@@ -56,13 +56,13 @@ final class UserReportSummary extends Command
 		{
 			$this->mailer->send($signedEmail ?? $email);
 
-			$io->success("Email sent successfully.");
+			$io->success('Email sent successfully.');
 
 			return Command::SUCCESS;
 		}
 		catch (TransportExceptionInterface $error)
 		{
-			$io->error(sprintf("Failed to send email: %s", $error->getMessage()));
+			$io->error(sprintf('Failed to send email: %s', $error->getMessage()));
 
 			return Command::FAILURE;
 		}
@@ -74,25 +74,25 @@ final class UserReportSummary extends Command
 	 */
 	private function signEmailWithDkim(Email $email, SymfonyStyle $io): ?Email
 	{
-		if ($this->parameters->get("app.dkim_enabled") !== "true")
+		if ($this->parameters->get('app.dkim_enabled') !== 'true')
 		{
-			$io->warning("DKIM signing is disabled.");
+			$io->warning('DKIM signing is disabled.');
 			return null;
 		}
 
 		try {
-			$path = $this->parameters->get("app.dkim_private_key");
+			$path = $this->parameters->get('app.dkim_private_key');
 			$signer = new DkimSigner(
 				$path,
-				$this->parameters->get("app.dkim_domain"),
-				$this->parameters->get("app.dkim_selector")
+				$this->parameters->get('app.dkim_domain'),
+				$this->parameters->get('app.dkim_selector')
 			);
 
-			$io->success("Email signed with DKIM.");
+			$io->success('Email signed with DKIM.');
 
 			return $signer->sign($email);
 		} catch (Exception $error) {
-			$io->error(sprintf("Failed to sign email: %s", $error->getMessage()));
+			$io->error(sprintf('Failed to sign email: %s', $error->getMessage()));
 			return null;
 		}
 	}
@@ -107,11 +107,11 @@ final class UserReportSummary extends Command
 		$count = count($reports);
 
 		$io = new SymfonyStyle($input, $output);
-		$io->title(sprintf("Summary of %d user report(s)", $count));
+		$io->title(sprintf('Summary of %d user report(s)', $count));
 
-		if ($this->parameters->get("app.smtp_enabled") !== "true")
+		if ($this->parameters->get('app.smtp_enabled') !== 'true')
 		{
-			$io->error("SMTP is disabled.");
+			$io->error('SMTP is disabled.');
 			return Command::SUCCESS; // Ce n'est pas une erreur, car le service est désactivé.
 		}
 

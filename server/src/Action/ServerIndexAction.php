@@ -15,13 +15,16 @@ final class ServerIndexAction extends AbstractController
 	/**
 	 * Récupération de l'état de santé du serveur.
 	 */
-	#[Route("/", methods: ["GET"], stateless: true)]
+	#[Route('/', methods: ['GET'], stateless: true)]
 	public function getHealthCheck(Request $request): Response
 	{
-		$requestTime = $request->server->get("REQUEST_TIME_FLOAT");
+		$requestTime = $request->server->get('REQUEST_TIME_FLOAT');
 		$currentTime = microtime(true);
 		$executionTime = round(($currentTime - $requestTime) * 1000, 3);
 
-		return new Response("OK in $executionTime ms");
+		return new Response(
+			sprintf('Server is running. Execution time: %s ms', $executionTime),
+			Response::HTTP_OK
+		);
 	}
 }

@@ -32,35 +32,35 @@ final class ExceptionListener
 		$exception = $event->getThrowable();
 
 		$this->logger->error($response->getContent(), [
-			"file" => $exception->getFile(),
-			"line" => $exception->getLine(),
-			"code" => $exception->getCode()
+			'file' => $exception->getFile(),
+			'line' => $exception->getLine(),
+			'code' => $exception->getCode()
 		]);
 
 		if ($exception instanceof HttpException)
 		{
 			// Exception HTTP standard ou dérivée.
 			$data = [
-				"code" => $exception->getStatusCode(),
-				"message" => $exception->getMessage()
+				'code' => $exception->getStatusCode(),
+				'message' => $exception->getMessage()
 			];
 
 			if ($exception instanceof DataValidationException)
 			{
-				$data["errors"] = $exception->getViolations();
+				$data['errors'] = $exception->getViolations();
 			}
 
 			$response->setData($data);
 			$response->setStatusCode($exception->getStatusCode());
 			$response->headers->replace($exception->getHeaders());
-			$response->headers->set("Content-Type", "application/json");
+			$response->headers->set('Content-Type', 'application/json');
 		}
 		else
 		{
 			// Exception non gérée.
 			$response->setData([
-				"code" => JsonResponse::HTTP_INTERNAL_SERVER_ERROR,
-				"message" => $exception->getMessage()
+				'code' => JsonResponse::HTTP_INTERNAL_SERVER_ERROR,
+				'message' => $exception->getMessage()
 			]);
 
 			$response->setStatusCode(JsonResponse::HTTP_INTERNAL_SERVER_ERROR);

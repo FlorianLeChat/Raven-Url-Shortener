@@ -48,8 +48,8 @@ final class CreateLinkService
 
 		foreach ($violations as $violation) {
 			$errors[$violation->getPropertyPath()][] = [
-				"code" => $violation->getMessage(),
-				"message" => $violation->getMessage()
+				'code' => $violation->getMessage(),
+				'message' => $violation->getMessage()
 			];
 		}
 
@@ -67,22 +67,22 @@ final class CreateLinkService
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
 		try {
-			$response = $this->httpClient->request("GET", $url, [
-				"timeout" => 5,
+			$response = $this->httpClient->request('GET', $url, [
+				'timeout' => 5,
 			]);
 
 			if ($response->getStatusCode() !== 200) {
-				$errors["url"][] = [
-					"code" => "unreachable_url",
-					"message" => "The specified URL is unreachable."
+				$errors['url'][] = [
+					'code' => 'unreachable_url',
+					'message' => 'The specified URL is unreachable.'
 				];
 
 				throw new DataValidationException($errors);
 			}
 		} catch (TransportExceptionInterface $exception) {
-			$errors["url"][] = [
-				"code" => "invalid_url",
-				"message" => $exception->getMessage()
+			$errors['url'][] = [
+				'code' => 'invalid_url',
+				'message' => $exception->getMessage()
 			];
 
 			throw new DataValidationException($errors);
@@ -96,13 +96,13 @@ final class CreateLinkService
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
-		$result = $this->repository->findOneBy(["slug" => $slug]);
+		$result = $this->repository->findOneBy(['slug' => $slug]);
 
 		if (!empty($result))
 		{
-			$errors["slug"][] = [
-				"code" => "duplicated_slug",
-				"message" => "This custom slug is already in use by another link."
+			$errors['slug'][] = [
+				'code' => 'duplicated_slug',
+				'message' => 'This custom slug is already in use by another link.'
 			];
 
 			throw new DataValidationException($errors);
@@ -116,8 +116,8 @@ final class CreateLinkService
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
-		$slug = "";
-		$characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		$slug = '';
+		$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 		for ($i = 0; $i < mt_rand(5, 20); $i++)
 		{
@@ -134,12 +134,12 @@ final class CreateLinkService
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
-		$expiration = $request->request->get("expiration");
+		$expiration = $request->request->get('expiration');
 		$currentDate = new DateTime();
 
 		$link = new Link();
-		$link->setUrl($request->request->get("url"));
-		$link->setSlug($request->request->get("slug", $this->createRandomSlug()));
+		$link->setUrl($request->request->get('url'));
+		$link->setSlug($request->request->get('slug', $this->createRandomSlug()));
 		$link->setExpiration(!empty($expiration) ? new DateTime($expiration) : null);
 		$link->setCreatedAt($currentDate);
 		$link->setVisitedAt($currentDate);

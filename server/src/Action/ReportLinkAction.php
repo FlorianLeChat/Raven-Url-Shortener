@@ -30,7 +30,7 @@ final class ReportLinkAction extends AbstractController
 	/**
 	 * Signalement d'un lien raccourci.
 	 */
-	#[Route("/api/link/report", methods: ["POST"], stateless: true)]
+	#[Route('/api/link/report', methods: ['POST'], stateless: true)]
 	public function createLink(Request $request): JsonResponse
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
