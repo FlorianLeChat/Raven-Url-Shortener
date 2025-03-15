@@ -18,28 +18,26 @@ class Link
 {
 	#[ORM\Id]
 	#[ORM\Column(type: UuidType::NAME, unique: true)]
-	#[ORM\GeneratedValue(strategy: "CUSTOM")]
-	#[ORM\CustomIdGenerator(class: "doctrine.uuid_generator")]
+	#[ORM\GeneratedValue(strategy: 'CUSTOM')]
+	#[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
 	private ?Uuid $id = null;
 
-	// code ?
-
 	#[ORM\Column(type: Types::TEXT)]
-	#[Assert\Url(requireTld: true, message: "invalid_url")]
-	#[Assert\NotNull(message: "missing_url")]
-	#[Assert\NotBlank(message: "missing_url")]
+	#[Assert\Url(requireTld: true, message: 'invalid_url')]
+	#[Assert\NotNull(message: 'missing_url')]
+	#[Assert\NotBlank(message: 'missing_url')]
 	private ?string $url = null;
 
 	#[ORM\Column(type: Types::STRING, length: 50)]
-	#[Assert\Regex(pattern: "/^[a-zA-Z0-9-]+$/", message: "invalid_slug")]
-	#[Assert\Length(min: 1, max: 50, minMessage: "too_short_slug", maxMessage: "too_long_slug")]
+	#[Assert\Regex(pattern: '/^[a-zA-Z0-9-]+$/', message: 'invalid_slug')]
+	#[Assert\Length(min: 1, max: 50, minMessage: 'too_short_slug', maxMessage: 'too_long_slug')]
 	private ?string $slug = null;
 
 	#[ORM\Column(type: Types::BOOLEAN)]
 	private ?bool $enabled = true;
 
 	#[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-	#[Assert\Range(min: "tomorrow", max: "+1 year", notInRangeMessage: "invalid_expiration")]
+	#[Assert\Range(min: 'tomorrow', max: '+1 year', notInRangeMessage: 'invalid_expiration')]
 	private ?DateTimeInterface $expiration = null;
 
 	#[ORM\Column(type: Types::DATETIME_MUTABLE)]

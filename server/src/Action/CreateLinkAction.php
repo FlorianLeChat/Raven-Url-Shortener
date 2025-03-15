@@ -32,7 +32,7 @@ final class CreateLinkAction extends AbstractController
 	/**
 	 * Création d'un lien raccourci.
 	 */
-	#[Route("/api/link", methods: ["POST"], stateless: true)]
+	#[Route('/api/link', methods: ['POST'], stateless: true)]
 	public function createLink(Request $request): JsonResponse
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));

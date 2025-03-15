@@ -18,21 +18,21 @@ class Report
 {
 	#[ORM\Id]
 	#[ORM\Column(type: UuidType::NAME, unique: true)]
-	#[ORM\GeneratedValue(strategy: "CUSTOM")]
-	#[ORM\CustomIdGenerator(class: "doctrine.uuid_generator")]
+	#[ORM\GeneratedValue(strategy: 'CUSTOM')]
+	#[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
 	private ?Uuid $id = null;
 
-	#[ORM\ManyToOne(cascade: ["persist", "remove"])]
+	#[ORM\ManyToOne(cascade: ['persist', 'remove'])]
 	#[ORM\JoinColumn(nullable: false)]
 	private ?Link $link = null;
 
 	#[ORM\Column(type: Types::STRING, length: 500)]
-	#[Assert\Length(min: 10, max: 500, minMessage: "too_short_reason", maxMessage: "too_long_reason")]
+	#[Assert\Length(min: 10, max: 500, minMessage: 'too_short_reason', maxMessage: 'too_long_reason')]
 	private ?string $reason = null;
 
 	#[ORM\Column(type: Types::STRING, length: 100, nullable: true)]
-	#[Assert\Email(message: "invalid_email")]
-	#[Assert\Length(min: 10, max: 100, minMessage: "too_short_email", maxMessage: "too_long_email")]
+	#[Assert\Email(message: 'invalid_email')]
+	#[Assert\Length(min: 10, max: 100, minMessage: 'too_short_email', maxMessage: 'too_long_email')]
 	#[Assert\NoSuspiciousCharacters]
 	private ?string $email = null;
 

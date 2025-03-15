@@ -20,7 +20,7 @@ final class DataValidationException extends HttpException
 	 */
 	public function __construct(array $violations)
 	{
-		parent::__construct(Response::HTTP_BAD_REQUEST, "An error occurred during data validation.");
+		parent::__construct(Response::HTTP_BAD_REQUEST, 'An error occurred during data validation.');
 
 		$this->violations = $violations;
 	}

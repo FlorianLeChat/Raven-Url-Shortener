@@ -5,7 +5,6 @@ namespace App\Infrastructure\Command;
 use DateTime;
 use App\Domain\Entity\Link;
 use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use App\Infrastructure\Repository\LinkRepository;
@@ -17,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Commande pour le nettoyage des liens raccourcis expirés.
  */
-#[AsCommand("app:shortcut-cleanup", "Deletes expired shortcut links from the database.")]
+#[AsCommand('app:shortcut-cleanup', 'Deletes expired shortcut links from the database.')]
 final class OutdatedShortcutCleanup extends Command
 {
 	/**
@@ -41,11 +40,11 @@ final class OutdatedShortcutCleanup extends Command
 	 */
 	private function getExpiredLinks()
 	{
-		$query = $this->repository->createQueryBuilder("u");
-		$query->where($query->expr()->lte("u.expiration", ":oneDayAgo"))
-			->orWhere($query->expr()->lte("u.visitedAt", ":oneYearAgo"))
-			->setParameter("oneDayAgo", new DateTime("-1 day"), Types::DATETIME_MUTABLE)
-			->setParameter("oneYearAgo", new DateTime("-1 year"), Types::DATETIME_MUTABLE);
+		$query = $this->repository->createQueryBuilder('u');
+		$query->where($query->expr()->lte('u.expiration', ':oneDayAgo'))
+			->orWhere($query->expr()->lte('u.visitedAt', ':oneYearAgo'))
+			->setParameter('oneDayAgo', new DateTime('-1 day'), Types::DATETIME_MUTABLE)
+			->setParameter('oneYearAgo', new DateTime('-1 year'), Types::DATETIME_MUTABLE);
 
 		return $query->getQuery()->getResult();
 	}
@@ -55,7 +54,7 @@ final class OutdatedShortcutCleanup extends Command
 	 */
 	private function deleteExpiredLink(SymfonyStyle $io, Link $link)
 	{
-		$io->text(sprintf("Deleting shortcut \"%s (%s)\"...", $link->getUrl(), $link->getId()->toString()));
+		$io->text(sprintf('Deleting shortcut \'%s (%s)\'...', $link->getUrl(), $link->getId()->toString()));
 
 		$this->entityManager->remove($link);
 	}
@@ -77,7 +76,7 @@ final class OutdatedShortcutCleanup extends Command
 
 		$this->entityManager->flush();
 
-		$io->success("Deleted $count expired shortcut link(s).");
+		$io->success(sprintf('Deleted %d expired shortcut link(s).', $count));
 
 		return Command::SUCCESS;
 	}

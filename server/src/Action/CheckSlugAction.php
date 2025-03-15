@@ -28,7 +28,7 @@ final class CheckSlugAction extends AbstractController
 	/**
 	 * Vérification de la disponibilité d'un slug personnalisé.
 	 */
-	#[Route("/api/slug", methods: ["POST"], stateless: true)]
+	#[Route('/api/slug', methods: ['POST'], stateless: true)]
 	public function checkSlug(Request $request): JsonResponse
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
@@ -37,6 +37,6 @@ final class CheckSlugAction extends AbstractController
 
 		$isAvailable = $service->checkSlug($request);
 
-		return new JsonResponse(["available" => $isAvailable], JsonResponse::HTTP_OK);
+		return new JsonResponse(['available' => $isAvailable], JsonResponse::HTTP_OK);
 	}
 }

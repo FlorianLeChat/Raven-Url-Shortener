@@ -53,8 +53,8 @@ final class ReportLinkService
 
 		foreach ($violations as $violation) {
 			$errors[$violation->getPropertyPath()][] = [
-				"code" => $violation->getMessage(),
-				"message" => $violation->getMessage()
+				'code' => $violation->getMessage(),
+				'message' => $violation->getMessage()
 			];
 		}
 
@@ -71,13 +71,13 @@ final class ReportLinkService
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
-		$result = $this->linkRepository->findOneBy(["id" => $id]);
+		$result = $this->linkRepository->findOneBy(['id' => $id]);
 
 		if (empty($result))
 		{
-			$errors["slug"][] = [
-				"code" => "missing_link",
-				"message" => "The specified link does not exist."
+			$errors['slug'][] = [
+				'code' => 'missing_link',
+				'message' => 'The specified link does not exist.'
 			];
 
 			throw new DataValidationException($errors);
@@ -94,9 +94,9 @@ final class ReportLinkService
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
 		$report = new Report();
-		$report->setLink($this->getLinkById($request->request->get("id")));
-		$report->setEmail($request->request->get("email"));
-		$report->setReason($request->request->get("reason"));
+		$report->setLink($this->getLinkById($request->request->get('id')));
+		$report->setEmail($request->request->get('email'));
+		$report->setReason($request->request->get('reason'));
 		$report->setCreatedAt(new DateTime());
 
 		$this->validateReport($report);
