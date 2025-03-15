@@ -22,6 +22,8 @@ class Link
 	#[ORM\CustomIdGenerator(class: "doctrine.uuid_generator")]
 	private ?Uuid $id = null;
 
+	// code ?
+
 	#[ORM\Column(type: Types::TEXT)]
 	#[Assert\Url(requireTld: true, message: "invalid_url")]
 	#[Assert\NotNull(message: "missing_url")]
