@@ -48,12 +48,12 @@ export default async function Page( {
 	//  rediriger l'utilisateur vers la page d'accueil.
 	if ( !details.state || "message" in details )
 	{
-		redirect( "?error=not-found", RedirectType.push );
+		redirect( "/?error=not-found", RedirectType.push );
 	}
 
 	if ( !details.data.enabled )
 	{
-		redirect( "?error=disabled", RedirectType.push );
+		redirect( "/?error=disabled", RedirectType.push );
 	}
 
 	// Affichage du rendu HTML de la page.
