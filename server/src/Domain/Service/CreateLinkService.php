@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Infrastructure\Repository\LinkRepository;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Infrastructure\Exception\DataValidationException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
@@ -31,6 +32,7 @@ final class CreateLinkService
 	public function __construct(
 		private readonly LoggerInterface $logger,
 		private readonly ValidatorInterface $validator,
+		private readonly TranslatorInterface $translator,
 		private readonly HttpClientInterface $httpClient,
 		private readonly EntityManagerInterface $entityManager,
 	) {
@@ -77,8 +79,8 @@ final class CreateLinkService
 
 			if ($response->getStatusCode() !== 200) {
 				$errors['url'][] = [
-					'code' => 'unreachable_url',
-					'message' => 'The specified URL is unreachable.'
+					'code' => 'UNREACHABLE_URL_ERROR',
+					'message' => $this->translator->trans('link.unreachable_url')
 				];
 
 				throw new DataValidationException($errors);
@@ -106,8 +108,8 @@ final class CreateLinkService
 		{
 			$errors = [];
 			$errors['slug'][] = [
-				'code' => 'duplicated_slug',
-				'message' => 'This custom slug is already in use by another link.'
+				'code' => 'DUPLICATE_SLUG_ERROR',
+				'message' => $this->translator->trans('slug.already_used')
 			];
 
 			throw new DataValidationException($errors);

@@ -12,6 +12,7 @@ use App\Infrastructure\Repository\LinkRepository;
 use App\Infrastructure\Repository\ReportRepository;
 use App\Infrastructure\Exception\DataValidationException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 use const App\LOG_FUNCTION;
 
@@ -36,6 +37,7 @@ final class ReportLinkService
 	public function __construct(
 		private readonly LoggerInterface $logger,
 		private readonly ValidatorInterface $validator,
+		private readonly TranslatorInterface $translator,
 		private readonly EntityManagerInterface $entityManager
 	) {
 		$this->linkRepository = $this->entityManager->getRepository(Link::class);
@@ -54,7 +56,7 @@ final class ReportLinkService
 
 		foreach ($violations as $violation) {
 			$errors[$violation->getPropertyPath()][] = [
-				'code' => $violation->getMessage(),
+				'code' => $violation->getConstraint()->getErrorName($violation->getCode()),
 				'message' => $violation->getMessage()
 			];
 		}
@@ -78,8 +80,8 @@ final class ReportLinkService
 		if (empty($result))
 		{
 			$errors['slug'][] = [
-				'code' => 'missing_link',
-				'message' => 'The specified link does not exist.'
+				'code' => 'LINK_NOT_FOUND_ERROR',
+				'message' => $this->translator->trans('link.not_exist')
 			];
 
 			throw new DataValidationException($errors);
