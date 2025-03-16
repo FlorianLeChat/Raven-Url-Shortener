@@ -47,29 +47,34 @@ export default function ActionButtons()
 				as={Link}
 				variant="flat"
 				onPress={() => router.push( "/" )}
+				className="max-sm:min-w-16"
 				aria-label={messages( "home" )}
 				startContent={<House />}
 			>
-				<span className="hidden md:inline">{messages( "home" )}</span>
+				<span className="hidden lg:inline">{messages( "home" )}</span>
 			</Button>
 
 			<Button
 				variant="flat"
 				onPress={() => showPreferences()}
+				className="max-sm:min-w-16"
 				aria-label={messages( "cookies" )}
 				startContent={<Cookie />}
 			>
-				<span className="hidden md:inline">{messages( "cookies" )}</span>
+				<span className="hidden lg:inline">{messages( "cookies" )}</span>
 			</Button>
 
 			<Button
 				variant="flat"
 				onPress={toggleTheme}
+				className="max-sm:min-w-16"
 				isDisabled={theme === "N/A"}
-				aria-label={messages( `${ theme === "dark" ? "light" : "dark" }_theme` )}
+				aria-label={messages(
+					`${ theme === "dark" ? "light" : "dark" }_theme`
+				)}
 				startContent={<SunMoon />}
 			>
-				<span className="hidden md:inline">
+				<span className="hidden lg:inline">
 					{messages( `${ theme === "dark" ? "light" : "dark" }_theme` )}
 				</span>
 			</Button>
@@ -78,10 +83,11 @@ export default function ActionButtons()
 				as={Link}
 				onPress={() => router.push( "/legal" )}
 				variant="flat"
+				className="max-sm:min-w-16"
 				aria-label={messages( "legal" )}
 				startContent={<Scale />}
 			>
-				<span className="hidden md:inline">{messages( "legal" )}</span>
+				<span className="hidden lg:inline">{messages( "legal" )}</span>
 			</Button>
 
 			<Button
@@ -92,11 +98,12 @@ export default function ActionButtons()
 					"noopener noreferrer"
 				)}
 				variant="flat"
+				className="max-sm:min-w-16"
 				aria-label={messages( "support" )}
 				startContent={<HandHelping />}
 				showAnchorIcon
 			>
-				<span className="hidden md:inline">{messages( "support" )}</span>
+				<span className="hidden lg:inline">{messages( "support" )}</span>
 			</Button>
 		</ButtonGroup>
 	);

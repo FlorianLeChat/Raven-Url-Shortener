@@ -69,11 +69,23 @@ export default function SummaryContainer( {
 						{messages( "links_label" )}
 					</h3>
 
-					<Snippet size="lg" className="overflow-auto" hideSymbol>
+					<Snippet
+						size="lg"
+						hideSymbol
+						classNames={{
+							pre: "overflow-auto whitespace-pre-wrap"
+						}}
+					>
 						{domain + details.slug}
 					</Snippet>
 
-					<Snippet size="lg" className="overflow-auto" hideSymbol>
+					<Snippet
+						size="lg"
+						hideSymbol
+						classNames={{
+							pre: "overflow-auto whitespace-pre-wrap"
+						}}
+					>
 						{domain + details.id}
 					</Snippet>
 

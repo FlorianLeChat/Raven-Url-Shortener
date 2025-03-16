@@ -22,9 +22,9 @@ export default function SummaryActions()
 
 	// Affichage du rendu HTML du composant.
 	return (
-		<ul className="flex flex-col gap-3">
+		<ul className="flex-col lg:flex">
 			<li>
-				<h3 className="inline-flex items-center text-xl font-semibold">
+				<h3 className="mb-3 inline-flex items-center text-xl font-semibold">
 					{messages( "actions.title" )}
 					<Tooltip content={messages( "actions.wip" )}>
 						<Info className="ml-2 inline" width={20} height={20} />
@@ -32,7 +32,7 @@ export default function SummaryActions()
 				</h3>
 			</li>
 
-			<li className="flex gap-3">
+			<li className="gap-3 max-lg:mr-3 max-lg:inline-flex lg:mb-3 lg:flex">
 				<Button
 					size="lg"
 					color="primary"
@@ -62,11 +62,12 @@ export default function SummaryActions()
 				</Button>
 			</li>
 
-			<li className="flex gap-3">
+			<li className="gap-3 max-lg:inline-flex lg:flex">
 				<Button
 					size="lg"
 					color="success"
 					variant="flat"
+					className="max-md:min-w-max"
 					aria-label={messages( "actions.regenerate" )}
 					isDisabled={isProduction}
 					startContent={<RefreshCw />}
@@ -80,6 +81,7 @@ export default function SummaryActions()
 					size="lg"
 					color="danger"
 					variant="flat"
+					className="max-md:min-w-max"
 					aria-label={messages( "actions.remove" )}
 					isDisabled={isProduction}
 					startContent={<Trash2 />}
