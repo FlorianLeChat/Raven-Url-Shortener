@@ -79,6 +79,12 @@
         }
     },
     "require-dev": {
-        "symfony/debug-bundle": "7.2.*"
+        "phpmd/phpmd": "2.15.*",
+        "phpstan/phpstan": "1.12.*",
+        "symfony/debug-bundle": "7.2.*",
+        "phpstan/phpstan-symfony": "1.4.*",
+        "phpstan/phpstan-doctrine": "1.5.*",
+        "squizlabs/php_codesniffer": "3.11.*",
+        "phpstan/extension-installer": "1.4.*"
     }
 }
