@@ -46,6 +46,7 @@ final class CreateLinkService
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
+		$errors = [];
 		$violations = $this->validator->validate($link);
 
 		foreach ($violations as $violation) {
@@ -69,6 +70,7 @@ final class CreateLinkService
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
 		try {
+			$errors = [];
 			$response = $this->httpClient->request('GET', $url, [
 				'timeout' => 5,
 			]);
@@ -102,6 +104,7 @@ final class CreateLinkService
 
 		if (!empty($result))
 		{
+			$errors = [];
 			$errors['slug'][] = [
 				'code' => 'duplicated_slug',
 				'message' => 'This custom slug is already in use by another link.'

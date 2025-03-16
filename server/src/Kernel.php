@@ -18,7 +18,7 @@ final class Kernel extends BaseKernel
 		parent::boot();
 
 		// Définition du fuseau horaire pour l'ensemble de l'application.
-		date_default_timezone_set($_ENV['APP_TIMEZONE']);
+		date_default_timezone_set(getenv('APP_TIMEZONE') ?: 'America/New_York');
 	}
 
 	public function getLogDir(): string

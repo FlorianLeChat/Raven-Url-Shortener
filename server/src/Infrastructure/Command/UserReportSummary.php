@@ -38,7 +38,7 @@ final class UserReportSummary extends Command
 	 */
 	private function createEmail(int $count): Email
 	{
-		$recipient = $_ENV['SMTP_USERNAME'];
+		$recipient = getenv('SMTP_USERNAME') ?: '';
 
 		return (new Email())
 			->to(new Address($recipient))
@@ -73,18 +73,18 @@ final class UserReportSummary extends Command
 	 */
 	private function signEmailWithDkim(Email $email, SymfonyStyle $io): ?Message
 	{
-		if ($_ENV['DKIM_ENABLED'] !== 'true')
+		if (getenv('DKIM_ENABLED') !== 'true')
 		{
 			$io->warning('DKIM signing is disabled.');
 			return null;
 		}
 
 		try {
-			$path = $_ENV['DKIM_PRIVATE_KEY'];
+			$path = getenv('DKIM_PRIVATE_KEY') ?: '';
 			$signer = new DkimSigner(
 				$path,
-				$_ENV['DKIM_DOMAIN'],
-				$_ENV['DKIM_SELECTOR']
+				getenv('DKIM_DOMAIN') ?: '',
+				getenv('DKIM_SELECTOR') ?: ''
 			);
 
 			$io->success('Email signed with DKIM.');
@@ -108,7 +108,7 @@ final class UserReportSummary extends Command
 		$io = new SymfonyStyle($input, $output);
 		$io->title(sprintf('Summary of %d user report(s)', $count));
 
-		if ($_ENV['SMTP_ENABLED'] !== 'true')
+		if (getenv('SMTP_ENABLED') !== 'true')
 		{
 			$io->error('SMTP is disabled.');
 			return Command::SUCCESS; // Ce n'est pas une erreur, car le service est désactivé.

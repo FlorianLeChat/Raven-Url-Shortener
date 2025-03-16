@@ -49,6 +49,7 @@ final class ReportLinkService
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
+		$errors = [];
 		$violations = $this->validator->validate($report);
 
 		foreach ($violations as $violation) {
@@ -71,6 +72,7 @@ final class ReportLinkService
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
+		$errors = [];
 		$result = $this->linkRepository->findOneBy(['id' => $id]);
 
 		if (empty($result))
