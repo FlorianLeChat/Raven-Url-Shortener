@@ -189,14 +189,16 @@
 		},
 		"slug": {
 			"missing_or_invalid": "Le slug personnalisé est manquant ou invalide. Veuillez réessayer.",
-			"check_failed": "La vérification du slug personnalisé a échouée. Veuillez réessayer."
+			"check_failed": "La vérification du slug personnalisé a échouée. Veuillez réessayer.",
+			"already_used": "Le slug personnalisé que vous avez choisi est déjà utilisé par un autre lien. Veuillez en choisir un autre."
 		},
 		"link": {
 			"missing_or_invalid": "L'identifiant unique du lien est manquant ou invalide. Veuillez réessayer.",
-			"fetch_failed": "La récupération des informations du lien a échouée. Veuillez réessayer."
+			"fetch_failed": "La récupération des informations du lien a échouée. Veuillez réessayer.",
+			"creation_failed": "La création du lien a échouée. Vérifiez les informations saisies et réessayez."
 		},
 		"report": {
-			"send_failed": "L'envoi du signalement pour ce lien raccourci a échoué. Veuillez réessayer."
+			"send_failed": "L'envoi du signalement pour ce lien raccourci a échoué. Vérifiez les informations saisies et réessayez."
 		},
 		"redirection": {
 			"not-found": {
@@ -212,20 +214,7 @@
 		"creation_error": "Erreur lors de la création",
 		"consent_missing": "Consentement requis",
 		"consent_required": "Vous devez accepter les mentions légales pour utiliser notre service.",
-		"generic_unknown": "Une erreur inconnue s'est produite lors du traitement de votre demande. Veuillez réessayer.",
-		"already_used_slug": "Le slug personnalisé que vous avez choisi est déjà utilisé par un autre lien. Veuillez en choisir un autre.",
-		"duplicated_slug": "Le slug que vous avez choisi est déjà utilisé par un autre lien. Veuillez en choisir un autre.",
-		"invalid_url": "Le lien que vous avez saisi est invalide. Veuillez vérifier qu'il commence par http:// ou https:// et qu'il est accessible publiquement.",
-		"missing_url": "Le lien que vous avez saisi est manquant. Veuillez le renseigner pour continuer.",
-		"invalid_slug": "Le slug que vous avez saisi est invalide. Veuillez vérifier qu'il ne contient que des caractères alphanumériques et des tirets.",
-		"too_short_slug": "Le slug que vous avez saisi est trop court. Veuillez en choisir un plus long.",
-		"too_long_slug": "Le slug que vous avez saisi est trop long. Veuillez en choisir un plus court.",
-		"invalid_expiration": "La date d'expiration que vous avez saisie est invalide.",
-		"too_short_reason": "La raison que vous avez saisie est trop courte. Veuillez en choisir une plus longue.",
-		"too_long_reason": "La raison que vous avez saisie est trop longue. Veuillez en choisir une plus courte.",
-		"invalid_email": "L'adresse électronique que vous avez saisie est invalide. Veuillez vérifier son format et réessayer.",
-		"too_short_email": "L'adresse électronique que vous avez saisie est trop courte. Veuillez en choisir une plus longue.",
-		"too_long_email": "L'adresse électronique que vous avez saisie est trop longue. Veuillez en choisir une plus courte."
+		"generic_unknown": "Une erreur inconnue s'est produite lors du traitement de votre demande. Veuillez réessayer."
 	},
 	"consentModal": {
 		"title": "Voulez-vous un cookie ? 🍪",

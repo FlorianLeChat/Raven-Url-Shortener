@@ -51,7 +51,7 @@ final class CreateLinkService
 
 		foreach ($violations as $violation) {
 			$errors[$violation->getPropertyPath()][] = [
-				'code' => $violation->getMessage(),
+				'code' => $violation->getConstraint()->getErrorName($violation->getCode()),
 				'message' => $violation->getMessage()
 			];
 		}

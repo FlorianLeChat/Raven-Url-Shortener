@@ -5,12 +5,12 @@
 // Importation des dépendances.
 import { lazy } from "react";
 import type { Metadata } from "next";
+import { getLinkDetails } from "../../dashboard/actions/get-link-details";
 import { redirect, RedirectType } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
 import { fetchMetadata } from "@/utilities/metadata";
-import { getLinkDetails } from "../../dashboard/actions/get-link-details";
 
 // Importation des composants.
 const RedirectionContainer = lazy(

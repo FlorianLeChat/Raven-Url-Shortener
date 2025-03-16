@@ -11,7 +11,6 @@ import type { RecaptchaValidation } from "@/interfaces/RecaptchaValidation";
 
 export async function checkRecaptcha( token?: string )
 {
-	// Vérification de la validité du jeton reCAPTCHA.
 	const messages = await getTranslations();
 
 	if ( !token )
@@ -22,7 +21,6 @@ export async function checkRecaptcha( token?: string )
 		};
 	}
 
-	// Vérification de la validité du jeton reCAPTCHA.
 	const data = await fetch(
 		`https://www.google.com/recaptcha/api/siteverify?secret=${ process.env.RECAPTCHA_SECRET_KEY }&response=${ token }`,
 		{ method: "POST" }
@@ -30,7 +28,6 @@ export async function checkRecaptcha( token?: string )
 
 	if ( data.ok )
 	{
-		// Vérification du score de confiance attribué à l'utilisateur.
 		const json = ( await data.json() ) as RecaptchaValidation;
 		const isInvalidResponse = !json.success || json.score < 0.7;
 
@@ -41,8 +38,6 @@ export async function checkRecaptcha( token?: string )
 
 		if ( isInvalidResponse )
 		{
-			// En cas de score insuffisant ou si la réponse est invalide,
-			//  on bloque la requête courante.
 			return {
 				state: false,
 				message: messages( "errors.recaptcha.score_invalid" )
@@ -51,7 +46,6 @@ export async function checkRecaptcha( token?: string )
 	}
 	else
 	{
-		// En cas d'erreur lors de la vérification du jeton reCAPTCHA.
 		logger.error(
 			{ source: __dirname, status: data.status },
 			"An error occurred while checking the reCAPTCHA token."
@@ -63,7 +57,6 @@ export async function checkRecaptcha( token?: string )
 		};
 	}
 
-	// Tout s'est bien passé.
 	return {
 		state: true
 	};
