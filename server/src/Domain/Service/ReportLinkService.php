@@ -67,7 +67,7 @@ final class ReportLinkService
 	/**
 	 * Vérifie si le lien raccourci signalé existe dans la base de données.
 	 */
-	private function getLinkById(string $id): ?Link
+	private function getLinkById(string $id): Link
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
@@ -93,10 +93,14 @@ final class ReportLinkService
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
+		$id = $request->request->get('id');
+		$email = $request->request->get('email');
+		$reason = $request->request->get('reason');
+
 		$report = new Report();
-		$report->setLink($this->getLinkById($request->request->get('id')));
-		$report->setEmail($request->request->get('email'));
-		$report->setReason($request->request->get('reason'));
+		$report->setLink(is_string($id) ? $this->getLinkById($id) : null);
+		$report->setEmail(is_string($email) ? trim($email) : null);
+		$report->setReason(is_string($reason) ? trim($reason) : null);
 		$report->setCreatedAt(new DateTime());
 
 		$this->validateReport($report);

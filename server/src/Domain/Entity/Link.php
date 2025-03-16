@@ -8,6 +8,7 @@ use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use App\Infrastructure\Repository\LinkRepository;
+use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -19,7 +20,7 @@ class Link
 	#[ORM\Id]
 	#[ORM\Column(type: UuidType::NAME, unique: true)]
 	#[ORM\GeneratedValue(strategy: 'CUSTOM')]
-	#[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
+	#[ORM\CustomIdGenerator(class: UuidGenerator::class)]
 	private ?Uuid $id = null;
 
 	#[ORM\Column(type: Types::TEXT)]
@@ -52,7 +53,7 @@ class Link
 	/**
 	 * Définition ou récupération de l'identifiant du lien.
 	 */
-	public function getId(): Uuid
+	public function getId(): ?Uuid
 	{
 		return $this->id;
 	}
@@ -97,7 +98,7 @@ class Link
 	/**
 	 * Définition ou récupération de l'état d'activation d'un lien.
 	 */
-	public function getEnabled(): ?string
+	public function getEnabled(): ?bool
 	{
 		return $this->enabled;
 	}
@@ -171,9 +172,13 @@ class Link
 
 	/**
 	 * Conversion de l'entité en tableau.
+	 * @return array<string, Link>
 	 */
 	public function toArray(): array
 	{
-		return get_object_vars($this);
+		return array_filter(
+			get_object_vars($this),
+			fn($value) => $value instanceof Link
+		);
 	}
 }

@@ -37,8 +37,9 @@ final class OutdatedShortcutCleanup extends Command
 	/**
 	 * Récupération de tous les liens raccourcis expirés
 	 *  depuis la base de données.
+	 * @return Link[]
 	 */
-	private function getExpiredLinks()
+	private function getExpiredLinks(): array
 	{
 		$query = $this->repository->createQueryBuilder('u');
 		$query->where($query->expr()->lte('u.expiration', ':oneDayAgo'))
@@ -46,15 +47,20 @@ final class OutdatedShortcutCleanup extends Command
 			->setParameter('oneDayAgo', new DateTime('-1 day'), Types::DATETIME_MUTABLE)
 			->setParameter('oneYearAgo', new DateTime('-1 year'), Types::DATETIME_MUTABLE);
 
+		/** @var Link[] */
 		return $query->getQuery()->getResult();
 	}
 
 	/**
 	 * Suppression d'un lien raccourci expiré avec journalisation.
 	 */
-	private function deleteExpiredLink(SymfonyStyle $io, Link $link)
+	private function deleteExpiredLink(SymfonyStyle $io, Link $link): void
 	{
-		$io->text(sprintf('Deleting shortcut \'%s (%s)\'...', $link->getUrl(), $link->getId()->toString()));
+		$io->text(sprintf(
+			'Deleting shortcut \'%s (%s)\'...',
+			$link->getUrl(),
+			$link->getId()
+		));
 
 		$this->entityManager->remove($link);
 	}
