@@ -75,7 +75,7 @@ export default function SlugValidation()
 					} )}
 				</p>
 			)}
-			errorMessage={isAvailable ? undefined : messages( "errors.already_used_slug" )}
+			errorMessage={isAvailable ? undefined : messages( "errors.slug.already_used" )}
 			startContent={(
 				<span className="pointer-events-none whitespace-nowrap text-default-400">
 					{serverData?.domain}

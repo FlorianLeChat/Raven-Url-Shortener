@@ -24,21 +24,21 @@ class Link
 	private ?Uuid $id = null;
 
 	#[ORM\Column(type: Types::TEXT)]
-	#[Assert\Url(requireTld: true, message: 'invalid_url')]
-	#[Assert\NotNull(message: 'missing_url')]
-	#[Assert\NotBlank(message: 'missing_url')]
+	#[Assert\Url(requireTld: true)]
+	#[Assert\NotNull]
+	#[Assert\NotBlank]
 	private ?string $url = null;
 
 	#[ORM\Column(type: Types::STRING, length: 50)]
-	#[Assert\Regex(pattern: '/^[a-zA-Z0-9-]+$/', message: 'invalid_slug')]
-	#[Assert\Length(min: 1, max: 50, minMessage: 'too_short_slug', maxMessage: 'too_long_slug')]
+	#[Assert\Regex(pattern: '/^[a-zA-Z0-9-]+$/')]
+	#[Assert\Length(min: 1, max: 50)]
 	private ?string $slug = null;
 
 	#[ORM\Column(type: Types::BOOLEAN)]
 	private ?bool $enabled = true;
 
 	#[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-	#[Assert\Range(min: 'tomorrow', max: '+1 year', notInRangeMessage: 'invalid_expiration')]
+	#[Assert\Range(min: 'tomorrow', max: '+1 year')]
 	private ?DateTimeInterface $expiration = null;
 
 	#[ORM\Column(type: Types::DATETIME_MUTABLE)]

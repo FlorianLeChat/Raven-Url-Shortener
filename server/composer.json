@@ -34,6 +34,7 @@
         "symfony/console": "7.2.*",
         "symfony/runtime": "7.2.*",
         "symfony/validator": "7.2.*",
+        "symfony/translation": "7.2.*",
         "symfony/http-client": "7.2.*",
         "symfony/rate-limiter": "7.2.*",
         "symfony/monolog-bundle": "3.10.*",

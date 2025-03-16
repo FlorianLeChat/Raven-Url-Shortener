@@ -8,14 +8,12 @@ import { logger } from "@/utilities/pino";
 import { getTranslations } from "next-intl/server";
 import type { ErrorProperties } from "@/interfaces/ErrorProperties";
 
-// Type de la réponse HTTP en provenance du back-end PHP.
 type SlugCheckResponse = ErrorProperties | {
 	available: boolean;
 };
 
 export async function checkSlug( slug?: string )
 {
-	// Vérification de la validité du slug personnalisé.
 	const messages = await getTranslations();
 
 	if ( !slug )
@@ -26,7 +24,6 @@ export async function checkSlug( slug?: string )
 		};
 	}
 
-	// Envoi de la requête HTTP de récupération des informations du raccourci.
 	const formData = new FormData();
 	formData.append( "slug", slug );
 
@@ -36,6 +33,7 @@ export async function checkSlug( slug?: string )
 			body: formData,
 			method: "POST"
 		} );
+
 		const json = ( await response.json() ) as SlugCheckResponse;
 
 		logger.info(
@@ -45,22 +43,9 @@ export async function checkSlug( slug?: string )
 
 		if ( response.ok && "available" in json )
 		{
-			// Tout s'est bien passé.
 			return {
 				state: true,
 				available: json.available
-			};
-		}
-
-		// En cas d'erreur lors de la récupération de la disponibilité du slug.
-		if ( "errors" in json && json.errors )
-		{
-			const keys = Object.keys( json.errors );
-			const error = json.errors[ keys[ 0 ] ];
-
-			return {
-				state: false,
-				message: messages( `errors.${ error[ 0 ].code }` )
 			};
 		}
 
@@ -71,8 +56,6 @@ export async function checkSlug( slug?: string )
 	}
 	catch ( error )
 	{
-		// En cas d'erreur lors de la récupération de la disponibilité
-		//  du slug ou lors de la conversion de la réponse en JSON.
 		logger.error(
 			{ source: __dirname, error },
 			"An error occurred while fetching the slug availability."
@@ -80,7 +63,7 @@ export async function checkSlug( slug?: string )
 
 		return {
 			state: false,
-			message: messages( "errors.slug.check_failed" )
+			message: messages( "errors.generic_unknown" )
 		};
 	}
 }
