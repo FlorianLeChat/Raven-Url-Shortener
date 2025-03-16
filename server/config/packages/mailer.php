@@ -12,7 +12,7 @@ use Symfony\Config\FrameworkConfig;
  */
 return static function (FrameworkConfig $framework): void
 {
-	if ($_ENV['SMTP_ENABLED'] !== 'true')
+	if (getenv('SMTP_ENABLED') !== 'true')
 	{
 		return;
 	}

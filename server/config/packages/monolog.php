@@ -49,7 +49,7 @@ return static function (MonologConfig $monolog, string $env): void
 		$mainHandler->bufferSize(50);
 		$mainHandler->actionLevel(LogLevel::ERROR);
 
-		if ($_ENV['SMTP_ENABLED'] === 'true')
+		if (getenv('SMTP_ENABLED') === 'true')
 		{
 			// Si le serveur SMTP est activé, on envoie procède à la
 			//  déduplication des messages et on les envoie par courriel.
