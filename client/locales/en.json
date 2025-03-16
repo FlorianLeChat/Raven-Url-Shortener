@@ -38,11 +38,11 @@
 		"legal": "Legal notices"
 	},
 	"navigation": {
-		"home": "Return to homepage",
-		"cookies": "Cookie management",
-		"light_theme": "Switch to light theme",
-		"dark_theme": "Switch to dark theme",
-		"legal": "See legal notices",
+		"home": "Homepage",
+		"cookies": "Cookie",
+		"light_theme": "Light theme",
+		"dark_theme": "Dark theme",
+		"legal": "Legal notices",
 		"support": "Support the project"
 	},
 	"dashboard": {

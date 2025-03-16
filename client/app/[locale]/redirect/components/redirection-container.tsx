@@ -63,7 +63,7 @@ export default function RedirectionContainer( {
 						size="lg"
 						hideSymbol
 						classNames={{
-							pre: "whitespace-normal"
+							pre: "overflow-auto whitespace-pre-wrap"
 						}}
 					>
 						{details.url}

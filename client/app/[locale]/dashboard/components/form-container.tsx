@@ -169,7 +169,7 @@ export default function FormContainer()
 
 				<CardFooter
 					as="footer"
-					className="justify-between gap-4 bg-content2/50 max-sm:flex-col"
+					className="justify-between gap-6 bg-content2/50 max-lg:flex-col"
 				>
 					{/* Boutons de soumission */}
 					<Button
@@ -192,7 +192,7 @@ export default function FormContainer()
 						<Progress
 							size="sm"
 							label={stepName}
-							className="max-w-md"
+							className="max-md:max-w-xs md:max-w-md"
 							isIndeterminate
 						/>
 					)}

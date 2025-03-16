@@ -38,11 +38,11 @@
 		"legal": "Mentions légales"
 	},
 	"navigation": {
-		"home": "Retour à la page d'accueil",
-		"cookies": "Gestion des cookies",
-		"light_theme": "Basculer en thème clair",
-		"dark_theme": "Basculer en thème sombre",
-		"legal": "Voir les mentions légales",
+		"home": "Page d'accueil",
+		"cookies": "Cookies",
+		"light_theme": "Thème clair",
+		"dark_theme": "Thème sombre",
+		"legal": "Mentions légales",
 		"support": "Supporter le projet"
 	},
 	"dashboard": {
