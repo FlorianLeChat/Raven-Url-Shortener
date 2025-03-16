@@ -39,6 +39,8 @@ final class CreateLinkService
 
 	/**
 	 * Valide les informations du lien raccourci.
+	 * @phpstan-assert !null $link->getUrl()
+	 * @phpstan-assert !null $link->getSlug()
 	 */
 	private function validateLink(Link $link): void
 	{
@@ -134,13 +136,15 @@ final class CreateLinkService
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
+		$url = $request->request->get('url');
+		$slug = $request->request->get('slug', $this->createRandomSlug());
 		$expiration = $request->request->get('expiration');
 		$currentDate = new DateTime();
 
 		$link = new Link();
-		$link->setUrl($request->request->get('url'));
-		$link->setSlug($request->request->get('slug', $this->createRandomSlug()));
-		$link->setExpiration(!empty($expiration) ? new DateTime($expiration) : null);
+		$link->setUrl(is_string($url) ? trim($url) : null);
+		$link->setSlug(is_string($slug) ? trim($slug) : null);
+		$link->setExpiration(is_string($expiration) ? new DateTime($expiration) : null);
 		$link->setCreatedAt($currentDate);
 		$link->setVisitedAt($currentDate);
 

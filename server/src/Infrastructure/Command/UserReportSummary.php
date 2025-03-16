@@ -6,6 +6,7 @@ use Exception;
 use App\Domain\Entity\Report;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Message;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Crypto\DkimSigner;
@@ -15,7 +16,6 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 
 /**
  * Commande pour la génération d'un résumé des signalements d'utilisateurs.
@@ -28,7 +28,6 @@ final class UserReportSummary extends Command
 	 */
 	public function __construct(
 		private readonly MailerInterface $mailer,
-		private readonly ContainerBagInterface $parameters,
 		private readonly EntityManagerInterface $entityManager
 	) {
 		parent::__construct();
@@ -37,7 +36,7 @@ final class UserReportSummary extends Command
 	/**
 	 * Création du courriel à envoyer.
 	 */
-	private function createEmail(int $count)
+	private function createEmail(int $count): Email
 	{
 		$recipient = $_ENV['SMTP_USERNAME'];
 
@@ -50,7 +49,7 @@ final class UserReportSummary extends Command
 	/**
 	 * Envoi du courriel avec gestion des erreurs et journalisation.
 	 */
-	private function sendEmail(Email $email, SymfonyStyle $io, ?Email $signedEmail = null)
+	private function sendEmail(Email $email, SymfonyStyle $io, ?Message $signedEmail = null): int
 	{
 		try
 		{
@@ -72,7 +71,7 @@ final class UserReportSummary extends Command
 	 * Signature du courriel avec DKIM (si possible).
 	 * @see https://symfony.com/doc/current/mailer.html#signing-messages
 	 */
-	private function signEmailWithDkim(Email $email, SymfonyStyle $io): ?Email
+	private function signEmailWithDkim(Email $email, SymfonyStyle $io): ?Message
 	{
 		if ($_ENV['DKIM_ENABLED'] !== 'true')
 		{

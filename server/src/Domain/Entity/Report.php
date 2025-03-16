@@ -8,6 +8,7 @@ use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use App\Infrastructure\Repository\ReportRepository;
+use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -19,7 +20,7 @@ class Report
 	#[ORM\Id]
 	#[ORM\Column(type: UuidType::NAME, unique: true)]
 	#[ORM\GeneratedValue(strategy: 'CUSTOM')]
-	#[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
+	#[ORM\CustomIdGenerator(class: UuidGenerator::class)]
 	private ?Uuid $id = null;
 
 	#[ORM\ManyToOne(cascade: ['persist', 'remove'])]
@@ -45,7 +46,7 @@ class Report
 	/**
 	 * Définition ou récupération de l'identifiant du lien.
 	 */
-	public function getId(): Uuid
+	public function getId(): ?Uuid
 	{
 		return $this->id;
 	}
@@ -128,9 +129,13 @@ class Report
 
 	/**
 	 * Conversion de l'entité en tableau.
+	 * @return array<string, Report>
 	 */
 	public function toArray(): array
 	{
-		return get_object_vars($this);
+		return array_filter(
+			get_object_vars($this),
+			fn($value) => $value instanceof Report
+		);
 	}
 }

@@ -14,6 +14,6 @@ return static function (DebugConfig $config, string $env): void
 {
 	if ($env === 'dev')
 	{
-		$config->dumpDestination('tcp://' . env('VAR_DUMPER_SERVER'));
+		$config->dumpDestination('tcp://%env(VAR_DUMPER_SERVER)%');
 	}
 };

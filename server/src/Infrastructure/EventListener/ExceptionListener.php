@@ -31,7 +31,7 @@ final class ExceptionListener
 		$response = new JsonResponse();
 		$exception = $event->getThrowable();
 
-		$this->logger->error($response->getContent(), [
+		$this->logger->error($response->getContent() ?: '', [
 			'file' => $exception->getFile(),
 			'line' => $exception->getLine(),
 			'code' => $exception->getCode()

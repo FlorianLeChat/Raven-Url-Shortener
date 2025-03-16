@@ -19,7 +19,7 @@ final class RequestListener
 	/**
 	 * Instance de la requête HTTP entrante.
 	 */
-	private readonly Request $request;
+	private Request $request;
 
 	/**
 	 * Constructeur de la classe.
@@ -40,7 +40,7 @@ final class RequestListener
 
 		$this->logger->debug('{method} API request from {ip}', [
 			'method' => $isWriteMethod ? 'Write' : 'Read',
-			'ip' => IpUtils::anonymize($this->request->getClientIp())
+			'ip' => IpUtils::anonymize($this->request->getClientIp() ?? '127.0.0.1')
 		]);
 
 		return $isWriteMethod ? $this->writeApiLimiter : $this->readApiLimiter;
@@ -51,7 +51,7 @@ final class RequestListener
 	 */
 	private function consumeLimiter(RateLimiterFactory $limiter): void
 	{
-		$ipAddress = $this->request->getClientIp();
+		$ipAddress = $this->request->getClientIp() ?? '127.0.0.1';
 		$anonymizedIpAddress = IpUtils::anonymize($ipAddress);
 
 		$limit = $limiter->create($ipAddress)->consume();
