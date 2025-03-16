@@ -24,14 +24,12 @@ return static function (DoctrineConfig $config, string $env): void
 			->dbnameSuffix('_test' . env('TEST_TOKEN')->default(''));
 	}
 
-	$ormConfig = $config->orm()
-		->enableLazyGhostObjects(true);
+	$ormConfig = $config->orm();
 
 	$entityManagerConfig = $ormConfig->entityManager('default')
 		->autoMapping(true)
 		->namingStrategy('doctrine.orm.naming_strategy.underscore_number_aware')
-		->validateXmlMapping(true)
-		->reportFieldsWhereDeclared(true);
+		->validateXmlMapping(true);
 
 	$entityManagerConfig->mapping('App')
 		->dir(param('kernel.project_dir') . '/src/Domain/Entity')
@@ -40,10 +38,6 @@ return static function (DoctrineConfig $config, string $env): void
 
 	if ($env === 'prod')
 	{
-		$ormConfig
-			->proxyDir(param('kernel.build_dir') . '/doctrine/orm/Proxies')
-			->autoGenerateProxyClasses(false);
-
 		$entityManagerConfig->metadataCacheDriver()
 			->type('pool')
 			->pool('raven_cache_pool');

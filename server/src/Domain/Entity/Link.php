@@ -8,7 +8,6 @@ use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use App\Infrastructure\Repository\LinkRepository;
-use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -19,8 +18,6 @@ class Link
 {
 	#[ORM\Id]
 	#[ORM\Column(type: UuidType::NAME, unique: true)]
-	#[ORM\GeneratedValue(strategy: 'CUSTOM')]
-	#[ORM\CustomIdGenerator(class: UuidGenerator::class)]
 	private ?Uuid $id = null;
 
 	#[ORM\Column(type: Types::TEXT)]
@@ -49,6 +46,15 @@ class Link
 
 	#[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
 	private ?DateTimeInterface $updatedAt = null;
+
+	/**
+	 * Création des certaines propriétés de l'entité.
+	 * @see https://github.com/symfony/symfony/discussions/53331
+	 */
+	public function __construct()
+	{
+		$this->id = Uuid::v7();
+	}
 
 	/**
 	 * Définition ou récupération de l'identifiant du lien.
