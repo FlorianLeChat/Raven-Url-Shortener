@@ -29,7 +29,7 @@ final class GetLinkDetailsAction extends AbstractController
 	 */
 	#[Cache(public: true, maxage: 3600, mustRevalidate: true)]
 	#[Route('/api/link/{id}', methods: ['GET'], stateless: true, requirements: ['id' => Requirement::UUID_V7])]
-	#[Route('/api/link/{slug}', methods: ['GET'], stateless: true)]
+	#[Route('/api/link/{slug}', methods: ['GET'], stateless: true, requirements: ['slug' => Requirement::ASCII_SLUG])]
 	public function getLinkDetails(Link $link): JsonResponse
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
