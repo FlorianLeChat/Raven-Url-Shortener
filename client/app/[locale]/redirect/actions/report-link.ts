@@ -27,7 +27,8 @@ export async function reportLink( data: FormData )
 
 	try
 	{
-		const response = await fetch( `${ process.env.NEXT_PUBLIC_BACKEND_URL }/api/link/report`, {
+		const linkId = data.get( "id" );
+		const response = await fetch( `${ process.env.NEXT_PUBLIC_BACKEND_URL }/api/link/${ linkId }/report`, {
 			body: data,
 			method: "POST"
 		} );

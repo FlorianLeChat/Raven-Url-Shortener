@@ -41,8 +41,8 @@ export default function ReportRedirection( { id }: Readonly<{ id: string }> )
 		// Activation de l'état de chargement.
 		event.preventDefault();
 
-		const data = new FormData( event.currentTarget );
-		data.set( "id", id );
+		const formData = new FormData( event.currentTarget );
+		formData.set( "id", id );
 
 		setIsLoading( true );
 
@@ -65,7 +65,7 @@ export default function ReportRedirection( { id }: Readonly<{ id: string }> )
 		}
 
 		// Requête de création d'un nouveau signalement.
-		const reportState = await reportLink( data );
+		const reportState = await reportLink( formData );
 
 		if ( !reportState.state || "message" in reportState )
 		{
