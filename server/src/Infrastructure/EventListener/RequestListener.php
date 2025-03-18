@@ -19,7 +19,7 @@ final class RequestListener
 	/**
 	 * Instance de la requête HTTP entrante.
 	 */
-	private Request $request;
+	private readonly Request $request;
 
 	/**
 	 * Constructeur de la classe.
