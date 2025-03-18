@@ -18,14 +18,14 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 final class ExceptionListener
 {
 	/**
-	 * Événement de l'exception.
-	 */
-	private ExceptionEvent $event;
-
-	/**
 	 * Réponse HTTP en format JSON.
 	 */
 	private readonly JsonResponse $response;
+
+	/**
+	 * Événement de l'exception.
+	 */
+	private readonly ExceptionEvent $event;
 
 	/**
 	 * Constructeur de la classe.
@@ -41,11 +41,12 @@ final class ExceptionListener
 	 */
 	private function handleInternalException(Throwable $exception): void
 	{
-		$this->response->setData([
+		$data = [
 			'code' => JsonResponse::HTTP_INTERNAL_SERVER_ERROR,
 			'message' => $exception->getMessage()
-		]);
+		];
 
+		$this->response->setData($data);
 		$this->response->setStatusCode(JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
 	}
 
@@ -68,8 +69,6 @@ final class ExceptionListener
 		$this->response->setStatusCode($exception->getStatusCode());
 		$this->response->headers->replace($exception->getHeaders());
 		$this->response->headers->set('Content-Type', 'application/json');
-
-		$this->event->setResponse($this->response);
 	}
 
 	/**
@@ -81,7 +80,7 @@ final class ExceptionListener
 
 		$exception = $event->getThrowable();
 
-		$this->logger->error($this->response->getContent() ?: '', [
+		$this->logger->error($exception->getMessage(), [
 			'file' => $exception->getFile(),
 			'line' => $exception->getLine(),
 			'code' => $exception->getCode()
@@ -90,9 +89,12 @@ final class ExceptionListener
 		if ($exception instanceof HttpException)
 		{
 			$this->handleHttpException($exception);
-			return;
+		}
+		else
+		{
+			$this->handleInternalException($exception);
 		}
 
-		$this->handleInternalException($exception);
+		$this->event->setResponse($this->response);
 	}
 }
