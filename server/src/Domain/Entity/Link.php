@@ -196,6 +196,15 @@ class Link
 	 */
 	public function toArray(): array
 	{
-		return get_object_vars($this);
+		return [
+			'id' => $this->getId(),
+			'url' => $this->getUrl(),
+			'slug' => $this->getSlug(),
+			'enabled' => $this->getEnabled(),
+			'expiration' => $this->getExpiration(),
+			'visitedAt' => $this->getVisitedAt(),
+			'createdAt' => $this->getCreatedAt(),
+			'updatedAt' => $this->getUpdatedAt()
+		];
 	}
 }

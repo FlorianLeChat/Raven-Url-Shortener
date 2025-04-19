@@ -136,10 +136,17 @@ class Report
 
 	/**
 	 * Conversion de l'entité en tableau.
-	 * @return array<string, mixed>
+	 * @return array<string, Report>
 	 */
 	public function toArray(): array
 	{
-		return get_object_vars($this);
+		return [
+			'id' => $this->getId(),
+			'link' => $this->getLink()->toArray(),
+			'reason' => $this->getReason(),
+			'email' => $this->getEmail(),
+			'createdAt' => $this->getCreatedAt(),
+			'updatedAt' => $this->getUpdatedAt()
+		];
 	}
 }
