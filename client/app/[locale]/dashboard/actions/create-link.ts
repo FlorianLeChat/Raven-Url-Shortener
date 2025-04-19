@@ -30,7 +30,7 @@ export async function createLink( data: FormData )
 
 	try
 	{
-		const response = await fetch( `${ process.env.NEXT_PUBLIC_BACKEND_URL }/api/link`, {
+		const response = await fetch( `${ process.env.NEXT_PUBLIC_BACKEND_URL }/api/v1/link`, {
 			body: data,
 			method: "POST"
 		} );

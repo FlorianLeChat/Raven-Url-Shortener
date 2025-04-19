@@ -15,6 +15,7 @@ use const App\LOG_FUNCTION;
 /**
  * Action pour la vérification d'un slug personnalisé.
  */
+#[Route('/api/v{version}', stateless: true, requirements: ['version' => '1'])]
 final class CheckSlugAction extends AbstractController
 {
 	/**
@@ -28,8 +29,8 @@ final class CheckSlugAction extends AbstractController
 	/**
 	 * Vérification de la disponibilité d'un slug personnalisé.
 	 */
-	#[Route('/api/slug', methods: ['POST'], stateless: true)]
-	public function checkSlug(Request $request): JsonResponse
+	#[Route('/slug', methods: ['POST'])]
+	public function checkSlugV1(Request $request): JsonResponse
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 

@@ -29,7 +29,7 @@ export async function checkSlug( slug?: string )
 
 	try
 	{
-		const response = await fetch( `${ process.env.NEXT_PUBLIC_BACKEND_URL }/api/slug`, {
+		const response = await fetch( `${ process.env.NEXT_PUBLIC_BACKEND_URL }/api/v1/slug`, {
 			body: data,
 			method: "POST"
 		} );

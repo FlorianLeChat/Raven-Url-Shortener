@@ -18,6 +18,7 @@ use const App\LOG_FUNCTION;
 /**
  * Action pour le signalement d'un lien raccourci.
  */
+#[Route('/api/v{version}', stateless: true, requirements: ['version' => '1'])]
 final class ReportLinkAction extends AbstractController
 {
 	/**
@@ -32,8 +33,8 @@ final class ReportLinkAction extends AbstractController
 	/**
 	 * Signalement d'un lien raccourci.
 	 */
-	#[Route('/api/link/{id}/report', methods: ['POST'], stateless: true, requirements: ['id' => Requirement::UUID_V7])]
-	#[Route('/api/link/{slug}/report', methods: ['POST'], stateless: true, requirements: ['slug' => Requirement::ASCII_SLUG])]
+	#[Route('/link/{id}/report', methods: ['POST'], requirements: ['id' => Requirement::UUID_V7])]
+	#[Route('/link/{slug}/report', methods: ['POST'], requirements: ['slug' => Requirement::ASCII_SLUG])]
 	public function createReport(Request $request, Link $link): JsonResponse
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));

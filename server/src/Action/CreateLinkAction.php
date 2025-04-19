@@ -18,6 +18,7 @@ use const App\LOG_FUNCTION;
 /**
  * Action pour la création d'un lien raccourci.
  */
+#[Route('/api/v{version}', stateless: true, requirements: ['version' => '1'])]
 final class CreateLinkAction extends AbstractController
 {
 	/**
@@ -34,7 +35,7 @@ final class CreateLinkAction extends AbstractController
 	/**
 	 * Création d'un lien raccourci.
 	 */
-	#[Route('/api/link', methods: ['POST'], stateless: true)]
+	#[Route('/link', methods: ['POST'])]
 	public function createLink(Request $request): JsonResponse
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
