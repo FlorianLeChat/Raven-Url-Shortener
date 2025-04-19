@@ -25,7 +25,7 @@ export async function getLinkDetails( id?: string )
 
 	try
 	{
-		const response = await fetch( `${ process.env.NEXT_PUBLIC_BACKEND_URL }/api/link/${ id }`, {
+		const response = await fetch( `${ process.env.NEXT_PUBLIC_BACKEND_URL }/api/v1/link/${ id }`, {
 			cache: "force-cache"
 		} );
 

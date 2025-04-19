@@ -20,6 +20,7 @@ use const App\LOG_FUNCTION;
 /**
  * Action pour la mise à jour d'un lien raccourci.
  */
+#[Route('/api/v{version}', stateless: true, requirements: ['version' => '1'])]
 final class UpdateLinkAction extends AbstractController
 {
 	/**
@@ -36,8 +37,8 @@ final class UpdateLinkAction extends AbstractController
 	/**
 	 * Mise à jour partielle d'un lien raccourci.
 	 */
-	#[Route('/api/link/{id}', methods: ['PATCH'], stateless: true, requirements: ['id' => Requirement::UUID_V7])]
-	#[Route('/api/link/{slug}', methods: ['PATCH'], stateless: true, requirements: ['slug' => Requirement::ASCII_SLUG])]
+	#[Route('/link/{id}', methods: ['PATCH'], requirements: ['id' => Requirement::UUID_V7])]
+	#[Route('/link/{slug}', methods: ['PATCH'], requirements: ['slug' => Requirement::ASCII_SLUG])]
 	public function patchLink(Request $request, Link $link): JsonResponse
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
@@ -59,8 +60,8 @@ final class UpdateLinkAction extends AbstractController
 	/**
 	 * Mise à jour complète d'un lien raccourci.
 	 */
-	#[Route('/api/link/{id}', methods: ['PUT'], stateless: true, requirements: ['id' => Requirement::UUID_V7])]
-	#[Route('/api/link/{slug}', methods: ['PUT'], stateless: true, requirements: ['slug' => Requirement::ASCII_SLUG])]
+	#[Route('/link/{id}', methods: ['PUT'], requirements: ['id' => Requirement::UUID_V7])]
+	#[Route('/link/{slug}', methods: ['PUT'], requirements: ['slug' => Requirement::ASCII_SLUG])]
 	public function replaceLink(Request $request, Link $link): JsonResponse
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
