@@ -66,12 +66,12 @@ final class ReportLinkService
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
-		$email = $request->request->getString('email');
+		$email = $request->request->get('email');
 		$reason = $request->request->getString('reason');
 
 		$report = new Report();
 		$report->setLink($this->link);
-		$report->setEmail(trim($email));
+		$report->setEmail(is_string($email) ? trim($email) : null);
 		$report->setReason(trim($reason));
 		$report->setCreatedAt(new DateTime());
 
