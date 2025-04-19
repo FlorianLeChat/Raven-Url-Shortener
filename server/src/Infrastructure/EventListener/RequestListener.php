@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\IpUtils;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\RateLimiter\RateLimiterFactory;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 /**
@@ -27,7 +28,8 @@ final class RequestListener
 	public function __construct(
 		private readonly LoggerInterface $logger,
 		private readonly RateLimiterFactory $readApiLimiter,
-		private readonly RateLimiterFactory $writeApiLimiter
+		private readonly RateLimiterFactory $writeApiLimiter,
+		protected readonly TranslatorInterface $translator
 	) {}
 
 	/**
@@ -57,18 +59,19 @@ final class RequestListener
 		$limit = $limiter->create($ipAddress)->consume();
 		$isRateLimited = !$limit->isAccepted();
 
-        if ($isRateLimited)
+		if ($isRateLimited)
 		{
 			$retryAfter = $limit->getRetryAfter()->getTimestamp() - time();
+			$errorMessage = $this->translator->trans('http.too_many_requests');
 
 			$this->logger->warning('Rate limit exceeded for {ip}', ['ip' => $anonymizedIpAddress]);
 
-			throw new TooManyRequestsHttpException($retryAfter, 'Rate limit exceeded for the current IP address.', headers: [
+			throw new TooManyRequestsHttpException($retryAfter, $errorMessage, headers: [
+				'X-RateLimit-Reset' => $limit->getRetryAfter()->getTimestamp(),
 				'X-RateLimit-Limit' => $limit->getLimit(),
-				'X-RateLimit-Remaining' => $limit->getRemainingTokens(),
-				'X-RateLimit-Retry-After' => $retryAfter
+				'X-RateLimit-Remaining' => $limit->getRemainingTokens()
 			]);
-        }
+		}
 
 		$this->logger->debug('Rate limit for {ip} is {remaining}/{limit}', [
 			'ip' => $anonymizedIpAddress,
