@@ -56,6 +56,12 @@ export default async function Page( {
 		redirect( "/?error=disabled", RedirectType.push );
 	}
 
+	// Envoi d'une requête de mise à jour de la date de dernière visite.
+	fetch( `${ process.env.NEXT_PUBLIC_BACKEND_URL }/api/link/${ id }`, {
+		body: JSON.stringify( { field: "visitedAt" } ), // Merci Symfony... https://github.com/symfony/symfony/issues/59331
+		method: "PATCH"
+	} );
+
 	// Affichage du rendu HTML de la page.
 	return (
 		<>

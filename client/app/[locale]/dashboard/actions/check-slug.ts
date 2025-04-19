@@ -24,13 +24,13 @@ export async function checkSlug( slug?: string )
 		};
 	}
 
-	const formData = new FormData();
-	formData.append( "slug", slug );
+	const data = new FormData();
+	data.set( "slug", slug );
 
 	try
 	{
 		const response = await fetch( `${ process.env.NEXT_PUBLIC_BACKEND_URL }/api/slug`, {
-			body: formData,
+			body: data,
 			method: "POST"
 		} );
 
