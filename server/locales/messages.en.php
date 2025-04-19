@@ -1,6 +1,9 @@
 <?php
 
 return [
+	'http.too_many_requests' => 'Too many requests made for the current IP address. See response headers for more information.',
 	'link.unreachable_url' => 'The specified URL is unreachable.',
+	'link.disabled' => 'The specified shortcut link has been disabled by its owner or by an administrator.',
+	'link.reported' => 'The specified shortcut link has been reported by one or more users. This link must be verified by an administrator before it can be managed again.',
 	'slug.already_used' => 'The custom slug you chose is already used by another link. Please choose another one.'
 ];

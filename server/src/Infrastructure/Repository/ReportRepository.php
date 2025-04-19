@@ -21,9 +21,9 @@ final class ReportRepository extends ServiceEntityRepository
 	}
 
 	/**
-	 * Création d'un signalement.
+	 * Création ou mise à jour d'un signalement.
 	 */
-	public function create(Report $entity, bool $flush = false): void
+	public function save(Report $entity, bool $flush = false): void
 	{
 		$this->getEntityManager()->persist($entity);
 
