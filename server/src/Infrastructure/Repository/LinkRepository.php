@@ -21,9 +21,9 @@ final class LinkRepository extends ServiceEntityRepository
 	}
 
 	/**
-	 * Création d'un lien raccourci.
+	 * Création ou mise à jour d'un lien raccourci.
 	 */
-	public function create(Link $entity, bool $flush = false): void
+	public function save(Link $entity, bool $flush = false): void
 	{
 		$this->getEntityManager()->persist($entity);
 

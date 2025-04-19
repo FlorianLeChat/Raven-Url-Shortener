@@ -1,6 +1,9 @@
 <?php
 
 return [
+	'http.too_many_requests' => 'Trop de requêtes effectuées pour l\'adresse IP actuelle. Voir les en-têtes de réponse pour plus d\'informations.',
 	'link.unreachable_url' => 'L\'URL spécifiée est inaccessible.',
+	'link.disabled' => 'Le lien raccourci spécifié a été désactivé par son propriétaire ou par un administrateur.',
+	'link.reported' => 'Le lien raccourci spécifié a été signalé par un ou plusieurs utilisateurs. Ce lien doit être vérifié par un administrateur avant de pouvoir être géré à nouveau.',
 	'slug.already_used' => 'Le slug personnalisé que vous avez choisi est déjà utilisé par un autre lien. Veuillez en choisir un autre.'
 ];

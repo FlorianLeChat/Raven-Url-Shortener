@@ -77,7 +77,7 @@ final class ReportLinkService
 
 		$this->validateReport($report);
 
-		$this->reportRepository->create($report, true);
+		$this->reportRepository->save($report, true);
 
 		return $report;
 	}
