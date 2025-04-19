@@ -22,7 +22,7 @@ final class ReportLinkService
 	/**
 	 * Répertoire des méthodes pour les signalements de liens raccourcis.
 	 */
-	private readonly ReportRepository $reportRepository;
+	private readonly ReportRepository $repository;
 
 	/**
 	 * Constructeur de la classe.
@@ -33,7 +33,7 @@ final class ReportLinkService
 		private readonly ValidatorInterface $validator,
 		private readonly EntityManagerInterface $entityManager
 	) {
-		$this->reportRepository = $this->entityManager->getRepository(Report::class);
+		$this->repository = $this->entityManager->getRepository(Report::class);
 	}
 
 	/**
@@ -66,18 +66,18 @@ final class ReportLinkService
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
-		$email = $request->request->get('email');
-		$reason = $request->request->get('reason');
+		$email = $request->request->getString('email');
+		$reason = $request->request->getString('reason');
 
 		$report = new Report();
 		$report->setLink($this->link);
-		$report->setEmail(is_string($email) ? trim($email) : null);
-		$report->setReason(is_string($reason) ? trim($reason) : null);
+		$report->setEmail(trim($email));
+		$report->setReason(trim($reason));
 		$report->setCreatedAt(new DateTime());
 
 		$this->validateReport($report);
 
-		$this->reportRepository->save($report, true);
+		$this->repository->save($report, true);
 
 		return $report;
 	}
