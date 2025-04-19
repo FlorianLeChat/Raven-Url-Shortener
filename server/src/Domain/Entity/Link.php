@@ -6,6 +6,7 @@ use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use App\Infrastructure\Repository\LinkRepository;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -46,6 +47,10 @@ class Link
 
 	#[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
 	private ?DateTimeInterface $updatedAt = null;
+
+	/** @var Collection<int, Report> */
+	#[ORM\OneToMany(mappedBy: "link", targetEntity: Report::class, orphanRemoval: true, cascade: ["persist", "remove"])]
+	private Collection $reports;
 
 	/**
 	 * Création des certaines propriétés de l'entité.
@@ -177,8 +182,17 @@ class Link
 	}
 
 	/**
+	 * Récupération des signalements du lien raccourci.
+	 * @return Collection<int, Report>
+	 */
+	public function getReports()
+	{
+		return $this->reports;
+	}
+
+	/**
 	 * Conversion de l'entité en tableau.
-	 * @return array<string, mixed>
+	 * @return array<string, Link>
 	 */
 	public function toArray(): array
 	{
