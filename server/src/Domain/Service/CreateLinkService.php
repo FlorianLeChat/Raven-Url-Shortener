@@ -21,14 +21,14 @@ final class CreateLinkService extends BaseLinkService
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
-		$url = $request->request->get('url');
-		$slug = $request->request->get('slug', $this->createRandomSlug());
+		$url = $request->request->getString('url');
+		$slug = $request->request->getString('slug', $this->createRandomSlug());
 		$expiration = $request->request->get('expiration');
 		$currentDate = new DateTime();
 
 		$link = new Link();
-		$link->setUrl(is_string($url) ? trim($url) : null);
-		$link->setSlug(is_string($slug) ? trim($slug) : null);
+		$link->setUrl(trim($url));
+		$link->setSlug(trim($slug));
 		$link->setExpiration(is_string($expiration) ? new DateTime($expiration) : null);
 		$link->setCreatedAt($currentDate);
 		$link->setVisitedAt($currentDate);
