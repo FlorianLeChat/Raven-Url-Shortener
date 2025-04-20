@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use App\Infrastructure\EventListener\RequestListener;
+use App\Infrastructure\EventListener\CorsListener;
+use App\Infrastructure\EventListener\LimiterListener;
 use App\Infrastructure\EventListener\ExceptionListener;
 
 /**
@@ -24,9 +25,12 @@ return static function (ContainerConfigurator $container, string $env): void
 	$services->set(ExceptionListener::class)
 		->tag('kernel.event_listener');
 
+	$services->set(CorsListener::class)
+		->tag('kernel.event_listener');
+
 	if ($env === 'prod')
 	{
-		$services->set(RequestListener::class)
+		$services->set(LimiterListener::class)
 			->tag('kernel.event_listener');
 	}
 };
