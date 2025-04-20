@@ -55,7 +55,7 @@ export default function ReportRedirection( { id }: Readonly<{ id: string }> )
 		{
 			const linkId = data.get( "id" );
 			const response = await fetch( `${ process.env.NEXT_PUBLIC_BACKEND_URL }/api/v1/link/${ linkId }/report`, {
-				body: data,
+				body,
 				method: "POST"
 			} );
 
