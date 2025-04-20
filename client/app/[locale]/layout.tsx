@@ -14,7 +14,6 @@ import { getMessages, setRequestLocale } from "next-intl/server";
 import { lazy, Suspense, type ReactNode } from "react";
 
 // Importation des fonctions utilitaires.
-import { logger } from "@/utilities/pino";
 import { getDomain,
 	getTimeZoneName,
 	getTimeZoneOffset } from "@/utilities/server";
@@ -78,7 +77,6 @@ export default async function Layout( {
 	// Vérification du support de la langue.
 	if ( !languages.includes( locale ) )
 	{
-		logger.error( { source: __dirname, locale }, "Unsupported language" );
 		return null;
 	}
 
