@@ -8,7 +8,6 @@ import "./layout.css";
 import "vanilla-cookieconsent/dist/cookieconsent.css";
 
 import { Inter } from "next/font/google";
-import { logger } from "@/utilities/pino";
 import type { ReactNode } from "react";
 
 const inter = Inter( {
@@ -21,7 +20,7 @@ export default function Layout( { children }: { children: ReactNode } )
 	// Les polices de caractères sont chargées mais ne sont pas utilisées
 	//  dans ce fichier, elles sont ainsi utilisées dans les routes dynamiques
 	//  en appelant de nouveau ces mêmes fonctions car elles sont désormais en cache.
-	logger.debug( { source: __dirname, fonts: [ inter ] }, "Fonts loaded" );
+	console.log( inter.className );
 
 	return children;
 }

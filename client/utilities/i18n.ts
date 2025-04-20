@@ -6,8 +6,6 @@ import deepmerge from "deepmerge";
 import { getRequestConfig } from "next-intl/server";
 import type { AbstractIntlMessages } from "next-intl";
 
-import { logger } from "./pino";
-
 export function getLanguages()
 {
 	// Liste des langues disponibles.
@@ -21,11 +19,6 @@ export default getRequestConfig( async ( { requestLocale } ) =>
 
 	if ( !locale || !getLanguages().includes( locale ) )
 	{
-		logger.warn(
-			{ source: __dirname, locale },
-			"Invalid locale, fallback to default."
-		);
-
 		locale = "en";
 	}
 

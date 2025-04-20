@@ -5,7 +5,6 @@
 
 "use server";
 
-import { logger } from "@/utilities/pino";
 import { getTranslations } from "next-intl/server";
 import type { RecaptchaValidation } from "@/interfaces/RecaptchaValidation";
 
@@ -31,11 +30,6 @@ export async function checkRecaptcha( token?: string )
 		const json = ( await data.json() ) as RecaptchaValidation;
 		const isInvalidResponse = !json.success || json.score < 0.7;
 
-		logger.info(
-			{ source: __dirname, json },
-			"reCAPTCHA verification response."
-		);
-
 		if ( isInvalidResponse )
 		{
 			return {
@@ -46,11 +40,6 @@ export async function checkRecaptcha( token?: string )
 	}
 	else
 	{
-		logger.error(
-			{ source: __dirname, status: data.status },
-			"An error occurred while checking the reCAPTCHA token."
-		);
-
 		return {
 			state: false,
 			message: messages( "errors.recaptcha.check_failed" )

@@ -1,5 +1,4 @@
 **/.next
-**/logs
 **/node_modules
 **/tests
 **/*.md
