@@ -19,9 +19,10 @@ import { I18nProvider } from "@react-aria/i18n";
 import { getRecaptcha } from "@/utilities/recaptcha";
 import { useTranslations } from "next-intl";
 import { Info, WandSparkles } from "lucide-react";
-import { lazy, useRef, useState, type FormEvent } from "react";
+import { lazy, useContext, useRef, useState, type FormEvent } from "react";
 
 import { createLink } from "../actions/create-link";
+import { ServerContext } from "@/components/server-provider";
 import { checkRecaptcha } from "../actions/check-recaptcha";
 
 const InputOptions = lazy( () => import( "./input-options" ) );
@@ -33,6 +34,7 @@ export default function FormContainer()
 	// Déclaration des variables d'état.
 	const router = useRouter();
 	const messages = useTranslations();
+	const serverData = useContext( ServerContext );
 	const submitButton = useRef<HTMLButtonElement | null>( null );
 	const [ stepName, setStepName ] = useState( messages( "dashboard.steps.fetch_recaptcha" ) );
 	const [ isLoading, setIsLoading ] = useState( false );
@@ -158,7 +160,7 @@ export default function FormContainer()
 
 				<CardBody className="p-4 max-md:gap-6 lg:flex-row">
 					{/* Utilisation de i18n */}
-					<I18nProvider>
+					<I18nProvider locale={serverData?.locale}>
 						{/* Options de saisie */}
 						<InputOptions />
 
@@ -199,7 +201,7 @@ export default function FormContainer()
 
 					{/* Carte du créateur */}
 					<div className="mr-1 flex items-center gap-2">
-						{messages( "footer.made_with_love" )}{" "}
+						{messages( "footer.made_with_love" )}
 						<User
 							name="Florian Trayon"
 							description={(
