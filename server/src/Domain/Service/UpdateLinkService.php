@@ -4,6 +4,7 @@ namespace App\Domain\Service;
 
 use DateTime;
 use App\Domain\Entity\Link;
+use App\Domain\Factory\LinkFactory;
 use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,7 +26,7 @@ final class UpdateLinkService extends BaseLinkService
 	 * Constructeur de la classe.
 	 */
 	public function __construct(
-		protected readonly Link $link,
+		protected Link $link,
 		LoggerInterface $logger,
 		ValidatorInterface $validator,
 		TranslatorInterface $translator,
@@ -100,23 +101,6 @@ final class UpdateLinkService extends BaseLinkService
 	}
 
 	/**
-	 * Remplacement de la valeur d'un champ d'un lien raccourci.
-	 */
-	private function replaceValueByField(string $field, string $value): void
-	{
-		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
-
-		match ($field)
-		{
-			'url' => $this->link->setUrl(trim($value)),
-			'slug' => $this->link->setSlug(trim($value)),
-			'visitedAt' => $this->link->setVisitedAt(new DateTime()),
-			'expiration' => $this->link->setExpiration(is_string($value) ? new DateTime($value) : null),
-			default => null
-		};
-	}
-
-	/**
 	 * Mise à jour partielle d'un lien raccourci.
 	 * @internal Seules les requêtes locales sont autorisées.
 	 */
@@ -131,7 +115,8 @@ final class UpdateLinkService extends BaseLinkService
 		$field = $payload['field'] ?? '';
 		$value = $payload['value'] ?? '';
 
-		$this->replaceValueByField($field, $value);
+		$this->link = LinkFactory::patch($this->link, $field, $value);
+
 		$this->validateLink($this->link);
 		$this->checkUrl($this->link->getUrl());
 
@@ -157,13 +142,9 @@ final class UpdateLinkService extends BaseLinkService
 
 		$url = $request->request->getString('url', $this->link->getUrl());
 		$slug = $request->request->getString('slug', $this->link->getSlug());
-		$expiration = $request->request->getString('expiration', $this->link->getExpiration()->format('Y-m-d H:i:s'));
-		$currentDate = new DateTime();
+		$expiration = $request->request->getString('expiration', $this->link->getExpiration()?->format('Y-m-d H:i:s'));
 
-		$this->link->setUrl(trim($url));
-		$this->link->setSlug(trim($slug));
-		$this->link->setExpiration(is_string($expiration) ? new DateTime($expiration) : null);
-		$this->link->setUpdatedAt($currentDate);
+		$this->link = LinkFactory::update($this->link, $url, $slug, $expiration);
 
 		$this->validateLink($this->link);
 		$this->checkUrl($this->link->getUrl());

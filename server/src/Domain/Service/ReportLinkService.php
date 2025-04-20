@@ -2,10 +2,10 @@
 
 namespace App\Domain\Service;
 
-use DateTime;
 use App\Domain\Entity\Link;
 use Psr\Log\LoggerInterface;
 use App\Domain\Entity\Report;
+use App\Domain\Factory\ReportFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Infrastructure\Repository\ReportRepository;
@@ -69,11 +69,7 @@ final class ReportLinkService
 		$email = $request->request->get('email');
 		$reason = $request->request->getString('reason');
 
-		$report = new Report();
-		$report->setLink($this->link);
-		$report->setEmail(is_string($email) ? trim($email) : null);
-		$report->setReason(trim($reason));
-		$report->setCreatedAt(new DateTime());
+		$report = ReportFactory::create($this->link, $reason, $email);
 
 		$this->validateReport($report);
 
