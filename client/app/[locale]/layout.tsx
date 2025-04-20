@@ -82,6 +82,7 @@ export default async function Layout( {
 
 	// Définition des données du serveur.
 	const serverData = {
+		locale,
 		domain: await getDomain(),
 		offset: getTimeZoneOffset(),
 		timezone: getTimeZoneName()

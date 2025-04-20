@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 
 export interface ServerContextProps
 {
+	locale: string;
 	domain: string;
 	offset: string;
 	timezone: string;
