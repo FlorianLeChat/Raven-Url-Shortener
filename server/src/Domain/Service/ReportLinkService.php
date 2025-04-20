@@ -90,7 +90,12 @@ final class ReportLinkService
 		$report = ReportFactory::create($this->link, $reason, $email);
 
 		$this->validateReport($report);
-		$this->checkReportExists($report->getEmail());
+
+		if (!empty($email))
+		{
+			// La vérification doit seulement être effectuée si l'adresse électronique est renseignée.
+			$this->checkReportExists($report->getEmail());
+		}
 
 		$this->repository->save($report, true);
 
