@@ -19,15 +19,18 @@ import { I18nProvider } from "@react-aria/i18n";
 import { getRecaptcha } from "@/utilities/recaptcha";
 import { useTranslations } from "next-intl";
 import { Info, WandSparkles } from "lucide-react";
+import type { LinkProperties } from "@/interfaces/LinkProperties";
+import type { ErrorProperties } from "@/interfaces/ErrorProperties";
 import { lazy, useContext, useRef, useState, type FormEvent } from "react";
 
-import { createLink } from "../actions/create-link";
 import { ServerContext } from "@/components/server-provider";
 import { checkRecaptcha } from "../actions/check-recaptcha";
 
 const InputOptions = lazy( () => import( "./input-options" ) );
 const LegalConsent = lazy( () => import( "@/components/legal-consent" ) );
 const CheckboxOptions = lazy( () => import( "./checkbox-options" ) );
+
+type CreateLinkResponse = LinkProperties | ErrorProperties;
 
 export default function FormContainer()
 {
@@ -72,6 +75,60 @@ export default function FormContainer()
 	{
 		setIsLoading( false );
 		setStepName( messages( "dashboard.steps.fetch_recaptcha" ) );
+	};
+
+	// Création d'un nouveau raccourci auprès du back-end PHP.
+	const createLink = async ( data: FormData ) =>
+	{
+		const body = new FormData();
+
+		data.forEach( ( value, key ) =>
+		{
+			// Suppression des champs vides.
+			if ( value )
+			{
+				body.append( key, value );
+			}
+		} );
+
+		console.log( "Form data before sending to the server." );
+		console.table( Array.from( body.entries() ) );
+
+		try
+		{
+			const response = await fetch( `${ process.env.NEXT_PUBLIC_BACKEND_URL }/api/v1/link`, {
+				body,
+				method: "POST"
+			} );
+
+			const json = ( await response.json() ) as CreateLinkResponse;
+
+			console.log( "Short link creation response." );
+			console.table( json );
+
+			if ( response.ok && "id" in json )
+			{
+				return {
+					state: true,
+					data: json
+				};
+			}
+
+			return {
+				state: false,
+				message: messages( "errors.link.creation_failed" )
+			};
+		}
+		catch ( error )
+		{
+			console.log( "An error occurred while creating the short link." );
+			console.table( error );
+
+			return {
+				state: false,
+				message: messages( "errors.generic_unknown" )
+			};
+		}
 	};
 
 	// Requête HTTP de création d'un nouveau raccourci

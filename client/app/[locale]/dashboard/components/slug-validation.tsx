@@ -4,11 +4,16 @@
 
 "use client";
 
+import { debounce } from "lodash";
 import { addToast, Input } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { useContext, useState } from "react";
+import type { ErrorProperties } from "@/interfaces/ErrorProperties";
 import { ServerContext } from "@/components/server-provider";
-import { checkSlug } from "../actions/check-slug";
+
+type SlugCheckResponse = ErrorProperties | {
+	available: boolean;
+};
 
 export default function SlugValidation()
 {
@@ -17,15 +22,47 @@ export default function SlugValidation()
 	const serverData = useContext( ServerContext );
 	const [ isAvailable, setIsAvailable ] = useState( true );
 
-	// Déclaration des constantes.
-	let timeoutId: number;
-
-	// Limite le nombre d'actions dans un lapse de temps donnée.
-	// https://lodash.com/docs/4.17.15#debounce
-	const debounce = ( callback: ( input: string ) => void, delay: number ) => ( input: string ) =>
+	// Vérification de la disponibilité du slug personnalisé auprès du back-end PHP.
+	const checkSlug = async ( slug: string ) =>
 	{
-		clearTimeout( timeoutId );
-		timeoutId = window.setTimeout( () => callback( input ), delay );
+		const data = new FormData();
+		data.set( "slug", slug );
+
+		try
+		{
+			const response = await fetch( `${ process.env.NEXT_PUBLIC_BACKEND_URL }/api/v1/slug`, {
+				body: data,
+				method: "POST"
+			} );
+
+			const json = ( await response.json() ) as SlugCheckResponse;
+
+			console.log( "Slug availability checking response." );
+			console.table( json );
+
+			if ( response.ok && "available" in json )
+			{
+				return {
+					state: true,
+					available: json.available
+				};
+			}
+
+			return {
+				state: false,
+				message: messages( "errors.slug.check_failed" )
+			};
+		}
+		catch ( error )
+		{
+			console.log( "An error occurred while fetching the slug availability." );
+			console.table( error );
+
+			return {
+				state: false,
+				message: messages( "errors.generic_unknown" )
+			};
+		}
 	};
 
 	// Mise à jour de la validation du slug.
