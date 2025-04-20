@@ -4,7 +4,6 @@
 
 "use server";
 
-import { logger } from "@/utilities/pino";
 import { getTranslations } from "next-intl/server";
 import type { LinkProperties } from "@/interfaces/LinkProperties";
 import type { ErrorProperties } from "@/interfaces/ErrorProperties";
@@ -31,10 +30,8 @@ export async function getLinkDetails( id?: string )
 
 		const json = ( await response.json() ) as GetLinkDetailsResponse;
 
-		logger.info(
-			{ source: __dirname, json },
-			"Short link fetching details response."
-		);
+		console.log( "Short link fetching details response." );
+		console.table( json );
 
 		if ( response.ok && "id" in json )
 		{
@@ -51,10 +48,8 @@ export async function getLinkDetails( id?: string )
 	}
 	catch ( error )
 	{
-		logger.error(
-			{ source: __dirname, error },
-			"An error occurred while fetching the short link details."
-		);
+		console.log( "An error occurred while fetching the short link details." );
+		console.table( error );
 
 		return {
 			state: false,

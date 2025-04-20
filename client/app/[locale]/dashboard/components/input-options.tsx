@@ -16,7 +16,7 @@ const SlugValidation = lazy( () => import( "./slug-validation" ) );
 export default function InputOptions()
 {
 	// Déclaration des constantes.
-	const dateNow = now( getLocalTimeZone() );
+	const dateNow = now( getLocalTimeZone() ); // https://github.com/heroui-inc/heroui/discussions/4711
 	const minTime = dateNow.add( { days: 1 } );
 	const maxTime = dateNow.add( { years: 1 } );
 

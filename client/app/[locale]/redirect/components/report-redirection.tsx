@@ -19,10 +19,10 @@ import { Form,
 	useDisclosure } from "@heroui/react";
 import { getRecaptcha } from "@/utilities/recaptcha";
 import { useTranslations } from "next-intl";
+import type { ErrorProperties } from "@/interfaces/ErrorProperties";
 import { useState, type FormEvent } from "react";
 import { Flag, Mail, OctagonAlert, Send } from "lucide-react";
 
-import { reportLink } from "../actions/report-link";
 import { checkRecaptcha } from "../../dashboard/actions/check-recaptcha";
 
 export default function ReportRedirection( { id }: Readonly<{ id: string }> )
@@ -34,8 +34,59 @@ export default function ReportRedirection( { id }: Readonly<{ id: string }> )
 	const [ isConsentChecked, setIsConsentChecked ] = useState( false );
 	const [ isConsentRequired, setIsConsentRequired ] = useState( false );
 
-	// Requête HTTP de signalement d'un raccourci
-	//  auprès du back-end PHP.
+	// Création d'un signalement auprès du back-end PHP.
+	const reportLink = async ( data: FormData ) =>
+	{
+		const body = new FormData();
+
+		data.forEach( ( value, key ) =>
+		{
+			// Suppression des champs vides.
+			if ( value )
+			{
+				body.append( key, value );
+			}
+		} );
+
+		console.log( "Form data before sending to the server." );
+		console.table( Array.from( body.entries() ) );
+
+		try
+		{
+			const linkId = data.get( "id" );
+			const response = await fetch( `${ process.env.NEXT_PUBLIC_BACKEND_URL }/api/v1/link/${ linkId }/report`, {
+				body: data,
+				method: "POST"
+			} );
+
+			const json = ( await response.json() ) as ErrorProperties;
+
+			console.log( "Short link reporting response." );
+			console.table( json );
+
+			if ( response.ok )
+			{
+				return { state: true };
+			}
+
+			return {
+				state: false,
+				message: messages( "errors.report.send_failed" )
+			};
+		}
+		catch ( error )
+		{
+			console.log( "An error occurred while reporting the short link." );
+			console.table( error );
+
+			return {
+				state: false,
+				message: messages( "errors.generic_unknown" )
+			};
+		}
+	};
+
+	// Soumission du formulaire de signalement.
 	const onSubmitForm = async ( event: FormEvent<HTMLFormElement> ) =>
 	{
 		// Activation de l'état de chargement.
