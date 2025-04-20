@@ -2,8 +2,8 @@
 
 namespace App\Domain\Service;
 
-use DateTime;
 use App\Domain\Entity\Link;
+use App\Domain\Factory\LinkFactory;
 use Symfony\Component\HttpFoundation\Request;
 use App\Domain\Service\Abstract\BaseLinkService;
 
@@ -24,14 +24,8 @@ final class CreateLinkService extends BaseLinkService
 		$url = $request->request->getString('url');
 		$slug = $request->request->getString('slug', $this->createRandomSlug());
 		$expiration = $request->request->get('expiration');
-		$currentDate = new DateTime();
 
-		$link = new Link();
-		$link->setUrl(trim($url));
-		$link->setSlug(trim($slug));
-		$link->setExpiration(is_string($expiration) ? new DateTime($expiration) : null);
-		$link->setCreatedAt($currentDate);
-		$link->setVisitedAt($currentDate);
+		$link = LinkFactory::create($url, $slug, $expiration);
 
 		$this->validateLink($link);
 		$this->checkUrl($link->getUrl());
