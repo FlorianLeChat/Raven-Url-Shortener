@@ -33,17 +33,17 @@ export async function reportLink( data: FormData )
 			method: "POST"
 		} );
 
-		if ( response.ok )
-		{
-			return { state: true };
-		}
-
 		const json = ( await response.json() ) as ErrorProperties;
 
 		logger.info(
 			{ source: __dirname, json },
 			"Short link reporting response."
 		);
+
+		if ( response.ok )
+		{
+			return { state: true };
+		}
 
 		return {
 			state: false,

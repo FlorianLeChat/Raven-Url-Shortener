@@ -85,7 +85,7 @@ abstract class BaseLinkService
 			}
 		} catch (TransportExceptionInterface $exception) {
 			$errors['url'][] = [
-				'code' => 'invalid_url',
+				'code' => 'UNREACHABLE_URL_ERROR',
 				'message' => $exception->getMessage()
 			];
 

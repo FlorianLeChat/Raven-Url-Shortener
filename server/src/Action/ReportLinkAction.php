@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Requirement\Requirement;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -27,6 +28,7 @@ final class ReportLinkAction extends AbstractController
 	public function __construct(
 		private readonly LoggerInterface $logger,
 		private readonly ValidatorInterface $validator,
+		private readonly TranslatorInterface $translator,
 		private readonly EntityManagerInterface $entityManager
 	) {}
 
@@ -43,6 +45,7 @@ final class ReportLinkAction extends AbstractController
 			$link,
 			$this->logger,
 			$this->validator,
+			$this->translator,
 			$this->entityManager
 		);
 

@@ -2,7 +2,6 @@
 
 namespace App\Domain\Service;
 
-use DateTime;
 use App\Domain\Entity\Link;
 use App\Domain\Factory\LinkFactory;
 use Psr\Log\LoggerInterface;
