@@ -11,11 +11,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 /**
- * Écouteur d'événements pour la gestion des requêtes du routeur.
+ * Écouteur d'événements pour la gestion de la limitation de requêtes.
  * @see https://symfony.com/doc/current/rate_limiter.html#rate-limiting-in-action
  * @see https://symfony.com/doc/current/event_dispatcher.html#creating-an-event-listener
  */
-final class RequestListener
+final class LimiterListener
 {
 	/**
 	 * Instance de la requête HTTP entrante.
@@ -38,7 +38,7 @@ final class RequestListener
 	private function createLimiterFromRequest(): RateLimiterFactory
 	{
 		$method = $this->request->getMethod();
-		$isWriteMethod = $method === 'POST' || $method === 'PUT' || $method === 'DELETE';
+		$isWriteMethod = $method === 'POST' || $method === 'PUT' || $method === 'PATCH' || $method === 'DELETE';
 
 		$this->logger->debug('{method} API request from {ip}', [
 			'method' => $isWriteMethod ? 'Write' : 'Read',
