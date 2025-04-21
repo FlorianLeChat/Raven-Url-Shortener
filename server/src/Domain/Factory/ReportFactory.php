@@ -16,7 +16,7 @@ final class ReportFactory
 	 */
 	public static function create(Link $link, string $reason, ?string $email = null): Report
 	{
-		$email = is_string($email) ? trim($email) : null;
+		$email = !empty($email) ? trim($email) : null;
 		$reason = trim($reason);
 
 		$report = new Report();

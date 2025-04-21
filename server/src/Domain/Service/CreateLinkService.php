@@ -23,7 +23,7 @@ final class CreateLinkService extends BaseLinkService
 
 		$url = $request->request->getString('url');
 		$slug = $request->request->getString('slug', $this->createRandomSlug());
-		$expiration = $request->request->get('expiration');
+		$expiration = $request->request->getString('expiration');
 
 		$link = LinkFactory::create($url, $slug, $expiration);
 

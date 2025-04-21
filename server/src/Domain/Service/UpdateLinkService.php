@@ -42,7 +42,7 @@ final class UpdateLinkService extends BaseLinkService
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
-		$ipAddress = $request->getClientIp();
+		$ipAddress = $request->getClientIp() ?? '';
 		$isLocalAddress =
 			// Adresses IPv4/v6 de la boucle locale (localhost)
 			$ipAddress === '127.0.0.1' || $ipAddress === '::1' ||
@@ -87,7 +87,7 @@ final class UpdateLinkService extends BaseLinkService
 
 		$reports = $this->link->getReports();
 
-		if (!empty($reports))
+		if (count($reports) > 0)
 		{
 			$errors = [];
 			$errors['slug'][] = [
@@ -109,10 +109,16 @@ final class UpdateLinkService extends BaseLinkService
 
 		$this->checkRequestOrigin($request);
 
+		// Pour le moment, les requêtes PATCH ne sont pas gérées par Symfony.
 		// https://github.com/symfony/symfony/issues/59331
+		/** @var array<string, mixed> $payload */
 		$payload = json_decode($request->getContent(), true);
-		$field = $payload['field'] ?? '';
+
+		$field = $payload['field'];
+		$field = is_string($field) ? $field : '';
+
 		$value = $payload['value'] ?? '';
+		$value = is_string($value) ? $value : '';
 
 		$this->link = LinkFactory::patch($this->link, $field, $value);
 
@@ -139,9 +145,9 @@ final class UpdateLinkService extends BaseLinkService
 		$this->checkEnabled();
 		$this->checkForReports();
 
-		$url = $request->request->getString('url', $this->link->getUrl());
-		$slug = $request->request->getString('slug', $this->link->getSlug());
-		$expiration = $request->request->getString('expiration', $this->link->getExpiration()?->format('Y-m-d H:i:s'));
+		$url = $request->request->getString('url', $this->link->getUrl() ?? '');
+		$slug = $request->request->getString('slug', $this->link->getSlug() ?? '');
+		$expiration = $request->request->getString('expiration', $this->link->getExpiration()?->format('Y-m-d H:i:s') ?? '');
 
 		$this->link = LinkFactory::update($this->link, $url, $slug, $expiration);
 

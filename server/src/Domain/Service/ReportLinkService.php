@@ -51,7 +51,7 @@ final class ReportLinkService
 
 		foreach ($violations as $violation) {
 			$errors[$violation->getPropertyPath()][] = [
-				'code' => $violation->getConstraint()->getErrorName($violation->getCode()),
+				'code' => $violation->getConstraint()?->getErrorName($violation->getCode() ?? '') ?? '',
 				'message' => $violation->getMessage()
 			];
 		}
@@ -84,14 +84,14 @@ final class ReportLinkService
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
-		$email = $request->request->get('email');
+		$email = $request->request->getString('email');
 		$reason = $request->request->getString('reason');
 
 		$report = ReportFactory::create($this->link, $reason, $email);
 
 		$this->validateReport($report);
 
-		if (!empty($email))
+		if (!empty($report->getEmail()))
 		{
 			// La vérification doit seulement être effectuée si l'adresse électronique est renseignée.
 			$this->checkReportExists($report->getEmail());

@@ -20,7 +20,7 @@ final class LimiterListener
 	/**
 	 * Instance de la requête HTTP entrante.
 	 */
-	private readonly Request $request;
+	private Request $request;
 
 	/**
 	 * Constructeur de la classe.
