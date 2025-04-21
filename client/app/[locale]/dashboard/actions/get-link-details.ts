@@ -30,8 +30,7 @@ export async function getLinkDetails( id?: string )
 
 		const json = ( await response.json() ) as GetLinkDetailsResponse;
 
-		console.log( "Short link fetching details response." );
-		console.table( json );
+		console.log( "Short link fetching details response.", json );
 
 		if ( response.ok && "id" in json )
 		{
@@ -48,8 +47,7 @@ export async function getLinkDetails( id?: string )
 	}
 	catch ( error )
 	{
-		console.log( "An error occurred while fetching the short link details." );
-		console.table( error );
+		console.log( "An error occurred while fetching the short link details.", error );
 
 		return {
 			state: false,

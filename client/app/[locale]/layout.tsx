@@ -6,6 +6,10 @@
 // Importation du normalisateur TypeScript.
 import "@total-typescript/ts-reset";
 
+// Importation des feuilles de style CSS.
+import "../layout.css";
+import "vanilla-cookieconsent/dist/cookieconsent.css";
+
 // Importation des dépendances.
 import pick from "lodash/pick";
 import { Inter } from "next/font/google";
