@@ -8,6 +8,7 @@ use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Bridge\Doctrine\Types\UuidType;
+use Doctrine\Common\Collections\ArrayCollection;
 use App\Infrastructure\Repository\LinkRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -50,7 +51,7 @@ class Link
 
 	/** @var Collection<int, Report> */
 	#[ORM\OneToMany(mappedBy: "link", targetEntity: Report::class, orphanRemoval: true, cascade: ["persist", "remove"])]
-	private Collection $reports;
+	private readonly Collection $reports;
 
 	/**
 	 * Création des certaines propriétés de l'entité.
@@ -59,6 +60,7 @@ class Link
 	public function __construct()
 	{
 		$this->id = Uuid::v7();
+		$this->reports = new ArrayCollection();
 	}
 
 	/**
@@ -192,7 +194,7 @@ class Link
 
 	/**
 	 * Conversion de l'entité en tableau.
-	 * @return array<string, Link>
+	 * @return array<string, mixed>
 	 */
 	public function toArray(): array
 	{

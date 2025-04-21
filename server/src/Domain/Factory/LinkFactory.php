@@ -15,7 +15,7 @@ final class LinkFactory
 	 */
 	private static function parseExpiration(?string $expiration = null): ?DateTime
 	{
-		return is_string($expiration) ? new DateTime($expiration) : null;
+		return !empty($expiration) ? new DateTime($expiration) : null;
 	}
 
 	/**

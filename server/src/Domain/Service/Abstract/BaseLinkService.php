@@ -51,7 +51,7 @@ abstract class BaseLinkService
 
 		foreach ($violations as $violation) {
 			$errors[$violation->getPropertyPath()][] = [
-				'code' => $violation->getConstraint()->getErrorName($violation->getCode()),
+				'code' => $violation->getConstraint()?->getErrorName($violation->getCode() ?? '') ?? '',
 				'message' => $violation->getMessage()
 			];
 		}

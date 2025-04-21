@@ -20,12 +20,12 @@ final class ExceptionListener
 	/**
 	 * Réponse HTTP en format JSON.
 	 */
-	private readonly JsonResponse $response;
+	private JsonResponse $response;
 
 	/**
 	 * Événement de l'exception.
 	 */
-	private readonly ExceptionEvent $event;
+	private ExceptionEvent $event;
 
 	/**
 	 * Constructeur de la classe.
@@ -86,14 +86,9 @@ final class ExceptionListener
 			'code' => $exception->getCode()
 		]);
 
-		if ($exception instanceof HttpException)
-		{
-			$this->handleHttpException($exception);
-		}
-		else
-		{
-			$this->handleInternalException($exception);
-		}
+		$exception instanceof HttpException
+			? $this->handleHttpException($exception)
+			: $this->handleInternalException($exception);
 
 		$this->event->setResponse($this->response);
 	}
