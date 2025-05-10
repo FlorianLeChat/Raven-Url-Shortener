@@ -38,7 +38,8 @@ services:
         volumes:
             - ./server/docker/services/pgadmin:/var/lib/pgadmin
         depends_on:
-            - postgres
+            postgres:
+                condition: service_healthy
         environment:
             PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
             PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
@@ -65,11 +66,12 @@ services:
         volumes:
             - ./server/logs:/var/www/html/logs
         depends_on:
-            - redis
-            - postgres
+            redis:
+                condition: service_healthy
+            postgres:
+                condition: service_healthy
         environment:
             TZ: ${APP_TIMEZONE}
-            WAIT_HOSTS: redis:${REDIS_PORT}, postgres:${DATABASE_PORT}
         healthcheck:
             test: curl -f http://localhost:8000/
             retries: 3
