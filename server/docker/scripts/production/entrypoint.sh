@@ -1,8 +1,5 @@
 #!/bin/sh
 
-# Wait for external services to be ready
-/wait
-
 # Install Composer dependencies
 composer install --no-dev --optimize-autoloader
 

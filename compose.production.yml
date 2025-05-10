@@ -41,7 +41,8 @@ services:
         volumes:
             - ./server/docker/services/pgadmin:/var/lib/pgadmin
         depends_on:
-            - postgres
+            postgres:
+                condition: service_healthy
         environment:
             PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
             PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
@@ -55,10 +56,11 @@ services:
     # https://hub.docker.com/_/varnish
     varnish:
         image: varnish:alpine
-        depends_on:
-            - node
         volumes:
             - ./client/docker/configuration/default.vcl:/etc/varnish/default.vcl:ro
+        depends_on:
+            node:
+                condition: service_healthy
         environment:
             VARNISH_SIZE: 128m
         healthcheck:
@@ -74,7 +76,8 @@ services:
         restart: always
         command: ./client/docker/scripts/entrypoint.sh
         depends_on:
-            - php
+            php:
+                condition: service_healthy
         environment:
             TZ: ${APP_TIMEZONE}
         healthcheck:
@@ -95,11 +98,12 @@ services:
         volumes:
             - ./server/logs:/var/www/html/logs
         depends_on:
-            - redis
-            - postgres
+            redis:
+                condition: service_healthy
+            postgres:
+                condition: service_healthy
         environment:
             TZ: ${APP_TIMEZONE}
-            WAIT_HOSTS: redis:${REDIS_PORT}, postgres:${DATABASE_PORT}
         healthcheck:
             test: curl -f http://127.0.0.1:9000/ 2>&1 | grep "Connection reset by peer"
             retries: 3
