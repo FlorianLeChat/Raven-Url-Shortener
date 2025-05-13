@@ -4,7 +4,7 @@
 
 "use client";
 
-import { debounce } from "lodash";
+import debounce from "lodash/debounce";
 import { addToast, Input } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { useContext, useState } from "react";
