@@ -51,7 +51,7 @@ class Link
 
 	/** @var Collection<int, Report> */
 	#[ORM\OneToMany(mappedBy: "link", targetEntity: Report::class, orphanRemoval: true, cascade: ["persist", "remove"])]
-	private readonly Collection $reports;
+	private Collection $reports;
 
 	/**
 	 * Création des certaines propriétés de l'entité.
@@ -60,7 +60,6 @@ class Link
 	public function __construct()
 	{
 		$this->id = Uuid::v7();
-		$this->reports = new ArrayCollection();
 	}
 
 	/**
