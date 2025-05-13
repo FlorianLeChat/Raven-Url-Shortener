@@ -7,6 +7,22 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+const ASCII_INDEX = <<<EOT
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:: ____                                     _   _          _     ____    _                      _                                 ::
+::|  _ \    __ _  __   __   ___   _ __     | | | |  _ __  | |   / ___|  | |__     ___    _ __  | |_    ___   _ __     ___   _ __  ::
+::| |_) |  / _` | \ \ / /  / _ \ | '_ \    | | | | | '__| | |   \___ \  | '_ \   / _ \  | '__| | __|  / _ \ | '_ \   / _ \ | '__| ::
+::|  _ <  | (_| |  \ V /  |  __/ | | | |   | |_| | | |    | |    ___) | | | | | | (_) | | |    | |_  |  __/ | | | | |  __/ | |    ::
+::|_| \_\  \__,_|   \_/    \___| |_| |_|    \___/  |_|    |_|   |____/  |_| |_|  \___/  |_|     \__|  \___| |_| |_|  \___| |_|    ::
+::                                                                                                                                ::
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+Server is running. Response time: %s ms.
+Ready to handle requests.
+EOT;
+
 /**
  * Action pour la page d'accueil du serveur.
  */
@@ -23,8 +39,11 @@ final class ServerIndexAction extends AbstractController
 		$executionTime = round(($currentTime - $requestTime) * 1000, 3);
 
 		return new Response(
-			sprintf('Server is running. Execution time: %s ms', $executionTime),
-			Response::HTTP_OK
+			sprintf(ASCII_INDEX, $executionTime),
+			Response::HTTP_OK,
+			[
+				'Content-Type' => 'text/plain; charset=utf-8'
+			]
 		);
 	}
 }
