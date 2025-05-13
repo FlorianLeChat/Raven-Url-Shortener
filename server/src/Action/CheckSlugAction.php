@@ -30,7 +30,7 @@ final class CheckSlugAction extends AbstractController
 	 * Vérification de la disponibilité d'un slug personnalisé.
 	 */
 	#[Route('/slug', methods: ['POST'])]
-	public function checkSlugV1(Request $request): JsonResponse
+	public function checkSlug(Request $request): JsonResponse
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
