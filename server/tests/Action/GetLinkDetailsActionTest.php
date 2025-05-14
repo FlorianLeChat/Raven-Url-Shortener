@@ -92,7 +92,7 @@ final class GetLinkDetailsActionTest extends WebTestCase
 	 */
     public function testGetLinkDetailsWithValidSlug(): void
 	{
-		$this->client->request('GET', '/api/v1/link/test');
+		$this->client->request('GET', '/api/v1/link/test1');
 
 		$this->assertResponseIsSuccessful();
 		$this->assertJson($this->client->getResponse()->getContent());

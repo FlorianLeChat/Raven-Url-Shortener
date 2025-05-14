@@ -65,7 +65,7 @@ final class CreateLinkActionTest extends WebTestCase
 	{
 		$this->client->request('POST', '/api/v1/link', [
 			'url' => 'https://www.google.com/',
-			'slug' => 'test'
+			'slug' => 'test1'
 		]);
 
 		$this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
