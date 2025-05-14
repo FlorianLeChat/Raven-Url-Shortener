@@ -8,5 +8,5 @@ return [
 	'report.duplicated' => 'Vous avez déjà signalé ce lien raccourci, vous ne pouvez pas le signaler à nouveau.',
 	'slug.already_used' => 'Le slug personnalisé que vous avez choisi est déjà utilisé par un autre lien. Veuillez en choisir un autre.',
 	'api_key.missing' => 'La clé API est manquante. Veuillez la fournir dans l\'en-tête de la requête HTTP.',
-	'api_key.invalid ' => 'La clé API fournie est invalide. Veuillez la vérifier et réessayer.'
+	'api_key.invalid' => 'La clé API fournie est invalide. Veuillez la vérifier et réessayer.'
 ];

@@ -15,7 +15,7 @@ final class ReportFixture extends Fixture
 {
 	public function load(ObjectManager $manager): void
 	{
-		$link = $this->getReference("link", Link::class);
+		$link = $this->getReference("link3", Link::class);
 
 		$report = new Report();
 		$report->setEmail('johndoe@domain.com');
