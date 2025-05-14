@@ -46,7 +46,7 @@ final class ReportLinkActionTest extends WebTestCase
 	 */
     public function testReportWithNoReason(): void
 	{
-		$this->client->request('POST', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d9/report');
+		$this->client->request('POST', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d0/report');
 
 		$this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
 
@@ -63,7 +63,7 @@ final class ReportLinkActionTest extends WebTestCase
 	 */
     public function testReportWithExistingEmail(): void
 	{
-		$this->client->request('POST', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d9/report', [
+		$this->client->request('POST', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d5/report', [
 			'email' => 'johndoe@domain.com',
 			'reason' => 'This is a test'
 		]);

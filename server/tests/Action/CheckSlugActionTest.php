@@ -56,7 +56,7 @@ final class CheckSlugActionTest extends WebTestCase
 	 */
 	public function testSlugIsNotAvailable(): void
 	{
-		$this->client->request('POST', '/api/v1/slug', ['slug' => 'test']);
+		$this->client->request('POST', '/api/v1/slug', ['slug' => 'test1']);
 
 		$this->assertResponseIsSuccessful();
 		$this->assertJsonStringEqualsJsonString('{"available":false}', $this->client->getResponse()->getContent());
