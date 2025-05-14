@@ -16,12 +16,9 @@ final class ApiKeyFactory
 	 */
 	public static function create(Link $link): ApiKey
 	{
-		$currentDate = new DateTime();
-
 		$apiKey = new ApiKey();
 		$apiKey->setLink($link);
-		$apiKey->setCreatedAt($currentDate);
-		$apiKey->setUpdatedAt($currentDate);
+		$apiKey->setCreatedAt(new DateTime());
 
 		return $apiKey;
 	}
