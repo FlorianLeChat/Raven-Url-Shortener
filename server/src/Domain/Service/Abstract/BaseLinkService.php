@@ -5,6 +5,7 @@ namespace App\Domain\Service\Abstract;
 use App\Domain\Entity\Link;
 use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use App\Infrastructure\Repository\LinkRepository;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -113,6 +114,82 @@ abstract class BaseLinkService
 			throw new DataValidationException($errors);
 		}
 	}
+
+	/**
+	 * Vérification de l'état d'accès d'un lien raccourci.
+	 */
+	protected function checkEnabled(Link $link): void
+	{
+		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+
+		if (!$link->getEnabled())
+		{
+			$errors = [];
+			$errors['slug'][] = [
+				'code' => 'DISABLED_LINK_ERROR',
+				'message' => $this->translator->trans('link.disabled')
+			];
+
+			throw new DataValidationException($errors);
+		}
+	}
+
+	/**
+	 * Vérification du nombre de signalements d'un lien raccourci.
+	 */
+	protected function checkForReports(Link $link): void
+	{
+		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+
+		$reports = $link->getReports();
+
+		if (count($reports) > 0)
+		{
+			$errors = [];
+			$errors['slug'][] = [
+				'code' => 'REPORTED_LINK_ERROR',
+				'message' => $this->translator->trans('link.reported')
+			];
+
+			throw new DataValidationException($errors);
+		}
+	}
+
+	/**
+	 * Vérification de la validité de la clé API.
+	 */
+	protected function checkApiKey(Link $link, Request $request): void
+	{
+		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+
+		$apiKey = $request->headers->get('Authorization');
+
+		if (empty($apiKey))
+		{
+			$errors = [];
+			$errors['slug'][] = [
+				'code' => 'MISSING_API_KEY_ERROR',
+				'message' => $this->translator->trans('api_key.missing')
+			];
+
+			throw new DataValidationException($errors);
+		}
+
+		$apiKey = str_replace('Bearer ', '', $apiKey);
+		$isValidApiKey = preg_match('/^[a-zA-Z0-9]{64}$/', $apiKey) && $link->getApiKey() === $apiKey;
+
+		if (!$isValidApiKey)
+		{
+			$errors = [];
+			$errors['slug'][] = [
+				'code' => 'INVALID_API_KEY_ERROR',
+				'message' => $this->translator->trans('api_key.invalid')
+			];
+
+			throw new DataValidationException($errors);
+		}
+	}
+
 
 	/**
 	 * Création d'un slug aléatoire.

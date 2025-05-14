@@ -32,4 +32,17 @@ final class LinkRepository extends ServiceEntityRepository
 			$this->getEntityManager()->flush();
 		}
 	}
+
+	/**
+	 * Suppression d'un lien raccourci.
+	 */
+	public function remove(Link $entity, bool $flush = false): void
+	{
+		$this->getEntityManager()->remove($entity);
+
+		if ($flush)
+		{
+			$this->getEntityManager()->flush();
+		}
+	}
 }

@@ -39,7 +39,7 @@ class ApiKey
 	public function __construct()
 	{
 		$this->id = Uuid::v7();
-		$this->apiKey = Uuid::v4()->toRfc4122();
+		$this->apiKey = bin2hex(openssl_random_pseudo_bytes(32));
 	}
 
 	/**
