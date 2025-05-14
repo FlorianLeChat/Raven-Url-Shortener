@@ -11,6 +11,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Infrastructure\Exception\DataValidationException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 use const App\LOG_FUNCTION;
@@ -124,13 +125,7 @@ abstract class BaseLinkService
 
 		if (!$link->getEnabled())
 		{
-			$errors = [];
-			$errors['slug'][] = [
-				'code' => 'DISABLED_LINK_ERROR',
-				'message' => $this->translator->trans('link.disabled')
-			];
-
-			throw new DataValidationException($errors);
+			throw new AccessDeniedHttpException($this->translator->trans('link.disabled'));
 		}
 	}
 
@@ -145,13 +140,7 @@ abstract class BaseLinkService
 
 		if (count($reports) > 0)
 		{
-			$errors = [];
-			$errors['slug'][] = [
-				'code' => 'REPORTED_LINK_ERROR',
-				'message' => $this->translator->trans('link.reported')
-			];
-
-			throw new DataValidationException($errors);
+			throw new AccessDeniedHttpException($this->translator->trans('link.reported'));
 		}
 	}
 
@@ -180,16 +169,9 @@ abstract class BaseLinkService
 
 		if (!$isValidApiKey)
 		{
-			$errors = [];
-			$errors['slug'][] = [
-				'code' => 'INVALID_API_KEY_ERROR',
-				'message' => $this->translator->trans('api_key.invalid')
-			];
-
-			throw new DataValidationException($errors);
+			throw new AccessDeniedHttpException($this->translator->trans('api_key.invalid'));
 		}
 	}
-
 
 	/**
 	 * Création d'un slug aléatoire.
