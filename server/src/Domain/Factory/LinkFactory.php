@@ -4,6 +4,7 @@ namespace App\Domain\Factory;
 
 use DateTime;
 use App\Domain\Entity\Link;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Fabrique pour les liens raccourcis.
@@ -67,7 +68,7 @@ final class LinkFactory
 			'slug' => $link->setSlug(trim($value)),
 			'visitedAt' => $link->setVisitedAt(new DateTime()),
 			'expiration' => $link->setExpiration(self::parseExpiration($value)),
-			default => null
+			default => throw new BadRequestHttpException() // C'est bancal mais cela ne devrait pas se produire.
 		};
 
 		return $link;

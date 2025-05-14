@@ -165,7 +165,7 @@ abstract class BaseLinkService
 		}
 
 		$apiKey = str_replace('Bearer ', '', $apiKey);
-		$isValidApiKey = preg_match('/^[a-zA-Z0-9]{64}$/', $apiKey) && $link->getApiKey() === $apiKey;
+		$isValidApiKey = preg_match('/^[a-zA-Z0-9]{64}$/', $apiKey) && $link->getApiKey()->getKey() === $apiKey;
 
 		if (!$isValidApiKey)
 		{
