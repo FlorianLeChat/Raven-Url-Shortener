@@ -24,7 +24,7 @@ class ApiKey
 	private ?Link $link = null;
 
 	#[ORM\Column(type: Types::STRING, length: 64)]
-	private ?string $apiKey = null;
+	private ?string $key = null;
 
 	#[ORM\Column(type: Types::DATETIME_MUTABLE)]
 	private ?DateTimeInterface $createdAt = null;
@@ -39,7 +39,7 @@ class ApiKey
 	public function __construct()
 	{
 		$this->id = Uuid::v7();
-		$this->apiKey = bin2hex(openssl_random_pseudo_bytes(32));
+		$this->key = bin2hex(openssl_random_pseudo_bytes(32));
 	}
 
 	/**
@@ -68,14 +68,14 @@ class ApiKey
 	/**
 	 * Définition ou récupération de la clé API.
 	 */
-	public function getApiKey(): ?string
+	public function getKey(): ?string
 	{
-		return $this->apiKey;
+		return $this->key;
 	}
 
-	public function setApiKey(?string $apiKey): static
+	public function setKey(?string $key): static
 	{
-		$this->apiKey = $apiKey;
+		$this->key = $key;
 
 		return $this;
 	}
@@ -118,8 +118,8 @@ class ApiKey
 	{
 		return [
 			'id' => $this->getId(),
+			'key' => $this->getKey(),
 			'link' => $this->getLink()?->toArray(),
-			'apiKey' => $this->getApiKey(),
 			'createdAt' => $this->getCreatedAt(),
 			'updatedAt' => $this->getUpdatedAt()
 		];
