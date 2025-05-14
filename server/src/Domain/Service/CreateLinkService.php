@@ -4,6 +4,7 @@ namespace App\Domain\Service;
 
 use App\Domain\Entity\Link;
 use App\Domain\Factory\LinkFactory;
+use App\Domain\Factory\ApiKeyFactory;
 use Symfony\Component\HttpFoundation\Request;
 use App\Domain\Service\Abstract\BaseLinkService;
 
@@ -26,6 +27,8 @@ final class CreateLinkService extends BaseLinkService
 		$expiration = $request->request->getString('expiration');
 
 		$link = LinkFactory::create($url, $slug, $expiration);
+		$apiKey = ApiKeyFactory::create($link);
+		$link->setApiKey($apiKey);
 
 		$this->validateLink($link);
 		$this->checkUrl($link->getUrl());
