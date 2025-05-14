@@ -8,7 +8,6 @@ use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Bridge\Doctrine\Types\UuidType;
-use Doctrine\Common\Collections\ArrayCollection;
 use App\Infrastructure\Repository\LinkRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -52,6 +51,9 @@ class Link
 	/** @var Collection<int, Report> */
 	#[ORM\OneToMany(mappedBy: "link", targetEntity: Report::class, orphanRemoval: true, cascade: ["persist", "remove"])]
 	private Collection $reports;
+
+	#[ORM\OneToOne(mappedBy: "link", targetEntity: ApiKey::class, orphanRemoval: true, cascade: ["persist", "remove"])]
+	private ApiKey $apiKey;
 
 	/**
 	 * Création des certaines propriétés de l'entité.
@@ -189,6 +191,21 @@ class Link
 	public function getReports()
 	{
 		return $this->reports;
+	}
+
+	/**
+	 * Récupération ou définition de la clé API.
+	 */
+	public function getApiKey()
+	{
+		return $this->apiKey;
+	}
+
+	public function setApiKey(ApiKey $apiKey): static
+	{
+		$this->apiKey = $apiKey;
+
+		return $this;
 	}
 
 	/**

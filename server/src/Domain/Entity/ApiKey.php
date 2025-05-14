@@ -7,14 +7,13 @@ use Doctrine\DBAL\Types\Types;
 use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
-use App\Infrastructure\Repository\ReportRepository;
-use Symfony\Component\Validator\Constraints as Assert;
+use App\Infrastructure\Repository\ApiKeyRepository;
 
 /**
- * Entité pour les signalements de liens raccourcis.
+ * Entité pour les clés API de gestion des liens raccourcis.
  */
-#[ORM\Entity(repositoryClass: ReportRepository::class)]
-class Report
+#[ORM\Entity(repositoryClass: ApiKeyRepository::class)]
+class ApiKey
 {
 	#[ORM\Id]
 	#[ORM\Column(type: UuidType::NAME, unique: true)]
@@ -22,18 +21,10 @@ class Report
 
 	#[ORM\ManyToOne]
 	#[ORM\JoinColumn(nullable: false)]
-	#[Assert\Type(type: Link::class)]
 	private ?Link $link = null;
 
-	#[ORM\Column(type: Types::STRING, length: 500)]
-	#[Assert\Length(min: 10, max: 500)]
-	private ?string $reason = null;
-
-	#[ORM\Column(type: Types::STRING, length: 100, nullable: true)]
-	#[Assert\Email]
-	#[Assert\Length(min: 10, max: 100)]
-	#[Assert\NoSuspiciousCharacters]
-	private ?string $email = null;
+	#[ORM\Column(type: Types::STRING, length: 64)]
+	private ?string $apiKey = null;
 
 	#[ORM\Column(type: Types::DATETIME_MUTABLE)]
 	private ?DateTimeInterface $createdAt = null;
@@ -48,6 +39,7 @@ class Report
 	public function __construct()
 	{
 		$this->id = Uuid::v7();
+		$this->apiKey = Uuid::v4()->toRfc4122();
 	}
 
 	/**
@@ -74,38 +66,22 @@ class Report
 	}
 
 	/**
-	 * Définition ou récupération de la raison du signalement.
+	 * Définition ou récupération de la clé API.
 	 */
-	public function getReason(): ?string
+	public function getApiKey(): ?string
 	{
-		return $this->reason;
+		return $this->apiKey;
 	}
 
-	public function setReason(?string $reason): static
+	public function setApiKey(?string $apiKey): static
 	{
-		$this->reason = $reason;
+		$this->apiKey = $apiKey;
 
 		return $this;
 	}
 
 	/**
-	 * Définition ou récupération de l'adresse électronique
-	 *  de l'auteur du signalement.
-	 */
-	public function getEmail(): ?string
-	{
-		return $this->email;
-	}
-
-	public function setEmail(?string $email): static
-	{
-		$this->email = $email;
-
-		return $this;
-	}
-
-	/**
-	 * Définition ou récupération de la date de création du signalement.
+	 * Définition ou récupération de la date de création de la clé API.
 	 */
 	public function getCreatedAt(): ?DateTimeInterface
 	{
@@ -120,7 +96,7 @@ class Report
 	}
 
 	/**
-	 * Définition ou récupération de la date de dernière modification du signalement.
+	 * Définition ou récupération de la date de dernière modification de la clé API.
 	 */
 	public function getUpdatedAt(): ?DateTimeInterface
 	{
@@ -143,8 +119,7 @@ class Report
 		return [
 			'id' => $this->getId(),
 			'link' => $this->getLink()?->toArray(),
-			'reason' => $this->getReason(),
-			'email' => $this->getEmail(),
+			'apiKey' => $this->getApiKey(),
 			'createdAt' => $this->getCreatedAt(),
 			'updatedAt' => $this->getUpdatedAt()
 		];
