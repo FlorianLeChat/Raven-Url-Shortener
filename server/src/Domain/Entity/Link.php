@@ -2,7 +2,7 @@
 
 namespace App\Domain\Entity;
 
-use DateTimeInterface;
+use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
@@ -35,18 +35,18 @@ class Link
 	#[ORM\Column(type: Types::BOOLEAN)]
 	private ?bool $enabled = true;
 
-	#[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+	#[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
 	#[Assert\Range(min: 'tomorrow', max: '+1 year')]
-	private ?DateTimeInterface $expiration = null;
+	private ?DateTimeImmutable $expiration = null;
 
-	#[ORM\Column(type: Types::DATETIME_MUTABLE)]
-	private ?DateTimeInterface $visitedAt = null;
+	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+	private ?DateTimeImmutable $visitedAt = null;
 
-	#[ORM\Column(type: Types::DATETIME_MUTABLE)]
-	private ?DateTimeInterface $createdAt = null;
+	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+	private ?DateTimeImmutable $createdAt = null;
 
-	#[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-	private ?DateTimeInterface $updatedAt = null;
+	#[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+	private ?DateTimeImmutable $updatedAt = null;
 
 	/** @var Collection<int, Report> */
 	#[ORM\OneToMany(mappedBy: "link", targetEntity: Report::class, orphanRemoval: true, cascade: ["persist", "remove"])]
@@ -127,12 +127,12 @@ class Link
 	/**
 	 * Définition ou récupération de la date d'expiration du lien.
 	 */
-	public function getExpiration(): ?DateTimeInterface
+	public function getExpiration(): ?DateTimeImmutable
 	{
 		return $this->expiration;
 	}
 
-	public function setExpiration(?DateTimeInterface $expiration): static
+	public function setExpiration(?DateTimeImmutable $expiration): static
 	{
 		$this->expiration = $expiration;
 
@@ -142,12 +142,12 @@ class Link
 	/**
 	 * Définition ou récupération de la date de dernière visite du lien.
 	 */
-	public function getVisitedAt(): ?DateTimeInterface
+	public function getVisitedAt(): ?DateTimeImmutable
 	{
 		return $this->visitedAt;
 	}
 
-	public function setVisitedAt(?DateTimeInterface $visitedAt): static
+	public function setVisitedAt(?DateTimeImmutable $visitedAt): static
 	{
 		$this->visitedAt = $visitedAt;
 
@@ -157,12 +157,12 @@ class Link
 	/**
 	 * Définition ou récupération de la date de création du lien.
 	 */
-	public function getCreatedAt(): ?DateTimeInterface
+	public function getCreatedAt(): ?DateTimeImmutable
 	{
 		return $this->createdAt;
 	}
 
-	public function setCreatedAt(?DateTimeInterface $createdAt): static
+	public function setCreatedAt(?DateTimeImmutable $createdAt): static
 	{
 		$this->createdAt = $createdAt;
 
@@ -172,12 +172,12 @@ class Link
 	/**
 	 * Définition ou récupération de la date de dernière modification du lien.
 	 */
-	public function getUpdatedAt(): ?DateTimeInterface
+	public function getUpdatedAt(): ?DateTimeImmutable
 	{
 		return $this->updatedAt;
 	}
 
-	public function setUpdatedAt(DateTimeInterface $updatedAt): static
+	public function setUpdatedAt(DateTimeImmutable $updatedAt): static
 	{
 		$this->updatedAt = $updatedAt;
 

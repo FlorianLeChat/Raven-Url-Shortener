@@ -2,7 +2,7 @@
 
 namespace App\Infrastructure\Fixture;
 
-use DateTime;
+use DateTimeImmutable;
 use App\Domain\Entity\Link;
 use App\Domain\Entity\ApiKey;
 use Doctrine\Persistence\ObjectManager;
@@ -22,7 +22,7 @@ final class ApiKeyFixture extends Fixture  implements DependentFixtureInterface
 		$apiKey = new ApiKey();
 		$apiKey->setKey('c7e8f5b19f2341b59d7b0a0dc33c3e847a9d4f6ae95e3c738f621a1296bcf207');
 		$apiKey->setLink($this->getReference("link1", Link::class));
-		$apiKey->setCreatedAt(new DateTime());
+		$apiKey->setCreatedAt(new DateTimeImmutable());
 
 		return $apiKey;
 	}
@@ -35,7 +35,7 @@ final class ApiKeyFixture extends Fixture  implements DependentFixtureInterface
 		$apiKey = new ApiKey();
 		$apiKey->setKey('f4a93c5d2be6e78a46b3fe190a5c8df1e209b6ce03d84224a80e6f1f5cb34b79');
 		$apiKey->setLink($this->getReference("link2", Link::class));
-		$apiKey->setCreatedAt(new DateTime());
+		$apiKey->setCreatedAt(new DateTimeImmutable());
 
 		return $apiKey;
 	}
@@ -48,7 +48,7 @@ final class ApiKeyFixture extends Fixture  implements DependentFixtureInterface
 		$apiKey = new ApiKey();
 		$apiKey->setKey('e1d2a8f7944b134de782a4b5f10a0c9b9d3b7f8ee649ce13a6fa2e3d294f3170');
 		$apiKey->setLink($this->getReference("link3", Link::class));
-		$apiKey->setCreatedAt(new DateTime());
+		$apiKey->setCreatedAt(new DateTimeImmutable());
 
 		return $apiKey;
 	}

@@ -2,7 +2,7 @@
 
 namespace App\Infrastructure\Fixture;
 
-use DateTime;
+use DateTimeImmutable;
 use App\Domain\Entity\Link;
 use App\Domain\Entity\Report;
 use Doctrine\Persistence\ObjectManager;
@@ -21,7 +21,7 @@ final class ReportFixture extends Fixture
 		$report->setEmail('johndoe@domain.com');
 		$report->setReason('Spam');
 		$report->setLink($link);
-		$report->setCreatedAt(new DateTime());
+		$report->setCreatedAt(new DateTimeImmutable());
 
 		$manager->persist($report);
 		$manager->flush();

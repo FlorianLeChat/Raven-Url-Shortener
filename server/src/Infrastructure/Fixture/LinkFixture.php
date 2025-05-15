@@ -2,7 +2,7 @@
 
 namespace App\Infrastructure\Fixture;
 
-use DateTime;
+use DateTimeImmutable;
 use App\Domain\Entity\Link;
 use Symfony\Component\Uid\Uuid;
 use Doctrine\Persistence\ObjectManager;
@@ -19,7 +19,7 @@ final class LinkFixture extends Fixture
 	private function createLinkWithoutIssue()
 	{
 		$uuid = new Uuid('0196cb17-b0f8-7e9c-b381-ef17aa05f3d9');
-		$currentDate = new DateTime();
+		$currentDate = new DateTimeImmutable();
 
 		$link = new Link();
 		$link->setId($uuid);
@@ -39,7 +39,7 @@ final class LinkFixture extends Fixture
 	private function createDisabledLink()
 	{
 		$uuid = new Uuid('0196cb17-b0f8-7e9c-b381-ef17aa05f3d0');
-		$currentDate = new DateTime();
+		$currentDate = new DateTimeImmutable();
 
 		$link = new Link();
 		$link->setId($uuid);
@@ -60,7 +60,7 @@ final class LinkFixture extends Fixture
 	private function createReportedLink()
 	{
 		$uuid = new Uuid('0196cb17-b0f8-7e9c-b381-ef17aa05f3d5');
-		$currentDate = new DateTime();
+		$currentDate = new DateTimeImmutable();
 
 		$link = new Link();
 		$link->setId($uuid);

@@ -2,7 +2,7 @@
 
 namespace App\Domain\Entity;
 
-use DateTimeInterface;
+use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
@@ -26,11 +26,11 @@ class ApiKey
 	#[ORM\Column(type: Types::STRING, length: 64)]
 	private ?string $key = null;
 
-	#[ORM\Column(type: Types::DATETIME_MUTABLE)]
-	private ?DateTimeInterface $createdAt = null;
+	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+	private ?DateTimeImmutable $createdAt = null;
 
-	#[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-	private ?DateTimeInterface $updatedAt = null;
+	#[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+	private ?DateTimeImmutable $updatedAt = null;
 
 	/**
 	 * Création des certaines propriétés de l'entité.
@@ -83,12 +83,12 @@ class ApiKey
 	/**
 	 * Définition ou récupération de la date de création de la clé API.
 	 */
-	public function getCreatedAt(): ?DateTimeInterface
+	public function getCreatedAt(): ?DateTimeImmutable
 	{
 		return $this->createdAt;
 	}
 
-	public function setCreatedAt(?DateTimeInterface $createdAt): static
+	public function setCreatedAt(?DateTimeImmutable $createdAt): static
 	{
 		$this->createdAt = $createdAt;
 
@@ -98,12 +98,12 @@ class ApiKey
 	/**
 	 * Définition ou récupération de la date de dernière modification de la clé API.
 	 */
-	public function getUpdatedAt(): ?DateTimeInterface
+	public function getUpdatedAt(): ?DateTimeImmutable
 	{
 		return $this->updatedAt;
 	}
 
-	public function setUpdatedAt(DateTimeInterface $updatedAt): static
+	public function setUpdatedAt(DateTimeImmutable $updatedAt): static
 	{
 		$this->updatedAt = $updatedAt;
 

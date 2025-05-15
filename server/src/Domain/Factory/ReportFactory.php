@@ -2,7 +2,7 @@
 
 namespace App\Domain\Factory;
 
-use DateTime;
+use DateTimeImmutable;
 use App\Domain\Entity\Link;
 use App\Domain\Entity\Report;
 
@@ -23,7 +23,7 @@ final class ReportFactory
 		$report->setLink($link);
 		$report->setEmail($email);
 		$report->setReason($reason);
-		$report->setCreatedAt(new DateTime());
+		$report->setCreatedAt(new DateTimeImmutable());
 
 		return $report;
 	}
