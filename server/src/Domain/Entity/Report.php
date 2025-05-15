@@ -48,6 +48,7 @@ class Report
 	public function __construct()
 	{
 		$this->id = Uuid::v7();
+		$this->createdAt = new DateTimeImmutable();
 	}
 
 	/**

@@ -15,6 +15,14 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 final class ApiKeyFixture extends Fixture  implements DependentFixtureInterface
 {
 	/**
+	 * Récupération d'une date d'expiration fictive pour les clés API.
+	 */
+	private function getExpiresAt(): DateTimeImmutable
+	{
+		return new DateTimeImmutable('2044-01-01 00:00:00');
+	}
+
+	/**
 	 * Création d'une clé API pour le lien raccourci sans problème.
 	 */
 	private function createApiKeyWithoutIssue()
@@ -22,7 +30,7 @@ final class ApiKeyFixture extends Fixture  implements DependentFixtureInterface
 		$apiKey = new ApiKey();
 		$apiKey->setKey('c7e8f5b19f2341b59d7b0a0dc33c3e847a9d4f6ae95e3c738f621a1296bcf207');
 		$apiKey->setLink($this->getReference("link1", Link::class));
-		$apiKey->setCreatedAt(new DateTimeImmutable());
+		$apiKey->setExpiresAt($this->getExpiresAt());
 
 		return $apiKey;
 	}
@@ -35,7 +43,7 @@ final class ApiKeyFixture extends Fixture  implements DependentFixtureInterface
 		$apiKey = new ApiKey();
 		$apiKey->setKey('f4a93c5d2be6e78a46b3fe190a5c8df1e209b6ce03d84224a80e6f1f5cb34b79');
 		$apiKey->setLink($this->getReference("link2", Link::class));
-		$apiKey->setCreatedAt(new DateTimeImmutable());
+		$apiKey->setExpiresAt($this->getExpiresAt());
 
 		return $apiKey;
 	}
@@ -48,7 +56,7 @@ final class ApiKeyFixture extends Fixture  implements DependentFixtureInterface
 		$apiKey = new ApiKey();
 		$apiKey->setKey('e1d2a8f7944b134de782a4b5f10a0c9b9d3b7f8ee649ce13a6fa2e3d294f3170');
 		$apiKey->setLink($this->getReference("link3", Link::class));
-		$apiKey->setCreatedAt(new DateTimeImmutable());
+		$apiKey->setExpiresAt($this->getExpiresAt());
 
 		return $apiKey;
 	}

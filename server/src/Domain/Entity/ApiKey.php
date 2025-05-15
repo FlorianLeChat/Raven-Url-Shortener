@@ -23,7 +23,7 @@ class ApiKey
 	#[ORM\JoinColumn(nullable: false)]
 	private ?Link $link = null;
 
-	#[ORM\Column(type: Types::STRING, length: 64)]
+	#[ORM\Column(type: Types::STRING, length: 44)]
 	private ?string $key = null;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
@@ -42,8 +42,7 @@ class ApiKey
 	public function __construct()
 	{
 		$this->id = Uuid::v7();
-		$this->key = bin2hex(openssl_random_pseudo_bytes(32));
-		$this->expiresAt = (new DateTimeImmutable())->modify('+3 months');
+		$this->createdAt = new DateTimeImmutable();
 	}
 
 	/**
