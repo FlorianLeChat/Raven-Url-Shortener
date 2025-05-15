@@ -32,6 +32,9 @@ class ApiKey
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
 	private ?DateTimeImmutable $updatedAt = null;
 
+	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+	private ?DateTimeImmutable $expiresAt = null;
+
 	/**
 	 * Création des certaines propriétés de l'entité.
 	 * @see https://github.com/symfony/symfony/discussions/53331
@@ -40,6 +43,7 @@ class ApiKey
 	{
 		$this->id = Uuid::v7();
 		$this->key = bin2hex(openssl_random_pseudo_bytes(32));
+		$this->expiresAt = (new DateTimeImmutable())->modify('+3 months');
 	}
 
 	/**
@@ -111,6 +115,21 @@ class ApiKey
 	}
 
 	/**
+	 * Définition ou récupération de la date d'expiration de la clé API.
+	 */
+	public function getExpiresAt(): ?DateTimeImmutable
+	{
+		return $this->expiresAt;
+	}
+
+	public function setExpiresAt(DateTimeImmutable $expiresAt): static
+	{
+		$this->expiresAt = $expiresAt;
+
+		return $this;
+	}
+
+	/**
 	 * Conversion de l'entité en tableau.
 	 * @return array<string, mixed>
 	 */
@@ -121,7 +140,8 @@ class ApiKey
 			'key' => $this->getKey(),
 			'link' => $this->getLink()?->toArray(),
 			'createdAt' => $this->getCreatedAt(),
-			'updatedAt' => $this->getUpdatedAt()
+			'updatedAt' => $this->getUpdatedAt(),
+			'expiresAt' => $this->getExpiresAt()
 		];
 	}
 }
