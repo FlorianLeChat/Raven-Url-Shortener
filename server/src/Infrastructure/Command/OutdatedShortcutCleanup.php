@@ -41,9 +41,9 @@ final class OutdatedShortcutCleanup extends Command
 	 */
 	private function getExpiredLinks(): array
 	{
-		$query = $this->repository->createQueryBuilder('u');
-		$query->where($query->expr()->lte('u.expiration', ':oneDayAgo'))
-			->orWhere($query->expr()->lte('u.visitedAt', ':oneYearAgo'))
+		$query = $this->repository->createQueryBuilder('link');
+		$query->where($query->expr()->lte('link.expiresAt', ':oneDayAgo'))
+			->orWhere($query->expr()->lte('link.visitedAt', ':oneYearAgo'))
 			->setParameter('oneDayAgo', new DateTime('-1 day'), Types::DATETIME_MUTABLE)
 			->setParameter('oneYearAgo', new DateTime('-1 year'), Types::DATETIME_MUTABLE);
 

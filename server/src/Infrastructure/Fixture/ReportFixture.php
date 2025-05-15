@@ -21,7 +21,6 @@ final class ReportFixture extends Fixture
 		$report->setEmail('johndoe@domain.com');
 		$report->setReason('Spam');
 		$report->setLink($link);
-		$report->setCreatedAt(new DateTimeImmutable());
 
 		$manager->persist($report);
 		$manager->flush();

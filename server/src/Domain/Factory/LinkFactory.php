@@ -24,17 +24,11 @@ final class LinkFactory
 	 */
 	public static function create(string $url, string $slug, ?string $expiration = null): Link
 	{
-		$url = trim($url);
-		$slug = trim($slug);
-		$expiration = self::parseExpiration($expiration);
-		$currentDate = new DateTimeImmutable();
-
 		$link = new Link();
-		$link->setUrl($url);
-		$link->setSlug($slug);
-		$link->setExpiration($expiration);
-		$link->setCreatedAt($currentDate);
-		$link->setVisitedAt($currentDate);
+		$link->setUrl(trim($url));
+		$link->setSlug(trim($slug));
+		$link->setVisitedAt(new DateTimeImmutable());
+		$link->setExpiresAt(self::parseExpiration($expiration));
 
 		return $link;
 	}
@@ -44,15 +38,10 @@ final class LinkFactory
 	 */
 	public static function update(Link $link, string $url, string $slug, ?string $expiration = null): Link
 	{
-		$url = trim($url);
-		$slug = trim($slug);
-		$expiration = self::parseExpiration($expiration);
-		$currentDate = new DateTimeImmutable();
-
-		$link->setUrl($url);
-		$link->setSlug($slug);
-		$link->setExpiration($expiration);
-		$link->setUpdatedAt($currentDate);
+		$link->setUrl(trim($url));
+		$link->setSlug(trim($slug));
+		$link->setUpdatedAt(new DateTimeImmutable());
+		$link->setExpiresAt(self::parseExpiration($expiration));
 
 		return $link;
 	}
@@ -67,7 +56,7 @@ final class LinkFactory
 			'url' => $link->setUrl(trim($value)),
 			'slug' => $link->setSlug(trim($value)),
 			'visitedAt' => $link->setVisitedAt(new DateTimeImmutable()),
-			'expiration' => $link->setExpiration(self::parseExpiration($value)),
+			'expiration' => $link->setExpiresAt(self::parseExpiration($value)),
 			default => throw new BadRequestHttpException() // C'est bancal mais cela ne devrait pas se produire.
 		};
 

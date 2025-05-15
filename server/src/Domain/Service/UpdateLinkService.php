@@ -83,7 +83,7 @@ final class UpdateLinkService extends BaseLinkService
 
 		$url = $request->request->getString('url', $this->link->getUrl() ?? '');
 		$slug = $request->request->getString('slug', $this->link->getSlug() ?? '');
-		$expiration = $request->request->getString('expiration', $this->link->getExpiration()?->format('Y-m-d H:i:s') ?? '');
+		$expiration = $request->request->getString('expiration', $this->link->getExpiresAt()?->format('Y-m-d H:i:s') ?? '');
 
 		if ($this->link->getSlug() !== $slug)
 		{
