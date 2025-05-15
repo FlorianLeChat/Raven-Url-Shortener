@@ -18,15 +18,11 @@ final class LinkFixture extends Fixture
 	 */
 	private function createLinkWithoutIssue()
 	{
-		$uuid = new Uuid('0196cb17-b0f8-7e9c-b381-ef17aa05f3d9');
-		$currentDate = new DateTimeImmutable();
-
 		$link = new Link();
-		$link->setId($uuid);
+		$link->setId(new Uuid('0196cb17-b0f8-7e9c-b381-ef17aa05f3d9'));
 		$link->setUrl('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
 		$link->setSlug('test1');
-		$link->setCreatedAt($currentDate);
-		$link->setVisitedAt($currentDate);
+		$link->setVisitedAt(new DateTimeImmutable());
 
 		$this->addReference("link1", $link);
 
@@ -38,16 +34,12 @@ final class LinkFixture extends Fixture
 	 */
 	private function createDisabledLink()
 	{
-		$uuid = new Uuid('0196cb17-b0f8-7e9c-b381-ef17aa05f3d0');
-		$currentDate = new DateTimeImmutable();
-
 		$link = new Link();
-		$link->setId($uuid);
+		$link->setId(new Uuid('0196cb17-b0f8-7e9c-b381-ef17aa05f3d0'));
 		$link->setUrl('https://www.youtube.com/watch?v=oo46pJIPZtk');
 		$link->setSlug('test2');
 		$link->setEnabled(false);
-		$link->setCreatedAt($currentDate);
-		$link->setVisitedAt($currentDate);
+		$link->setVisitedAt(new DateTimeImmutable());
 
 		$this->addReference("link2", $link);
 
@@ -59,15 +51,11 @@ final class LinkFixture extends Fixture
 	 */
 	private function createReportedLink()
 	{
-		$uuid = new Uuid('0196cb17-b0f8-7e9c-b381-ef17aa05f3d5');
-		$currentDate = new DateTimeImmutable();
-
 		$link = new Link();
-		$link->setId($uuid);
+		$link->setId(new Uuid('0196cb17-b0f8-7e9c-b381-ef17aa05f3d5'));
 		$link->setUrl('https://www.youtube.com/watch?v=VQRLujxTm3c');
 		$link->setSlug('test3');
-		$link->setCreatedAt($currentDate);
-		$link->setVisitedAt($currentDate);
+		$link->setVisitedAt(new DateTimeImmutable());
 
 		$this->addReference("link3", $link);
 

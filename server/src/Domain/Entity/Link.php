@@ -35,18 +35,18 @@ class Link
 	#[ORM\Column(type: Types::BOOLEAN)]
 	private ?bool $enabled = true;
 
-	#[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-	#[Assert\Range(min: 'tomorrow', max: '+1 year')]
-	private ?DateTimeImmutable $expiration = null;
-
-	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-	private ?DateTimeImmutable $visitedAt = null;
-
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
 	private ?DateTimeImmutable $createdAt = null;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
 	private ?DateTimeImmutable $updatedAt = null;
+
+	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+	private ?DateTimeImmutable $visitedAt = null;
+
+	#[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+	#[Assert\Range(min: 'tomorrow', max: '+1 year')]
+	private ?DateTimeImmutable $expiresAt = null;
 
 	/** @var Collection<int, Report> */
 	#[ORM\OneToMany(mappedBy: "link", targetEntity: Report::class, orphanRemoval: true, cascade: ["persist", "remove"])]
@@ -62,6 +62,7 @@ class Link
 	public function __construct()
 	{
 		$this->id = Uuid::v7();
+		$this->createdAt = new DateTimeImmutable();
 	}
 
 	/**
@@ -125,36 +126,6 @@ class Link
 	}
 
 	/**
-	 * Définition ou récupération de la date d'expiration du lien.
-	 */
-	public function getExpiration(): ?DateTimeImmutable
-	{
-		return $this->expiration;
-	}
-
-	public function setExpiration(?DateTimeImmutable $expiration): static
-	{
-		$this->expiration = $expiration;
-
-		return $this;
-	}
-
-	/**
-	 * Définition ou récupération de la date de dernière visite du lien.
-	 */
-	public function getVisitedAt(): ?DateTimeImmutable
-	{
-		return $this->visitedAt;
-	}
-
-	public function setVisitedAt(?DateTimeImmutable $visitedAt): static
-	{
-		$this->visitedAt = $visitedAt;
-
-		return $this;
-	}
-
-	/**
 	 * Définition ou récupération de la date de création du lien.
 	 */
 	public function getCreatedAt(): ?DateTimeImmutable
@@ -180,6 +151,36 @@ class Link
 	public function setUpdatedAt(DateTimeImmutable $updatedAt): static
 	{
 		$this->updatedAt = $updatedAt;
+
+		return $this;
+	}
+
+	/**
+	 * Définition ou récupération de la date de dernière visite du lien.
+	 */
+	public function getVisitedAt(): ?DateTimeImmutable
+	{
+		return $this->visitedAt;
+	}
+
+	public function setVisitedAt(?DateTimeImmutable $visitedAt): static
+	{
+		$this->visitedAt = $visitedAt;
+
+		return $this;
+	}
+
+	/**
+	 * Définition ou récupération de la date d'expiration du lien.
+	 */
+	public function getExpiresAt(): ?DateTimeImmutable
+	{
+		return $this->expiresAt;
+	}
+
+	public function setExpiresAt(?DateTimeImmutable $expiresAt): static
+	{
+		$this->expiresAt = $expiresAt;
 
 		return $this;
 	}
@@ -219,10 +220,10 @@ class Link
 			'url' => $this->getUrl(),
 			'slug' => $this->getSlug(),
 			'enabled' => $this->getEnabled(),
-			'expiration' => $this->getExpiration(),
-			'visitedAt' => $this->getVisitedAt(),
 			'createdAt' => $this->getCreatedAt(),
-			'updatedAt' => $this->getUpdatedAt()
+			'updatedAt' => $this->getUpdatedAt(),
+			'visitedAt' => $this->getVisitedAt(),
+			'expiresAt' => $this->getExpiresAt()
 		];
 	}
 }
