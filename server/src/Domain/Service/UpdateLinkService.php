@@ -55,15 +55,15 @@ final class UpdateLinkService extends BaseLinkService
 		$value = $payload['value'] ?? '';
 		$value = is_string($value) ? $value : '';
 
+		if ($field === 'slug')
+		{
+			$this->checkSlug($value);
+		}
+
 		$this->link = LinkFactory::patch($this->link, $field, $value);
 
 		$this->validateLink($this->link);
 		$this->checkUrl($this->link->getUrl());
-
-		if ($field === 'slug')
-		{
-			$this->checkSlug($this->link->getSlug());
-		}
 
 		$this->repository->save($this->link, true);
 
@@ -85,15 +85,15 @@ final class UpdateLinkService extends BaseLinkService
 		$slug = $request->request->getString('slug', $this->link->getSlug() ?? '');
 		$expiration = $request->request->getString('expiration', $this->link->getExpiration()?->format('Y-m-d H:i:s') ?? '');
 
+		if ($this->link->getSlug() !== $slug)
+		{
+			$this->checkSlug($slug);
+		}
+
 		$this->link = LinkFactory::update($this->link, $url, $slug, $expiration);
 
 		$this->validateLink($this->link);
 		$this->checkUrl($this->link->getUrl());
-
-		if ($this->link->getSlug() !== $slug)
-		{
-			$this->checkSlug($this->link->getSlug());
-		}
 
 		$this->repository->save($this->link, true);
 
