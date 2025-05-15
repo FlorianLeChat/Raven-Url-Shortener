@@ -2,7 +2,7 @@
 
 namespace App\Domain\Factory;
 
-use DateTime;
+use DateTimeImmutable;
 use App\Domain\Entity\Link;
 use App\Domain\Entity\ApiKey;
 
@@ -18,7 +18,7 @@ final class ApiKeyFactory
 	{
 		$apiKey = new ApiKey();
 		$apiKey->setLink($link);
-		$apiKey->setCreatedAt(new DateTime());
+		$apiKey->setCreatedAt(new DateTimeImmutable());
 
 		return $apiKey;
 	}

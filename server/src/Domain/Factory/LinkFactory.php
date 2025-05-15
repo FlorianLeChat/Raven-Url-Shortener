@@ -2,7 +2,7 @@
 
 namespace App\Domain\Factory;
 
-use DateTime;
+use DateTimeImmutable;
 use App\Domain\Entity\Link;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
@@ -14,9 +14,9 @@ final class LinkFactory
 	/**
 	 * Récupération (si possible) d'une date d'expiration.
 	 */
-	private static function parseExpiration(?string $expiration = null): ?DateTime
+	private static function parseExpiration(?string $expiration = null): ?DateTimeImmutable
 	{
-		return !empty($expiration) ? new DateTime($expiration) : null;
+		return !empty($expiration) ? new DateTimeImmutable($expiration) : null;
 	}
 
 	/**
@@ -27,7 +27,7 @@ final class LinkFactory
 		$url = trim($url);
 		$slug = trim($slug);
 		$expiration = self::parseExpiration($expiration);
-		$currentDate = new DateTime();
+		$currentDate = new DateTimeImmutable();
 
 		$link = new Link();
 		$link->setUrl($url);
@@ -47,7 +47,7 @@ final class LinkFactory
 		$url = trim($url);
 		$slug = trim($slug);
 		$expiration = self::parseExpiration($expiration);
-		$currentDate = new DateTime();
+		$currentDate = new DateTimeImmutable();
 
 		$link->setUrl($url);
 		$link->setSlug($slug);
@@ -66,7 +66,7 @@ final class LinkFactory
 		{
 			'url' => $link->setUrl(trim($value)),
 			'slug' => $link->setSlug(trim($value)),
-			'visitedAt' => $link->setVisitedAt(new DateTime()),
+			'visitedAt' => $link->setVisitedAt(new DateTimeImmutable()),
 			'expiration' => $link->setExpiration(self::parseExpiration($value)),
 			default => throw new BadRequestHttpException() // C'est bancal mais cela ne devrait pas se produire.
 		};
