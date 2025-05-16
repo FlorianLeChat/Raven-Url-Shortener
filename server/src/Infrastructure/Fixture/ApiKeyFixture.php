@@ -12,7 +12,7 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 /**
  * Données de test pour les clés API de gestion des liens raccourcis.
  */
-final class ApiKeyFixture extends Fixture  implements DependentFixtureInterface
+final class ApiKeyFixture extends Fixture implements DependentFixtureInterface
 {
 	/**
 	 * Récupération d'une date d'expiration fictive pour les clés API.

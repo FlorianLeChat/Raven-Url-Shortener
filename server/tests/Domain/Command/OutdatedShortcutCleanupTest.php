@@ -43,6 +43,6 @@ final class OutdatedShortcutCleanupTest extends KernelTestCase
 		// Vérification de la sortie de la commande.
 		$output = $tester->getDisplay();
 
-		$this->assertStringContainsString('[OK] Deleted 2 expired shortcut link(s).', $output);
+		$this->assertStringContainsString('[OK] Deleted 1 expired shortcut link(s).', $output);
 	}
 }

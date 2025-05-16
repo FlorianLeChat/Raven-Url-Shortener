@@ -2,7 +2,6 @@
 
 namespace App\Domain\Factory;
 
-use DateTimeImmutable;
 use App\Domain\Entity\Link;
 use App\Domain\Entity\Report;
 
