@@ -19,7 +19,7 @@ final class ApiKeyFixture extends Fixture  implements DependentFixtureInterface
 	 */
 	private function getExpiresAt(): DateTimeImmutable
 	{
-		return new DateTimeImmutable('2044-01-01 00:00:00');
+		return new DateTimeImmutable('2014-01-01 00:00:00');
 	}
 
 	/**
