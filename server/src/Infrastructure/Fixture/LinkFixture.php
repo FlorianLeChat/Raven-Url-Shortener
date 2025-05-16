@@ -23,7 +23,6 @@ final class LinkFixture extends Fixture
 		$link->setUrl('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
 		$link->setSlug('test1');
 		$link->setVisitedAt(new DateTimeImmutable());
-		$link->setExpiresAt(new DateTimeImmutable('2014-01-01 00:00:00'));
 
 		$this->addReference("link1", $link);
 

@@ -56,9 +56,11 @@ final class LinkFactory
 			'url' => $link->setUrl(trim($value)),
 			'slug' => $link->setSlug(trim($value)),
 			'visitedAt' => $link->setVisitedAt(new DateTimeImmutable()),
-			'expiration' => $link->setExpiresAt(self::parseExpiration($value)),
+			'expiresAt' => $link->setExpiresAt(self::parseExpiration($value)),
 			default => throw new BadRequestHttpException() // C'est bancal mais cela ne devrait pas se produire.
 		};
+
+		$link->setUpdatedAt(new DateTimeImmutable());
 
 		return $link;
 	}
