@@ -19,7 +19,7 @@ class ApiKey
 	#[ORM\Column(type: UuidType::NAME, unique: true)]
 	private ?Uuid $id = null;
 
-	#[ORM\ManyToOne]
+	#[ORM\OneToOne(inversedBy: 'apiKey')]
 	#[ORM\JoinColumn(nullable: false)]
 	private ?Link $link = null;
 

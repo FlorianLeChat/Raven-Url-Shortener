@@ -20,7 +20,7 @@ class Report
 	#[ORM\Column(type: UuidType::NAME, unique: true)]
 	private ?Uuid $id = null;
 
-	#[ORM\ManyToOne]
+	#[ORM\ManyToOne(inversedBy: 'reports')]
 	#[ORM\JoinColumn(nullable: false)]
 	#[Assert\Type(type: Link::class)]
 	private ?Link $link = null;
