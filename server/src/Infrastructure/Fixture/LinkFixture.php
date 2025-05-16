@@ -23,6 +23,7 @@ final class LinkFixture extends Fixture
 		$link->setUrl('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
 		$link->setSlug('test1');
 		$link->setVisitedAt(new DateTimeImmutable());
+		$link->setExpiresAt(new DateTimeImmutable('2014-01-01 00:00:00'));
 
 		$this->addReference("link1", $link);
 
@@ -39,7 +40,7 @@ final class LinkFixture extends Fixture
 		$link->setUrl('https://www.youtube.com/watch?v=oo46pJIPZtk');
 		$link->setSlug('test2');
 		$link->setEnabled(false);
-		$link->setVisitedAt(new DateTimeImmutable());
+		$link->setVisitedAt(new DateTimeImmutable('2014-01-01 00:00:00'));
 
 		$this->addReference("link2", $link);
 
