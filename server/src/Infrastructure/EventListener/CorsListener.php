@@ -15,6 +15,12 @@ final class CorsListener
 	public function __invoke(ResponseEvent $event): void
 	{
 		$response = $event->getResponse();
+
+		if ($event->getRequest()->getMethod() === 'OPTIONS') {
+			// Prise en charge des requêtes préliminaires CORS.
+			$response->setStatusCode(200);
+		}
+
 		$response->headers->set('Access-Control-Allow-Origin', '*');
 		$response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
 		$response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
