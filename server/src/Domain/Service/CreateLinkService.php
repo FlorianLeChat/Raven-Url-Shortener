@@ -22,9 +22,11 @@ final class CreateLinkService extends BaseLinkService
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
-		$url = $request->request->getString('url');
-		$slug = $request->request->getString('slug', $this->createRandomSlug());
-		$expiration = $request->request->getString('expiration');
+		$payload = $request->getPayload();
+
+		$url = $payload->getString('url');
+		$slug = $payload->getString('slug', $this->createRandomSlug());
+		$expiration = $payload->getString('expiration');
 
 		$link = LinkFactory::create($url, $slug, $expiration);
 		$apiKey = ApiKeyFactory::create($link);

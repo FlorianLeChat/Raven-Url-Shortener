@@ -37,7 +37,7 @@ final class CheckSlugService
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
-		$slug = $request->request->getString('slug');
+		$slug = $request->getPayload()->getString('slug');
 		$result = $this->repository->findOneBy(['slug' => $slug]);
 
 		return empty($result);

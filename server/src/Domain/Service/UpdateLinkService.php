@@ -44,16 +44,9 @@ final class UpdateLinkService extends BaseLinkService
 		$this->checkEnabled($this->link);
 		$this->checkForReports($this->link);
 
-		// Pour le moment, les requêtes PATCH ne sont pas gérées par Symfony.
-		// https://github.com/symfony/symfony/issues/59331
-		/** @var array<string, mixed> $payload */
-		$payload = json_decode($request->getContent(), true);
-
-		$field = $payload['field'] ?? '';
-		$field = is_string($field) ? $field : '';
-
-		$value = $payload['value'] ?? '';
-		$value = is_string($value) ? $value : '';
+		$payload = $request->getPayload();
+		$field = $payload->getString('url');
+		$value = $payload->getString('value');
 
 		if ($field === 'slug')
 		{

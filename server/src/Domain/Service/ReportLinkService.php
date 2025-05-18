@@ -84,8 +84,10 @@ final class ReportLinkService
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
-		$email = $request->request->getString('email');
-		$reason = $request->request->getString('reason');
+		$payload = $request->getPayload();
+
+		$email = $payload->getString('email');
+		$reason = $payload->getString('reason');
 
 		$report = ReportFactory::create($this->link, $reason, $email);
 
