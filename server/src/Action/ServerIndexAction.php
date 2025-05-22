@@ -21,6 +21,7 @@ const ASCII_INDEX = <<<EOT
 
 Server is running. Response time: %s ms.
 Ready to handle requests.
+API documentation available at https://url.florian-dev.fr/api/docs.
 EOT;
 
 /**
