@@ -3,6 +3,7 @@
 namespace App\Domain\Entity;
 
 use DateTimeImmutable;
+use OpenApi\Attributes as OA;
 use Doctrine\DBAL\Types\Types;
 use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
@@ -19,40 +20,50 @@ class Link
 {
 	#[ORM\Id]
 	#[ORM\Column(type: UuidType::NAME, unique: true)]
+	#[OA\Property(title: 'The unique identifier of the link')]
 	private ?Uuid $id = null;
 
 	#[ORM\Column(type: Types::TEXT)]
+	#[OA\Property(title: 'The shortened URL')]
 	#[Assert\Url(requireTld: true)]
 	#[Assert\NotNull]
 	#[Assert\NotBlank]
 	private ?string $url = null;
 
-	#[ORM\Column(type: Types::STRING, length: 50)]
+	#[ORM\Column(type: Types::STRING, length: 50, unique: true)]
+	#[OA\Property(title: 'The slug of the link')]
 	#[Assert\Regex(pattern: '/^[a-zA-Z0-9-]+$/')]
 	#[Assert\Length(min: 1, max: 50)]
 	private ?string $slug = null;
 
 	#[ORM\Column(type: Types::BOOLEAN)]
+	#[OA\Property(title: 'The activation state of the link')]
 	private ?bool $enabled = true;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+	#[OA\Property(title: 'The creation date of the link')]
 	private ?DateTimeImmutable $createdAt = null;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+	#[OA\Property(title: 'The last update date of the link')]
 	private ?DateTimeImmutable $updatedAt = null;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+	#[OA\Property(title: 'The last visit date of the link')]
 	private ?DateTimeImmutable $visitedAt = null;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+	#[OA\Property(title: 'The expiration date of the link')]
 	#[Assert\Range(min: 'tomorrow', max: '+1 year')]
 	private ?DateTimeImmutable $expiresAt = null;
 
 	/** @var Collection<int, Report> */
 	#[ORM\OneToMany(mappedBy: "link", targetEntity: Report::class, orphanRemoval: true, cascade: ["persist", "remove"])]
+	#[OA\Property(title: 'The user reports of the link')]
 	private Collection $reports;
 
 	#[ORM\OneToOne(mappedBy: "link", targetEntity: ApiKey::class, orphanRemoval: true, cascade: ["persist", "remove"])]
+	#[OA\Property(title: 'The API key associated with the link')]
 	private ApiKey $apiKey;
 
 	/**

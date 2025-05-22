@@ -3,6 +3,7 @@
 namespace App\Domain\Entity;
 
 use DateTimeImmutable;
+use OpenApi\Attributes as OA;
 use Doctrine\DBAL\Types\Types;
 use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
@@ -17,22 +18,28 @@ class ApiKey
 {
 	#[ORM\Id]
 	#[ORM\Column(type: UuidType::NAME, unique: true)]
+	#[OA\Property(title: 'The unique identifier of the API key')]
 	private ?Uuid $id = null;
 
 	#[ORM\OneToOne(inversedBy: 'apiKey')]
 	#[ORM\JoinColumn(nullable: false)]
+	#[OA\Property(title: 'The link associated with the API key')]
 	private ?Link $link = null;
 
 	#[ORM\Column(type: Types::STRING, length: 44)]
+	#[OA\Property(title: 'The API key')]
 	private ?string $key = null;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+	#[OA\Property(title: 'The creation date of the API key')]
 	private ?DateTimeImmutable $createdAt = null;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+	#[OA\Property(title: 'The last update date of the API key')]
 	private ?DateTimeImmutable $updatedAt = null;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+	#[OA\Property(title: 'The expiration date of the API key')]
 	private ?DateTimeImmutable $expiresAt = null;
 
 	/**

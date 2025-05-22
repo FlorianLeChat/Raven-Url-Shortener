@@ -3,6 +3,7 @@
 namespace App\Domain\Entity;
 
 use DateTimeImmutable;
+use OpenApi\Attributes as OA;
 use Doctrine\DBAL\Types\Types;
 use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
@@ -18,27 +19,33 @@ class Report
 {
 	#[ORM\Id]
 	#[ORM\Column(type: UuidType::NAME, unique: true)]
+	#[OA\Property(title: 'The unique identifier of the report')]
 	private ?Uuid $id = null;
 
 	#[ORM\ManyToOne(inversedBy: 'reports')]
 	#[ORM\JoinColumn(nullable: false)]
 	#[Assert\Type(type: Link::class)]
+	#[OA\Property(title: 'The link associated with the report')]
 	private ?Link $link = null;
 
 	#[ORM\Column(type: Types::STRING, length: 500)]
 	#[Assert\Length(min: 10, max: 500)]
+	#[OA\Property(title: 'The reason given for the report')]
 	private ?string $reason = null;
 
 	#[ORM\Column(type: Types::STRING, length: 100, nullable: true)]
 	#[Assert\Email]
 	#[Assert\Length(min: 10, max: 100)]
 	#[Assert\NoSuspiciousCharacters]
+	#[OA\Property(title: 'The email address of the reporter')]
 	private ?string $email = null;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+	#[OA\Property(title: 'The creation date of the report')]
 	private ?DateTimeImmutable $createdAt = null;
 
 	#[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+	#[OA\Property(title: 'The last update date of the report')]
 	private ?DateTimeImmutable $updatedAt = null;
 
 	/**
