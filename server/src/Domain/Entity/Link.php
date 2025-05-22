@@ -213,17 +213,31 @@ class Link
 	 * Conversion de l'entité en tableau.
 	 * @return array<string, mixed>
 	 */
-	public function toArray(): array
+	public function toArray(bool $firstTime = false)
 	{
-		return [
+		$data = [
 			'id' => $this->getId(),
 			'url' => $this->getUrl(),
 			'slug' => $this->getSlug(),
 			'enabled' => $this->getEnabled(),
 			'createdAt' => $this->getCreatedAt(),
-			'updatedAt' => $this->getUpdatedAt(),
-			'visitedAt' => $this->getVisitedAt(),
 			'expiresAt' => $this->getExpiresAt()
 		];
+
+		if ($firstTime)
+		{
+			// La clé API est affichée uniquement lors de la première création du lien
+			// et non lors de la récupération des informations du lien.
+			$data['apiKey'] = $this->getApiKey()->getKey();
+
+			return $data;
+		}
+
+		// Lorsqu'on demande les informations d'un lien après sa création, on peut
+		//  supposer qu'il peut avoir été mis à jour ou visité.
+		$data['updatedAt'] = $this->getUpdatedAt();
+		$data['createdAt'] = $this->getCreatedAt();
+
+		return $data;
 	}
 }

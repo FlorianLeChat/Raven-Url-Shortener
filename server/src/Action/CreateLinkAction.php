@@ -81,6 +81,6 @@ final class CreateLinkAction extends AbstractController
 
 		$link = $service->createLink($request);
 
-		return new JsonResponse($link->toArray(), JsonResponse::HTTP_CREATED);
+		return new JsonResponse($link->toArray(true), JsonResponse::HTTP_CREATED);
 	}
 }
