@@ -156,7 +156,7 @@ abstract class BaseLinkService
 		if (empty($apiKey))
 		{
 			$errors = [];
-			$errors['slug'][] = [
+			$errors['apiKey'][] = [
 				'code' => 'MISSING_API_KEY_ERROR',
 				'message' => $this->translator->trans('api_key.missing')
 			];

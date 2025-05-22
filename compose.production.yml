@@ -53,6 +53,21 @@ services:
         ports:
             - "8080:80"
 
+    # https://hub.docker.com/r/swaggerapi/swagger-ui
+    swagger:
+        image: swaggerapi/swagger-ui:latest
+        depends_on:
+            php:
+                condition: service_healthy
+        environment:
+            URL: https://url.florian-dev.fr/api/swagger.json
+        healthcheck:
+            test: wget -O - http://localhost:8081
+            retries: 3
+            timeout: 5s
+        ports:
+            - "8081:8080"
+
     # https://hub.docker.com/_/varnish
     varnish:
         image: varnish:alpine
@@ -89,21 +104,6 @@ services:
             dockerfile: ./docker/scripts/Dockerfile
         expose:
             - "3000"
-
-    # https://hub.docker.com/r/swaggerapi/swagger-ui
-    swagger:
-        image: swaggerapi/swagger-ui:latest
-        depends_on:
-            php:
-                condition: service_healthy
-        environment:
-            URL: https://url.florian-dev.fr/api/swagger.json
-        healthcheck:
-            test: wget -O - http://localhost:8081
-            retries: 3
-            timeout: 5s
-        ports:
-            - "8081:8080"
 
     # https://github.com/FlorianLeChat/Raven-Url-Shortener
     php:
