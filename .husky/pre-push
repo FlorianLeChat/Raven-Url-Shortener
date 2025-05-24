@@ -1,2 +1,10 @@
 cd client
+cspell locales/** --no-summary --no-progress --no-must-find-files
 npm.cmd run build
+cd ../server
+cspell locales/** --no-summary --no-progress --no-must-find-files
+rm -f var/data.db
+touch var/data.db
+php bin/console --env=test doctrine:schema:create --no-interaction
+php bin/console --env=test doctrine:fixtures:load --no-interaction
+vendor/bin/phpunit
