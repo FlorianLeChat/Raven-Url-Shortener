@@ -7,14 +7,15 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 use Symfony\Config\DoctrineConfig;
 
 /**
- * Paramétrage pour le composant Lock de Symfony.
- * @see https://symfony.com/doc/current/components/lock.html
+ * Paramétrage pour l'intégration Doctrine avec Symfony.
+ * @see https://symfony.com/doc/current/doctrine.html
  */
 return static function (DoctrineConfig $config, string $env): void
 {
 	$dbalConfig = $config->dbal()->connection('default')
 		->url('%env(DATABASE_TYPE)%://%env(DATABASE_USERNAME)%:%env(DATABASE_PASSWORD)%@%env(DATABASE_HOST)%:%env(DATABASE_PORT)%/%env(DATABASE_NAME)%')
 		->useSavepoints(true)
+		->serverVersion('%env(DATABASE_VERSION)%')
 		->profilingCollectBacktrace('%kernel.debug%');
 
 	if ($env === 'test')
