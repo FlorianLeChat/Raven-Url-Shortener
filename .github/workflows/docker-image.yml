@@ -52,7 +52,7 @@ jobs:
       - name: Build Front-end Docker Image and push
         uses: docker/build-push-action@v6
         with:
-          file: docker/scripts/Dockerfile
+          file: ./client/docker/scripts/Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.client-meta.outputs.tags }}
           labels: ${{ steps.client-meta.outputs.labels }}
@@ -60,7 +60,7 @@ jobs:
       - name: Build Back-end Docker Image and push
         uses: docker/build-push-action@v6
         with:
-          file: docker/scripts/Dockerfile
+          file: ./client/docker/scripts/Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.server-meta.outputs.tags }}
           labels: ${{ steps.server-meta.outputs.labels }}
