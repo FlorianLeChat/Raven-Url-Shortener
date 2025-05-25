@@ -21,15 +21,15 @@
         "ext-iconv": "*",
 
         "doctrine/orm": "3.3.*",
-        "doctrine/dbal": "3.*",
+        "doctrine/dbal": "4.*",
         "doctrine/annotations": "2.0.*",
-        "doctrine/doctrine-bundle": "2.13.*",
-        "doctrine/doctrine-migrations-bundle": "3.3.*",
+        "doctrine/doctrine-bundle": "2.14.*",
+        "doctrine/doctrine-migrations-bundle": "3.4.*",
 
-        "nelmio/api-doc-bundle": "5.0.*",
+        "nelmio/api-doc-bundle": "5.3.*",
 
         "symfony/uid": "7.2.*",
-        "symfony/flex": "2.4.*",
+        "symfony/flex": "2.7.*",
         "symfony/lock": "7.2.*",
         "symfony/mailer": "7.2.*",
         "symfony/dotenv": "7.2.*",
@@ -94,7 +94,7 @@
         "symfony/browser-kit": "7.2.*",
         "symfony/debug-bundle": "7.2.*",
 
-        "squizlabs/php_codesniffer": "3.11.*",
+        "squizlabs/php_codesniffer": "3.13.*",
         "doctrine/doctrine-fixtures-bundle": "4.1.*"
     }
 }
