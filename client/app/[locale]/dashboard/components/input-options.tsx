@@ -66,8 +66,8 @@ export default function InputOptions()
 					<p className="text-default-500">
 						{messages.rich( "expiration_description", {
 							strong: ( chunks ) => <strong>{chunks}</strong>,
-							offset: serverData?.offset,
-							timezone: serverData?.timezone
+							offset: String( serverData?.offset ),
+							timezone: String( serverData?.timezone )
 						} )}
 					</p>
 				)}

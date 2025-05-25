@@ -31,9 +31,9 @@ export default function SummaryContainer( {
 
 	// Message contenant les dates de création et de mise à jour.
 	const dateMessage = messages( "hint", {
-		isUpdated: !!updateDate,
-		createDate,
-		updateDate
+		isUpdated: String( !!updateDate ),
+		createDate: String( createDate ),
+		updateDate: String( updateDate )
 	} );
 
 	// Affichage du rendu HTML du composant.
