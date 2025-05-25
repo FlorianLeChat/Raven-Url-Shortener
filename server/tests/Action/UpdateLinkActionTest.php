@@ -80,7 +80,7 @@ final class UpdateLinkActionTest extends WebTestCase
 	public function testPatchDisabledLink()
 	{
 		$this->client->request('PATCH', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d0', server: [
-			'HTTP_Authorization' => 'Bearer f4a93c5d2be6e78a46b3fe190a5c8df1e209b6ce03d84224a80e6f1f5cb34b79'
+			'HTTP_Authorization' => 'Bearer i8tyoJjI3PUw+cqLdLCGipV6IPodANondBSqBkPzhfo='
 		]);
 
 		$this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
@@ -97,7 +97,7 @@ final class UpdateLinkActionTest extends WebTestCase
 	public function testPatchReportedLink()
 	{
 		$this->client->request('PATCH', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d5', server: [
-			'HTTP_Authorization' => 'Bearer e1d2a8f7944b134de782a4b5f10a0c9b9d3b7f8ee649ce13a6fa2e3d294f3170'
+			'HTTP_Authorization' => 'Bearer wJY8ad9DVlKD+Sn4/ZjBALwI+qcFebozUFZnb2EFfBI='
 		]);
 
 		$this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
@@ -117,7 +117,7 @@ final class UpdateLinkActionTest extends WebTestCase
 			'field' => 'url',
 			'value' => 'invalid_url'
 		]), server: [
-			'HTTP_Authorization' => 'Bearer c7e8f5b19f2341b59d7b0a0dc33c3e847a9d4f6ae95e3c738f621a1296bcf207'
+			'HTTP_Authorization' => 'Bearer 7hLtoMvpr3NDyd+l3FFeaZD68HGTffHniUUQPjwGy28='
 		]);
 
 		$this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
@@ -138,7 +138,7 @@ final class UpdateLinkActionTest extends WebTestCase
 			'field' => 'slug',
 			'value' => 'test1'
 		]), server: [
-			'HTTP_Authorization' => 'Bearer c7e8f5b19f2341b59d7b0a0dc33c3e847a9d4f6ae95e3c738f621a1296bcf207'
+			'HTTP_Authorization' => 'Bearer 7hLtoMvpr3NDyd+l3FFeaZD68HGTffHniUUQPjwGy28='
 		]);
 
 		$this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
@@ -159,10 +159,10 @@ final class UpdateLinkActionTest extends WebTestCase
 			'field' => 'url',
 			'value' => 'https://www.example.com'
 		]), server: [
-			'HTTP_Authorization' => 'Bearer c7e8f5b19f2341b59d7b0a0dc33c3e847a9d4f6ae95e3c738f621a1296bcf207'
+			'HTTP_Authorization' => 'Bearer 7hLtoMvpr3NDyd+l3FFeaZD68HGTffHniUUQPjwGy28='
 		]);
 
-		$this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
+		$this->assertResponseStatusCodeSame(Response::HTTP_OK);
 		$this->assertJson($this->client->getResponse()->getContent());
 	}
 
@@ -205,7 +205,7 @@ final class UpdateLinkActionTest extends WebTestCase
 	public function testPutDisabledLink()
 	{
 		$this->client->request('PUT', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d0', server: [
-			'HTTP_Authorization' => 'Bearer f4a93c5d2be6e78a46b3fe190a5c8df1e209b6ce03d84224a80e6f1f5cb34b79'
+			'HTTP_Authorization' => 'Bearer i8tyoJjI3PUw+cqLdLCGipV6IPodANondBSqBkPzhfo='
 		]);
 
 		$this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
@@ -222,7 +222,7 @@ final class UpdateLinkActionTest extends WebTestCase
 	public function testPutReportedLink()
 	{
 		$this->client->request('PUT', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d5', server: [
-			'HTTP_Authorization' => 'Bearer e1d2a8f7944b134de782a4b5f10a0c9b9d3b7f8ee649ce13a6fa2e3d294f3170'
+			'HTTP_Authorization' => 'Bearer wJY8ad9DVlKD+Sn4/ZjBALwI+qcFebozUFZnb2EFfBI='
 		]);
 
 		$this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
@@ -241,7 +241,7 @@ final class UpdateLinkActionTest extends WebTestCase
 		$this->client->request('PUT', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d9', [
 			'url' => 'invalid_url'
 		], server: [
-			'HTTP_Authorization' => 'Bearer c7e8f5b19f2341b59d7b0a0dc33c3e847a9d4f6ae95e3c738f621a1296bcf207'
+			'HTTP_Authorization' => 'Bearer 7hLtoMvpr3NDyd+l3FFeaZD68HGTffHniUUQPjwGy28='
 		]);
 
 		$this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
@@ -261,7 +261,7 @@ final class UpdateLinkActionTest extends WebTestCase
 		$this->client->request('PUT', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d9', [
 			'slug' => 'test2'
 		], server: [
-			'HTTP_Authorization' => 'Bearer c7e8f5b19f2341b59d7b0a0dc33c3e847a9d4f6ae95e3c738f621a1296bcf207'
+			'HTTP_Authorization' => 'Bearer 7hLtoMvpr3NDyd+l3FFeaZD68HGTffHniUUQPjwGy28='
 		]);
 
 		$this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
@@ -281,10 +281,10 @@ final class UpdateLinkActionTest extends WebTestCase
 		$this->client->request('PUT', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d9', [
 			'url' => 'https://www.example.com'
 		], server: [
-			'HTTP_Authorization' => 'Bearer c7e8f5b19f2341b59d7b0a0dc33c3e847a9d4f6ae95e3c738f621a1296bcf207'
+			'HTTP_Authorization' => 'Bearer 7hLtoMvpr3NDyd+l3FFeaZD68HGTffHniUUQPjwGy28='
 		]);
 
-		$this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
+		$this->assertResponseStatusCodeSame(Response::HTTP_OK);
 		$this->assertJson($this->client->getResponse()->getContent());
 	}
 }

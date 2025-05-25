@@ -28,7 +28,7 @@ final class ApiKeyFixture extends Fixture implements DependentFixtureInterface
 	private function createApiKeyWithoutIssue()
 	{
 		$apiKey = new ApiKey();
-		$apiKey->setKey('c7e8f5b19f2341b59d7b0a0dc33c3e847a9d4f6ae95e3c738f621a1296bcf207');
+		$apiKey->setKey('7hLtoMvpr3NDyd+l3FFeaZD68HGTffHniUUQPjwGy28=');
 		$apiKey->setLink($this->getReference("link1", Link::class));
 		$apiKey->setExpiresAt($this->getExpiresAt());
 
@@ -41,7 +41,7 @@ final class ApiKeyFixture extends Fixture implements DependentFixtureInterface
 	private function createDisabledApiKey()
 	{
 		$apiKey = new ApiKey();
-		$apiKey->setKey('f4a93c5d2be6e78a46b3fe190a5c8df1e209b6ce03d84224a80e6f1f5cb34b79');
+		$apiKey->setKey('i8tyoJjI3PUw+cqLdLCGipV6IPodANondBSqBkPzhfo=');
 		$apiKey->setLink($this->getReference("link2", Link::class));
 		$apiKey->setExpiresAt($this->getExpiresAt());
 
@@ -54,7 +54,7 @@ final class ApiKeyFixture extends Fixture implements DependentFixtureInterface
 	private function createReportedApiKey()
 	{
 		$apiKey = new ApiKey();
-		$apiKey->setKey('e1d2a8f7944b134de782a4b5f10a0c9b9d3b7f8ee649ce13a6fa2e3d294f3170');
+		$apiKey->setKey('wJY8ad9DVlKD+Sn4/ZjBALwI+qcFebozUFZnb2EFfBI=');
 		$apiKey->setLink($this->getReference("link3", Link::class));
 		$apiKey->setExpiresAt($this->getExpiresAt());
 
