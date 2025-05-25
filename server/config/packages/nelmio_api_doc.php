@@ -37,73 +37,13 @@ return static function (NelmioApiDocConfig $nelmioApiDoc, string $env)
 				'name' => 'Authorization',
 			],
 		],
-		// Schémas de réponse HTTP.
-		'schemas' => [
-			'HttpBadRequest' => [
-				'type' => 'object',
-				'properties' => [
-					'code' => ['type' => 'integer', 'example' => 400],
-					'message' => ['type' => 'string', 'example' => 'An error occurred during data validation.'],
-					'errors' => [
-						'type' => 'object',
-						'example' => [
-							'url' => [
-								[
-									'code' => 'INVALID_URL',
-									'message' => 'This value is not a valid URL.',
-								]
-							]
-						],
-						'additionalProperties' => [
-							'type' => 'array',
-							'items' => [
-								'type' => 'object',
-								'properties' => [
-									'code' => ['type' => 'string'],
-									'message' => ['type' => 'string'],
-								],
-							],
-						],
-					],
-				],
-			],
-			'HttpForbidden' => [
-				'type' => 'object',
-				'properties' => [
-					'code' => ['type' => 'integer', 'example' => 403],
-					'message' => ['type' => 'string', 'example' => 'The provided API key is invalid. Please check it and try again.'],
-				],
-			],
-			'HttpNotFound' => [
-				'type' => 'object',
-				'properties' => [
-					'code' => ['type' => 'integer', 'example' => 404],
-					'message' => ['type' => 'string', 'example' => 'The requested resource was not found.'],
-				],
-			],
-			'HttpConflict' => [
-				'type' => 'object',
-				'properties' => [
-					'code' => ['type' => 'integer', 'example' => 409],
-					'message' => ['type' => 'string', 'example' => 'You have already reported this shortcut link, you cannot report it again.'],
-				],
-			],
-			'HttpTooManyRequests' => [
-				'type' => 'object',
-				'properties' => [
-					'code' => ['type' => 'integer', 'example' => 429],
-					'message' => ['type' => 'string', 'example' => 'Too many requests made for the current IP address.'],
-				],
-			],
-			'HttpInternalServerError' => [
-				'type' => 'object',
-				'properties' => [
-					'code' => ['type' => 'integer', 'example' => 500],
-					'message' => ['type' => 'string', 'example' => 'There was an error while processing your request.'],
-				],
-			],
-		],
+
+		// Schémas de données.
+		'schemas' => require_once __DIR__ . '/../openapi/schemas/bootstrap.php'
 	]);
+
+	// Définition des chemins de l'API.
+	$nelmioApiDoc->documentation('paths', require_once __DIR__ . '/../openapi/paths/bootstrap.php');
 
 	// Serveurs disponibles
     $documentation->documentation('servers', [
@@ -123,6 +63,14 @@ return static function (NelmioApiDocConfig $nelmioApiDoc, string $env)
 		$nelmioApiDoc->cache([
 			'pool' => 'raven_cache_pool',
 			'item_id' => 'nelmio_api_doc_caches'
+		]);
+	}
+	else
+	{
+		// Désactivation du cache en développement.
+		$nelmioApiDoc->cache([
+			'pool' => null,
+			'item_id' => null
 		]);
 	}
 };
