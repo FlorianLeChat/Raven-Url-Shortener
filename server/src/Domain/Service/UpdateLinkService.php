@@ -45,7 +45,7 @@ final class UpdateLinkService extends BaseLinkService
 		$this->checkForReports($this->link);
 
 		$payload = $request->getPayload();
-		$field = $payload->getString('url');
+		$field = $payload->getString('field');
 		$value = $payload->getString('value');
 
 		if ($field === 'slug')
@@ -74,9 +74,11 @@ final class UpdateLinkService extends BaseLinkService
 		$this->checkEnabled($this->link);
 		$this->checkForReports($this->link);
 
-		$url = $request->request->getString('url', $this->link->getUrl() ?? '');
-		$slug = $request->request->getString('slug', $this->link->getSlug() ?? '');
-		$expiration = $request->request->getString('expiration', $this->link->getExpiresAt()?->format('Y-m-d H:i:s') ?? '');
+		$payload = $request->getPayload();
+
+		$url = $payload->getString('url', $this->link->getUrl() ?? '');
+		$slug = $payload->getString('slug', $this->link->getSlug() ?? '');
+		$expiration = $payload->getString('expiration', $this->link->getExpiresAt()?->format('Y-m-d H:i:s') ?? '');
 
 		if ($this->link->getSlug() !== $slug)
 		{

@@ -61,7 +61,7 @@ class Link
 	/** @var Collection<int, Report> */
 	#[ORM\OneToMany(mappedBy: "link", targetEntity: Report::class, orphanRemoval: true, cascade: ["persist", "remove"])]
 	#[OA\Property(title: 'The user reports of the link')]
-	private readonly Collection $reports;
+	private Collection $reports;
 
 	#[ORM\OneToOne(mappedBy: "link", targetEntity: ApiKey::class, orphanRemoval: true, cascade: ["persist", "remove"])]
 	#[OA\Property(title: 'The API key associated with the link')]

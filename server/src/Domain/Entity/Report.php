@@ -59,7 +59,7 @@ class Report
 	}
 
 	/**
-	 * Définition ou récupération de l'identifiant du lien.
+	 * Récupération de l'identifiant du lien.
 	 */
 	public function getId(): ?Uuid
 	{
