@@ -9,6 +9,7 @@ use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Bridge\Doctrine\Types\UuidType;
+use Doctrine\Common\Collections\ArrayCollection;
 use App\Infrastructure\Repository\LinkRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -60,7 +61,7 @@ class Link
 	/** @var Collection<int, Report> */
 	#[ORM\OneToMany(mappedBy: "link", targetEntity: Report::class, orphanRemoval: true, cascade: ["persist", "remove"])]
 	#[OA\Property(title: 'The user reports of the link')]
-	private Collection $reports;
+	private readonly Collection $reports;
 
 	#[ORM\OneToOne(mappedBy: "link", targetEntity: ApiKey::class, orphanRemoval: true, cascade: ["persist", "remove"])]
 	#[OA\Property(title: 'The API key associated with the link')]
@@ -73,6 +74,7 @@ class Link
 	public function __construct()
 	{
 		$this->id = Uuid::v7();
+		$this->reports = new ArrayCollection();
 		$this->createdAt = new DateTimeImmutable();
 	}
 
@@ -208,7 +210,7 @@ class Link
 	/**
 	 * Récupération ou définition de la clé API.
 	 */
-	public function getApiKey()
+	public function getApiKey(): ?ApiKey
 	{
 		return $this->apiKey;
 	}
@@ -239,7 +241,7 @@ class Link
 		{
 			// La clé API est affichée uniquement lors de la première création du lien
 			// et non lors de la récupération des informations du lien.
-			$data['apiKey'] = $this->getApiKey()->getKey();
+			$data['apiKey'] = $this->getApiKey()?->getKey();
 
 			return $data;
 		}
