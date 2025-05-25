@@ -60,7 +60,7 @@ jobs:
       - name: Build Back-end Docker Image and push
         uses: docker/build-push-action@v6
         with:
-          file: ./client/docker/scripts/Dockerfile
+          file: ./server/docker/scripts/Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.server-meta.outputs.tags }}
           labels: ${{ steps.server-meta.outputs.labels }}
