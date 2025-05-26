@@ -12,9 +12,9 @@ import { Link,
 	ModalFooter,
 	ModalContent,
 	useDisclosure } from "@heroui/react";
+import { useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
 
 export default function LegalConsent()
 {
@@ -30,11 +30,6 @@ export default function LegalConsent()
 		onClose();
 
 		localStorage.setItem( "NEXT_CONSENT", new Date().toISOString() );
-
-		if ( pathname === "/" )
-		{
-			router.push( "/dashboard" );
-		}
 	};
 
 	// Redirection vers la page d'accueil si le consentement est refusé.
