@@ -90,7 +90,7 @@
 #### Server side (`server/` folder)
 
 - Install [PHP LTS](https://www.php.net/downloads.php) (>8.2 or higher) ;
-- Install [NodeJS LTS](https://nodejs.org/) (>20 or higher) ;
+- Install [Symfony CLI](https://symfony.com/download) ;
 - Install the following additional PHP extensions: `zip`, `pdo_mysql`, `pdo_pgsql`, `redis`, `opcache`, `intl`, `xdebug`, `bcmath`, `excimer` ;
 - Install project dependencies using `composer install` ;
 - Set [environment variables](https://github.com/FlorianLeChat/Raven-Url-Shortener/blob/master/server/.env) for database connection (`DATABASE_...`) ;
