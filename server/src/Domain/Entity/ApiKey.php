@@ -30,15 +30,15 @@ class ApiKey
 	#[OA\Property(title: 'The API key')]
 	private ?string $key = null;
 
-	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+	#[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
 	#[OA\Property(title: 'The creation date of the API key')]
 	private ?DateTimeImmutable $createdAt = null;
 
-	#[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+	#[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE, nullable: true)]
 	#[OA\Property(title: 'The last update date of the API key')]
 	private ?DateTimeImmutable $updatedAt = null;
 
-	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+	#[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
 	#[OA\Property(title: 'The expiration date of the API key')]
 	private ?DateTimeImmutable $expiresAt = null;
 
