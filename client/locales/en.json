@@ -108,7 +108,7 @@
 			},
 			"performance": {
 				"title": "Performance and optimization",
-				"description": "These settings allow you to <warning>boost</warning> your link's loading speed and <warning>enhance</warning> the user experience.",
+				"description": "These settings allow you to <warning>improve</warning> your link's loading speed and <warning>enhance</warning> the user experience.",
 				"options": {
 					"cache": {
 						"label": "Page caching",
@@ -128,6 +128,8 @@
 		"description": "Below you'll find a summary of the information, settings, and available actions for your shortened link.",
 		"hint": "Your shortened link was created on {createDate}{isUpdated, select, true { and updated on {updateDate}} other {}}.",
 		"qr_code": "QR Code for your shortened link",
+		"back_to_dashboard": "Back to the dashboard",
+		"access_to_link": "Go to the shortened link",
 		"links_label": "Available URLs",
 		"links_description": "These URLs are available for the entire lifespan of your shortened link.<br></br>Links which have not been visited for one year will be automatically deleted.",
 		"actions": {

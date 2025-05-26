@@ -6,11 +6,18 @@
 
 import { lazy } from "react";
 import NextImage from "next/image";
+import { Card,
+	Image,
+	Button,
+	Snippet,
+	CardBody,
+	CardHeader,
+	CardFooter } from "@heroui/react";
+import { useRouter } from "next/navigation";
 import { formatDate } from "@/utilities/date";
-import { CircleCheckBig } from "lucide-react";
 import type { LinkProperties } from "@/interfaces/LinkProperties";
 import { useLocale, useTranslations } from "next-intl";
-import { Card, Image, Snippet, CardBody, CardHeader } from "@heroui/react";
+import { CircleCheckBig, ArrowLeft, SquareArrowOutUpRight } from "lucide-react";
 
 const SummaryActions = lazy( () => import( "./summary-actions" ) );
 
@@ -21,6 +28,7 @@ export default function SummaryContainer( {
 {
 	// Déclaration des variables d'état.
 	const locale = useLocale();
+	const router = useRouter();
 	const messages = useTranslations( "summary" );
 
 	// Dates de création et de dernière mise à jour du lien.
@@ -99,6 +107,31 @@ export default function SummaryContainer( {
 				{/* Actions rapides */}
 				<SummaryActions />
 			</CardBody>
+
+			<CardFooter
+				as="footer"
+				className="items-start gap-3 bg-content2/50 max-lg:flex-col"
+			>
+				{/* Bouton de retour au tableau de bord */}
+				<Button
+					type="button"
+					variant="flat"
+					onPress={() => router.push( "/dashboard" )}
+					startContent={<ArrowLeft />}
+				>
+					{messages( "back_to_dashboard" )}
+				</Button>
+
+				{/* Bouton d'accès au lien */}
+				<Button
+					type="button"
+					variant="flat"
+					onPress={() => router.push( details.url )}
+					startContent={<SquareArrowOutUpRight />}
+				>
+					{messages( "access_to_link" )}
+				</Button>
+			</CardFooter>
 		</Card>
 	);
 }
