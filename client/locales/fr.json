@@ -108,7 +108,7 @@
 			},
 			"performance": {
 				"title": "Performance et optimisation",
-				"description": "Ces paramètres permettent de <warning>booster</warning> la vitesse de chargement de votre lien et <warning>d'améliorer</warning> l'expérience utilisateur.",
+				"description": "Ces paramètres permettent <warning>d'accélérer</warning> la vitesse de chargement de votre lien et <warning>d'améliorer</warning> l'expérience utilisateur.",
 				"options": {
 					"cache": {
 						"label": "Mise en cache de la page",
@@ -128,6 +128,8 @@
 		"description": "Vous retrouverez ci-dessous un récapitulatif des informations, des paramètres et des actions possibles pour votre lien raccourci.",
 		"hint": "Votre lien raccourci a été créé le {createDate}{isUpdated, select, true { et mis à jour le {updateDate}} other {}}.",
 		"qr_code": "Code QR de votre lien raccourci",
+		"back_to_dashboard": "Retour au tableau de bord",
+		"access_to_link": "Accéder au lien raccourci",
 		"links_label": "Liens à votre disposition",
 		"links_description": "Ces liens Internet sont disponibles pour toute la durée de vie de votre lien raccourci.<br></br>Les liens qui n'ont pas été visités pendant une année seront automatiquement supprimés.",
 		"actions": {
