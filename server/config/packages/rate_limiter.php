@@ -18,14 +18,14 @@ return static function (FrameworkConfig $framework, string $env): void
 
 		// Opérations en lecture.
 		$limiter->limiter('read_api')
-			->limit(50)
+			->limit(60)
 			->policy('sliding_window')
 			->interval('1 minute')
 			->cachePool('raven_cache_pool');
 
 		// Opérations en écriture.
 		$limiter->limiter('write_api')
-			->limit(5)
+			->limit(30)
 			->policy('sliding_window')
 			->interval('1 minute')
 			->cachePool('raven_cache_pool');
