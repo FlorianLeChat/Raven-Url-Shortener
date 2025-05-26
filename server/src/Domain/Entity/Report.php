@@ -40,11 +40,11 @@ class Report
 	#[OA\Property(title: 'The email address of the reporter')]
 	private ?string $email = null;
 
-	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+	#[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
 	#[OA\Property(title: 'The creation date of the report')]
 	private ?DateTimeImmutable $createdAt = null;
 
-	#[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+	#[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE, nullable: true)]
 	#[OA\Property(title: 'The last update date of the report')]
 	private ?DateTimeImmutable $updatedAt = null;
 

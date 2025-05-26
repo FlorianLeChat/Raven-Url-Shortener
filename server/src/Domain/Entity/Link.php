@@ -41,19 +41,19 @@ class Link
 	#[OA\Property(title: 'The activation state of the link')]
 	private ?bool $enabled = true;
 
-	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+	#[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
 	#[OA\Property(title: 'The creation date of the link')]
 	private ?DateTimeImmutable $createdAt = null;
 
-	#[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+	#[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE, nullable: true)]
 	#[OA\Property(title: 'The last update date of the link')]
 	private ?DateTimeImmutable $updatedAt = null;
 
-	#[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+	#[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
 	#[OA\Property(title: 'The last visit date of the link')]
 	private ?DateTimeImmutable $visitedAt = null;
 
-	#[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+	#[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE, nullable: true)]
 	#[OA\Property(title: 'The expiration date of the link')]
 	#[Assert\Range(min: 'tomorrow', max: '+1 year')]
 	private ?DateTimeImmutable $expiresAt = null;
