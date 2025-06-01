@@ -11,6 +11,7 @@ use Doctrine\Common\Collections\Collection;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Doctrine\Common\Collections\ArrayCollection;
 use App\Infrastructure\Repository\LinkRepository;
+use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -33,7 +34,7 @@ class Link
 
 	#[ORM\Column(type: Types::STRING, length: 50, unique: true)]
 	#[OA\Property(title: 'The slug of the link')]
-	#[Assert\Regex(pattern: '/^[a-zA-Z0-9-]+$/')]
+	#[Assert\Regex(pattern: '/^' . Requirement::ASCII_SLUG . '$/')]
 	#[Assert\Length(min: 1, max: 50)]
 	private ?string $slug = null;
 
