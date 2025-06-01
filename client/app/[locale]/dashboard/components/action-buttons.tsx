@@ -42,7 +42,7 @@ export default function ActionButtons()
 
 	// Affichage du rendu HTML du composant.
 	return (
-		<ButtonGroup className="mb-8">
+		<ButtonGroup as="header" className="mb-8 max-lg:w-full">
 			<Button
 				as={Link}
 				variant="flat"

@@ -83,6 +83,7 @@ export default function SummaryContainer( {
 						classNames={{
 							pre: "overflow-auto whitespace-pre-wrap"
 						}}
+						disableTooltip
 					>
 						{domain + details.slug}
 					</Snippet>
@@ -93,6 +94,7 @@ export default function SummaryContainer( {
 						classNames={{
 							pre: "overflow-auto whitespace-pre-wrap"
 						}}
+						disableTooltip
 					>
 						{domain + details.id}
 					</Snippet>
@@ -110,7 +112,7 @@ export default function SummaryContainer( {
 
 			<CardFooter
 				as="footer"
-				className="items-start gap-3 bg-content2/50 max-lg:flex-col"
+				className="items-center gap-3 bg-content2/50 max-md:justify-center max-sm:flex-col"
 			>
 				{/* Bouton de retour au tableau de bord */}
 				<Button
