@@ -31,7 +31,7 @@ final class LinkFactoryTest extends TestCase
 		$this->assertEquals('example', $link->getSlug());
 
 		// État d'activation.
-		$this->assertEquals(true, $link->getEnabled());
+		$this->assertEquals(true, $link->isEnabled());
 
 		// Dates de création, de dernière mise à jour, de visite et d'expiration.
 		$this->assertNotNull($link->getCreatedAt());
@@ -58,7 +58,7 @@ final class LinkFactoryTest extends TestCase
 		$this->assertEquals('updated', $link->getSlug());
 
 		// État d'activation.
-		$this->assertEquals(true, $link->getEnabled());
+		$this->assertEquals(true, $link->isEnabled());
 
 		// Dates de création, de dernière mise à jour, de visite et d'expiration.
 		$this->assertNotNull($link->getCreatedAt());
@@ -85,7 +85,7 @@ final class LinkFactoryTest extends TestCase
 		$this->assertEquals('example', $link->getSlug());
 
 		// État d'activation.
-		$this->assertEquals(true, $link->getEnabled());
+		$this->assertEquals(true, $link->isEnabled());
 
 		// Dates de création, de dernière mise à jour, de visite et d'expiration.
 		$this->assertNotNull($link->getCreatedAt());

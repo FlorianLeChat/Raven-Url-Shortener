@@ -127,7 +127,7 @@ class Link
 	/**
 	 * Définition ou récupération de l'état d'activation d'un lien.
 	 */
-	public function getEnabled(): ?bool
+	public function isEnabled(): ?bool
 	{
 		return $this->enabled;
 	}
@@ -233,7 +233,7 @@ class Link
 			'id' => $this->getId(),
 			'url' => $this->getUrl(),
 			'slug' => $this->getSlug(),
-			'enabled' => $this->getEnabled(),
+			'enabled' => $this->isEnabled(),
 			'createdAt' => $this->getCreatedAt(),
 			'expiresAt' => $this->getExpiresAt()
 		];
