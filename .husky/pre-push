@@ -1,5 +1,6 @@
 cd client
 cspell locales/** --no-summary --no-progress --no-must-find-files
+cspell locales/** ../server/locales/** --no-summary --no-progress --no-must-find-files
 npm.cmd run build
 cd ../server
 cspell locales/** --no-summary --no-progress --no-must-find-files
