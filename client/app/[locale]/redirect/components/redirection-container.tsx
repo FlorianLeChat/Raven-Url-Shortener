@@ -65,6 +65,7 @@ export default function RedirectionContainer( {
 						classNames={{
 							pre: "overflow-auto whitespace-pre-wrap"
 						}}
+						disableTooltip
 					>
 						{details.url}
 					</Snippet>
