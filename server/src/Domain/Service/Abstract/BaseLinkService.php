@@ -123,7 +123,7 @@ abstract class BaseLinkService
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
-		if (!$link->getEnabled())
+		if (!$link->isEnabled())
 		{
 			throw new AccessDeniedHttpException($this->translator->trans('link.disabled'));
 		}
