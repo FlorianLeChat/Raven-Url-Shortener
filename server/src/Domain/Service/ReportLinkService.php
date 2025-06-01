@@ -52,6 +52,7 @@ final class ReportLinkService
 		foreach ($violations as $violation) {
 			$errors[$violation->getPropertyPath()][] = [
 				'code' => $violation->getConstraint()?->getErrorName($violation->getCode() ?? '') ?? '',
+				'value' => $violation->getInvalidValue(),
 				'message' => $violation->getMessage()
 			];
 		}
