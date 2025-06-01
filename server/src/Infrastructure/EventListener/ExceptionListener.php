@@ -83,7 +83,8 @@ final class ExceptionListener
 		$this->logger->error($exception->getMessage(), [
 			'file' => $exception->getFile(),
 			'line' => $exception->getLine(),
-			'code' => $exception->getCode()
+			'code' => $exception->getCode(),
+			'data' => $exception instanceof DataValidationException ? $exception->getViolations() : []
 		]);
 
 		$exception instanceof HttpException
