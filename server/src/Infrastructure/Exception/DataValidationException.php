@@ -12,13 +12,13 @@ final class DataValidationException extends HttpException
 {
 	/**
 	 * Liste des erreurs de validation.
-	 * @var array<string, array<int, array<string, string>>>
+	 * @var array<string, array<int, array<string, mixed>>>
 	 */
 	private array $violations;
 
 	/**
 	 * Constructeur de la classe.
-	 * @param array<string, array<int, array<string, string>>> $violations
+	 * @param array<string, array<int, array<string, mixed>>> $violations
 	 */
 	public function __construct(array $violations)
 	{
@@ -29,7 +29,7 @@ final class DataValidationException extends HttpException
 
 	/**
 	 * Récupère les erreurs de validation.
-	 * @return array<string, array<int, array<string, string>>>
+	 * @return array<string, array<int, array<string, mixed>>>
 	 */
 	public function getViolations(): array
 	{
