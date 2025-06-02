@@ -62,28 +62,6 @@ export default function CheckboxOptions()
 					</div>
 				</Checkbox>
 
-				{/* Sécurisation via Google reCAPTCHA */}
-				<Checkbox
-					name="captcha-protection"
-					className="m-0 my-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
-					aria-label={messages( "security.options.recaptcha.label" )}
-					isDisabled={process.env.NEXT_PUBLIC_RECAPTCHA_ENABLED !== "true"}
-				>
-					<div className="flex justify-between gap-2">
-						<p>
-							{messages( "security.options.recaptcha.label" )}
-							<br />
-							<small className="inline-block text-tiny leading-5 text-default-500">
-								{messages( "security.options.recaptcha.description" )}
-							</small>
-						</p>
-
-						<Chip color="success" size="sm" variant="flat">
-							{messages( "recommended_label" )}
-						</Chip>
-					</div>
-				</Checkbox>
-
 				{/* Accès via un serveur proxy */}
 				<Checkbox
 					name="proxy-server"
