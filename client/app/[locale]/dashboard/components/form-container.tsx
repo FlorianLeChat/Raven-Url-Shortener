@@ -16,7 +16,6 @@ import { Form,
 	CardFooter } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { I18nProvider } from "@react-aria/i18n";
-import { getRecaptcha } from "@/utilities/recaptcha";
 import { useTranslations } from "next-intl";
 import { Info, WandSparkles } from "lucide-react";
 import type { LinkProperties } from "@/interfaces/LinkProperties";
@@ -24,7 +23,6 @@ import type { ErrorProperties } from "@/interfaces/ErrorProperties";
 import { lazy, useContext, useRef, useState, type FormEvent } from "react";
 
 import { ServerContext } from "@/components/server-provider";
-import { checkRecaptcha } from "../actions/check-recaptcha";
 
 const InputOptions = lazy( () => import( "./input-options" ) );
 const LegalConsent = lazy( () => import( "@/components/legal-consent" ) );
@@ -39,7 +37,7 @@ export default function FormContainer()
 	const messages = useTranslations();
 	const serverData = useContext( ServerContext );
 	const submitButton = useRef<HTMLButtonElement | null>( null );
-	const [ stepName, setStepName ] = useState( messages( "dashboard.steps.fetch_recaptcha" ) );
+	const [ stepName, setStepName ] = useState( messages( "dashboard.steps.creation_request" ) );
 	const [ isLoading, setIsLoading ] = useState( false );
 
 	// Lance une animation de confettis lors de la soumission du formulaire.
@@ -74,7 +72,7 @@ export default function FormContainer()
 	const resetFormState = () =>
 	{
 		setIsLoading( false );
-		setStepName( messages( "dashboard.steps.fetch_recaptcha" ) );
+		setStepName( messages( "dashboard.steps.creation_request" ) );
 	};
 
 	// Création d'un nouveau raccourci auprès du back-end PHP.
@@ -151,29 +149,8 @@ export default function FormContainer()
 
 		setIsLoading( true );
 
-		// Récupération du jeton reCAPTCHA et vérification de sa validité.
-		const data = new FormData( event.currentTarget );
-		const token = ( await getRecaptcha() ) as string | undefined;
-
-		setStepName( messages( "dashboard.steps.check_recaptcha" ) );
-
-		const recaptchaResponse = await checkRecaptcha( token );
-
-		if ( !recaptchaResponse.state )
-		{
-			addToast( {
-				color: "danger",
-				title: messages( "errors.check_error" ),
-				description: recaptchaResponse.message
-			} );
-
-			resetFormState();
-			return;
-		}
-
 		// Requête de création d'un nouveau raccourci.
-		setStepName( messages( "dashboard.steps.creation_request" ) );
-
+		const data = new FormData( event.currentTarget );
 		const createState = await createLink( data );
 
 		if ( !createState.state || "message" in createState )

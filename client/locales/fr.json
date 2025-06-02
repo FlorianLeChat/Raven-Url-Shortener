@@ -58,8 +58,6 @@
 		"expiration_description": "Votre lien sera automatiquement <strong>désactivé</strong> et <strong>supprimé</strong> après cette date. Le fuseau horaire actuellement utilisé est <strong>{offset}</strong> ({timezone}).",
 		"submit_button": "Créer un nouveau raccourci",
 		"steps": {
-			"fetch_recaptcha": "Récupération du jeton reCAPTCHA...",
-			"check_recaptcha": "Vérification du jeton reCAPTCHA...",
 			"creation_request": "Requête de création du raccourci...",
 			"summary_redirect": "Redirection vers le récapitulatif..."
 		},
@@ -75,10 +73,6 @@
 					"password": {
 						"label": "Activer la protection par mot de passe",
 						"description": "Les visiteurs devront saisir un mot de passe que vous aurez défini pour accéder à votre lien. Cette mesure permet de sécuriser votre lien et de prévenir tout accès non autorisé."
-					},
-					"recaptcha": {
-						"label": "Activer la protection via Google reCAPTCHA",
-						"description": "Les visiteurs devront résoudre un défi reCAPTCHA pour accéder à votre lien. Cette mesure aide à protéger votre lien contre les robots et les logiciels malveillants, garantissant ainsi une sécurité accrue."
 					},
 					"proxy": {
 						"label": "Acheminer via un serveur mandataire (proxy)",
@@ -180,15 +174,9 @@
 	},
 	"footer": {
 		"made_with_love": "Fait avec ❤️ par",
-		"rights_reserved": "Tous droits réservés",
-		"recaptcha_protected": "Ce site est protégé par reCAPTCHA sur lequel s'appliquent les <a1>politiques de confidentialité</a1> et les <a2>conditions d'utilisation</a2> de Google."
+		"rights_reserved": "Tous droits réservés"
 	},
 	"errors": {
-		"recaptcha": {
-			"missing_or_invalid": "Le jeton reCAPTCHA que vous avez fourni est manquant ou invalide. Veuillez réessayer.",
-			"score_invalid": "Le score reCAPTCHA que vous avez obtenu est invalide. Veuillez réessayer.",
-			"check_failed": "La vérification du jeton reCAPTCHA a échouée. Veuillez réessayer."
-		},
 		"slug": {
 			"missing_or_invalid": "Le slug personnalisé est manquant ou invalide. Veuillez réessayer.",
 			"check_failed": "La vérification du slug personnalisé a échouée. Veuillez réessayer.",
@@ -287,57 +275,6 @@
 							"domain": "Google Analytics",
 							"description": "Cookie mis en place par <a href=\"https://analytics.google.com/analytics/web/\" target=\"_blank\">Google Analytics</a>.",
 							"expiration": "Expire après 2 ans."
-						}
-					]
-				}
-			},
-			{
-				"title": "Cookies de sécurité",
-				"description": "Ces cookies permettent d'authentifier les utilisateurs, d'empêcher l'utilisation frauduleuse des informations de connexion et de protéger les internautes qui interagissent avec le site Internet.",
-				"linkedCategory": "security",
-				"cookieTable": {
-					"headers": {
-						"name": "Nom",
-						"domain": "Service",
-						"description": "Description",
-						"expiration": "Expiration"
-					},
-					"body": [
-						{
-							"name": "OTZ",
-							"domain": "Google reCAPTCHA",
-							"description": "Cookie mis en place par <a href=\"https://www.google.com/recaptcha/about/\" target=\"_blank\">Google reCAPTCHA</a>.",
-							"expiration": "Expire après 1 mois."
-						},
-						{
-							"name": "__Secure-ENID",
-							"domain": "Google reCAPTCHA",
-							"description": "Cookie mis en place par <a href=\"https://www.google.com/recaptcha/about/\" target=\"_blank\">Google reCAPTCHA</a>.",
-							"expiration": "Expire après 1 an."
-						},
-						{
-							"name": "SOCS",
-							"domain": "Google reCAPTCHA",
-							"description": "Cookie mis en place par <a href=\"https://www.google.com/recaptcha/about/\" target=\"_blank\">Google reCAPTCHA</a>.",
-							"expiration": "Expire après 13 mois."
-						},
-						{
-							"name": "CONSENT",
-							"domain": "Google reCAPTCHA",
-							"description": "Cookie mis en place par <a href=\"https://www.google.com/recaptcha/about/\" target=\"_blank\">Google reCAPTCHA</a>.",
-							"expiration": "Expire après 2 ans."
-						},
-						{
-							"name": "DV",
-							"domain": "Google reCAPTCHA",
-							"description": "Cookie mis en place par <a href=\"https://www.google.com/recaptcha/about/\" target=\"_blank\">Google reCAPTCHA</a>.",
-							"expiration": "Expire après 1 jour."
-						},
-						{
-							"name": "AEC",
-							"domain": "Google reCAPTCHA",
-							"description": "Cookie mis en place par <a href=\"https://www.google.com/recaptcha/about/\" target=\"_blank\">Google reCAPTCHA</a>.",
-							"expiration": "Expire après 6 mois."
 						}
 					]
 				}

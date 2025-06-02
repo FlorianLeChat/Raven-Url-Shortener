@@ -32,7 +32,6 @@ import type { Viewport } from "next";
 import ServerProvider from "@/components/server-provider";
 
 const Footer = lazy( () => import( "@/components/footer" ) );
-const Recaptcha = lazy( () => import( "@/components/recaptcha" ) );
 const CookieConsent = lazy( () => import( "@/components/cookie-consent" ) );
 
 // Déclaration des paramètres d'affichage.
@@ -169,9 +168,6 @@ export default async function Layout( {
 
 						{/* Consentement des cookies */}
 						<CookieConsent />
-
-						{/* Google reCAPTCHA */}
-						<Recaptcha />
 					</NextIntlClientProvider>
 				</Suspense>
 			</body>

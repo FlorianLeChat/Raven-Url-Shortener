@@ -17,13 +17,10 @@ import { Form,
 	ModalHeader,
 	ModalContent,
 	useDisclosure } from "@heroui/react";
-import { getRecaptcha } from "@/utilities/recaptcha";
 import { useTranslations } from "next-intl";
 import type { ErrorProperties } from "@/interfaces/ErrorProperties";
 import { useState, type FormEvent } from "react";
 import { Flag, Mail, OctagonAlert, Send } from "lucide-react";
-
-import { checkRecaptcha } from "../../dashboard/actions/check-recaptcha";
 
 export default function ReportRedirection( { id }: Readonly<{ id: string }> )
 {
@@ -96,24 +93,6 @@ export default function ReportRedirection( { id }: Readonly<{ id: string }> )
 		formData.set( "id", id );
 
 		setIsLoading( true );
-
-		// Récupération du jeton reCAPTCHA et vérification de sa validité.
-		const token = ( await getRecaptcha() ) as string | undefined;
-		const recaptchaResponse = await checkRecaptcha( token );
-
-		if ( !recaptchaResponse.state )
-		{
-			addToast( {
-				color: "danger",
-				title: messages( "errors.check_error" ),
-				description: recaptchaResponse.message
-			} );
-
-			onClose();
-			setIsLoading( false );
-
-			return;
-		}
 
 		// Requête de création d'un nouveau signalement.
 		const reportState = await reportLink( formData );
