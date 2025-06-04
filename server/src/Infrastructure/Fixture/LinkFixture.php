@@ -63,6 +63,21 @@ final class LinkFixture extends Fixture
 	}
 
 	/**
+	 * Création d'un lien de confiance.
+	 */
+	private function createTrustedLink()
+	{
+		$link = new Link();
+		$link->setId(new Uuid('0196cb17-b0f8-7e9c-b381-ef17aa05f3d6'));
+		$link->setUrl('https://www.youtube.com/watch?v=HkJNRcQDE08');
+		$link->setSlug('test4');
+		$link->setTrusted(true);
+		$link->setVisitedAt(new DateTimeImmutable());
+
+		return $link;
+	}
+
+	/**
 	 * Création des liens raccourcis et ajout à la base de données.
 	 */
 	public function load(ObjectManager $manager): void
@@ -70,6 +85,7 @@ final class LinkFixture extends Fixture
 		$manager->persist($this->createLinkWithoutIssue());
 		$manager->persist($this->createDisabledLink());
 		$manager->persist($this->createReportedLink());
+		$manager->persist($this->createTrustedLink());
 		$manager->flush();
 	}
 }

@@ -77,6 +77,23 @@ final class ReportLinkActionTest extends WebTestCase
 	}
 
 	/**
+	 * Test de création d'un signalement pour un lien désactivé.
+	 */
+	public function testReportTrustedLink(): void
+	{
+		$this->client->request('POST', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d6/report', [
+			'reason' => 'Inappropriate content'
+		]);
+
+		$this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+
+		$content = $this->client->getResponse()->getContent();
+
+		$this->assertJson($content);
+		$this->assertJsonStringEqualsJsonString('{"code":403,"message":"You cannot report a trusted link. If you think this link is malicious, please contact an administrator."}', $content);
+	}
+
+	/**
 	 * Test de création d'un signalement avec succès.
 	 */
     public function testReportSuccessfully(): void

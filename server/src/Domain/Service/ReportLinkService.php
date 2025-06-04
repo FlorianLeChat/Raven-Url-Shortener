@@ -13,6 +13,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Infrastructure\Exception\DataValidationException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 use const App\LOG_FUNCTION;
 
@@ -79,11 +80,26 @@ final class ReportLinkService
 	}
 
 	/**
+	 * Vérifie si le lien est considéré comme de confiance.
+	 */
+	private function checkTrustedLink(Link $link): void
+	{
+		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+
+		if ($link->isTrusted())
+		{
+			throw new AccessDeniedHttpException($this->translator->trans('report.trusted_link'));
+		}
+	}
+
+	/**
 	 * Création d'un signalement.
 	 */
 	public function createReport(Request $request): Report
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+
+		$this->checkTrustedLink($this->link);
 
 		$payload = $request->getPayload();
 
