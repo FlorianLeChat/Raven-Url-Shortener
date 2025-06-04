@@ -52,11 +52,6 @@ export default async function Page( {
 		redirect( "/dashboard?error=not-found", RedirectType.push );
 	}
 
-	if ( !details.data.enabled )
-	{
-		redirect( "/dashboard?error=disabled", RedirectType.push );
-	}
-
 	// Génération du code QR.
 	const domain = await getDomain();
 

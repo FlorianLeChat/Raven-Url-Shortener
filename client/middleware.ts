@@ -6,7 +6,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { getLanguages } from "./utilities/i18n";
 import { getLinkDetails } from "./app/[locale]/dashboard/actions/get-link-details";
-import { trustedDomains } from "./config/domains";
 
 // Préfixes des routes de l'application.
 const routePrefixes = [ "dashboard", "redirect", "manager" ];
@@ -30,13 +29,19 @@ export default async function middleware( request: NextRequest )
 
 		if ( details.state && details.data )
 		{
-			const domains = trustedDomains
-				.map( ( domain ) => `^https?:\\/\\/(www\\.)?${ domain.replace( ".", "\\." ) }(\\/|$)` )
-				.join( "|" );
-			const isTrustedDomain = new RegExp( domains ).test( details.data.url );
-			const hasRedirectionCookie = request.cookies.has( "NEXT_REDIRECTION" );
+			if ( !details.data.enabled )
+			{
+				// Le lien est désactivé, redirection vers la page d'accueil.
+				return NextResponse.redirect( new URL( "/?error=disabled", request.nextUrl ) );
+			}
 
-			if ( isTrustedDomain || hasRedirectionCookie )
+			if ( details.data.reported )
+			{
+				// Le lien a été signalé, redirection vers la page d'accueil.
+				return NextResponse.redirect( new URL( "/?error=reported", request.nextUrl ) );
+			}
+
+			if ( details.data.trusted || request.cookies.has( "NEXT_REDIRECTION" ) )
 			{
 				// Le domaine est de confiance ou l'utilisateur a accepté la redirection.
 				return NextResponse.redirect( new URL( details.data.url, request.nextUrl ) );

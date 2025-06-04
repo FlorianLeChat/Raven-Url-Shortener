@@ -38,9 +38,13 @@ class Link
 	#[Assert\Length(min: 1, max: 50)]
 	private ?string $slug = null;
 
-	#[ORM\Column(type: Types::BOOLEAN)]
+	#[ORM\Column(type: Types::BOOLEAN, options: ['default' => true])]
 	#[OA\Property(title: 'The activation state of the link')]
 	private ?bool $enabled = true;
+
+	#[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+	#[OA\Property(title: 'The trust state of the link')]
+	private ?bool $trusted = false;
 
 	#[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
 	#[OA\Property(title: 'The creation date of the link')]
@@ -140,6 +144,21 @@ class Link
 	}
 
 	/**
+	 * Définition ou récupération de l'état de confiance d'un lien.
+	 */
+	public function isTrusted(): ?bool
+	{
+		return $this->trusted;
+	}
+
+	public function setTrusted(?bool $trusted): static
+	{
+		$this->trusted = $trusted;
+
+		return $this;
+	}
+
+	/**
 	 * Définition ou récupération de la date de création du lien.
 	 */
 	public function getCreatedAt(): ?DateTimeImmutable
@@ -234,6 +253,8 @@ class Link
 			'url' => $this->getUrl(),
 			'slug' => $this->getSlug(),
 			'enabled' => $this->isEnabled(),
+			'trusted' => $this->isTrusted(),
+			'reported' => count($this->getReports()) > 0,
 			'createdAt' => $this->getCreatedAt(),
 			'expiresAt' => $this->getExpiresAt()
 		];

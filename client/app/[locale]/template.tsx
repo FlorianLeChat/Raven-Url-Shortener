@@ -44,6 +44,16 @@ export default function Template( {
 
 				break;
 
+			case "reported":
+				// Lien signalé.
+				addToast( {
+					color: "danger",
+					title: messages( "reported.title" ),
+					description: messages( "reported.description" )
+				} );
+
+				break;
+
 			default:
 				break;
 		}
