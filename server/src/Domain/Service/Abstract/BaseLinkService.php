@@ -76,6 +76,7 @@ abstract class BaseLinkService
 			$errors = [];
 			$response = $this->httpClient->request('GET', $url, [
 				'timeout' => 5,
+				'max_redirects' => 1
 			]);
 
 			if ($response->getStatusCode() !== 200) {
