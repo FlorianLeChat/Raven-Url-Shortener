@@ -15,6 +15,12 @@ export interface LinkProperties
 	// État d'activation du lien.
 	enabled: boolean;
 
+	// État de signalement du lien.
+	reported: boolean;
+
+	// État de confiance du lien.
+	trusted: boolean;
+
 	// Code QR du lien.
 	qrCode: string | null | undefined;
 

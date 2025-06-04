@@ -198,6 +198,10 @@
 			"disabled": {
 				"title": "Link disabled",
 				"description": "The shortened link you requested has been disabled by its owner or an administrator. Please contact the owner for more information."
+			},
+			"reported": {
+				"title": "Link reported",
+				"description": "The shortened link you requested has been reported by a user. It is currently under review by an administrator."
 			}
 		},
 		"check_error": "Error during verification",

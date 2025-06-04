@@ -20,6 +20,8 @@ final class GetLinkDetailsService extends BaseLinkService
 	{
 		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
+		$this->checkUrl($link->getUrl() ?? '');
+
 		$link->setVisitedAt(new DateTimeImmutable());
 
 		$this->repository->save($link, true);

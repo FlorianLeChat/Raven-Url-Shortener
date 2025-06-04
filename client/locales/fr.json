@@ -198,6 +198,10 @@
 			"disabled": {
 				"title": "Lien désactivé",
 				"description": "Le lien raccourci que vous avez demandé a été désactivé par son propriétaire ou par un administrateur. Veuillez contacter le propriétaire pour plus d'informations."
+			},
+			"reported": {
+				"title": "Lien signalé",
+				"description": "Le lien raccourci que vous avez demandé a été signalé par un utilisateur. Il est actuellement en cours d'examen par un administrateur."
 			}
 		},
 		"check_error": "Erreur lors de la vérification",
