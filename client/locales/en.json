@@ -58,6 +58,8 @@
 		"expiration_description": "Your link will be automatically <strong>disabled</strong> and <strong>deleted</strong> after this date. The current timezone in use is <strong>{offset}</strong> ({timezone}).",
 		"submit_button": "Create a new short URL",
 		"steps": {
+			"generate_challenge": "Generating a CAPTCHA challenge...",
+			"solve_challenge": "Solving the CAPTCHA challenge...",
 			"creation_request": "Submitting the shortcut creation request...",
 			"summary_redirect": "Redirecting to the summary..."
 		},
@@ -174,9 +176,13 @@
 	},
 	"footer": {
 		"made_with_love": "Made with ❤️ by",
-		"rights_reserved": "All rights reserved"
+		"rights_reserved": "All rights reserved",
+		"captcha_protected": "This site is protected by <a>ALTCHA</a>, a free, open-source and privacy-friendly alternative to reCAPTCHA."
 	},
 	"errors": {
+		"captcha": {
+			"check_failed": "The CAPTCHA verification failed. Please try again."
+		},
 		"slug": {
 			"missing_or_invalid": "The custom slug is missing or invalid. Please try again.",
 			"check_failed": "The custom slug verification failed. Please try again.",
