@@ -16,6 +16,7 @@
     "qrcode": "~1.5",
     "lodash": "~4.17",
     "next-intl": "~4.1",
+    "altcha-lib": "~1.2",
     "@heroui/react": "~2.7",
     "@react-aria/i18n": "~3.12",
     "@internationalized/date": "~3.8"

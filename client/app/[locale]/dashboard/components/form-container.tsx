@@ -20,6 +20,8 @@ import { useTranslations } from "next-intl";
 import { Info, WandSparkles } from "lucide-react";
 import type { LinkProperties } from "@/interfaces/LinkProperties";
 import type { ErrorProperties } from "@/interfaces/ErrorProperties";
+import { solveCaptchaChallenge } from "@/utilities/captcha";
+import { verifyCaptchaResolution } from "../actions/check-captcha";
 import { lazy, useContext, useRef, useState, type FormEvent } from "react";
 
 import { ServerContext } from "@/components/server-provider";
@@ -37,7 +39,7 @@ export default function FormContainer()
 	const messages = useTranslations();
 	const serverData = useContext( ServerContext );
 	const submitButton = useRef<HTMLButtonElement | null>( null );
-	const [ stepName, setStepName ] = useState( messages( "dashboard.steps.creation_request" ) );
+	const [ stepName, setStepName ] = useState( messages( "dashboard.steps.generate_challenge" ) );
 	const [ isLoading, setIsLoading ] = useState( false );
 
 	// Lance une animation de confettis lors de la soumission du formulaire.
@@ -72,7 +74,7 @@ export default function FormContainer()
 	const resetFormState = () =>
 	{
 		setIsLoading( false );
-		setStepName( messages( "dashboard.steps.creation_request" ) );
+		setStepName( messages( "dashboard.steps.generate_challenge" ) );
 	};
 
 	// Création d'un nouveau raccourci auprès du back-end PHP.
@@ -149,8 +151,28 @@ export default function FormContainer()
 
 		setIsLoading( true );
 
-		// Requête de création d'un nouveau raccourci.
+		// Récupération et résolution d'un défi CAPTCHA.
+		setStepName( messages( "dashboard.steps.solve_challenge" ) );
+
 		const data = new FormData( event.currentTarget );
+		const captchaPayload = await solveCaptchaChallenge();
+		const isValidCaptcha = await verifyCaptchaResolution( captchaPayload );
+
+		if ( !isValidCaptcha )
+		{
+			addToast( {
+				color: "danger",
+				title: messages( "errors.check_error" ),
+				description: messages( "errors.captcha.check_failed" )
+			} );
+
+			resetFormState();
+			return;
+		}
+
+		// Requête de création d'un nouveau raccourci.
+		setStepName( messages( "dashboard.steps.creation_request" ) );
+
 		const createState = await createLink( data );
 
 		if ( !createState.state || "message" in createState )
