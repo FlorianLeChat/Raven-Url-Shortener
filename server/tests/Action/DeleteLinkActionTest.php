@@ -104,7 +104,7 @@ final class DeleteLinkActionTest extends WebTestCase
 		$content = $this->client->getResponse()->getContent();
 
 		$this->assertJson($content);
-		$this->assertJsonStringEqualsJsonString('{"code":403,"message":"The specified shortcut link has been reported by one or more users. This link must be verified by an administrator before it can be managed again."}', $content);
+		$this->assertJsonStringEqualsJsonString('{"code":403,"message":"The specified shortcut link has been reported by one or more users. This link must be verified by an administrator before it can be reached again."}', $content);
 	}
 
 	/**
