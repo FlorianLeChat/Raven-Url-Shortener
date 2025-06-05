@@ -55,7 +55,7 @@ export default async function Page( {
 	// Génération du code QR.
 	const domain = await getDomain();
 
-	details.data.qrCode = await qrCode.toDataURL( domain + id );
+	details.data.qrCode = await qrCode.toDataURL( domain + id, { width: 1024 } );
 
 	// Affichage du rendu HTML de la page.
 	return (
