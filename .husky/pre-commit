@@ -1,2 +1,6 @@
 cd client
 npm.cmd run lint-staged
+cd ../server
+vendor/bin/phpcs -s
+vendor/bin/phpstan analyse
+vendor/bin/phpmd ./src ansi phpmd.xml.dist
