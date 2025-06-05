@@ -13,7 +13,7 @@ final class TrustedDomainsTest extends TestCase
 	/**
 	 * Liste de domaines de confiance pour les tests.
 	 */
-	const TRUSTED_MAIN_DOMAINS = [
+	private const TRUSTED_MAIN_DOMAINS = [
 		'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
 		'https://www.google.com/search?q=example',
 		'https://www.facebook.com/user',
@@ -24,7 +24,7 @@ final class TrustedDomainsTest extends TestCase
 	/**
 	 * Liste de sous-domaines de confiance pour les tests.
 	 */
-	const TRUSTED_SUB_DOMAINS = [
+	private const TRUSTED_SUB_DOMAINS = [
 		'https://subdomain.youtube.com/watch?v=dQw4w9WgXcQ',
 		'https://subdomain.google.com/search?q=example',
 		'https://subdomain.facebook.com/user',
@@ -35,7 +35,7 @@ final class TrustedDomainsTest extends TestCase
 	/**
 	 * Liste de domaines de confiance avec port pour les tests.
 	 */
-	const TRUSTED_PORT_DOMAINS = [
+	private const TRUSTED_PORT_DOMAINS = [
 		'https://www.youtube.com:443/watch?v=dQw4w9WgXcQ',
 		'https://www.google.com:443/search?q=example',
 		'https://www.facebook.com:443/user',
@@ -46,7 +46,7 @@ final class TrustedDomainsTest extends TestCase
 	/**
 	 * Liste de domaines non fiables pour les tests.
 	 */
-	const UNTRUSTED_DOMAINS = [
+	private const UNTRUSTED_DOMAINS = [
 		'https://www.untrusted-youtube.com/watch?v=dQw4w9WgXcQ',
 		'https://www.untrusted-google.com/search?q=example',
 		'https://www.untrusted-facebook.com/user',

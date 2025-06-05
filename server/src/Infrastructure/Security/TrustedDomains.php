@@ -66,6 +66,7 @@ final class TrustedDomains
 			return false;
 		}
 
+		/** @var string $host */
 		$host = preg_replace('/^www\./i', '', $host);
 
 		foreach (self::DOMAINS as $domain)
