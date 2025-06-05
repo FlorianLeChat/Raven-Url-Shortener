@@ -24,7 +24,7 @@ export default function FeatureCard( {
 			className="border-transparent bg-white backdrop-blur-lg backdrop-saturate-[1.8] dark:bg-default-400/10"
 		>
 			<CardHeader className="gap-2 pb-0">
-				<div className="rounded-full p-2 text-primary-500 dark:bg-transparent">
+				<div className="rounded-full bg-primary-100/80 p-2 text-primary-600">
 					{icon}
 				</div>
 
