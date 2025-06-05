@@ -15,9 +15,12 @@ import { Card,
 	CardFooter } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { formatDate } from "@/utilities/date";
+import { QrCode,
+	ArrowLeft,
+	CircleCheckBig,
+	SquareArrowOutUpRight } from "lucide-react";
 import type { LinkProperties } from "@/interfaces/LinkProperties";
 import { useLocale, useTranslations } from "next-intl";
-import { CircleCheckBig, ArrowLeft, SquareArrowOutUpRight } from "lucide-react";
 
 const SummaryActions = lazy( () => import( "./summary-actions" ) );
 
@@ -43,6 +46,20 @@ export default function SummaryContainer( {
 		createDate: String( createDate ),
 		updateDate: String( updateDate )
 	} );
+
+	// Téléchargement du QR Code pour le lien raccourci.
+	const downloadQrCode = () =>
+	{
+		const link = document.createElement( "a" );
+		link.href = details.qrCode ?? "";
+		link.download = `${ details.slug }.png`;
+
+		document.body.appendChild( link );
+
+		link.click();
+
+		document.body.removeChild( link );
+	};
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -132,6 +149,16 @@ export default function SummaryContainer( {
 					startContent={<SquareArrowOutUpRight />}
 				>
 					{messages( "access_to_link" )}
+				</Button>
+
+				{/* Bouton de téléchargement du QR Code */}
+				<Button
+					type="button"
+					variant="flat"
+					onPress={downloadQrCode}
+					startContent={<QrCode />}
+				>
+					{messages( "download_qr_code" )}
 				</Button>
 			</CardFooter>
 		</Card>

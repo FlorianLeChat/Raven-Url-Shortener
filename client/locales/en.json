@@ -126,6 +126,7 @@
 		"qr_code": "QR Code for your shortened link",
 		"back_to_dashboard": "Back to the dashboard",
 		"access_to_link": "Go to the shortened link",
+		"download_qr_code": "Download the QR code",
 		"links_label": "Available URLs",
 		"links_description": "These URLs are available for the entire lifespan of your shortened link.<br></br>Links which have not been visited for one year will be automatically deleted.",
 		"actions": {
