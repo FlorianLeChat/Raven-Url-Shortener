@@ -82,6 +82,7 @@ abstract class BaseLinkService
 			if ($response->getStatusCode() !== 200) {
 				$errors['url'][] = [
 					'code' => 'UNREACHABLE_URL_ERROR',
+					'value' => $url,
 					'message' => $this->translator->trans('link.unreachable_url')
 				];
 
@@ -90,6 +91,7 @@ abstract class BaseLinkService
 		} catch (TransportExceptionInterface $exception) {
 			$errors['url'][] = [
 				'code' => 'UNREACHABLE_URL_ERROR',
+				'value' => $url,
 				'message' => $exception->getMessage()
 			];
 
@@ -111,6 +113,7 @@ abstract class BaseLinkService
 			$errors = [];
 			$errors['slug'][] = [
 				'code' => 'DUPLICATE_SLUG_ERROR',
+				'value' => $slug,
 				'message' => $this->translator->trans('slug.already_used')
 			];
 
@@ -160,6 +163,7 @@ abstract class BaseLinkService
 			$errors = [];
 			$errors['apiKey'][] = [
 				'code' => 'MISSING_API_KEY_ERROR',
+				'value' => null,
 				'message' => $this->translator->trans('api_key.missing')
 			];
 
