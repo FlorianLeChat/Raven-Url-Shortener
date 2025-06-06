@@ -10,6 +10,7 @@ import { createChallenge, verifySolution } from "altcha-lib";
 
 const solutions: Record<string, string> = {}; // https://altcha.org/docs/v2/security-recommendations/#replay-attacks
 
+const CAPTCHA_HMAC = process.env.CAPTCHA_HMAC ?? "";
 const CAPTCHA_MAX_NUMBER = 100_000;
 const CAPTCHA_EXPIRATION = 60 * 1000; // 1 minute.
 
@@ -38,7 +39,7 @@ export async function generateCaptchaChallenge()
 	return createChallenge( {
 		salt,
 		expires: new Date( duration ),
-		hmacKey: "TEST",
+		hmacKey: CAPTCHA_HMAC,
 		maxNumber: CAPTCHA_MAX_NUMBER
 	} );
 }
@@ -69,7 +70,7 @@ export async function verifyCaptchaResolution( solution?: Payload )
 
 	try
 	{
-		const verified = await verifySolution( solution, "TEST" );
+		const verified = await verifySolution( solution, CAPTCHA_HMAC );
 
 		if ( !verified )
 		{
