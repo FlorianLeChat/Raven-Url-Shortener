@@ -31,10 +31,12 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
 	# Don't expose PHP version to HTTP response headers
 	sed -i "s/expose_php = On/expose_php = Off/g" "$PHP_INI_DIR/php.ini" && \
 	# Increase default OPcache settings to improve performance
+	sed -i "s/;opcache.preload_user/opcache.preload_user=www-data/g" "$PHP_INI_DIR/php.ini" && \
 	sed -i "s/;opcache.revalidate_freq=2/opcache.revalidate_freq=60/g" "$PHP_INI_DIR/php.ini" && \
 	sed -i "s/;opcache.validate_timestamps=1/opcache.validate_timestamps=0/g" "$PHP_INI_DIR/php.ini" && \
 	sed -i "s/;opcache.memory_consumption=128/opcache.memory_consumption=256/g" "$PHP_INI_DIR/php.ini" && \
 	sed -i "s/;opcache.interned_strings_buffer=8/opcache.interned_strings_buffer=16/g" "$PHP_INI_DIR/php.ini" && \
+	sed -i "s/;opcache.preload=/opcache.preload=\/var\/www\/html\/config\/preload.php/g" "$PHP_INI_DIR/php.ini" && \
 	sed -i "s/;opcache.max_accelerated_files=10000/opcache.max_accelerated_files=20000/g" "$PHP_INI_DIR/php.ini"
 
 # Change current user to www-data
