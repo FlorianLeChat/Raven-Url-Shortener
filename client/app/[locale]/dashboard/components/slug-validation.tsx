@@ -100,7 +100,7 @@ export default function SlugValidation()
 			name="slug"
 			label={messages( "dashboard.slug_label" )}
 			onClear={() => setIsAvailable( true )}
-			pattern="/^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$/"
+			pattern="^[a-zA-Z0-9\-]+$"
 			maxLength={50}
 			isInvalid={isAvailable ? undefined : true}
 			isClearable
