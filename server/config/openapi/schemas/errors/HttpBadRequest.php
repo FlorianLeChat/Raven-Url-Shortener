@@ -16,6 +16,7 @@ return [
 				'url' => [
 					[
 						'code' => 'INVALID_URL',
+						'value' => 'ftp://example.com',
 						'message' => 'This value is not a valid URL.'
 					]
 				]
@@ -26,6 +27,7 @@ return [
 					'type' => 'object',
 					'properties' => [
 						'code' => ['type' => 'string'],
+						'value' => ['type' => 'string'],
 						'message' => ['type' => 'string']
 					]
 				]
