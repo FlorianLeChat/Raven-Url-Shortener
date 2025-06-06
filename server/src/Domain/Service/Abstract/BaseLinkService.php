@@ -7,6 +7,7 @@ use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Infrastructure\Repository\LinkRepository;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Infrastructure\Exception\DataValidationException;
@@ -66,6 +67,23 @@ abstract class BaseLinkService
 	}
 
 	/**
+	 * Détecte si une requête a été bloquée par un pare-feu ou une limite de débit.
+	 */
+	private function isBlockedRequest(string $url, ResponseInterface $response): bool
+	{
+		$content = strtolower($response->getContent(false));
+		$keywords = str_contains($content, 'access denied') || str_contains($content, 'verify you are human') ;
+		$isBlocked = in_array($response->getStatusCode(), [403, 429]) || $keywords;
+
+		if ($isBlocked)
+		{
+			$this->logger->warning('Unreachable URL due to firewall or rate limiting: ' . $url);
+		}
+
+		return $isBlocked;
+	}
+
+	/**
 	 * Vérifie si une URL est accessible et valide.
 	 */
 	protected function checkUrl(string $url): void
@@ -76,10 +94,14 @@ abstract class BaseLinkService
 			$errors = [];
 			$response = $this->httpClient->request('GET', $url, [
 				'timeout' => 5,
-				'max_redirects' => 3
+				'max_redirects' => 1
 			]);
 
-			if ($response->getStatusCode() !== 200) {
+			$isBlocked = $this->isBlockedRequest($url, $response);
+			$isFailed = $response->getStatusCode() !== 200 && !$isBlocked;
+
+			if ($isFailed)
+			{
 				$errors['url'][] = [
 					'code' => 'UNREACHABLE_URL_ERROR',
 					'value' => $url,
