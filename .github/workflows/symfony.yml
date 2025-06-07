@@ -41,6 +41,8 @@ jobs:
         touch var/data.db
         php bin/console --env=test doctrine:schema:create --no-interaction
         php bin/console --env=test doctrine:fixtures:load --no-interaction
+    - name: Warm up Symfony cache
+      run: php bin/console cache:warmup --no-interaction
     - name: Run PHP Code Sniffer
       run: vendor/bin/phpcs -s
     - name: Run PHPStan
