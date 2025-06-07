@@ -2,13 +2,12 @@
 
 namespace App\Domain\Service;
 
+use App\Kernel;
 use App\Domain\Entity\Link;
 use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Infrastructure\Repository\LinkRepository;
-
-use const App\LOG_FUNCTION;
 
 /**
  * Service de vérification d'un slug personnalisé.
@@ -35,7 +34,7 @@ final class CheckSlugService
 	 */
 	public function checkSlug(Request $request): bool
 	{
-		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+		$this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
 		$slug = $request->getPayload()->getString('slug');
 		$result = $this->repository->findOneBy(['slug' => $slug]);

@@ -2,13 +2,12 @@
 
 namespace App\Domain\Service;
 
+use App\Kernel;
 use App\Domain\Entity\Link;
 use App\Domain\Factory\LinkFactory;
 use App\Domain\Factory\ApiKeyFactory;
 use Symfony\Component\HttpFoundation\Request;
 use App\Domain\Service\Abstract\BaseLinkService;
-
-use const App\LOG_FUNCTION;
 
 /**
  * Service de création de liens raccourcis.
@@ -20,7 +19,7 @@ final class CreateLinkService extends BaseLinkService
 	 */
 	public function createLink(Request $request): Link
 	{
-		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+		$this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
 		$payload = $request->getPayload();
 

@@ -2,17 +2,16 @@
 
 namespace App\Domain\Service;
 
+use App\Kernel;
 use App\Domain\Entity\Link;
-use App\Domain\Factory\LinkFactory;
 use Psr\Log\LoggerInterface;
+use App\Domain\Factory\LinkFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Domain\Service\Abstract\BaseLinkService;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-
-use const App\LOG_FUNCTION;
 
 /**
  * Service de mise à jour de liens raccourcis.
@@ -38,7 +37,7 @@ final class UpdateLinkService extends BaseLinkService
 	 */
 	public function patchLink(Request $request): Link
 	{
-		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+		$this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
 		$this->checkApiKey($this->link, $request);
 		$this->checkEnabled($this->link);
@@ -68,7 +67,7 @@ final class UpdateLinkService extends BaseLinkService
 	 */
 	public function replaceLink(Request $request): Link
 	{
-		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+		$this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
 		$this->checkApiKey($this->link, $request);
 		$this->checkEnabled($this->link);

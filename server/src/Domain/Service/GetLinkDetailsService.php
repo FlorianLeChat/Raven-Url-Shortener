@@ -2,11 +2,10 @@
 
 namespace App\Domain\Service;
 
+use App\Kernel;
 use DateTimeImmutable;
 use App\Domain\Entity\Link;
 use App\Domain\Service\Abstract\BaseLinkService;
-
-use const App\LOG_FUNCTION;
 
 /**
  * Service de récupération des informations d'un lien raccourci.
@@ -18,7 +17,7 @@ final class GetLinkDetailsService extends BaseLinkService
 	 */
 	public function getLinkDetails(Link $link): Link
 	{
-		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+		$this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
 		$this->checkUrl($link->getUrl() ?? '');
 

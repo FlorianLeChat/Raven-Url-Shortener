@@ -2,6 +2,7 @@
 
 namespace App\Action;
 
+use App\Kernel;
 use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Domain\Service\CreateLinkService;
@@ -12,8 +13,6 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
-use const App\LOG_FUNCTION;
 
 /**
  * Action pour la création d'un lien raccourci.
@@ -38,7 +37,7 @@ final class CreateLinkAction extends AbstractController
 	#[Route('/link', methods: ['POST'])]
 	public function createLink(Request $request): JsonResponse
 	{
-		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+		$this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
 		$service = new CreateLinkService(
 			$this->logger,
