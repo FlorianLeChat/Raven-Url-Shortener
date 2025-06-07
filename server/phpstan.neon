@@ -4,5 +4,11 @@ parameters:
 		- bin/
 		- public/
 		- src/
+	symfony:
+		containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml
+	scanFiles:
+		- vendor/symfony/dependency-injection/Loader/Configurator/ContainerConfigurator.php
 	excludePaths:
 		- src/Infrastructure/Fixture/
+	scanDirectories:
+		- var/cache/dev/Symfony/Config
