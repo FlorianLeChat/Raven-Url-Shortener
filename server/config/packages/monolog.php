@@ -11,12 +11,12 @@ use Symfony\Config\MonologConfig;
  * Paramétrage pour le composant Logging de Symfony.
  * @see https://symfony.com/doc/current/logging.html
  */
-return static function (MonologConfig $monolog, string $env): void
+return static function (MonologConfig $monolog, ContainerConfigurator $container): void
 {
 	// Capture des événements sur tous les canaux.
-	$mainHandler = $monolog->handler('main')
+	$mainHandler = $monolog->handler('main_handler')
 		->type('fingers_crossed')
-		->handler('rotation')
+		->handler('rotation_handler')
 		->actionLevel(LogLevel::DEBUG);
 
 	$mainHandler->channels()
@@ -28,52 +28,47 @@ return static function (MonologConfig $monolog, string $env): void
 		->code(429);
 
 	// Rotation des journaux des événements.
-	$rotationHandler = $monolog->handler('rotation')
+	$rotationHandler = $monolog->handler('rotation_handler')
 		->type('rotating_file')
 		->level(LogLevel::DEBUG)
 		->maxFiles(14)
 		->filenameFormat('{date}');
 
 	// Journalisation de la sortie standard.
-	$monologHandler = $monolog->handler('console')
+	$monologHandler = $monolog->handler('console_handler')
 		->type('console')
 		->processPsr3Messages(false);
 
 	$monologHandler->channels()
 		->elements(['!event', '!doctrine']);
 
-	if ($env === 'prod')
+	if ($container->env() === 'prod')
 	{
-		// En production, on déclenche l'enregistrement des journaux
-		//  uniquement lorsqu'une erreur survient.
+		// Ajout d'une mémoire tampon pour les messages de journalisation
+		//  et modification du niveau d'action.
 		$mainHandler->bufferSize(50);
-		$mainHandler->actionLevel(LogLevel::ERROR);
+		$mainHandler->actionLevel(LogLevel::INFO);
 
-		if (getenv('SMTP_ENABLED') === 'true')
-		{
-			// Si le serveur SMTP est activé, on envoie procède à la
-			//  déduplication des messages et on les envoie par courriel.
-			// Source : https://symfony.com/doc/current/logging/monolog_email.html
-			$mainHandler->handler('grouped');
+		$rotationHandler->level(LogLevel::INFO);
 
-			$monolog->handler('grouped')
-				->type('group')
-				->members(['rotation', 'deduplication']);
+		// Envoi des erreurs critiques par courriel avec déduplication.
+		// Source : https://symfony.com/doc/current/logging/monolog_email.html
+		$monolog->handler('critical_handler')
+			->type('fingers_crossed')
+			->handler('deduplication_handler')
+			->actionLevel(LogLevel::CRITICAL);
 
-			$rotationHandler->level(LogLevel::INFO);
+		$monolog->handler('deduplication_handler')
+			->type('deduplication')
+			->handler('symfony_mailer');
 
-			$monolog->handler('deduplication')
-				->type('deduplication')
-				->time(300)
-				->handler('symfony_mailer');
-
-			$monolog->handler('symfony_mailer')
-				->type('symfony_mailer')
-				->level(LogLevel::DEBUG)
-				->subject('An Error Occurred! %%message%%')
-				->toEmail('%env(SMTP_USERNAME)%')
-				->fromEmail('%env(SMTP_USERNAME)%')
-				->contentType('text/html');
-		}
+		$monolog->handler('symfony_mailer')
+			->type('symfony_mailer')
+			->level(LogLevel::INFO)
+			->subject('An Error Occurred! %%message%%')
+			->toEmail('%env(SMTP_USERNAME)%')
+			->fromEmail('%env(SMTP_USERNAME)%')
+			->formatter('monolog.formatter.html')
+			->contentType('text/html');
 	}
 };

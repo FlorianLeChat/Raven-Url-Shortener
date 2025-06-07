@@ -46,6 +46,12 @@ final class ExceptionListener
 			'message' => $exception->getMessage()
 		];
 
+		$this->logger->critical($exception->getMessage(), [
+			'file' => $exception->getFile(),
+			'line' => $exception->getLine(),
+			'code' => $exception->getCode()
+		]);
+
 		$this->response->setData($data);
 		$this->response->setStatusCode(JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
 	}
@@ -65,6 +71,13 @@ final class ExceptionListener
 			$data['errors'] = $exception->getViolations();
 		}
 
+		$this->logger->error($exception->getMessage(), [
+			'file' => $exception->getFile(),
+			'line' => $exception->getLine(),
+			'code' => $exception->getCode(),
+			'data' => $exception instanceof DataValidationException ? $exception->getViolations() : []
+		]);
+
 		$this->response->setData($data);
 		$this->response->setStatusCode($exception->getStatusCode());
 		$this->response->headers->replace($exception->getHeaders());
@@ -79,14 +92,6 @@ final class ExceptionListener
 		$this->event = $event;
 
 		$exception = $event->getThrowable();
-
-		$this->logger->error($exception->getMessage(), [
-			'file' => $exception->getFile(),
-			'line' => $exception->getLine(),
-			'code' => $exception->getCode(),
-			'data' => $exception instanceof DataValidationException ? $exception->getViolations() : []
-		]);
-
 		$exception instanceof HttpException
 			? $this->handleHttpException($exception)
 			: $this->handleInternalException($exception);
