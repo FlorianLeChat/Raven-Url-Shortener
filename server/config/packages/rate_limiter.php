@@ -10,9 +10,9 @@ use Symfony\Config\FrameworkConfig;
  * Paramétrage pour le composant Rate Limiter de Symfony.
  * @see https://symfony.com/doc/current/rate_limiter.html
  */
-return static function (FrameworkConfig $framework, string $env): void
+return static function (FrameworkConfig $framework, ContainerConfigurator $container): void
 {
-	if ($env === 'prod')
+	if ($container->env() === 'prod')
 	{
 		$limiter = $framework->rateLimiter();
 

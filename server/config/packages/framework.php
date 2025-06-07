@@ -10,17 +10,18 @@ use Symfony\Config\FrameworkConfig;
  * Paramétrage général du framework Symfony.
  * @see https://symfony.com/doc/current/configuration.html
  */
-return static function (FrameworkConfig $framework, string $env): void
+return static function (FrameworkConfig $framework, ContainerConfigurator $configuration): void
 {
+	$runtime = $configuration->env();
 	$framework->secret('%env(APP_SECRET)%');
 
-	if ($env === 'test')
+	if ($runtime === 'test')
 	{
 		$framework->test(true);
 		return;
 	}
 
-	if ($env === 'prod')
+	if ($runtime === 'prod')
 	{
 		$framework->httpCache()->enabled(true);
 	}

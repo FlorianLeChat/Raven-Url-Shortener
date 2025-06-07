@@ -10,11 +10,11 @@ use Symfony\Config\FrameworkConfig;
  * Paramétrage pour le composant Cache de Symfony.
  * @see https://symfony.com/doc/current/cache.html
  */
-return static function (FrameworkConfig $framework, string $env): void
+return static function (FrameworkConfig $framework, ContainerConfigurator $container): void
 {
 	$cache = $framework->cache();
 
-	if ($env === 'test')
+	if ($container->env() === 'test')
 	{
 		$cache->app('cache.adapter.filesystem');
 		return;

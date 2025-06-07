@@ -10,7 +10,7 @@ use Symfony\Config\NelmioApiDocConfig;
  * Paramétrage pour le composant NelmioApiDocBundle de Symfony.
  * @see https://symfony.com/bundles/NelmioApiDocBundle/current/index.html
  */
-return static function (NelmioApiDocConfig $nelmioApiDoc, string $env)
+return static function (NelmioApiDocConfig $nelmioApiDoc, ContainerConfigurator $container)
 {
     // Activation des supports pour les types de données.
     $nelmioApiDoc->typeInfo(true);
@@ -57,7 +57,7 @@ return static function (NelmioApiDocConfig $nelmioApiDoc, string $env)
 		],
 	]);
 
-	if ($env === 'prod')
+	if ($container->env() === 'prod')
 	{
 		// Mise en cache de la documentation pour la production.
 		$nelmioApiDoc->cache([

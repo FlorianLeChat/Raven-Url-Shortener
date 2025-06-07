@@ -16,6 +16,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 /**
  * Commande pour la génération d'un résumé des signalements d'utilisateurs.
@@ -28,6 +29,7 @@ final class UserReportSummary extends Command
 	 */
 	public function __construct(
 		private readonly MailerInterface $mailer,
+		private readonly ParameterBagInterface $parameterBag,
 		private readonly EntityManagerInterface $entityManager
 	) {
 		parent::__construct();
@@ -38,7 +40,7 @@ final class UserReportSummary extends Command
 	 */
 	private function createEmail(int $count): Email
 	{
-		$recipient = getenv('SMTP_USERNAME') ?: '';
+		$recipient = $this->parameterBag->get('smtp.username');
 
 		return (new Email())
 			->to(new Address($recipient))
@@ -73,18 +75,17 @@ final class UserReportSummary extends Command
 	 */
 	private function signEmailWithDkim(Email $email, SymfonyStyle $io): ?Message
 	{
-		if (getenv('DKIM_ENABLED') !== 'true')
+		if (!$this->parameterBag->get('dkim.enabled'))
 		{
 			$io->warning('DKIM signing is disabled.');
 			return null;
 		}
 
 		try {
-			$path = getenv('DKIM_PRIVATE_KEY') ?: '';
 			$signer = new DkimSigner(
-				$path,
-				getenv('DKIM_DOMAIN') ?: '',
-				getenv('DKIM_SELECTOR') ?: ''
+				$this->parameterBag->get('dkim.private_key'),
+				$this->parameterBag->get('dkim.domain'),
+				$this->parameterBag->get('dkim.selector')
 			);
 
 			$io->success('Email signed with DKIM.');
@@ -108,7 +109,7 @@ final class UserReportSummary extends Command
 		$io = new SymfonyStyle($input, $output);
 		$io->title(sprintf('Summary of %d user report(s)', $count));
 
-		if (getenv('SMTP_ENABLED') !== 'true')
+		if (!$this->parameterBag->get('smtp.enabled'))
 		{
 			$io->error('SMTP is disabled.');
 			return Command::SUCCESS; // Ce n'est pas une erreur, car le service est désactivé.

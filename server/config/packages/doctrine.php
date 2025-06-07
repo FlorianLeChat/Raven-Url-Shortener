@@ -10,15 +10,16 @@ use Symfony\Config\DoctrineConfig;
  * Paramétrage pour l'intégration Doctrine avec Symfony.
  * @see https://symfony.com/doc/current/doctrine.html
  */
-return static function (DoctrineConfig $config, string $env): void
+return static function (DoctrineConfig $config, ContainerConfigurator $container): void
 {
+	$runtime = $container->env();
 	$dbalConfig = $config->dbal()->connection('default')
 		->url('%env(DATABASE_TYPE)%://%env(DATABASE_USERNAME)%:%env(DATABASE_PASSWORD)%@%env(DATABASE_HOST)%:%env(DATABASE_PORT)%/%env(DATABASE_NAME)%')
 		->useSavepoints(true)
 		->serverVersion('%env(DATABASE_VERSION)%')
 		->profilingCollectBacktrace('%kernel.debug%');
 
-	if ($env === 'test')
+	if ($runtime === 'test')
 	{
 		$dbalConfig
 			->url('sqlite:///%kernel.project_dir%/var/data.db')
@@ -37,7 +38,7 @@ return static function (DoctrineConfig $config, string $env): void
 		->alias('App')
 		->prefix('App\\Domain\\Entity');
 
-	if ($env === 'prod')
+	if ($runtime === 'prod')
 	{
 		$entityManagerConfig->metadataCacheDriver()
 			->type('pool')
