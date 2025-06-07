@@ -7,7 +7,15 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-const ASCII_INDEX = <<<EOT
+/**
+ * Action pour la page d'accueil du serveur.
+ */
+final class ServerIndexAction extends AbstractController
+{
+	/**
+	 * Art ASCII pour la page d'accueil du serveur.
+	 */
+	private const ASCII_INDEX = <<<EOT
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: ____                                     _   _          _     ____    _                      _                                 ::
@@ -24,11 +32,6 @@ Ready to handle requests.
 API documentation available at https://url.florian-dev.fr/api/docs.
 EOT;
 
-/**
- * Action pour la page d'accueil du serveur.
- */
-final class ServerIndexAction extends AbstractController
-{
 	/**
 	 * Récupération de l'état de santé du serveur.
 	 */
@@ -41,7 +44,7 @@ final class ServerIndexAction extends AbstractController
 		$executionTime = round(($currentTime - $requestTime) * 1000, 3);
 
 		return new Response(
-			sprintf(ASCII_INDEX, $executionTime),
+			sprintf(self::ASCII_INDEX, $executionTime),
 			Response::HTTP_OK,
 			[
 				'Content-Type' => 'text/plain; charset=utf-8'

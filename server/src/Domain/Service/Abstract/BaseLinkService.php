@@ -2,6 +2,7 @@
 
 namespace App\Domain\Service\Abstract;
 
+use App\Kernel;
 use App\Domain\Entity\Link;
 use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -14,8 +15,6 @@ use App\Infrastructure\Exception\DataValidationException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
-
-use const App\LOG_FUNCTION;
 
 /**
  * Classe abstraite pour les services de liens raccourcis.
@@ -47,7 +46,7 @@ abstract class BaseLinkService
 	 */
 	protected function validateLink(Link $link): void
 	{
-		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+		$this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
 		$errors = [];
 		$violations = $this->validator->validate($link);
@@ -88,7 +87,7 @@ abstract class BaseLinkService
 	 */
 	protected function checkUrl(string $url): void
 	{
-		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+		$this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
 		try {
 			$errors = [];
@@ -126,7 +125,7 @@ abstract class BaseLinkService
 	 */
 	protected function checkSlug(string $slug): void
 	{
-		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+		$this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
 		$result = $this->repository->findOneBy(['slug' => $slug]);
 
@@ -148,7 +147,7 @@ abstract class BaseLinkService
 	 */
 	protected function checkEnabled(Link $link): void
 	{
-		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+		$this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
 		if (!$link->isEnabled())
 		{
@@ -161,7 +160,7 @@ abstract class BaseLinkService
 	 */
 	protected function checkForReports(Link $link): void
 	{
-		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+		$this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
 		$reports = $link->getReports();
 
@@ -176,7 +175,7 @@ abstract class BaseLinkService
 	 */
 	protected function checkApiKey(Link $link, Request $request): void
 	{
-		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+		$this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
 		$apiKey = $request->headers->get('Authorization');
 
@@ -206,7 +205,7 @@ abstract class BaseLinkService
 	 */
 	protected function createRandomSlug(): string
 	{
-		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+		$this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
 		$slug = '';
 		$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';

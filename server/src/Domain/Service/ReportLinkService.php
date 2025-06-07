@@ -2,6 +2,7 @@
 
 namespace App\Domain\Service;
 
+use App\Kernel;
 use App\Domain\Entity\Link;
 use Psr\Log\LoggerInterface;
 use App\Domain\Entity\Report;
@@ -14,8 +15,6 @@ use App\Infrastructure\Exception\DataValidationException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-
-use const App\LOG_FUNCTION;
 
 /**
  * Service de signalement de liens raccourcis.
@@ -45,7 +44,7 @@ final class ReportLinkService
 	 */
 	private function validateReport(Report $report): void
 	{
-		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+		$this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
 		$errors = [];
 		$violations = $this->validator->validate($report);
@@ -69,7 +68,7 @@ final class ReportLinkService
 	 */
 	protected function checkReportExists(string $email): void
 	{
-		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+		$this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
 		$result = $this->repository->findOneBy(['link' => $this->link, 'email' => $email]);
 
@@ -84,7 +83,7 @@ final class ReportLinkService
 	 */
 	private function checkTrustedLink(Link $link): void
 	{
-		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+		$this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
 		if ($link->isTrusted())
 		{
@@ -97,7 +96,7 @@ final class ReportLinkService
 	 */
 	public function createReport(Request $request): Report
 	{
-		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+		$this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
 		$this->checkTrustedLink($this->link);
 

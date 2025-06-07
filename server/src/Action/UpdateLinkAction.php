@@ -2,6 +2,7 @@
 
 namespace App\Action;
 
+use App\Kernel;
 use App\Domain\Entity\Link;
 use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -14,8 +15,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
-use const App\LOG_FUNCTION;
 
 /**
  * Action pour la mise à jour d'un lien raccourci.
@@ -41,7 +40,7 @@ final class UpdateLinkAction extends AbstractController
 	#[Route('/link/{slug}', methods: ['PATCH'], requirements: ['slug' => Requirement::ASCII_SLUG])]
 	public function patchLink(Request $request, Link $link): JsonResponse
 	{
-		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+		$this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
 		$service = new UpdateLinkService(
 			$link,
@@ -64,7 +63,7 @@ final class UpdateLinkAction extends AbstractController
 	#[Route('/link/{slug}', methods: ['PUT'], requirements: ['slug' => Requirement::ASCII_SLUG])]
 	public function replaceLink(Request $request, Link $link): JsonResponse
 	{
-		$this->logger->info(sprintf(LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+		$this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
 		$service = new UpdateLinkService(
 			$link,
