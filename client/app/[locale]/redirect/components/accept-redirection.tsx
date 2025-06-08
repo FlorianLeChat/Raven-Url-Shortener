@@ -5,6 +5,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { setCookie } from "@/utilities/cookie";
 import { Button,
 	Dropdown,
 	ButtonGroup,
@@ -13,12 +14,10 @@ import { Button,
 	DropdownTrigger,
 	type SharedSelection } from "@heroui/react";
 import { useTranslations } from "next-intl";
-import { Check, ChevronDownIcon } from "lucide-react";
 import type { LinkProperties } from "@/interfaces/LinkProperties";
+import { Check, ChevronDownIcon } from "lucide-react";
 
-export default function AcceptRedirection( {
-	details
-}: Readonly<{ details: LinkProperties }> )
+export default function AcceptRedirection( { details }: Readonly<{ details: LinkProperties }> )
 {
 	// Déclaration des variables d'état.
 	const router = useRouter();
@@ -27,30 +26,31 @@ export default function AcceptRedirection( {
 	// Fonction de gestion de l'acceptation de la redirection.
 	const onAcceptRedirection = ( selection: SharedSelection ) =>
 	{
-		// Chrome bloque les cookies ayant une date d'expiration supérieure à 400 jours.
-		// https://developer.chrome.com/blog/cookie-max-age-expires
-		const date = new Date();
-		date.setFullYear( date.getFullYear() + 1 );
-
-		const cookie = `NEXT_REDIRECTION=true; expires=${ date.toUTCString() }; Secure; SameSite=Lax`;
-
 		if ( selection.currentKey === "only-this-url" )
 		{
 			// Si la redirection n'est acceptée que pour cette URL, on ajoute le cookie
 			//  uniquement pour le chemin de l'URL avec son identifiant unique et son slug.
-			document.cookie = `${ cookie }; path=/${ details.id }`;
+			setCookie( {
+				name: "NEXT_REDIRECTION",
+				value: "true",
+				path: `/${ details.id }`
+			} );
 
-			if ( details.slug )
-			{
-				document.cookie = `${ cookie }; path=/${ details.slug }`;
-			}
+			setCookie( {
+				name: "NEXT_REDIRECTION",
+				value: "true",
+				path: `/${ details.slug }`
+			} );
 		}
 
 		if ( selection.currentKey === "all-url" )
 		{
 			// Si toutes les redirections ont acceptées, on ajoute le cookie à la racine
 			//  du domaine pour couvrir toutes les URL.
-			document.cookie = `${ cookie }; path=/`;
+			setCookie( {
+				name: "NEXT_REDIRECTION",
+				value: "true"
+			} );
 		}
 
 		router.push( details.url );

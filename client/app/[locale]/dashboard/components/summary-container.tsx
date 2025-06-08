@@ -15,6 +15,7 @@ import { Card,
 	CardHeader,
 	CardFooter } from "@heroui/react";
 import { useRouter } from "next/navigation";
+import { setCookie } from "@/utilities/cookie";
 import { formatDate } from "@/utilities/date";
 import { QrCode,
 	Terminal,
@@ -78,6 +79,20 @@ export default function SummaryContainer( {
 			color: "success",
 			timeout: 10000,
 			description: messages( "api_key.description" )
+		} );
+
+		// Enregistrement de la clé API dans les cookies
+		//  pour une utilisation ultérieure.
+		setCookie( {
+			name: "NEXT_API_KEY",
+			path: "/dashboard/" + details.id,
+			value: details.apiKey
+		} );
+
+		setCookie( {
+			name: "NEXT_API_KEY",
+			path: "/dashboard/" + details.slug,
+			value: details.apiKey
 		} );
 	};
 
