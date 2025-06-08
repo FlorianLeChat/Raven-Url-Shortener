@@ -35,12 +35,16 @@ services:
     # https://hub.docker.com/r/dpage/pgadmin4/
     pgadmin:
         image: dpage/pgadmin4:latest
+        volumes:
+            - ./server/docker/services/pgadmin:/var/lib/pgadmin
         depends_on:
             postgres:
                 condition: service_healthy
         environment:
             PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
             PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+            PGADMIN_CONFIG_SERVER_MODE: "False"
+            PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
         healthcheck:
             test: wget -O - http://localhost
             retries: 3
