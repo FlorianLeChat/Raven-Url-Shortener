@@ -94,6 +94,33 @@ final class ReportLinkActionTest extends WebTestCase
 	}
 
 	/**
+	 * Test de création d'un signalement pour un lien avec le nombre maximum de signalements atteint.
+	 */
+	public function testReportMaximumReached(): void
+	{
+		for ($i = 0; $i < 3; $i++)
+		{
+			$this->client->request('POST', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d9/report', [
+				'reason' => 'Inappropriate content ' . $i,
+			]);
+
+			$this->assertResponseIsSuccessful();
+			$this->assertJson($this->client->getResponse()->getContent());
+		}
+
+		$this->client->request('POST', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d9/report', [
+			'reason' => 'Inappropriate content',
+		]);
+
+		$this->assertResponseStatusCodeSame(Response::HTTP_TOO_MANY_REQUESTS);
+
+		$content = $this->client->getResponse()->getContent();
+
+		$this->assertJson($content);
+		$this->assertJsonStringEqualsJsonString('{"code":429,"message":"The maximum number of reports for this link has been reached (3). It cannot be reported again."}', $content);
+	}
+
+	/**
 	 * Test de création d'un signalement avec succès.
 	 */
     public function testReportSuccessfully(): void
