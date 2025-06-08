@@ -45,7 +45,7 @@ final class CreateLinkActionTest extends WebTestCase
 	/**
 	 * Test de création d'un lien raccourci sans fournir d'URL.
 	 */
-    public function testCreateLinkWithNoUrl(): void
+	public function testCreateLinkWithNoUrl(): void
 	{
 		$this->client->request('POST', '/api/v1/link');
 
@@ -54,14 +54,14 @@ final class CreateLinkActionTest extends WebTestCase
 		$content = $this->client->getResponse()->getContent();
 
 		$this->assertJson($content);
-        $this->assertStringStartsWith('{"code":400,"message":"An error occurred during data validation."', $content);
+		$this->assertStringStartsWith('{"code":400,"message":"An error occurred during data validation."', $content);
 		$this->assertStringContainsString('IS_BLANK_ERROR', $content);
 	}
 
 	/**
 	 * Test de création d'un lien raccourci avec un slug personnalisé existant.
 	 */
-    public function testCreateLinkWithExistingSlug(): void
+	public function testCreateLinkWithExistingSlug(): void
 	{
 		$this->client->request('POST', '/api/v1/link', [
 			'url' => 'https://www.google.com/',
@@ -73,7 +73,7 @@ final class CreateLinkActionTest extends WebTestCase
 		$content = $this->client->getResponse()->getContent();
 
 		$this->assertJson($content);
-        $this->assertStringStartsWith('{"code":400,"message":"An error occurred during data validation."', $content);
+		$this->assertStringStartsWith('{"code":400,"message":"An error occurred during data validation."', $content);
 		$this->assertStringContainsString('DUPLICATE_SLUG_ERROR', $content);
 	}
 
@@ -81,7 +81,7 @@ final class CreateLinkActionTest extends WebTestCase
 	 * Test de création d'un lien raccourci avec des dates d'expiration
 	 *  trop anciennes ou trop récentes.
 	 */
-    public function testCreateLinkWithInvalidExpirationDate(): void
+	public function testCreateLinkWithInvalidExpirationDate(): void
 	{
 		// Date trop ancienne.
 		$this->client->request('POST', '/api/v1/link', [
@@ -94,7 +94,7 @@ final class CreateLinkActionTest extends WebTestCase
 		$content = $this->client->getResponse()->getContent();
 
 		$this->assertJson($content);
-        $this->assertStringStartsWith('{"code":400,"message":"An error occurred during data validation."', $content);
+		$this->assertStringStartsWith('{"code":400,"message":"An error occurred during data validation."', $content);
 		$this->assertStringContainsString('NOT_IN_RANGE_ERROR', $content);
 
 		// Date trop récente.
@@ -115,7 +115,7 @@ final class CreateLinkActionTest extends WebTestCase
 	 * Test de création d'un lien raccourci avec une URL
 	 *  inaccessible sur Internet.
 	 */
-    public function testCreateLinkWithUnreachableUrl(): void
+	public function testCreateLinkWithUnreachableUrl(): void
 	{
 		$this->client->request('POST', '/api/v1/link', [
 			'url' => 'https://unreachable.example.com'
@@ -133,7 +133,7 @@ final class CreateLinkActionTest extends WebTestCase
 	/**
 	 * Test de création d'un lien raccourci avec succès.
 	 */
-    public function testCreateLinkSuccessfully(): void
+	public function testCreateLinkSuccessfully(): void
 	{
 		$date = new DateTime('+1 week');
 
