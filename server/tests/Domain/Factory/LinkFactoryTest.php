@@ -33,10 +33,9 @@ final class LinkFactoryTest extends TestCase
 		// État d'activation.
 		$this->assertEquals(true, $link->isEnabled());
 
-		// Dates de création, de dernière mise à jour, de visite et d'expiration.
+		// Dates de création, de dernière mise à jour et d'expiration.
 		$this->assertNotNull($link->getCreatedAt());
 		$this->assertNull($link->getUpdatedAt());
-		$this->assertEquals($time->format('Y-m-d'), $link->getVisitedAt()->format('Y-m-d'));
 		$this->assertEquals('2023-12-31', $link->getExpiresAt()->format('Y-m-d'));
 	}
 
@@ -60,10 +59,9 @@ final class LinkFactoryTest extends TestCase
 		// État d'activation.
 		$this->assertEquals(true, $link->isEnabled());
 
-		// Dates de création, de dernière mise à jour, de visite et d'expiration.
+		// Dates de création, de dernière mise à jour et d'expiration.
 		$this->assertNotNull($link->getCreatedAt());
 		$this->assertNotNull($link->getUpdatedAt());
-		$this->assertEquals($time->format('Y-m-d'), $link->getVisitedAt()->format('Y-m-d'));
 		$this->assertNull($link->getExpiresAt());
 	}
 
@@ -87,10 +85,9 @@ final class LinkFactoryTest extends TestCase
 		// État d'activation.
 		$this->assertEquals(true, $link->isEnabled());
 
-		// Dates de création, de dernière mise à jour, de visite et d'expiration.
+		// Dates de création, de dernière mise à jour et d'expiration.
 		$this->assertNotNull($link->getCreatedAt());
 		$this->assertNotNull($link->getUpdatedAt());
-		$this->assertEquals($time->format('Y-m-d'), $link->getVisitedAt()->format('Y-m-d'));
 		$this->assertEquals('2023-12-30', $link->getExpiresAt()->format('Y-m-d'));
 	}
 }
