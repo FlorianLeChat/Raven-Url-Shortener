@@ -19,9 +19,15 @@ final class GetLinkDetailsService extends BaseLinkService
 	{
 		$this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
+		// Enregistrement de la visite du lien,
+		//  mais renvoi des informations avant la mise à jour
+		$currentDate = $link->getVisitedAt();
+
 		$link->setVisitedAt(new DateTimeImmutable());
 
 		$this->repository->save($link, true);
+
+		$link->setVisitedAt($currentDate);
 
 		return $link;
 	}

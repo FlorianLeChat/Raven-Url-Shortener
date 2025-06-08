@@ -24,6 +24,9 @@ export interface LinkProperties
 	// Code QR du lien.
 	qrCode: string | null | undefined;
 
+	// Clé API associée au lien.
+	apiKey: string | null | undefined;
+
 	// Date d'expiration du lien.
 	expiration: string | null | undefined;
 

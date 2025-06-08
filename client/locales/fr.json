@@ -127,8 +127,13 @@
 		"back_to_dashboard": "Retour au tableau de bord",
 		"access_to_link": "Accéder au lien raccourci",
 		"download_qr_code": "Télécharger le code QR",
+		"copy_api_key": "Copier la clé API",
 		"links_label": "Liens à votre disposition",
 		"links_description": "Ces liens Internet sont disponibles pour toute la durée de vie de votre lien raccourci.<br></br>Les liens qui n'ont pas été visités pendant une année seront automatiquement supprimés.",
+		"api_key": {
+			"title": "Clé API copiée dans le presse-papiers",
+			"description": "Vous pouvez l'utiliser pour accéder à l'API de gestion de votre lien raccourci. Assurez-vous de la conserver en lieu sûr."
+		},
 		"actions": {
 			"title": "Actions disponibles",
 			"wip": "Ces options sont en cours de développement. Elles seront disponibles prochainement.",

@@ -44,6 +44,7 @@ export default function CheckboxOptions()
 				{/* Sécurisation par mot de passe */}
 				<Checkbox
 					name="password-protection"
+					value="true"
 					className="m-0 mt-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
 					aria-label={messages( "security.options.password.label" )}
 				>
@@ -65,6 +66,7 @@ export default function CheckboxOptions()
 				{/* Accès via un serveur proxy */}
 				<Checkbox
 					name="proxy-server"
+					value="true"
 					className="m-0 mb-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
 					aria-label={messages( "security.options.proxy.label" )}
 				>
@@ -78,6 +80,7 @@ export default function CheckboxOptions()
 				{/* Gestion via API */}
 				<Checkbox
 					name="api-management"
+					value="true"
 					className="m-0 mb-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
 					aria-label={messages( "security.options.api.label" )}
 				>
@@ -119,6 +122,7 @@ export default function CheckboxOptions()
 				{/* Comptage du nombre d'accès */}
 				<Checkbox
 					name="clicks-views"
+					value="true"
 					className="m-0 mt-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
 					aria-label={messages( "statistics.options.access_count.label" )}
 				>
@@ -132,6 +136,7 @@ export default function CheckboxOptions()
 				{/* Récupération des données des visiteurs */}
 				<Checkbox
 					name="client-data"
+					value="true"
 					className="m-0 my-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
 					aria-label={messages( "statistics.options.visitor_data.label" )}
 				>
@@ -159,6 +164,7 @@ export default function CheckboxOptions()
 				{/* Mise en cache de la page */}
 				<Checkbox
 					name="cache-page"
+					value="true"
 					className="m-0 mb-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
 					aria-label={messages( "performance.options.cache.label" )}
 				>
