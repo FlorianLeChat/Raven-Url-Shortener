@@ -38,8 +38,6 @@ services:
     pgadmin:
         image: dpage/pgadmin4:latest
         restart: always
-        volumes:
-            - ./server/docker/services/pgadmin:/var/lib/pgadmin
         depends_on:
             postgres:
                 condition: service_healthy
