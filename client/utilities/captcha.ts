@@ -5,7 +5,7 @@
 
 "use client";
 
-import { solveChallenge } from "altcha-lib";
+import { solveChallengeWorkers } from "altcha-lib";
 import { generateCaptchaChallenge } from "../app/[locale]/dashboard/actions/check-captcha";
 
 export const solveCaptchaChallenge = async () =>
@@ -28,23 +28,22 @@ export const solveCaptchaChallenge = async () =>
 	console.log( "Generated CAPTCHA challenge" );
 	console.table( challenge );
 
-	const solver = solveChallenge(
+	const solution = await solveChallengeWorkers(
+		() => new Worker( new URL( "altcha-lib/worker", import.meta.url ) ),
+		navigator.hardwareConcurrency,
 		challenge.challenge,
 		challenge.salt,
 		challenge.algorithm,
 		challenge.maxnumber
 	);
 
-	// Attente de la résolution du défi.
-	const answer = await solver.promise;
-
 	console.log( "Solving CAPTCHA challenge" );
-	console.table( answer );
+	console.table( solution );
 
 	// Transmission de la solution CAPTCHA.
 	return {
 		salt: challenge.salt,
-		number: answer?.number ?? 0,
+		number: solution?.number ?? 0,
 		algorithm: challenge.algorithm,
 		challenge: challenge.challenge,
 		signature: challenge.signature
