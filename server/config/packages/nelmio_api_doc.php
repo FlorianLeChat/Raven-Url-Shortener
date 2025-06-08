@@ -23,8 +23,14 @@ return static function (NelmioApiDocConfig $nelmioApiDoc, ContainerConfigurator 
     // Informations générales sur l'API.
     $documentation = $nelmioApiDoc->documentation('info', [
 		'title' => 'Raven Url Shortener',
-		'description' => 'This is the API documentation for the Raven Url Shortener.',
 		'version' => '1.0.0',
+		'description' => 'This is the documentation for the Raven Url Shortener API.<br /><br />
+			<strong>By using this service, you accept our legal notice, which can be found <a href="https://url.florian-dev.fr/legal">here</a>.</strong><br />
+			All API endpoints are limited in number of requests to prevent abuse and ensure fair use.<br />
+			Current values are <strong>60 requests per minute</strong> for read operations and <strong>30 requests per minute</strong> for write operations.<br /><br />
+			<i>Please note that these limits may evolve according to the service usage and performance constraints.</i><br />
+			You are advised to contact an administrator at <q>contact@florian-dev.fr</q> if you wish to exceed these limits for your personal use.
+		'
 	]);
 
 	// Composants de la documentation.

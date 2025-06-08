@@ -49,7 +49,10 @@ return [
 				'content' => [
 					'application/json' => [
 						'schema' => [
-							'$ref' => '#/components/schemas/Link'
+							'type' => 'array',
+							'items' => [
+								'$ref' => '#/components/schemas/Link'
+							]
 						]
 					]
 				]
