@@ -15,12 +15,18 @@ use App\Infrastructure\Exception\DataValidationException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 /**
  * Service de signalement de liens raccourcis.
  */
 final class ReportLinkService
 {
+	/**
+	 * Nombre maximum de signalements autorisés par lien.
+	 */
+	private const MAX_REPORTS_PER_LINK = 3;
+
 	/**
 	 * Répertoire des méthodes pour les signalements de liens raccourcis.
 	 */
@@ -92,6 +98,23 @@ final class ReportLinkService
 	}
 
 	/**
+	 * Vérifie si le nombre maximum de signalements a été atteint pour le lien.
+	 */
+	private function checkMaximumReports(Link $link): void
+	{
+		$this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+
+		$reports = $this->repository->count(['link' => $link]);
+
+		if ($reports >= self::MAX_REPORTS_PER_LINK)
+		{
+			throw new TooManyRequestsHttpException(message: $this->translator->trans('report.maximum_reached', [
+				'%max%' => self::MAX_REPORTS_PER_LINK
+			]));
+		}
+	}
+
+	/**
 	 * Création d'un signalement.
 	 */
 	public function createReport(Request $request): Report
@@ -99,6 +122,7 @@ final class ReportLinkService
 		$this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
 		$this->checkTrustedLink($this->link);
+		$this->checkMaximumReports($this->link);
 
 		$payload = $request->getPayload();
 
