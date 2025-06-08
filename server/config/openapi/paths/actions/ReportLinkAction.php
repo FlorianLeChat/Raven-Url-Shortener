@@ -57,7 +57,6 @@ return [
 							'email' => [
 								'type' => 'string',
 								'format' => 'email',
-								'required' => false,
 								'description' => 'The email of the reporter.'
 							]
 						]
@@ -71,7 +70,10 @@ return [
 				'content' => [
 					'application/json' => [
 						'schema' => [
-							'$ref' => '#/components/schemas/Report'
+							'type' => 'array',
+							'items' => [
+								'$ref' => '#/components/schemas/Report'
+							]
 						]
 					]
 				]
