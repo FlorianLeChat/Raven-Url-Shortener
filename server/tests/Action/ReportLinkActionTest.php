@@ -44,7 +44,7 @@ final class ReportLinkActionTest extends WebTestCase
 	/**
 	 * Test de création d'un signalement sans fournir de raison.
 	 */
-    public function testReportWithNoReason(): void
+	public function testReportWithNoReason(): void
 	{
 		$this->client->request('POST', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d0/report');
 
@@ -53,7 +53,7 @@ final class ReportLinkActionTest extends WebTestCase
 		$content = $this->client->getResponse()->getContent();
 
 		$this->assertJson($content);
-        $this->assertStringStartsWith('{"code":400,"message":"An error occurred during data validation."', $content);
+		$this->assertStringStartsWith('{"code":400,"message":"An error occurred during data validation."', $content);
 		$this->assertStringContainsString('TOO_SHORT_ERROR', $content);
 	}
 
@@ -61,7 +61,7 @@ final class ReportLinkActionTest extends WebTestCase
 	 * Test de création d'un signalement avec une adresse
 	 *  électronique d'un utilisateur ayant déjà signalé le lien.
 	 */
-    public function testReportWithExistingEmail(): void
+	public function testReportWithExistingEmail(): void
 	{
 		$this->client->request('POST', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d5/report', [
 			'email' => 'johndoe@domain.com',
@@ -73,7 +73,7 @@ final class ReportLinkActionTest extends WebTestCase
 		$content = $this->client->getResponse()->getContent();
 
 		$this->assertJson($content);
-        $this->assertJsonStringEqualsJsonString('{"code":409,"message":"You have already reported this shortcut link, you cannot report it again."}', $content);
+		$this->assertJsonStringEqualsJsonString('{"code":409,"message":"You have already reported this shortcut link, you cannot report it again."}', $content);
 	}
 
 	/**
@@ -123,7 +123,7 @@ final class ReportLinkActionTest extends WebTestCase
 	/**
 	 * Test de création d'un signalement avec succès.
 	 */
-    public function testReportSuccessfully(): void
+	public function testReportSuccessfully(): void
 	{
 		$this->client->request('POST', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d9/report', [
 			'reason' => 'Inappropriate content',

@@ -45,7 +45,7 @@ final class GetLinkDetailsActionTest extends WebTestCase
 	 * Test de récupération des informations d'un lien raccourci
 	 *  sans fournir d'URL.
 	 */
-    public function testGetLinkDetailsWithNoUrl(): void
+	public function testGetLinkDetailsWithNoUrl(): void
 	{
 		$this->client->request('GET', '/api/v1/link');
 
@@ -56,7 +56,7 @@ final class GetLinkDetailsActionTest extends WebTestCase
 	 * Test de récupération des informations d'un lien raccourci
 	 *  avec un UUID invalide.
 	 */
-    public function testGetLinkDetailsWithInvalidUuid(): void
+	public function testGetLinkDetailsWithInvalidUuid(): void
 	{
 		$this->client->request('GET', '/api/v1/link/111b8c4-0a2d-4f3e-bb5f-7a9e6c3d8f1b');
 
@@ -67,7 +67,7 @@ final class GetLinkDetailsActionTest extends WebTestCase
 	 * Test de récupération des informations d'un lien raccourci
 	 *  avec un slug personnalisé invalide.
 	 */
-    public function testGetLinkDetailsWithInvalidSlug(): void
+	public function testGetLinkDetailsWithInvalidSlug(): void
 	{
 		$this->client->request('GET', '/api/v1/link/slug-not-found');
 
@@ -78,7 +78,7 @@ final class GetLinkDetailsActionTest extends WebTestCase
 	 * Test de récupération des informations d'un lien raccourci
 	 *  avec un UUID valide.
 	 */
-    public function testGetLinkDetailsWithValidUuid(): void
+	public function testGetLinkDetailsWithValidUuid(): void
 	{
 		$this->client->request('GET', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d9');
 
@@ -90,7 +90,7 @@ final class GetLinkDetailsActionTest extends WebTestCase
 	 * Test de récupération des informations d'un lien raccourci
 	 *  avec un slug personnalisé valide.
 	 */
-    public function testGetLinkDetailsWithValidSlug(): void
+	public function testGetLinkDetailsWithValidSlug(): void
 	{
 		$this->client->request('GET', '/api/v1/link/test1');
 
