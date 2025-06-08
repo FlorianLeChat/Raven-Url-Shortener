@@ -127,8 +127,13 @@
 		"back_to_dashboard": "Back to the dashboard",
 		"access_to_link": "Go to the shortened link",
 		"download_qr_code": "Download the QR code",
+		"copy_api_key": "Copy the API key",
 		"links_label": "Available URLs",
 		"links_description": "These URLs are available for the entire lifespan of your shortened link.<br></br>Links which have not been visited for one year will be automatically deleted.",
+		"api_key": {
+			"title": "API key copied to clipboard",
+			"description": "You can use it to access the management API of your shortened link. Make sure to keep it safe."
+		},
 		"actions": {
 			"title": "Available actions",
 			"wip": "These options are currently under development. They will be available soon.",

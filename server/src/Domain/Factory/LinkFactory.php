@@ -29,7 +29,6 @@ final class LinkFactory
 		$link->setUrl($url = trim($url));
 		$link->setSlug(trim($slug));
 		$link->setTrusted(TrustedDomains::isTrusted($url));
-		$link->setVisitedAt(new DateTimeImmutable());
 		$link->setExpiresAt(self::parseExpiration($expiration));
 
 		return $link;

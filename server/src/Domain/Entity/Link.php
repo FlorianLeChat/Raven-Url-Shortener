@@ -53,7 +53,7 @@ class Link
 	#[OA\Property(title: 'The last update date of the link')]
 	private ?DateTimeImmutable $updatedAt = null;
 
-	#[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
+	#[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE, nullable: true)]
 	#[OA\Property(title: 'The last visit date of the link')]
 	private ?DateTimeImmutable $visitedAt = null;
 
@@ -69,7 +69,7 @@ class Link
 
 	#[ORM\OneToOne(mappedBy: "link", targetEntity: ApiKey::class, orphanRemoval: true, cascade: ["persist", "remove"])]
 	#[OA\Property(title: 'The API key associated with the link')]
-	private ApiKey $apiKey;
+	private ?ApiKey $apiKey = null;
 
 	/**
 	 * Création des certaines propriétés de l'entité.
@@ -245,7 +245,7 @@ class Link
 	 * Conversion de l'entité en tableau.
 	 * @return array<string, mixed>
 	 */
-	public function toArray(bool $firstTime = false)
+	public function toArray()
 	{
 		$data = [
 			'id' => $this->getId(),
@@ -255,22 +255,19 @@ class Link
 			'trusted' => $this->isTrusted(),
 			'reported' => count($this->getReports()) > 0,
 			'createdAt' => $this->getCreatedAt(),
+			'updatedAt' => $this->getUpdatedAt(),
+			'visitedAt' => $this->getVisitedAt(),
 			'expiresAt' => $this->getExpiresAt()
 		];
 
-		if ($firstTime)
+		if ($this->getVisitedAt() === null)
 		{
-			// La clé API est affichée uniquement lors de la première création du lien
-			// et non lors de la récupération des informations du lien.
+			// La clé API est affichée uniquement lors de la première visite du lien,
+			//  pour éviter de l'exposer à chaque fois que l'on demande les informations du lien.
 			$data['apiKey'] = $this->getApiKey()?->getKey();
 
 			return $data;
 		}
-
-		// Lorsqu'on demande les informations d'un lien après sa création, on peut
-		//  supposer qu'il peut avoir été mis à jour ou visité.
-		$data['updatedAt'] = $this->getUpdatedAt();
-		$data['createdAt'] = $this->getCreatedAt();
 
 		return $data;
 	}

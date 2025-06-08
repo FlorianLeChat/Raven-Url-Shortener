@@ -10,12 +10,14 @@ import { Card,
 	Image,
 	Button,
 	Snippet,
+	addToast,
 	CardBody,
 	CardHeader,
 	CardFooter } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { formatDate } from "@/utilities/date";
 import { QrCode,
+	Terminal,
 	ArrowLeft,
 	CircleCheckBig,
 	SquareArrowOutUpRight } from "lucide-react";
@@ -59,6 +61,24 @@ export default function SummaryContainer( {
 		link.click();
 
 		document.body.removeChild( link );
+	};
+
+	// Copie de la clé API dans le presse-papiers.
+	const copyApiKey = async () =>
+	{
+		if ( !details.apiKey )
+		{
+			return;
+		}
+
+		await navigator.clipboard.writeText( details.apiKey );
+
+		addToast( {
+			title: messages( "api_key.title" ),
+			color: "success",
+			timeout: 10000,
+			description: messages( "api_key.description" )
+		} );
 	};
 
 	// Affichage du rendu HTML du composant.
@@ -159,6 +179,17 @@ export default function SummaryContainer( {
 					startContent={<QrCode />}
 				>
 					{messages( "download_qr_code" )}
+				</Button>
+
+				{/* Bouton de copie de la clé API */}
+				<Button
+					type="button"
+					variant="flat"
+					onPress={copyApiKey}
+					isDisabled={!details.apiKey}
+					startContent={<Terminal />}
+				>
+					{messages( "copy_api_key" )}
 				</Button>
 			</CardFooter>
 		</Card>
