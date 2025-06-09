@@ -4,7 +4,8 @@
 
 "use client";
 
-import { Modal,
+import { Form,
+	Modal,
 	Button,
 	ModalBody,
 	ModalHeader,
@@ -15,7 +16,8 @@ import { useMemo,
 	useContext,
 	useCallback,
 	createContext,
-	type ReactNode } from "react";
+	type ReactNode,
+	type FormEvent } from "react";
 import type { ModalOptionProps,
 	ModalResultProps,
 	ModalProviderProps } from "@/interfaces/ModalProperties";
@@ -28,24 +30,36 @@ export default function ModalProvider( {
 {
 	// Déclaration des variables d'état.
 	const [ modalState, setModalState ] = useState( {
-		body: <></>,
+		body: "" as ReactNode,
+		icon: "" as ReactNode,
 		size: "md",
-		title: <></>,
+		title: "",
 		isOpen: false,
+		onOpen: ( event: FormEvent<HTMLFormElement> ) =>
+		{
+			// Fonction de substitution pour l'ouverture de la boite de dialogue.
+			console.warn( "Modal opened without a handler.", event );
+		},
+		onClose: () =>
+		{
+			// Fonction de substitution pour la fermeture de la boite de dialogue.
+			console.warn( "Modal closed without a handler." );
+		},
 		resolve: ( result: { confirmed: boolean; dismissed: boolean } ) =>
 		{
-			// Fonction de résolution par défaut, qui ne fait rien.
-			// C'est utile seulement pour éviter les erreurs TypeScript.
+			// Fonction de substitution pour la résolution de la boite de dialogue.
 			console.warn( "Modal resolved without a handler.", result );
 		},
 		cancelText: "Cancel",
+		cancelColor: "default",
 		confirmText: "OK",
+		confirmColor: "primary",
 		isDismissable: true,
 		hideCloseButton: false,
 		isKeyboardDismissDisabled: true
 	} );
 
-	// Ouverture de la boite de dialogue avec une promesse.
+	// Ouverture de la boite de dialogue avec les options fournies.
 	const showModal = useCallback(
 		( options: ModalOptionProps ): Promise<ModalResultProps> =>
 		{
@@ -53,15 +67,24 @@ export default function ModalProvider( {
 			{
 				setModalState( {
 					body: options.body,
+					icon: options.icon,
 					size: options.size ?? "md",
 					title: options.title,
-					isOpen: true,
 					resolve,
-					confirmText: options.confirmText ?? "OK",
-					cancelText: options.cancelText ?? "Cancel",
-					isDismissable: options.isDismissable ?? true,
-					hideCloseButton: options.hideCloseButton ?? false,
-					isKeyboardDismissDisabled: options.isDismissable ?? false
+					isOpen: true,
+					onOpen: options.onOpen ?? handleConfirm,
+					onClose: options.onClose ?? handleCancel,
+					cancelText: options.cancelText ?? modalState.cancelText,
+					cancelColor: options.cancelColor ?? modalState.cancelColor,
+					confirmText: options.confirmText ?? modalState.confirmText,
+					confirmColor:
+						options.confirmColor ?? modalState.confirmColor,
+					isDismissable:
+						options.isDismissable ?? modalState.isDismissable,
+					hideCloseButton:
+						options.hideCloseButton ?? modalState.hideCloseButton,
+					isKeyboardDismissDisabled:
+						options.isDismissable ?? modalState.isDismissable
 				} );
 			} );
 		},
@@ -75,21 +98,42 @@ export default function ModalProvider( {
 	};
 
 	// Gestion de la confirmation de la boite de dialogue.
-	const handleConfirm = () =>
+	const handleConfirm = ( event: FormEvent<HTMLFormElement> ) =>
 	{
-		modalState.resolve( { confirmed: true, dismissed: false } );
+		event.preventDefault();
+
+		if ( modalState.onOpen )
+		{
+			modalState.onOpen( event );
+		}
+		else
+		{
+			modalState.resolve( { confirmed: true, dismissed: false } );
+		}
+
 		closeModal();
 	};
 
 	// Gestion de l'annulation de la boite de dialogue.
 	const handleCancel = () =>
 	{
-		modalState.resolve( { confirmed: false, dismissed: true } );
+		if ( modalState.onClose )
+		{
+			modalState.onClose();
+		}
+		else
+		{
+			modalState.resolve( { confirmed: false, dismissed: true } );
+		}
+
 		closeModal();
 	};
 
 	// Affichage du rendu HTML du composant.
-	const contextValue = useMemo( () => ( { showModal } ), [ showModal ] );
+	const contextValue = useMemo(
+		() => ( { showModal, closeModal } ),
+		[ showModal, closeModal ]
+	);
 
 	return (
 		<ModalContext.Provider value={contextValue}>
@@ -99,24 +143,38 @@ export default function ModalProvider( {
 				size={modalState.size as "md"}
 				isOpen={modalState.isOpen}
 				onClose={handleCancel}
+				backdrop="blur"
 				isDismissable={modalState.isDismissable}
 				hideCloseButton={modalState.hideCloseButton}
 				isKeyboardDismissDisabled={modalState.isKeyboardDismissDisabled}
 			>
 				<ModalContent>
-					<ModalHeader>{modalState.title}</ModalHeader>
+					<ModalHeader className="flex items-center gap-2">
+						{modalState.icon}
+						{modalState.title}
+					</ModalHeader>
 
-					<ModalBody>{modalState.body}</ModalBody>
+					<Form onSubmit={handleConfirm} validationBehavior="native">
+						<ModalBody>{modalState.body}</ModalBody>
 
-					<ModalFooter>
-						<Button variant="light" onPress={handleCancel}>
-							{modalState.cancelText}
-						</Button>
+						<ModalFooter>
+							<Button
+								type="button"
+								color={modalState.cancelColor as "default"}
+								variant="flat"
+								onPress={handleCancel}
+							>
+								{modalState.cancelText}
+							</Button>
 
-						<Button color="primary" onPress={handleConfirm}>
-							{modalState.confirmText}
-						</Button>
-					</ModalFooter>
+							<Button
+								type="submit"
+								color={modalState.confirmColor as "primary"}
+							>
+								{modalState.confirmText}
+							</Button>
+						</ModalFooter>
+					</Form>
 				</ModalContent>
 			</Modal>
 		</ModalContext.Provider>

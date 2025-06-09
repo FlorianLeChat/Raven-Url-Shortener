@@ -4,14 +4,9 @@
 
 "use client";
 
-import { Link,
-	Modal,
-	Button,
-	ModalBody,
-	ModalHeader,
-	ModalFooter,
-	ModalContent,
-	useDisclosure } from "@heroui/react";
+import { Link } from "@heroui/react";
+import { Scale } from "lucide-react";
+import { useModal } from "@/components/provider-modal";
 import { useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
@@ -22,52 +17,30 @@ export default function LegalConsent()
 	const router = useRouter();
 	const pathname = usePathname();
 	const messages = useTranslations( "index.consent" );
-	const { isOpen, onOpen, onClose } = useDisclosure();
+	const { showModal } = useModal();
 
 	// Redirection vers le tableau de bord si le consentement est accepté.
 	const onAcceptConsent = () =>
 	{
-		onClose();
-
 		localStorage.setItem( "NEXT_CONSENT", new Date().toISOString() );
 	};
 
 	// Redirection vers la page d'accueil si le consentement est refusé.
 	const onRefuseConsent = () =>
 	{
-		onClose();
-
 		if ( pathname !== "/" )
 		{
 			router.push( "/" );
 		}
 	};
 
-	// Détection du consentement de l'utilisateur.
-	useEffect( () =>
+	// Ouverture de la boite de dialogue de consentement.
+	const openConsentModal = () =>
 	{
-		if ( !localStorage.getItem( "NEXT_CONSENT" ) )
-		{
-			onOpen();
-		}
-	}, [ onOpen ] );
-
-	// Affichage du rendu HTML du composant
-	return (
-		<Modal
-			isOpen={isOpen}
-			onClose={onClose}
-			backdrop="blur"
-			isDismissable={false}
-			hideCloseButton
-			isKeyboardDismissDisabled
-		>
-			<ModalContent>
-				<ModalHeader className="flex flex-col gap-1">
-					{messages( "title" )}
-				</ModalHeader>
-
-				<ModalBody>
+		showModal( {
+			title: messages( "title" ),
+			body: (
+				<>
 					{messages( "description" )}
 					<Link
 						href="/legal"
@@ -77,18 +50,28 @@ export default function LegalConsent()
 					>
 						{messages( "button" )}
 					</Link>
-				</ModalBody>
+				</>
+			),
+			icon: <Scale />,
+			onOpen: onAcceptConsent,
+			onClose: onRefuseConsent,
+			cancelText: messages( "refuse" ),
+			confirmText: messages( "accept" ),
+			confirmColor: "success",
+			isDismissable: false,
+			hideCloseButton: true
+		} );
+	};
 
-				<ModalFooter>
-					<Button color="default" onPress={onRefuseConsent}>
-						{messages( "refuse" )}
-					</Button>
+	// Détection du consentement de l'utilisateur.
+	useEffect( () =>
+	{
+		if ( !localStorage.getItem( "NEXT_CONSENT" ) )
+		{
+			openConsentModal();
+		}
+	}, [] );
 
-					<Button color="success" onPress={onAcceptConsent}>
-						{messages( "accept" )}
-					</Button>
-				</ModalFooter>
-			</ModalContent>
-		</Modal>
-	);
+	// Affichage du rendu HTML du composant
+	return null;
 }
