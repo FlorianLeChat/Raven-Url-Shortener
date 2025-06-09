@@ -106,6 +106,12 @@ final class UserReportSummary extends Command
 		$reports = $repository->findAll();
 		$count = count($reports);
 
+		if ($count === 0)
+		{
+			$output->writeln('No user reports found.');
+			return Command::SUCCESS; // Pas d'erreur, juste pas de rapports à traiter.
+		}
+
 		$io = new SymfonyStyle($input, $output);
 		$io->title(sprintf('Summary of %d user report(s)', $count));
 
