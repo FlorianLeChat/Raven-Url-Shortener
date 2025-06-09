@@ -270,6 +270,12 @@
 							"domain": "Website",
 							"description": "Cookie set by the website.",
 							"expiration": "Expires after 1 year."
+						},
+						{
+							"name": "NEXT_API_KEY",
+							"domain": "Website",
+							"description": "Cookie set by the website.",
+							"expiration": "Expires after 1 year."
 						}
 					]
 				}
