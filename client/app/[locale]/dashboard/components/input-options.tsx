@@ -9,7 +9,7 @@ import { useTranslations } from "next-intl";
 import { lazy, useContext } from "react";
 import { DatePicker, Input } from "@heroui/react";
 import { getLocalTimeZone, now } from "@internationalized/date";
-import { ServerContext } from "@/components/server-provider";
+import { ServerContext } from "@/components/provider-server";
 
 const SlugValidation = lazy( () => import( "./slug-validation" ) );
 
