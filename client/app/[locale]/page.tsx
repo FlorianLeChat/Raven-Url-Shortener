@@ -16,7 +16,7 @@ import { fetchMetadata } from "@/utilities/metadata";
 
 // Importation des composants.
 const FeatureCard = lazy( () => import( "./components/feature-card" ) );
-const LegalConsent = lazy( () => import( "./components/legal-consent" ) );
+const LegalConsent = lazy( () => import( "./components/consent-legal" ) );
 const GatewayButton = lazy( () => import( "./components/gateway-button" ) );
 
 // Déclaration des propriétés de la page.

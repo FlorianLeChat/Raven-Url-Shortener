@@ -9,7 +9,7 @@ import { addToast, Input } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { useContext, useState } from "react";
 import type { ErrorProperties } from "@/interfaces/ErrorProperties";
-import { ServerContext } from "@/components/server-provider";
+import { ServerContext } from "@/components/provider-server";
 
 type SlugCheckResponse = ErrorProperties | {
 	available: boolean;

@@ -24,10 +24,10 @@ import { solveCaptchaChallenge } from "@/utilities/captcha";
 import { verifyCaptchaResolution } from "../actions/check-captcha";
 import { lazy, useContext, useRef, useState, type FormEvent } from "react";
 
-import { ServerContext } from "@/components/server-provider";
+import { ServerContext } from "@/components/provider-server";
 
 const InputOptions = lazy( () => import( "./input-options" ) );
-const LegalConsent = lazy( () => import( "@/components/legal-consent" ) );
+const LegalConsent = lazy( () => import( "@/components/consent-legal" ) );
 const CheckboxOptions = lazy( () => import( "./checkbox-options" ) );
 
 type CreateLinkResponse = LinkProperties | ErrorProperties;

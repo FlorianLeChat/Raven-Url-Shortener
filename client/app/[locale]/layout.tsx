@@ -11,9 +11,7 @@ import "../layout.css";
 import "vanilla-cookieconsent/dist/cookieconsent.css";
 
 // Importation des dépendances.
-import pick from "lodash/pick";
 import { Inter } from "next/font/google";
-import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { lazy, Suspense, type ReactNode } from "react";
 
@@ -23,16 +21,14 @@ import { getDomain,
 	getTimeZoneOffset } from "@/utilities/server";
 import { getLanguages } from "@/utilities/i18n";
 import { fetchMetadata } from "@/utilities/metadata";
-import { HeroUIProvider } from "@/utilities/hero-ui";
 
 // Importation des types.
 import type { Viewport } from "next";
 
 // Importation des composants.
-import ServerProvider from "@/components/server-provider";
-
-const Footer = lazy( () => import( "@/components/footer" ) );
-const CookieConsent = lazy( () => import( "@/components/cookie-consent" ) );
+const Footer = lazy( () => import( "@/components/global-footer" ) );
+const Providers = lazy( () => import( "@/components/global-providers" ) );
+const CookieConsent = lazy( () => import( "@/components/consent-cookie" ) );
 
 // Déclaration des paramètres d'affichage.
 export const viewport: Viewport = {
@@ -138,37 +134,20 @@ export default async function Layout( {
 				{/* Écran de chargement de la page */}
 				<Suspense>
 					{/* Utilisation des traductions */}
-					<NextIntlClientProvider
+					<Providers
 						locale={locale}
-						messages={pick(
-							messages,
-							"errors",
-							"footer",
-							"summary",
-							"redirect",
-							"dashboard",
-							"navigation",
-							"index.ready",
-							"consentModal",
-							"index.consent",
-							"preferencesModal"
-						)}
-						timeZone={process.env.TZ}
+						messages={messages}
+						serverData={serverData}
 					>
-						{/* Utilisation de HeroUI */}
-						<HeroUIProvider className="flex min-h-screen flex-col">
-							<ServerProvider value={serverData}>
-								{/* Composant enfant */}
-								{children}
-							</ServerProvider>
+						{/* Composant enfant */}
+						{children}
 
-							{/* Pied de page */}
-							<Footer />
-						</HeroUIProvider>
+						{/* Pied de page */}
+						<Footer />
 
 						{/* Consentement des cookies */}
 						<CookieConsent />
-					</NextIntlClientProvider>
+					</Providers>
 				</Suspense>
 			</body>
 		</html>
