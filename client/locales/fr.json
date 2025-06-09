@@ -270,6 +270,12 @@
 							"domain": "Site Internet",
 							"description": "Cookie mis en place par le site Internet.",
 							"expiration": "Expire après 1 an."
+						},
+						{
+							"name": "NEXT_API_KEY",
+							"domain": "Site Internet",
+							"description": "Cookie mis en place par le site Internet.",
+							"expiration": "Expire après 1 an."
 						}
 					]
 				}
