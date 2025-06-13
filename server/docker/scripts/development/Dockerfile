@@ -29,7 +29,7 @@ RUN echo "0 0 * * * /usr/local/bin/php /var/www/html/bin/console app:shortcut-cl
 COPY --chown=www-data:www-data . .
 
 # Install Symfony CLI
-RUN curl -1sLf https://dl.cloudsmith.io/public/symfony/stable/setup.alpine.sh | bash && apk add --no-cache symfony-cli
+COPY --from=ghcr.io/symfony-cli/symfony-cli:latest /usr/local/bin/symfony /usr/local/bin/symfony
 
 # Use the default development PHP configuration
 RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
