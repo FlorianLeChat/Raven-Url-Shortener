@@ -39,10 +39,18 @@ return [
 								'type' => 'string',
 								'description' => 'The custom slug for the short link.'
 							],
+							'password' => [
+								'type' => 'string',
+								'description' => 'The password to protect the short link.'
+							],
 							'expiration' => [
 								'type' => 'string',
 								'format' => 'date-time',
 								'description' => 'The expiration date for the short link.'
+							],
+							'api-management' => [
+								'type' => 'boolean',
+								'description' => 'Indicates if the link can be managed using the API.'
 							]
 						]
 					]

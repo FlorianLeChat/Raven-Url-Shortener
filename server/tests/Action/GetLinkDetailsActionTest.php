@@ -76,6 +76,40 @@ final class GetLinkDetailsActionTest extends WebTestCase
 
 	/**
 	 * Test de récupération des informations d'un lien raccourci
+	 *  avec un mot de passe manquant.
+	 */
+	public function testGetLinkDetailsWithMissingPassword(): void
+	{
+		$this->client->request('GET', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d7');
+
+		$this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
+
+		$content = $this->client->getResponse()->getContent();
+
+		$this->assertJson($content);
+		$this->assertJsonStringEqualsJsonString('{"code":401,"message":"The specified shortcut link is protected by a password. Please provide the base 64 encoded password in the \"Authorization\" HTTP header."}', $content);
+	}
+
+	/**
+	 * Test de récupération des informations d'un lien raccourci
+	 *  avec un mot de passe invalide.
+	 */
+	public function testGetLinkDetailsWithInvalidPassword(): void
+	{
+		$this->client->request('GET', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d7', server: [
+			'HTTP_Authorization' => 'Basic ' . base64_encode('haha')
+		]);
+
+		$this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+
+		$content = $this->client->getResponse()->getContent();
+
+		$this->assertJson($content);
+		$this->assertJsonStringEqualsJsonString('{"code":403,"message":"The password you provided for the shortcut link is invalid. Please check it and try again."}', $content);
+	}
+
+	/**
+	 * Test de récupération des informations d'un lien raccourci
 	 *  avec un UUID valide.
 	 */
 	public function testGetLinkDetailsWithValidUuid(): void
@@ -93,6 +127,20 @@ final class GetLinkDetailsActionTest extends WebTestCase
 	public function testGetLinkDetailsWithValidSlug(): void
 	{
 		$this->client->request('GET', '/api/v1/link/test1');
+
+		$this->assertResponseIsSuccessful();
+		$this->assertJson($this->client->getResponse()->getContent());
+	}
+
+	/**
+	 * Test de récupération des informations d'un lien raccourci
+	 *  avec un mot de passe valide.
+	 */
+	public function testGetLinkDetailsWithValidPassword(): void
+	{
+		$this->client->request('GET', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d7', server: [
+			'HTTP_Authorization' => 'Basic ' . base64_encode('password123')
+		]);
 
 		$this->assertResponseIsSuccessful();
 		$this->assertJson($this->client->getResponse()->getContent());

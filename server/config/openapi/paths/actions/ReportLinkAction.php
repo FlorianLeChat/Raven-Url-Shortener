@@ -93,7 +93,7 @@ return [
 				'content' => [
 					'application/json' => [
 						'schema' => [
-							'$ref' => '#/components/schemas/HttpBadRequest'
+							'$ref' => '#/components/schemas/HttpNotFound'
 						]
 					]
 				]

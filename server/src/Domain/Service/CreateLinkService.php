@@ -25,10 +25,11 @@ final class CreateLinkService extends BaseLinkService
 
 		$url = $payload->getString('url');
 		$slug = $payload->getString('slug', $this->createRandomSlug());
+		$password = $payload->getString('password');
 		$expiration = $payload->getString('expiration');
-		$apiManagement = $payload->getBoolean('api-management', false);
+		$apiManagement = $payload->getBoolean('api-management');
 
-		$link = LinkFactory::create($url, $slug, $expiration);
+		$link = LinkFactory::create($url, $slug, $password, $expiration);
 
 		if ($apiManagement)
 		{

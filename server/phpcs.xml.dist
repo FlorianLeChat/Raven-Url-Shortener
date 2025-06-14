@@ -54,7 +54,7 @@
 		<exclude-pattern>src/Action/ServerIndexAction.php</exclude-pattern>
 
 		<properties>
-			<property name="lineLimit" value="130" />
+			<property name="lineLimit" value="135" />
 			<property name="absoluteLineLimit" value="140" />
 		</properties>
 	</rule>
