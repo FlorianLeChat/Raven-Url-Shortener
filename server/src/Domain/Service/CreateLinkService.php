@@ -15,6 +15,24 @@ use App\Domain\Service\Abstract\BaseLinkService;
 final class CreateLinkService extends BaseLinkService
 {
 	/**
+	 * Création d'un slug aléatoire.
+	 */
+	private function createRandomSlug(): string
+	{
+		$this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+
+		$slug = '';
+		$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+		for ($i = 0; $i < mt_rand(5, 20); $i++)
+		{
+			$slug .= $characters[mt_rand(0, strlen($characters) - 1)];
+		}
+
+		return $slug;
+	}
+
+	/**
 	 * Création d'un lien raccourci.
 	 */
 	public function createLink(Request $request): Link

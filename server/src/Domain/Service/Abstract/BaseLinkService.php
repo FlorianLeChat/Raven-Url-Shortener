@@ -194,22 +194,4 @@ abstract class BaseLinkService
 			throw new AccessDeniedHttpException($this->translator->trans('api_key.invalid'));
 		}
 	}
-
-	/**
-	 * Création d'un slug aléatoire.
-	 */
-	protected function createRandomSlug(): string
-	{
-		$this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
-
-		$slug = '';
-		$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-		for ($i = 0; $i < mt_rand(5, 20); $i++)
-		{
-			$slug .= $characters[mt_rand(0, strlen($characters) - 1)];
-		}
-
-		return $slug;
-	}
 }
