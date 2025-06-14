@@ -10,10 +10,10 @@ use Symfony\Config\DoctrineConfig;
  * Paramétrage pour l'intégration Doctrine avec Symfony.
  * @see https://symfony.com/doc/current/doctrine.html
  */
-return static function (DoctrineConfig $config, ContainerConfigurator $container): void
+return static function (DoctrineConfig $doctrine, ContainerConfigurator $container): void
 {
 	$runtime = $container->env();
-	$dbalConfig = $config->dbal()->connection('default')
+	$dbalConfig = $doctrine->dbal()->connection('default')
 		->url('%env(DATABASE_TYPE)%://%env(DATABASE_USERNAME)%:%env(DATABASE_PASSWORD)%@%env(DATABASE_HOST)%:%env(DATABASE_PORT)%/%env(DATABASE_NAME)%')
 		->useSavepoints(true)
 		->serverVersion('%env(DATABASE_VERSION)%')
@@ -26,7 +26,7 @@ return static function (DoctrineConfig $config, ContainerConfigurator $container
 			->dbnameSuffix('_test' . env('TEST_TOKEN')->default(''));
 	}
 
-	$ormConfig = $config->orm();
+	$ormConfig = $doctrine->orm();
 
 	$entityManagerConfig = $ormConfig->entityManager('default')
 		->autoMapping(true)

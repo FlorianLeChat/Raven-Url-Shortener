@@ -11,8 +11,8 @@ use Symfony\Config\DoctrineMigrationsConfig;
  * @see https://symfony.com/bundles/DoctrineMigrationsBundle/current/index.html
  * @see https://www.doctrine-project.org/projects/doctrine-migrations/en/current/reference/configuration.html#configuration
  */
-return static function (DoctrineMigrationsConfig $config): void
+return static function (DoctrineMigrationsConfig $doctrine): void
 {
-	$config->enableProfiler(false);
-	$config->migrationsPath('DoctrineMigrations', '%kernel.project_dir%/migrations');
+	$doctrine->enableProfiler(false);
+	$doctrine->migrationsPath('DoctrineMigrations', '%kernel.project_dir%/migrations');
 };

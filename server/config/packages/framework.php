@@ -10,9 +10,9 @@ use Symfony\Config\FrameworkConfig;
  * Paramétrage général du framework Symfony.
  * @see https://symfony.com/doc/current/configuration.html
  */
-return static function (FrameworkConfig $framework, ContainerConfigurator $configuration): void
+return static function (FrameworkConfig $framework, ContainerConfigurator $container): void
 {
-	$runtime = $configuration->env();
+	$runtime = $container->env();
 	$framework->secret('%env(APP_SECRET)%');
 
 	if ($runtime === 'test')
