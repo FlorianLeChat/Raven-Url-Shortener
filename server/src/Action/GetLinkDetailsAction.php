@@ -6,6 +6,7 @@ use App\Kernel;
 use App\Domain\Entity\Link;
 use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use App\Domain\Service\GetLinkDetailsService;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Attribute\Cache;
@@ -39,7 +40,7 @@ final class GetLinkDetailsAction extends AbstractController
 	#[Cache(public: true, maxage: 3600, mustRevalidate: true)]
 	#[Route('/link/{id}', methods: ['GET'], requirements: ['id' => Requirement::UUID_V7])]
 	#[Route('/link/{slug}', methods: ['GET'], requirements: ['slug' => Requirement::ASCII_SLUG])]
-	public function getLinkDetails(Link $link): JsonResponse
+	public function getLinkDetails(Request $request, Link $link): JsonResponse
 	{
 		$this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
@@ -51,7 +52,7 @@ final class GetLinkDetailsAction extends AbstractController
 			$this->entityManager
 		);
 
-		$link = $service->getLinkDetails($link);
+		$link = $service->getLinkDetails($request, $link);
 
 		return new JsonResponse($link->toArray(), JsonResponse::HTTP_OK);
 	}

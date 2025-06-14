@@ -37,6 +37,12 @@ class Link
 	#[Assert\Length(min: 1, max: 50)]
 	private ?string $slug = null;
 
+	#[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+	#[OA\Property(title: 'The password to access the link')]
+	#[Assert\Length(max: 255)]
+	#[Assert\Regex(pattern: '/^[a-zA-Z0-9-]+$/')]
+	private ?string $password = null;
+
 	#[ORM\Column(type: Types::BOOLEAN, options: ['default' => true])]
 	#[OA\Property(title: 'The activation state of the link')]
 	private ?bool $enabled = true;
@@ -123,6 +129,21 @@ class Link
 	public function setSlug(?string $slug): static
 	{
 		$this->slug = $slug;
+
+		return $this;
+	}
+
+	/**
+	 * Définition ou récupération du mot de passe du lien.
+	 */
+	public function getPassword(): ?string
+	{
+		return $this->password;
+	}
+
+	public function setPassword(?string $password): static
+	{
+		$this->password = $password;
 
 		return $this;
 	}

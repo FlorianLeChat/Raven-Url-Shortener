@@ -57,12 +57,32 @@ return [
 					]
 				]
 			],
+			Response::HTTP_UNAUTHORIZED => [
+				'description' => 'Link password required',
+				'content' => [
+					'application/json' => [
+						'schema' => [
+							'$ref' => '#/components/schemas/HttpUnauthorized'
+						]
+					]
+				]
+			],
+			Response::HTTP_FORBIDDEN => [
+				'description' => 'Link password incorrect',
+				'content' => [
+					'application/json' => [
+						'schema' => [
+							'$ref' => '#/components/schemas/HttpForbidden'
+						]
+					]
+				]
+			],
 			Response::HTTP_NOT_FOUND => [
 				'description' => 'Link not found',
 				'content' => [
 					'application/json' => [
 						'schema' => [
-							'$ref' => '#/components/schemas/HttpBadRequest'
+							'$ref' => '#/components/schemas/HttpNotFound'
 						]
 					]
 				]

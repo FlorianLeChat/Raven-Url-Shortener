@@ -2,7 +2,6 @@
 
 namespace App\Tests\Domain\Factory;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 use App\Domain\Factory\LinkFactory;
 
@@ -16,8 +15,7 @@ final class LinkFactoryTest extends TestCase
 	 */
 	public function testCreateLink(): void
 	{
-		$time = new DateTimeImmutable();
-		$link = LinkFactory::create('https://example.com', 'example', '2023-12-31');
+		$link = LinkFactory::create('https://example.com', 'example', 'password', '2023-12-31');
 
 		$this->assertInstanceOf('App\Domain\Entity\Link', $link);
 
@@ -29,6 +27,9 @@ final class LinkFactoryTest extends TestCase
 
 		// Slug.
 		$this->assertEquals('example', $link->getSlug());
+
+		// Mot de passe.
+		$this->assertStringStartsWith('$2y$', $link->getPassword());
 
 		// État d'activation.
 		$this->assertEquals(true, $link->isEnabled());
@@ -44,9 +45,8 @@ final class LinkFactoryTest extends TestCase
 	 */
 	public function testUpdateLink(): void
 	{
-		$time = new DateTimeImmutable();
-		$link = LinkFactory::create('https://my-example.com', 'example', '2023-12-20');
-		$link = LinkFactory::update($link, 'https://updated.com', 'updated');
+		$link = LinkFactory::create('https://my-example.com', 'example', 'password', '2023-12-20');
+		$link = LinkFactory::update($link, 'https://updated.com', 'updated', 'password2');
 
 		$this->assertInstanceOf('App\Domain\Entity\Link', $link);
 
@@ -55,6 +55,9 @@ final class LinkFactoryTest extends TestCase
 
 		// Slug.
 		$this->assertEquals('updated', $link->getSlug());
+
+		// Mot de passe.
+		$this->assertStringStartsWith('$2y$', $link->getPassword());
 
 		// État d'activation.
 		$this->assertEquals(true, $link->isEnabled());
@@ -70,8 +73,7 @@ final class LinkFactoryTest extends TestCase
 	 */
 	public function testPatchLink(): void
 	{
-		$time = new DateTimeImmutable();
-		$link = LinkFactory::create('https://not-my-example.com', 'example', '2023-12-30');
+		$link = LinkFactory::create('https://not-my-example.com', 'example', 'password', '2023-12-30');
 		$link = LinkFactory::patch($link, 'url', 'https://not-updated.com');
 
 		$this->assertInstanceOf('App\Domain\Entity\Link', $link);
@@ -81,6 +83,9 @@ final class LinkFactoryTest extends TestCase
 
 		// Slug.
 		$this->assertEquals('example', $link->getSlug());
+
+		// Mot de passe.
+		$this->assertStringStartsWith('$2y$', $link->getPassword());
 
 		// État d'activation.
 		$this->assertEquals(true, $link->isEnabled());

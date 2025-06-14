@@ -5,6 +5,8 @@ return [
 	'link.unreachable_url' => 'L\'URL spécifiée est inaccessible.',
 	'link.disabled' => 'Le lien raccourci spécifié a été désactivé par son propriétaire ou par un administrateur.',
 	'link.reported' => 'Le lien raccourci spécifié a été signalé par un ou plusieurs utilisateurs. Ce lien doit être vérifié par un administrateur pour être de nouveau accessible.',
+	'link.password.missing' => 'Le lien raccourci spécifié est protégé par un mot de passe. Veuillez fournir le mot de passe encodé en base 64 dans l\'en-tête HTTP « Authorization ».',
+	'link.password.invalid' => 'Le mot de passe que vous avez fourni pour le lien raccourci est invalide. Veuillez le vérifier et réessayer.',
 	'report.duplicated' => 'Vous avez déjà signalé ce lien raccourci, vous ne pouvez pas le signaler à nouveau.',
 	'report.trusted_link' => 'Vous ne pouvez pas signaler un lien de confiance. Si vous pensez que ce lien est malveillant, veuillez contacter un administrateur.',
 	'report.maximum_reached' => 'Le nombre maximum de signalements pour ce lien a été atteint (%max%). Il ne peut pas être signalé à nouveau.',

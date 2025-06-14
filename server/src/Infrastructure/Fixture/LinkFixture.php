@@ -4,6 +4,7 @@ namespace App\Infrastructure\Fixture;
 
 use DateTimeImmutable;
 use App\Domain\Entity\Link;
+use App\Domain\Factory\LinkFactory;
 use Symfony\Component\Uid\Uuid;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -78,6 +79,21 @@ final class LinkFixture extends Fixture
 	}
 
 	/**
+	 * Création d'un lien protégé par mot de passe.
+	 */
+	private function createPasswordProtectedLink()
+	{
+		$link = new Link();
+		$link->setId(new Uuid('0196cb17-b0f8-7e9c-b381-ef17aa05f3d7'));
+		$link->setUrl('https://www.youtube.com/watch?v=PjnXzeUSHUg');
+		$link->setSlug('test5');
+		$link->setPassword(LinkFactory::hashPassword('password123'));
+		$link->setVisitedAt(new DateTimeImmutable());
+
+		return $link;
+	}
+
+	/**
 	 * Création des liens raccourcis et ajout à la base de données.
 	 */
 	public function load(ObjectManager $manager): void
@@ -86,6 +102,7 @@ final class LinkFixture extends Fixture
 		$manager->persist($this->createDisabledLink());
 		$manager->persist($this->createReportedLink());
 		$manager->persist($this->createTrustedLink());
+		$manager->persist($this->createPasswordProtectedLink());
 		$manager->flush();
 	}
 }
