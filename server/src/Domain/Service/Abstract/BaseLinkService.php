@@ -14,6 +14,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Infrastructure\Exception\DataValidationException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 /**
@@ -181,14 +182,7 @@ abstract class BaseLinkService
 
 		if (empty($headerApiKey))
 		{
-			$errors = [];
-			$errors['apiKey'][] = [
-				'code' => 'MISSING_API_KEY_ERROR',
-				'value' => null,
-				'message' => $this->translator->trans('api_key.missing')
-			];
-
-			throw new DataValidationException($errors);
+			throw new UnauthorizedHttpException('Bearer', $this->translator->trans('api_key.missing'));
 		}
 
 		$headerApiKey = str_replace('Bearer ', '', $headerApiKey);

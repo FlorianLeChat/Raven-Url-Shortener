@@ -11,6 +11,6 @@ return [
 	'report.trusted_link' => 'You cannot report a trusted link. If you think this link is malicious, please contact an administrator.',
 	'report.maximum_reached' => 'The maximum number of reports for this link has been reached (%max%). It cannot be reported again.',
 	'slug.already_used' => 'The custom slug you chose is already used by another link. Please choose another one.',
-	'api_key.missing' => 'The API key is missing. Please provide it in the HTTP request header.',
+	'api_key.missing' => 'The API key is missing. Please provide it in the "Authorization" HTTP header.',
 	'api_key.invalid' => 'The provided API key is invalid. Please check it and try again.'
 ];

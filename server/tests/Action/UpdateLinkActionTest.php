@@ -48,13 +48,12 @@ final class UpdateLinkActionTest extends WebTestCase
 	{
 		$this->client->request('PATCH', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d9');
 
-		$this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
+		$this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
 
 		$content = $this->client->getResponse()->getContent();
 
 		$this->assertJson($content);
-		$this->assertStringStartsWith('{"code":400,"message":"An error occurred during data validation."', $content);
-		$this->assertStringContainsString('MISSING_API_KEY_ERROR', $content);
+		$this->assertJsonStringEqualsJsonString('{"code":401,"message":"The API key is missing. Please provide it in the \"Authorization\" HTTP header."}', $content);
 	}
 
 	/**
@@ -173,13 +172,12 @@ final class UpdateLinkActionTest extends WebTestCase
 	{
 		$this->client->request('PUT', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d9');
 
-		$this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
+		$this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
 
 		$content = $this->client->getResponse()->getContent();
 
 		$this->assertJson($content);
-		$this->assertStringStartsWith('{"code":400,"message":"An error occurred during data validation."', $content);
-		$this->assertStringContainsString('MISSING_API_KEY_ERROR', $content);
+		$this->assertJsonStringEqualsJsonString('{"code":401,"message":"The API key is missing. Please provide it in the \"Authorization\" HTTP header."}', $content);
 	}
 
 	/**
