@@ -177,9 +177,9 @@ abstract class BaseLinkService
 	{
 		$this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
-		$apiKey = $request->headers->get('Authorization');
+		$headerApiKey = $request->headers->get('Authorization');
 
-		if (empty($apiKey))
+		if (empty($headerApiKey))
 		{
 			$errors = [];
 			$errors['apiKey'][] = [
@@ -191,8 +191,9 @@ abstract class BaseLinkService
 			throw new DataValidationException($errors);
 		}
 
-		$apiKey = str_replace('Bearer ', '', $apiKey);
-		$isValidApiKey = preg_match('/^.{43}=$/', $apiKey) && $link->getApiKey()?->getKey() === $apiKey;
+		$headerApiKey = str_replace('Bearer ', '', $headerApiKey);
+		$storedApiKey = $link->getApiKey()?->getKey() ?? '';
+		$isValidApiKey = preg_match('/^.{43}=$/', $headerApiKey) && hash_equals($storedApiKey, $headerApiKey);
 
 		if (!$isValidApiKey)
 		{
