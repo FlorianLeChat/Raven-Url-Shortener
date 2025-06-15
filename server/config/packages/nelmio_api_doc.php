@@ -38,10 +38,15 @@ return static function (NelmioApiDocConfig $nelmioApiDoc, ContainerConfigurator 
 		// Schémas de sécurité.
 		'securitySchemes' => [
 			'ApiKeyAuth' => [
-				'type' => 'apiKey',
 				'in' => 'header',
-				'name' => 'Authorization',
+				'type' => 'http',
+				'scheme' => 'bearer'
 			],
+			'PasswordAuth' => [
+				'in' => 'header',
+				'type' => 'apiKey',
+				'name' => 'Authorization'
+			]
 		],
 
 		// Schémas de données.

@@ -27,19 +27,12 @@ final class GetLinkDetailsService extends BaseLinkService
 
 		if (empty($headerPassword))
 		{
-			throw new UnauthorizedHttpException('Basic', $this->translator->trans('link.password.missing'));
-		}
-
-		$headerPassword = str_replace('Basic ', '', $headerPassword);
-		$headerPassword = base64_decode($headerPassword, true);
-
-		if (empty($headerPassword))
-		{
-			throw new AccessDeniedHttpException($this->translator->trans('link.password.invalid'));
+			throw new UnauthorizedHttpException('Password', $this->translator->trans('link.password.missing'));
 		}
 
 		/** @var string $storedPassword */
 		$storedPassword = $link->getPassword();
+		$headerPassword = str_replace('Password ', '', $headerPassword);
 		$isValidPassword = LinkFactory::verifyPassword($storedPassword, $headerPassword);
 
 		if (!$isValidPassword)

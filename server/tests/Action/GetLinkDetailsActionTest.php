@@ -87,7 +87,7 @@ final class GetLinkDetailsActionTest extends WebTestCase
 		$content = $this->client->getResponse()->getContent();
 
 		$this->assertJson($content);
-		$this->assertJsonStringEqualsJsonString('{"code":401,"message":"The specified shortcut link is protected by a password. Please provide the base 64 encoded password in the \"Authorization\" HTTP header."}', $content);
+		$this->assertJsonStringEqualsJsonString('{"code":401,"message":"The specified shortcut link is protected by a password. Please provide it in the \"Authorization\" HTTP header."}', $content);
 	}
 
 	/**
@@ -97,7 +97,7 @@ final class GetLinkDetailsActionTest extends WebTestCase
 	public function testGetLinkDetailsWithInvalidPassword(): void
 	{
 		$this->client->request('GET', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d7', server: [
-			'HTTP_Authorization' => 'Basic ' . base64_encode('haha')
+			'HTTP_Authorization' => 'Password haha'
 		]);
 
 		$this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
@@ -139,7 +139,7 @@ final class GetLinkDetailsActionTest extends WebTestCase
 	public function testGetLinkDetailsWithValidPassword(): void
 	{
 		$this->client->request('GET', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d7', server: [
-			'HTTP_Authorization' => 'Basic ' . base64_encode('password123')
+			'HTTP_Authorization' => 'Password password123'
 		]);
 
 		$this->assertResponseIsSuccessful();
