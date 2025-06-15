@@ -5,7 +5,6 @@ namespace App\Domain\Factory;
 use DateTimeImmutable;
 use App\Domain\Entity\Link;
 use App\Infrastructure\Security\TrustedDomains;
-use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactory;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
@@ -16,13 +15,12 @@ final class LinkFactory
 	/**
 	 * Coût de hachage par défaut pour les mots de passe.
 	 */
-	private const HASH_COST = '4';
+	private const HASH_COST = 15;
 
 	/**
 	 * Algorithme de hachage par défaut pour les mots de passe.
-	 *  Note : « auto » utilise l'algorithme le plus approprié à l'heure actuelle.
 	 */
-	private const HASH_ALGORITHM = 'auto';
+	private const HASH_ALGORITHM = PASSWORD_BCRYPT;
 
 	/**
 	 * Récupération (si possible) d'une date d'expiration.
@@ -37,14 +35,7 @@ final class LinkFactory
 	 */
 	public static function hashPassword(string $password): string
 	{
-		$hasher = new PasswordHasherFactory([
-			'main' => [
-				'cost' => self::HASH_COST,
-				'algorithm' => self::HASH_ALGORITHM
-			]
-		]);
-
-		return $hasher->getPasswordHasher('main')->hash($password);
+		return password_hash($password, self::HASH_ALGORITHM, ['cost' => self::HASH_COST]);
 	}
 
 	/**
@@ -52,14 +43,7 @@ final class LinkFactory
 	 */
 	public static function verifyPassword(string $hashedPassword, string $plainPassword): bool
 	{
-		$hasher = new PasswordHasherFactory([
-			'main' => [
-				'cost' => self::HASH_COST,
-				'algorithm' => self::HASH_ALGORITHM
-			]
-		]);
-
-		return $hasher->getPasswordHasher('main')->verify($hashedPassword, $plainPassword);
+		return password_verify($plainPassword, $hashedPassword);
 	}
 
 	/**

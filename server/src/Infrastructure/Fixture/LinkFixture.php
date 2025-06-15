@@ -87,7 +87,7 @@ final class LinkFixture extends Fixture
 		$link->setId(new Uuid('0196cb17-b0f8-7e9c-b381-ef17aa05f3d7'));
 		$link->setUrl('https://www.youtube.com/watch?v=PjnXzeUSHUg');
 		$link->setSlug('test5');
-		$link->setPassword(LinkFactory::hashPassword('password123'));
+		$link->setPassword(password_hash('password123', PASSWORD_BCRYPT, ['cost' => 4]));
 		$link->setVisitedAt(new DateTimeImmutable());
 
 		return $link;

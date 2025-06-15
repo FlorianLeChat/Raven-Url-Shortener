@@ -40,7 +40,6 @@ class Link
 	#[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
 	#[OA\Property(title: 'The password to access the link')]
 	#[Assert\Length(max: 255)]
-	#[Assert\Regex(pattern: '/^[a-zA-Z0-9-]+$/')]
 	private ?string $password = null;
 
 	#[ORM\Column(type: Types::BOOLEAN, options: ['default' => true])]

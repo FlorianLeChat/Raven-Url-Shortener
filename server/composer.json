@@ -40,7 +40,6 @@
         "symfony/http-client": "7.3.*",
         "symfony/rate-limiter": "7.3.*",
         "symfony/monolog-bundle": "3.10.*",
-        "symfony/password-hasher": "7.3.*",
         "symfony/framework-bundle": "7.3.*"
     },
     "config": {

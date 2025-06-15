@@ -107,6 +107,9 @@ return [
 					]
 				]
 			]
+		],
+		'security' => [
+			['PasswordAuth' => []]
 		]
 	]
 ];
