@@ -4,13 +4,9 @@
 
 "use client";
 
-import { Info,
-	Trash2,
-	ChartLine,
-	RefreshCw,
-	LayoutDashboard } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button, Tooltip } from "@heroui/react";
+import { Info, Trash2, Settings, ChartLine, RefreshCw } from "lucide-react";
 
 export default function SummaryActions()
 {
@@ -40,7 +36,7 @@ export default function SummaryActions()
 					className="max-md:min-w-max"
 					aria-label={messages( "actions.administration" )}
 					isDisabled={isProduction}
-					startContent={<LayoutDashboard />}
+					startContent={<Settings />}
 				>
 					<span className="hidden md:inline">
 						{messages( "actions.administration" )}

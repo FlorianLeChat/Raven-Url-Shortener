@@ -164,16 +164,19 @@ export default function SummaryContainer( {
 
 			<CardFooter
 				as="footer"
-				className="items-center gap-3 bg-content2/50 max-md:justify-center max-sm:flex-col"
+				className="items-center gap-3 bg-content2/50"
 			>
 				{/* Bouton de retour au tableau de bord */}
 				<Button
 					type="button"
 					variant="flat"
 					onPress={() => router.push( "/dashboard" )}
+					className="max-sm:min-w-16"
 					startContent={<ArrowLeft />}
 				>
-					{messages( "back_to_dashboard" )}
+					<span className="hidden lg:inline">
+						{messages( "back_to_dashboard" )}
+					</span>
 				</Button>
 
 				{/* Bouton d'accès au lien */}
@@ -181,9 +184,12 @@ export default function SummaryContainer( {
 					type="button"
 					variant="flat"
 					onPress={() => router.push( details.url )}
+					className="max-sm:min-w-16"
 					startContent={<SquareArrowOutUpRight />}
 				>
-					{messages( "access_to_link" )}
+					<span className="hidden lg:inline">
+						{messages( "access_to_link" )}
+					</span>
 				</Button>
 
 				{/* Bouton de téléchargement du QR Code */}
@@ -191,9 +197,12 @@ export default function SummaryContainer( {
 					type="button"
 					variant="flat"
 					onPress={downloadQrCode}
+					className="max-sm:min-w-16"
 					startContent={<QrCode />}
 				>
-					{messages( "download_qr_code" )}
+					<span className="hidden lg:inline">
+						{messages( "download_qr_code" )}
+					</span>
 				</Button>
 
 				{/* Bouton de copie de la clé API */}
@@ -202,9 +211,12 @@ export default function SummaryContainer( {
 					variant="flat"
 					onPress={copyApiKey}
 					isDisabled={!details.apiKey}
+					className="max-sm:min-w-16"
 					startContent={<Terminal />}
 				>
-					{messages( "copy_api_key" )}
+					<span className="hidden lg:inline">
+						{messages( "copy_api_key" )}
+					</span>
 				</Button>
 			</CardFooter>
 		</Card>

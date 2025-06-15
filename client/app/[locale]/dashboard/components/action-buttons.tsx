@@ -42,7 +42,7 @@ export default function ActionButtons()
 
 	// Affichage du rendu HTML du composant.
 	return (
-		<ButtonGroup as="header" className="mb-8 max-lg:w-full">
+		<ButtonGroup as="header" className="mb-8 justify-start max-lg:w-full">
 			<Button
 				as={Link}
 				variant="flat"
@@ -92,11 +92,12 @@ export default function ActionButtons()
 
 			<Button
 				as={Link}
-				onPress={() => window.open(
-					"https://github.com/FlorianLeChat/Raven-Url-Shortener",
-					"_blank",
-					"noopener noreferrer"
-				)}
+				onPress={() =>
+					window.open(
+						"https://github.com/FlorianLeChat/Raven-Url-Shortener",
+						"_blank",
+						"noopener noreferrer"
+					)}
 				variant="flat"
 				className="max-sm:min-w-16"
 				aria-label={messages( "support" )}
