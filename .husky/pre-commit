@@ -1,6 +1,6 @@
 cd client
 npm.cmd run lint-staged
 cd ../server
-vendor/bin/phpcs -sq --no-colors
-vendor/bin/phpstan analyse --error-format=raw --memory-limit=1G --no-progress
-vendor/bin/phpmd ./src text phpmd.xml.dist
+vendor/bin/phpcs -s
+vendor/bin/phpstan analyse --memory-limit=-1
+vendor/bin/phpmd ./src ansi phpmd.xml.dist
