@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use App\Infrastructure\EventListener\CorsListener;
+use App\Infrastructure\EventListener\OriginListener;
 use App\Infrastructure\EventListener\LimiterListener;
 use App\Infrastructure\EventListener\ExceptionListener;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -26,7 +26,7 @@ return static function (ContainerConfigurator $container): void
 	$services->set(ExceptionListener::class)
 		->tag('kernel.event_listener');
 
-	$services->set(CorsListener::class)
+	$services->set(OriginListener::class)
 		->tag('kernel.event_listener');
 
 	$container->parameters()
