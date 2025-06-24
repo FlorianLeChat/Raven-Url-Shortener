@@ -24,6 +24,9 @@
 
 		<!-- Utilisation de booléens comme paramètres -->
 		<exclude name="BooleanArgumentFlag" />
+
+		<!-- Utilisation de l'expression « else » -->
+		<exclude name="ElseExpression" />
 	</rule>
 
 	<rule ref="rulesets/codesize.xml">
