@@ -12,22 +12,24 @@ use Symfony\Config\NelmioApiDocConfig;
  */
 return static function (NelmioApiDocConfig $nelmioApiDoc, ContainerConfigurator $container)
 {
-    // Activation des supports pour les types de données.
-    $nelmioApiDoc->typeInfo(true);
+	// Activation des supports pour les types de données.
+	$nelmioApiDoc->typeInfo(true);
 
-    // Définition des zones couvertes par la documentation.
+	// Définition des zones couvertes par la documentation.
 	$nelmioApiDoc->areas('default', [
 		'path_patterns' => ['^/api(?!/doc$)'],
 	]);
 
-    // Informations générales sur l'API.
-    $documentation = $nelmioApiDoc->documentation('info', [
+	// Informations générales sur l'API.
+	$readLimit = $container->processValue('%env(int:APP_RATE_LIMIT_READ_API)%');
+	$writeLimit = $container->processValue('%env(int:APP_RATE_LIMIT_WRITE_API)%');
+	$documentation = $nelmioApiDoc->documentation('info', [
 		'title' => 'Raven Url Shortener',
 		'version' => '1.0.0',
 		'description' => 'This is the documentation for the Raven Url Shortener API.<br /><br />
 			<strong>By using this service, you accept our legal notice, which can be found <a href="https://url.florian-dev.fr/legal">here</a>.</strong><br />
 			All API endpoints are limited in number of requests to prevent abuse and ensure fair use.<br />
-			Current values are <strong>60 requests per minute</strong> for read operations and <strong>30 requests per minute</strong> for write operations.<br /><br />
+			Current values are <strong>' . $readLimit . ' requests per minute</strong> for read operations and <strong>' . $writeLimit . ' requests per minute</strong> for write operations.<br /><br />
 			<i>Please note that these limits may evolve according to the service usage and performance constraints.</i><br />
 			You are advised to contact an administrator at <q>contact@florian-dev.fr</q> if you wish to exceed these limits for your personal use.
 		'
@@ -57,7 +59,7 @@ return static function (NelmioApiDocConfig $nelmioApiDoc, ContainerConfigurator 
 	$nelmioApiDoc->documentation('paths', require_once __DIR__ . '/../openapi/paths/bootstrap.php');
 
 	// Serveurs disponibles
-    $documentation->documentation('servers', [
+	$documentation->documentation('servers', [
 		[
 			'url' => 'http://localhost:8000/',
 			'description' => 'Development API',
