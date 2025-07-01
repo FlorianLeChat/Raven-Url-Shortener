@@ -20,13 +20,13 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
 
-        "doctrine/orm": "3.3.*",
+        "doctrine/orm": "3.4.*",
         "doctrine/dbal": "4.*",
         "doctrine/annotations": "2.0.*",
-        "doctrine/doctrine-bundle": "2.14.*",
+        "doctrine/doctrine-bundle": "2.15.*",
         "doctrine/doctrine-migrations-bundle": "3.4.*",
 
-        "nelmio/api-doc-bundle": "5.3.*",
+        "nelmio/api-doc-bundle": "5.4.*",
 
         "symfony/uid": "7.3.*",
         "symfony/flex": "2.7.*",
