@@ -73,13 +73,11 @@ export default async function Page( {
 					className="group fixed bottom-auto left-auto right-0 top-0 [clip-path:polygon(0_0,100%_0,100%_100%)] max-sm:hidden"
 					aria-label="GitHub"
 				>
-					<svg
-						width="80"
-						height="80"
-						viewBox="0 0 250 250"
-						className="fill-primary text-white"
-					>
-						<path d="M0 0l115 115h15l12 27 108 108V0z" />
+					<svg width="80" height="80" viewBox="0 0 250 250">
+						<path
+							d="M0 0l115 115h15l12 27 108 108V0z"
+							className="fill-primary"
+						/>
 						<path
 							d="M128 109c-15-9-9-19-9-19 3-7 2-11 2-11-1-7 3-2 3-2 4 5 2 11 2 11-3 10 5 15 9 16"
 							className="origin-[130px_106px] fill-current max-md:motion-safe:animate-github md:motion-safe:group-hover:animate-github"
