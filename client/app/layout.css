@@ -1,7 +1,31 @@
 /* Déclaration des règles Tailwind CSS */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+/* Chargement des fichiers pour Hero UI */
+@plugin "../hero.ts";
+@source "../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}";
+@custom-variant dark (&:is(.dark *));
+
+/* Déclaration des animations personnalisées */
+@theme
+{
+	--animate-github: github 560ms ease-in-out;
+
+	@keyframes github {
+		0%,
+		100% {
+			transform: rotate(0);
+		}
+		20%,
+		60% {
+			transform: rotate(-25deg);
+		}
+		40%,
+		80% {
+			transform: rotate(10deg);
+		}
+	}
+}
 
 /* Sélection des textes */
 ::selection
