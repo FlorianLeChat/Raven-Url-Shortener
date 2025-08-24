@@ -3,6 +3,7 @@
 return [
 	'http.too_many_requests' => 'Too many requests made for the current IP address. See response headers for more information.',
 	'http.invalid_origin' => 'Access to the service is denied because the request\'s origin domain is not allowed according to the security policy.',
+	'http.invalid_api_key' => 'Access to the service is denied because an API key is required and was not provided or is invalid. Please provide a valid API key in the "Authorization" HTTP header.',
 	'link.unreachable_url' => 'The specified URL is unreachable.',
 	'link.disabled' => 'The specified shortcut link has been disabled by its owner or by an administrator.',
 	'link.reported' => 'The specified shortcut link has been reported by one or more users. This link must be verified by an administrator before it can be reached again.',

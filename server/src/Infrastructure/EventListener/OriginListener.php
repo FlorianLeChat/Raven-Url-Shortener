@@ -32,6 +32,11 @@ final class OriginListener
 	private array $allowedOrigins;
 
 	/**
+	 * Origine de la requête HTTP entrante.
+	 */
+	private string $headerOrigin;
+
+	/**
 	 * Constructeur de la classe.
 	 */
 	public function __construct(
@@ -41,12 +46,13 @@ final class OriginListener
 	) {}
 
 	/**
-	 * Vérifie si l'origine de la requête est valide.
+	 * Détermine si la requête HTTP est d'origine interne.
 	 */
-	private function checkRequestOrigin(string $origin): void
+	private function isLocalRequest(): bool
 	{
 		$ipAddress = $this->request->getClientIp() ?? '';
-		$isLocalAddress =
+
+		return
 			// Adresses IPv4/v6 de la boucle locale (localhost)
 			$ipAddress === '127.0.0.1' || $ipAddress === '::1' ||
 			// Bloc d'adresses IP privées en 192.168.x.x
@@ -55,21 +61,50 @@ final class OriginListener
 			preg_match('/^10\./', $ipAddress) ||
 			// Bloc d'adresses IP privées en 172.16.x.x à 172.31.x.x
 			preg_match('/^172\.(1[6-9]|2[0-9]|3[0-1])\./', $ipAddress);
+	}
 
-		$isValidOrigin = in_array($origin, $this->allowedOrigins, true);
+	/**
+	 * Détermine si l'origine de la requête est valide.
+	 */
+	private function isAllowedOrigin(): bool
+	{
+		return in_array($this->headerOrigin, $this->allowedOrigins, true) || $this->allowedOrigins[0] === '*';
+	}
 
-		if ($isValidOrigin || $isLocalAddress)
+	/**
+	 * Vérifie si l'origine de la requête est valide.
+	 */
+	private function checkRequestOrigin(): void
+	{
+		$isValidOrigin = $this->isAllowedOrigin() || $this->isLocalRequest();
+
+		if (!$isValidOrigin)
 		{
-			// L'origine est valide ou la requête provient d'une adresse locale.
-			return;
+			$this->logger->error('HTTP request from unauthorized origin: {origin}', [
+				'origin' => $this->headerOrigin
+			]);
+
+			throw new AccessDeniedHttpException($this->translator->trans('http.invalid_origin'));
 		}
+	}
 
-		$this->logger->error('HTTP request from unauthorized origin: {origin} (IP: {ip})', [
-			'ip' => $ipAddress,
-			'origin' => $origin
-		]);
+	/**
+	 * Vérifie si l'origine de la requête est valide.
+	 */
+	private function checkApiKey(): void
+	{
+		$headerApiKey = $this->request->headers->get('Authorization') ?? '';
+		$headerApiKey = str_replace('Bearer ', '', $headerApiKey);
+		$isValidApiKey = hash_equals($this->parameterBag->get('api.key'), $headerApiKey);
 
-		throw new AccessDeniedHttpException($this->translator->trans('http.invalid_origin'));
+		if (!$isValidApiKey)
+		{
+			$this->logger->error('HTTP request with invalid API key: {apiKey}', [
+				'apiKey' => $headerApiKey !== '' ? $headerApiKey : '(none)'
+			]);
+
+			throw new AccessDeniedHttpException($this->translator->trans('http.invalid_api_key'));
+		}
 	}
 
 	/**
@@ -77,18 +112,15 @@ final class OriginListener
 	 */
 	private function handleCorsHeaders(): void
 	{
-		if ($this->allowedOrigins[0] === '*')
+		if (!$this->parameterBag->get('api.private') || $this->allowedOrigins[0] === '*')
 		{
-			// Toutes les origines sont autorisées.
+			// L'API est publique ou toutes les origines sont autorisées.
+			// Une API peut autoriser toutes les origines tout en demandant une clé API valide.
 			$this->response->headers->set('Access-Control-Allow-Origin', '*');
 		}
-		else
+		elseif ($this->isAllowedOrigin())
 		{
-			// Vérification de l'origine de la requête.
-			$origin = $this->request->headers->get('Origin') ?? '';
-
-			$this->checkRequestOrigin($origin);
-			$this->response->headers->set('Access-Control-Allow-Origin', $origin);
+			$this->response->headers->set('Access-Control-Allow-Origin', $this->headerOrigin);
 		}
 
 		$this->response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
@@ -102,7 +134,9 @@ final class OriginListener
 	{
 		$this->request = $event->getRequest();
 		$this->response = $event->getResponse();
-		$this->allowedOrigins = (array) $this->parameterBag->get('app.allowed_origins');
+
+		$this->headerOrigin = $this->request->headers->get('Origin') ?? '';
+		$this->allowedOrigins = (array) $this->parameterBag->get('api.allowed_origins');
 
 		if ($this->request->getMethod() === 'OPTIONS')
 		{
@@ -111,6 +145,14 @@ final class OriginListener
 		}
 
 		$this->handleCorsHeaders();
+
+		if ($this->parameterBag->get('api.private'))
+		{
+			// Pour une API privée, il faut vérifier l'origine de la requête
+			//  et vérifier si la clé API fournie est valide.
+			$this->checkRequestOrigin();
+			$this->checkApiKey();
+		}
 
 		$event->setResponse($this->response);
 	}
