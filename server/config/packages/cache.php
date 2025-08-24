@@ -12,22 +12,18 @@ use Symfony\Config\FrameworkConfig;
  */
 return static function (FrameworkConfig $framework, ContainerConfigurator $container): void
 {
-	$cache = $framework->cache();
-
-	if ($container->env() === 'test')
+	if ($container->env() === 'prod')
 	{
-		$cache->app('cache.adapter.filesystem');
-		return;
+		$cache = $framework->cache();
+		$cache->app('raven_cache_pool');
+		$cache->pool('raven_cache_pool')
+			->tags(true)
+			->public(true)
+			->adapters([
+				['name' => 'cache.adapter.redis', 'provider' => 'redis://%env(REDIS_USERNAME)%:%env(REDIS_PASSWORD)%@%env(REDIS_HOST)%:%env(REDIS_PORT)%/'],
+				['name' => 'cache.adapter.doctrine_dbal'],
+				['name' => 'cache.adapter.filesystem']
+			]);
+		$cache->system('cache.adapter.system');
 	}
-
-	$cache->app('raven_cache_pool');
-	$cache->system('cache.adapter.system');
-	$cache->pool('raven_cache_pool')
-		->tags(true)
-		->public(true)
-		->adapters([
-			['name' => 'cache.adapter.redis', 'provider' => 'redis://%env(REDIS_USERNAME)%:%env(REDIS_PASSWORD)%@%env(REDIS_HOST)%:%env(REDIS_PORT)%/'],
-			['name' => 'cache.adapter.doctrine_dbal'],
-			['name' => 'cache.adapter.filesystem']
-		]);
 };
