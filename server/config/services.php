@@ -33,6 +33,7 @@ return static function (ContainerConfigurator $container): void
 		->set('smtp.enabled', '%env(bool:SMTP_ENABLED)%')
 		->set('smtp.username', '%env(string:SMTP_USERNAME)%')
 		->set('app.allowed_origins', '%env(csv:APP_ALLOWED_ORIGINS)%')
+		->set('rate_limit.enabled', '%env(bool:APP_RATE_LIMIT_ENABLED)%')
 		->set('dkim.enabled', '%env(bool:DKIM_ENABLED)%')
 		->set('dkim.private_key', '%env(string:DKIM_PRIVATE_KEY)%')
 		->set('dkim.selector', '%env(string:DKIM_SELECTOR)%')
