@@ -9,8 +9,8 @@ import "vanilla-cookieconsent/dist/cookieconsent.css";
 
 // Importation des dépendances.
 import { Inter } from "next/font/google";
+import { lazy, type ReactNode } from "react";
 import { getMessages, setRequestLocale } from "next-intl/server";
-import { lazy, Suspense, type ReactNode } from "react";
 
 // Importation des fonctions utilitaires.
 import { getDomain,
@@ -88,7 +88,7 @@ export default async function Layout( {
 	return (
 		<html
 			lang={locale}
-			className={`text-foreground antialiased light:bg-[whitesmoke] ${ inter.className }`}
+			className={`text-foreground light:bg-[whitesmoke] antialiased ${ inter.className }`}
 			suppressHydrationWarning
 		>
 			{/* En-tête de la page */}
@@ -128,24 +128,21 @@ export default async function Layout( {
 					/>
 				</video>
 
-				{/* Écran de chargement de la page */}
-				<Suspense>
-					{/* Utilisation des traductions */}
-					<Providers
-						locale={locale}
-						messages={messages}
-						serverData={serverData}
-					>
-						{/* Composant enfant */}
-						{children}
+				{/* Utilisation des traductions */}
+				<Providers
+					locale={locale}
+					messages={messages}
+					serverData={serverData}
+				>
+					{/* Composant enfant */}
+					{children}
 
-						{/* Pied de page */}
-						<Footer />
+					{/* Pied de page */}
+					<Footer />
 
-						{/* Consentement des cookies */}
-						<CookieConsent />
-					</Providers>
-				</Suspense>
+					{/* Consentement des cookies */}
+					<CookieConsent />
+				</Providers>
 			</body>
 		</html>
 	);
