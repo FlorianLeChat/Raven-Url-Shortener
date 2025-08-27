@@ -185,6 +185,10 @@ return [
 								'type' => 'string',
 								'format' => 'date-time',
 								'description' => 'The expiration date for the short link.'
+							'custom-domain' => [
+								'type' => 'string',
+								'description' => 'The custom domain for the short link.'
+							],
 							]
 						]
 					]

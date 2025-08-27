@@ -42,6 +42,13 @@ class Link
 	#[Assert\Length(max: 255)]
 	private ?string $password = null;
 
+	#[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+	#[OA\Property(title: 'The custom domain of the link')]
+	#[Assert\Length(min: 1, max: 255)]
+	#[Assert\NotBlank(normalizer: 'trim')]
+	#[Assert\Hostname]
+	private ?string $customDomain = null;
+
 	#[ORM\Column(type: Types::BOOLEAN, options: ['default' => true])]
 	#[OA\Property(title: 'The activation state of the link')]
 	private ?bool $enabled = true;
@@ -128,6 +135,21 @@ class Link
 	public function setSlug(?string $slug): static
 	{
 		$this->slug = $slug;
+
+		return $this;
+	}
+
+	/**
+	 * Définition ou récupération du domaine personnalisé du lien.
+	 */
+	public function getCustomDomain(): ?string
+	{
+		return $this->customDomain;
+	}
+
+	public function setCustomDomain(?string $customDomain): static
+	{
+		$this->customDomain = $customDomain;
 
 		return $this;
 	}
@@ -267,28 +289,26 @@ class Link
 	 */
 	public function toArray()
 	{
-		$data = [
+		if ($this->getVisitedAt() === null)
+		{
+			// La clé API est affichée uniquement lors de la première visite du lien,
+			//  pour éviter de l'exposer à chaque fois que l'on demande les informations du lien.
+			$apiKey = $this->getApiKey()?->getKey();
+		}
+
+		return [
 			'id' => $this->getId(),
 			'url' => $this->getUrl(),
 			'slug' => $this->getSlug(),
+			'apiKey' => $apiKey ?? '**hidden**',
 			'enabled' => $this->isEnabled(),
 			'trusted' => $this->isTrusted(),
 			'reported' => count($this->getReports()) > 0,
 			'createdAt' => $this->getCreatedAt(),
 			'updatedAt' => $this->getUpdatedAt(),
 			'visitedAt' => $this->getVisitedAt(),
-			'expiresAt' => $this->getExpiresAt()
+			'expiresAt' => $this->getExpiresAt(),
+			'customDomain' => $this->getCustomDomain()
 		];
-
-		if ($this->getVisitedAt() === null)
-		{
-			// La clé API est affichée uniquement lors de la première visite du lien,
-			//  pour éviter de l'exposer à chaque fois que l'on demande les informations du lien.
-			$data['apiKey'] = $this->getApiKey()?->getKey();
-
-			return $data;
-		}
-
-		return $data;
 	}
 }

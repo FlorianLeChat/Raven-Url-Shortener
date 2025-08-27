@@ -15,7 +15,13 @@ final class LinkFactoryTest extends TestCase
 	 */
 	public function testCreateLink(): void
 	{
-		$link = LinkFactory::create('https://example.com', 'example', 'password', '2023-12-31');
+		$link = LinkFactory::create([
+			'url' => 'https://example.com',
+			'slug' => 'example',
+			'password' => 'password',
+			'expiration' => '2023-12-31',
+			'custom-domain' => 'my-domain.com'
+		]);
 
 		$this->assertInstanceOf('App\Domain\Entity\Link', $link);
 
@@ -27,6 +33,9 @@ final class LinkFactoryTest extends TestCase
 
 		// Slug.
 		$this->assertEquals('example', $link->getSlug());
+
+		// Domaine personnalisé.
+		$this->assertEquals('my-domain.com', $link->getCustomDomain());
 
 		// Mot de passe.
 		$this->assertStringStartsWith('$2y$', $link->getPassword());
@@ -45,8 +54,21 @@ final class LinkFactoryTest extends TestCase
 	 */
 	public function testUpdateLink(): void
 	{
-		$link = LinkFactory::create('https://my-example.com', 'example', 'password', '2023-12-20');
-		$link = LinkFactory::update($link, 'https://updated.com', 'updated', 'password2');
+		$link = LinkFactory::create([
+			'url' => 'https://my-example.com',
+			'slug' => 'example',
+			'password' => 'password',
+			'expiration' => '2023-12-20'
+		]);
+
+		$link = LinkFactory::update($link, [
+			'url' => 'https://updated.com',
+			'slug' => 'updated',
+			'password' => 'password2',
+			'expiration' => null,
+			'custom-domain' => 'my-super-domain.com',
+			'api-management' => true
+		]);
 
 		$this->assertInstanceOf('App\Domain\Entity\Link', $link);
 
@@ -56,11 +78,17 @@ final class LinkFactoryTest extends TestCase
 		// Slug.
 		$this->assertEquals('updated', $link->getSlug());
 
+		// Domaine personnalisé.
+		$this->assertEquals('my-super-domain.com', $link->getCustomDomain());
+
 		// Mot de passe.
 		$this->assertStringStartsWith('$2y$', $link->getPassword());
 
 		// État d'activation.
 		$this->assertEquals(true, $link->isEnabled());
+
+		// Clé API.
+		$this->assertNotNull($link->getApiKey());
 
 		// Dates de création, de dernière mise à jour et d'expiration.
 		$this->assertNotNull($link->getCreatedAt());
@@ -73,7 +101,15 @@ final class LinkFactoryTest extends TestCase
 	 */
 	public function testPatchLink(): void
 	{
-		$link = LinkFactory::create('https://not-my-example.com', 'example', 'password', '2023-12-30');
+		$link = LinkFactory::create([
+			'url' => 'https://not-my-example.com',
+			'slug' => 'example',
+			'password' => 'password',
+			'expiration' => '2023-12-30',
+			'custom-domain' => 'not-my-domain.com',
+			'api-management' => true
+		]);
+
 		$link = LinkFactory::patch($link, 'url', 'https://not-updated.com');
 
 		$this->assertInstanceOf('App\Domain\Entity\Link', $link);
@@ -83,6 +119,9 @@ final class LinkFactoryTest extends TestCase
 
 		// Slug.
 		$this->assertEquals('example', $link->getSlug());
+
+		// Domaine personnalisé.
+		$this->assertEquals('not-my-domain.com', $link->getCustomDomain());
 
 		// Mot de passe.
 		$this->assertStringStartsWith('$2y$', $link->getPassword());
@@ -94,5 +133,8 @@ final class LinkFactoryTest extends TestCase
 		$this->assertNotNull($link->getCreatedAt());
 		$this->assertNotNull($link->getUpdatedAt());
 		$this->assertEquals('2023-12-30', $link->getExpiresAt()->format('Y-m-d'));
+
+		// Clé API.
+		$this->assertNotNull($link->getApiKey());
 	}
 }
