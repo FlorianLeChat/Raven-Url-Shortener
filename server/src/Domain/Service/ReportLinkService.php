@@ -126,7 +126,7 @@ final class ReportLinkService
 
 		$payload = $request->getPayload();
 
-		$email = $payload->getString('email');
+		$email = $payload->getString('email') ?: null;
 		$reason = $payload->getString('reason');
 
 		$report = ReportFactory::create($this->link, $reason, $email);

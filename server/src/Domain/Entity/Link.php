@@ -27,14 +27,14 @@ class Link
 	#[ORM\Column(type: Types::TEXT)]
 	#[OA\Property(title: 'The shortened URL')]
 	#[Assert\Url(requireTld: true)]
-	#[Assert\NotNull]
-	#[Assert\NotBlank]
+	#[Assert\NotBlank(normalizer: 'trim')]
 	private ?string $url = null;
 
 	#[ORM\Column(type: Types::STRING, length: 50, unique: true)]
 	#[OA\Property(title: 'The slug of the link')]
 	#[Assert\Regex(pattern: '/^[a-zA-Z0-9-]+$/')]
 	#[Assert\Length(min: 1, max: 50)]
+	#[Assert\NotBlank(normalizer: 'trim')]
 	private ?string $slug = null;
 
 	#[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
@@ -45,7 +45,7 @@ class Link
 	#[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
 	#[OA\Property(title: 'The custom domain of the link')]
 	#[Assert\Length(min: 1, max: 255)]
-	#[Assert\NotBlank(normalizer: 'trim')]
+	#[Assert\NotBlank(allowNull: true, normalizer: 'trim')]
 	#[Assert\Hostname]
 	private ?string $customDomain = null;
 
