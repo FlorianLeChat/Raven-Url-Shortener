@@ -48,6 +48,10 @@ return [
 								'format' => 'date-time',
 								'description' => 'The expiration date for the short link.'
 							],
+							'custom-domain' => [
+								'type' => 'string',
+								'description' => 'The custom domain for the short link.'
+							],
 							'api-management' => [
 								'type' => 'boolean',
 								'description' => 'Indicates if the link can be managed using the API.'

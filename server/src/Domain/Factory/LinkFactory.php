@@ -25,9 +25,9 @@ final class LinkFactory
 	/**
 	 * Récupération (si possible) d'une date d'expiration.
 	 */
-	private static function parseExpiration(?string $expiration = null): ?DateTimeImmutable
+	private static function parseExpiration(string $expiration): DateTimeImmutable
 	{
-		return !empty($expiration) ? new DateTimeImmutable($expiration) : null;
+		return new DateTimeImmutable($expiration);
 	}
 
 	/**
@@ -48,38 +48,62 @@ final class LinkFactory
 
 	/**
 	 * Création d'un lien raccourci.
+	 * @param array{
+	 *  url: string,
+	 *  slug: string,
+	 *  password?: string|null,
+	 *  expiration?: string|null,
+	 *  custom-domain?: string|null
+	 * } $options
 	 */
-	public static function create(string $url, string $slug, ?string $password = null, ?string $expiration = null): Link
+	public static function create(array $options): Link
 	{
-		$url = trim($url);
-		$slug = trim($slug);
+		$url = $options['url'];
+
+		$password = $options['password'] ?? null;
 		$password = !empty($password) ? self::hashPassword($password) : null;
+
+		$expiration = $options['expiration'] ?? null;
+		$expiration = !empty($expiration) ? self::parseExpiration($expiration) : null;
 
 		$link = new Link();
 		$link->setUrl($url);
-		$link->setSlug($slug);
+		$link->setSlug($options['slug']);
 		$link->setTrusted(TrustedDomains::isTrusted($url));
 		$link->setPassword($password);
-		$link->setExpiresAt(self::parseExpiration($expiration));
+		$link->setExpiresAt($expiration);
+		$link->setCustomDomain($options['custom-domain'] ?? null);
 
 		return $link;
 	}
 
 	/**
 	 * Mise à jour complète d'un lien raccourci.
+	 * @param array{
+	 *  url: string,
+	 *  slug: string,
+	 *  password?: string|null,
+	 *  expiration?: string|null,
+	 *  custom-domain?: string|null
+	 * } $options
 	 */
-	public static function update(Link $link, string $url, string $slug, ?string $password = null, ?string $expiration = null): Link
+	public static function update(Link $link, array $options): Link
 	{
-		$url = trim($url);
-		$slug = trim($slug);
+		$url = $options['url'];
+
+		$password = $options['password'] ?? null;
 		$password = !empty($password) ? self::hashPassword($password) : null;
 
+		$expiration = $options['expiration'] ?? null;
+		$expiration = !empty($expiration) ? self::parseExpiration($expiration) : null;
+
 		$link->setUrl($url);
-		$link->setSlug($slug);
+		$link->setSlug($options['slug']);
 		$link->setTrusted(TrustedDomains::isTrusted($url));
 		$link->setPassword($password);
 		$link->setUpdatedAt(new DateTimeImmutable());
-		$link->setExpiresAt(self::parseExpiration($expiration));
+		$link->setExpiresAt($expiration);
+		$link->setCustomDomain($options['custom-domain'] ?? null);
 
 		return $link;
 	}
@@ -107,7 +131,11 @@ final class LinkFactory
 				break;
 
 			case 'expiresAt':
-				$value = self::parseExpiration($value);
+				$link->setExpiresAt(self::parseExpiration($value));
+				break;
+
+			case 'custom-domain':
+				$link->setCustomDomain($value);
 				break;
 
 			default:

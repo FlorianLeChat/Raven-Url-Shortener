@@ -6,6 +6,7 @@ use App\Kernel;
 use App\Domain\Entity\Link;
 use Psr\Log\LoggerInterface;
 use App\Domain\Factory\LinkFactory;
+use App\Domain\Factory\ApiKeyFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Domain\Service\Abstract\BaseLinkService;
@@ -77,14 +78,29 @@ final class UpdateLinkService extends BaseLinkService
 
 		$url = $payload->getString('url', $this->link->getUrl() ?? '');
 		$slug = $payload->getString('slug', $this->link->getSlug() ?? '');
+		$password = $payload->getString('password', $this->link->getPassword() ?? '');
 		$expiration = $payload->getString('expiration', $this->link->getExpiresAt()?->format('Y-m-d H:i:s') ?? '');
+		$customDomain = $payload->getString('custom-domain', $this->link->getCustomDomain() ?? '');
+		$apiManagement = $payload->getBoolean('api-management', $this->link->getApiKey() !== null);
+
+		if ($apiManagement && $this->link->getApiKey() === null)
+		{
+			$apiKey = ApiKeyFactory::create($this->link);
+			$this->link->setApiKey($apiKey);
+		}
 
 		if ($this->link->getSlug() !== $slug)
 		{
 			$this->checkSlug($slug);
 		}
 
-		$this->link = LinkFactory::update($this->link, $url, $slug, $expiration);
+		$this->link = LinkFactory::update($this->link, [
+			'url' => $url,
+			'slug' => $slug,
+			'password' => $password,
+			'expiration' => $expiration,
+			'custom-domain' => $customDomain
+		]);
 
 		$this->validateLink($this->link);
 		$this->checkUrl($this->link->getUrl());
