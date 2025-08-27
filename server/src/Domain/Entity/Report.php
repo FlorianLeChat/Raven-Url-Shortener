@@ -30,12 +30,14 @@ class Report
 
 	#[ORM\Column(type: Types::STRING, length: 500)]
 	#[Assert\Length(min: 10, max: 500)]
+	#[Assert\NotBlank(normalizer: 'trim')]
 	#[OA\Property(title: 'The reason given for the report')]
 	private ?string $reason = null;
 
 	#[ORM\Column(type: Types::STRING, length: 100, nullable: true)]
 	#[Assert\Email]
 	#[Assert\Length(min: 10, max: 100)]
+	#[Assert\NotBlank(allowNull: true, normalizer: 'trim')]
 	#[Assert\NoSuspiciousCharacters]
 	#[OA\Property(title: 'The email address of the reporter')]
 	private ?string $email = null;
