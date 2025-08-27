@@ -138,13 +138,22 @@ final class OriginListener
 		$this->headerOrigin = $this->request->headers->get('Origin') ?? '';
 		$this->allowedOrigins = (array) $this->parameterBag->get('api.allowed_origins');
 
+		if ($this->headerOrigin !== '')
+		{
+			// Gestion des en-têtes CORS si l'en-tête « Origin » est présent.
+			$this->handleCorsHeaders();
+		}
+
 		if ($this->request->getMethod() === 'OPTIONS')
 		{
 			// Prise en charge des requêtes préliminaires CORS.
 			$this->response->setStatusCode(200);
-		}
 
-		$this->handleCorsHeaders();
+			// Pas besoin de vérifier la clé API pour une requête OPTIONS
+			//  même si l'API est privée.
+			$event->setResponse($this->response);
+			return;
+		}
 
 		if ($this->parameterBag->get('api.private'))
 		{
