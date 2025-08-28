@@ -8,7 +8,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 /**
  * Écouteur d'événements pour la gestion des origines des requêtes HTTP.
@@ -26,23 +25,20 @@ final class OriginListener
 	private Response $response;
 
 	/**
-	 * Liste des origines autorisées pour les requêtes CORS.
-	 * @var string[] $allowedOrigins
-	 */
-	private array $allowedOrigins;
-
-	/**
 	 * Origine de la requête HTTP entrante.
 	 */
 	private string $headerOrigin;
 
 	/**
 	 * Constructeur de la classe.
+	 * @param string[] $allowedOrigins Liste des origines autorisées pour les requêtes CORS.
 	 */
 	public function __construct(
+		private readonly bool $isPrivateApi,
+		private readonly array $allowedOrigins,
+		private readonly string $apiKey,
 		private readonly LoggerInterface $logger,
-		private readonly TranslatorInterface $translator,
-		private readonly ParameterBagInterface $parameterBag
+		private readonly TranslatorInterface $translator
 	) {}
 
 	/**
@@ -95,7 +91,7 @@ final class OriginListener
 	{
 		$headerApiKey = $this->request->headers->get('Authorization') ?? '';
 		$headerApiKey = str_replace('Bearer ', '', $headerApiKey);
-		$isValidApiKey = hash_equals($this->parameterBag->get('api.key'), $headerApiKey);
+		$isValidApiKey = hash_equals($this->apiKey, $headerApiKey);
 
 		if (!$isValidApiKey)
 		{
@@ -112,7 +108,7 @@ final class OriginListener
 	 */
 	private function handleCorsHeaders(): void
 	{
-		if (!$this->parameterBag->get('api.private') || $this->allowedOrigins[0] === '*')
+		if (!$this->isPrivateApi || $this->allowedOrigins[0] === '*')
 		{
 			// L'API est publique ou toutes les origines sont autorisées.
 			// Une API peut autoriser toutes les origines tout en demandant une clé API valide.
@@ -134,9 +130,7 @@ final class OriginListener
 	{
 		$this->request = $event->getRequest();
 		$this->response = $event->getResponse();
-
 		$this->headerOrigin = $this->request->headers->get('Origin') ?? '';
-		$this->allowedOrigins = (array) $this->parameterBag->get('api.allowed_origins');
 
 		if ($this->headerOrigin !== '')
 		{
@@ -155,7 +149,7 @@ final class OriginListener
 			return;
 		}
 
-		if ($this->parameterBag->get('api.private'))
+		if ($this->isPrivateApi)
 		{
 			// Pour une API privée, il faut vérifier l'origine de la requête
 			//  et vérifier si la clé API fournie est valide.
