@@ -16,7 +16,6 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 /**
  * Commande pour la génération d'un résumé des signalements d'utilisateurs.
@@ -28,8 +27,13 @@ final class UserReportSummary extends Command
 	 * Initialisation des dépendances de la commande.
 	 */
 	public function __construct(
+		private readonly bool $isSmtpEnabled,
+		private readonly bool $isDkimEnabled,
+		private readonly string $smtpUsername,
+		private readonly string $dkimPrivateKey,
+		private readonly string $dkimSelector,
+		private readonly string $dkimDomain,
 		private readonly MailerInterface $mailer,
-		private readonly ParameterBagInterface $parameterBag,
 		private readonly EntityManagerInterface $entityManager
 	) {
 		parent::__construct();
@@ -40,10 +44,8 @@ final class UserReportSummary extends Command
 	 */
 	private function createEmail(int $count): Email
 	{
-		$recipient = $this->parameterBag->get('smtp.username');
-
 		return (new Email())
-			->to(new Address($recipient))
+			->to(new Address($this->smtpUsername))
 			->text(sprintf('There are %d report(s) to review.', $count))
 			->subject('Report summary');
 	}
@@ -75,7 +77,7 @@ final class UserReportSummary extends Command
 	 */
 	private function signEmailWithDkim(Email $email, SymfonyStyle $io): ?Message
 	{
-		if (!$this->parameterBag->get('dkim.enabled'))
+		if (!$this->isDkimEnabled)
 		{
 			$io->warning('DKIM signing is disabled.');
 			return null;
@@ -83,9 +85,9 @@ final class UserReportSummary extends Command
 
 		try {
 			$signer = new DkimSigner(
-				$this->parameterBag->get('dkim.private_key'),
-				$this->parameterBag->get('dkim.domain'),
-				$this->parameterBag->get('dkim.selector')
+				$this->dkimPrivateKey,
+				$this->dkimDomain,
+				$this->dkimSelector
 			);
 
 			$io->success('Email signed with DKIM.');
@@ -115,7 +117,7 @@ final class UserReportSummary extends Command
 		$io = new SymfonyStyle($input, $output);
 		$io->title(sprintf('Summary of %d user report(s)', $count));
 
-		if (!$this->parameterBag->get('smtp.enabled'))
+		if (!$this->isSmtpEnabled)
 		{
 			$io->error('SMTP is disabled.');
 			return Command::SUCCESS; // Ce n'est pas une erreur, car le service est désactivé.

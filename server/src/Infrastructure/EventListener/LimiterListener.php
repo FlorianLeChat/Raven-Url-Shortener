@@ -9,7 +9,6 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 /**
  * Écouteur d'événements pour la gestion de la limitation de requêtes.
@@ -27,10 +26,10 @@ final class LimiterListener
 	 * Constructeur de la classe.
 	 */
 	public function __construct(
+		private readonly bool $isRateLimitEnabled,
 		private readonly LoggerInterface $logger,
 		private readonly RateLimiterFactory $readApiLimiter,
 		private readonly RateLimiterFactory $writeApiLimiter,
-		private readonly ParameterBagInterface $parameterBag,
 		protected readonly TranslatorInterface $translator
 	) {}
 
@@ -87,7 +86,7 @@ final class LimiterListener
 	 */
 	public function __invoke(RequestEvent $event): void
 	{
-		if (!$this->parameterBag->get('rate_limit.enabled'))
+		if (!$this->isRateLimitEnabled)
 		{
 			return;
 		}
