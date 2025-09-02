@@ -4,6 +4,7 @@
  * Importation des routes pour OpenAPI.
  */
 return [
+	'/api' => require __DIR__ . '/actions/ServerIndexAction.php',
 	'/api/v{version}/slug' => require __DIR__ . '/actions/CheckSlugAction.php',
 	'/api/v{version}/link' => require __DIR__ . '/actions/CreateLinkAction.php',
 	'/api/v{version}/link/{id}' => array_merge(
