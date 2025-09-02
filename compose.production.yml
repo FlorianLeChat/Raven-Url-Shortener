@@ -62,7 +62,7 @@ services:
         environment:
             URL: https://url.florian-dev.fr/api/swagger.json
         healthcheck:
-            test: wget -O - http://localhost:8080
+            test: wget -O - http://127.0.0.1:8080
             retries: 3
             timeout: 5s
         ports:
