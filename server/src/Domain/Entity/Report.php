@@ -19,19 +19,16 @@ class Report
 {
 	#[ORM\Id]
 	#[ORM\Column(type: UuidType::NAME, unique: true)]
-	#[OA\Property(title: 'The unique identifier of the report')]
 	private ?Uuid $id = null;
 
 	#[ORM\ManyToOne(inversedBy: 'reports')]
 	#[ORM\JoinColumn(nullable: false)]
 	#[Assert\Type(type: Link::class)]
-	#[OA\Property(title: 'The link associated with the report')]
 	private ?Link $link = null;
 
 	#[ORM\Column(type: Types::STRING, length: 500)]
 	#[Assert\Length(min: 10, max: 500)]
 	#[Assert\NotBlank(normalizer: 'trim')]
-	#[OA\Property(title: 'The reason given for the report')]
 	private ?string $reason = null;
 
 	#[ORM\Column(type: Types::STRING, length: 100, nullable: true)]
@@ -39,15 +36,12 @@ class Report
 	#[Assert\Length(min: 10, max: 100)]
 	#[Assert\NotBlank(allowNull: true, normalizer: 'trim')]
 	#[Assert\NoSuspiciousCharacters]
-	#[OA\Property(title: 'The email address of the reporter')]
 	private ?string $email = null;
 
 	#[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
-	#[OA\Property(title: 'The creation date of the report')]
 	private ?DateTimeImmutable $createdAt = null;
 
 	#[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE, nullable: true)]
-	#[OA\Property(title: 'The last update date of the report')]
 	private ?DateTimeImmutable $updatedAt = null;
 
 	/**
