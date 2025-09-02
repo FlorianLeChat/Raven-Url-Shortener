@@ -26,11 +26,7 @@ return static function (ContainerConfigurator $container): void
 
 	$services->set(UserReportSummary::class)
 		->bind('bool $isSmtpEnabled', '%env(bool:SMTP_ENABLED)%')
-		->bind('bool $isDkimEnabled', '%env(bool:DKIM_ENABLED)%')
 		->bind('string $smtpUsername', '%env(string:SMTP_USERNAME)%')
-		->bind('string $dkimPrivateKey', '%env(string:DKIM_PRIVATE_KEY)%')
-		->bind('string $dkimSelector', '%env(string:DKIM_SELECTOR)%')
-		->bind('string $dkimDomain', '%env(string:DKIM_DOMAIN)%')
 		->tag('console.command');
 
 	$services->set(ExceptionListener::class)

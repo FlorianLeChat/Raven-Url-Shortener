@@ -2,14 +2,11 @@
 
 namespace App\Infrastructure\Command;
 
-use Exception;
 use App\Domain\Entity\Report;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\Address;
-use Symfony\Component\Mime\Message;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Crypto\DkimSigner;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -28,11 +25,7 @@ final class UserReportSummary extends Command
 	 */
 	public function __construct(
 		private readonly bool $isSmtpEnabled,
-		private readonly bool $isDkimEnabled,
 		private readonly string $smtpUsername,
-		private readonly string $dkimPrivateKey,
-		private readonly string $dkimSelector,
-		private readonly string $dkimDomain,
 		private readonly MailerInterface $mailer,
 		private readonly EntityManagerInterface $entityManager
 	) {
@@ -53,11 +46,11 @@ final class UserReportSummary extends Command
 	/**
 	 * Envoi du courriel avec gestion des erreurs et journalisation.
 	 */
-	private function sendEmail(Email $email, SymfonyStyle $io, ?Message $signedEmail = null): int
+	private function sendEmail(Email $email, SymfonyStyle $io): int
 	{
 		try
 		{
-			$this->mailer->send($signedEmail ?? $email);
+			$this->mailer->send($email);
 
 			$io->success('Email sent successfully.');
 
@@ -68,34 +61,6 @@ final class UserReportSummary extends Command
 			$io->error(sprintf('Failed to send email: %s', $error->getMessage()));
 
 			return Command::FAILURE;
-		}
-	}
-
-	/**
-	 * Signature du courriel avec DKIM (si possible).
-	 * @see https://symfony.com/doc/current/mailer.html#signing-messages
-	 */
-	private function signEmailWithDkim(Email $email, SymfonyStyle $io): ?Message
-	{
-		if (!$this->isDkimEnabled)
-		{
-			$io->warning('DKIM signing is disabled.');
-			return null;
-		}
-
-		try {
-			$signer = new DkimSigner(
-				$this->dkimPrivateKey,
-				$this->dkimDomain,
-				$this->dkimSelector
-			);
-
-			$io->success('Email signed with DKIM.');
-
-			return $signer->sign($email);
-		} catch (Exception $error) {
-			$io->error(sprintf('Failed to sign email: %s', $error->getMessage()));
-			return null;
 		}
 	}
 
@@ -123,9 +88,6 @@ final class UserReportSummary extends Command
 			return Command::SUCCESS; // Ce n'est pas une erreur, car le service est désactivé.
 		}
 
-		$email = $this->createEmail($count);
-		$signedEmail = $this->signEmailWithDkim($email, $io);
-
-		return $this->sendEmail($email, $io, $signedEmail);
+		return $this->sendEmail($this->createEmail($count), $io);
 	}
 }

@@ -3,7 +3,7 @@
 ## Installation
 
 > [!WARNING]
-> L'installation **sans** Docker nécessite d'avoir une base de données [compatible avec Doctrine](https://www.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/introduction.html#introduction) pour le fonctionnement de l'API. Vous devez également être en possession d'un serveur SMTP (si possible avec le protocole DKIM configuré) pour l'envoi des courriels relatifs aux signalements utilisateurs. Enfin, l'API traite un grand volume de données et utilise [Redis](https://redis.io/downloads/) comme solution de mise en cache pour enregistrer temporairement les données les plus fréquemment consultées.
+> L'installation **sans** Docker nécessite d'avoir une base de données [compatible avec Doctrine](https://www.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/introduction.html#introduction) pour le fonctionnement de l'API. Vous devez également être en possession d'un serveur SMTP pour l'envoi des courriels relatifs aux signalements utilisateurs. Enfin, l'API traite un grand volume de données et utilise [Redis](https://redis.io/downloads/) comme solution de mise en cache pour enregistrer temporairement les données les plus fréquemment consultées.
 >
 > Le déploiement en environnement de production (**avec ou sans Docker**) nécessite un serveur Web déjà configuré comme [Nginx](https://nginx.org/en/), [Apache](https://httpd.apache.org/) ou [Caddy](https://caddyserver.com/) pour servir les scripts PHP.
 
@@ -25,7 +25,6 @@
 - Modifier les [variables d'environnement](https://github.com/FlorianLeChat/Raven-Url-Shortener/blob/master/server/.env) pour la connexion à la base de données (`DATABASE_...`) ;
 - Modifier les [variables d'environnement](https://github.com/FlorianLeChat/Raven-Url-Shortener/blob/master/server/.env) pour la connexion au serveur de cache (`REDIS_...`) ;
 - Modifier les [variables d'environnement](https://github.com/FlorianLeChat/Raven-Url-Shortener/blob/master/server/.env) pour configurer le serveur de messagerie (`SMTP_...`) ;
-- *(Facultatif)* Modifier les [variables d'environnement](https://github.com/FlorianLeChat/Raven-Url-Shortener/blob/master/server/.env) pour activer l'authentification DKIM (`DKIM_...`) ;
 - *(Facultatif)* Exécuter la commande `php bin/console doctrine:database:create --no-interaction --if-not-exists` pour créer la base de données ;
 - Exécuter la commande `php doctrine:schema:update --force` pour créer les tables dans la base de données ;
 - Démarrer le serveur local Symfony avec la commande `symfony server:start` ;
@@ -53,7 +52,6 @@
 - Modifier les [variables d'environnement](https://github.com/FlorianLeChat/Raven-Url-Shortener/blob/master/server/.env) pour la connexion à la base de données (`DATABASE_...`) ;
 - Modifier les [variables d'environnement](https://github.com/FlorianLeChat/Raven-Url-Shortener/blob/master/server/.env) pour la connexion au serveur de cache (`REDIS_...`) ;
 - Modifier les [variables d'environnement](https://github.com/FlorianLeChat/Raven-Url-Shortener/blob/master/server/.env) pour configurer le serveur de messagerie (`SMTP_...`) ;
-- *(Facultatif)* Modifier les [variables d'environnement](https://github.com/FlorianLeChat/Raven-Url-Shortener/blob/master/server/.env) pour activer l'authentification DKIM (`DKIM_...`) ;
 - Exécuter la commande `php bin/console cache:clear` pour vider le cache de fichiers utilisé par Symfony ;
 - Exécuter la commande `composer dump-env prod` pour transformer les variables d'environnement en variables statiques utilisables par PHP ;
 - *(Facultatif)* Exécuter la commande `php bin/console doctrine:database:create --no-interaction --if-not-exists` pour créer une base de données ;
@@ -74,7 +72,7 @@
 ## Setup
 
 > [!WARNING]
-> Installation **without** Docker requires having a [Doctrine-compatible database](https://www.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/introduction.html#introduction) for API operations. You must also have access to an SMTP server (preferably with the DKIM protocol configured) for sending emails related to user reports. Finally, the API processes a large volume of data and uses [Redis](https://redis.io/downloads/) as a caching solution to temporarily store the most frequently accessed data.
+> Installation **without** Docker requires having a [Doctrine-compatible database](https://www.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/introduction.html#introduction) for API operations. You must also have access to an SMTP server for sending emails related to user reports. Finally, the API processes a large volume of data and uses [Redis](https://redis.io/downloads/) as a caching solution to temporarily store the most frequently accessed data.
 >
 > Deployment in a production environment (**with or without Docker**) requires a pre-configured web server such as [Nginx](https://nginx.org/en/), [Apache](https://httpd.apache.org/), or [Caddy](https://caddyserver.com/) to serve PHP scripts.
 
@@ -96,7 +94,6 @@
 - Set [environment variables](https://github.com/FlorianLeChat/Raven-Url-Shortener/blob/master/server/.env) for database connection (`DATABASE_...`) ;
 - Set [environment variables](https://github.com/FlorianLeChat/Raven-Url-Shortener/blob/master/server/.env) for cache server connection (`REDIS_...`) ;
 - Set [environment variables](https://github.com/FlorianLeChat/Raven-Url-Shortener/blob/master/server/.env) to configure mail server (`SMTP_...`) ;
-- *(Optional)* Set [environment variables](https://github.com/FlorianLeChat/Raven-Url-Shortener/blob/master/server/.env) to enable DKIM authentication (`DKIM_...`) ;
 - *(Optional)* Run `php bin/console doctrine:database:create --no-interaction --if-not-exists` to create a database ;
 - Run `php doctrine:schema:update --force` to create tables in the database ;
 - Start local Symfony server with `symfony server:start` ;
@@ -124,7 +121,6 @@
 - Set [environment variables](https://github.com/FlorianLeChat/Raven-Url-Shortener/blob/master/server/.env) for database connection (`DATABASE_...`) ;
 - Set [environment variables](https://github.com/FlorianLeChat/Raven-Url-Shortener/blob/master/server/.env) for cache server connection (`REDIS_...`) ;
 - Set [environment variables](https://github.com/FlorianLeChat/Raven-Url-Shortener/blob/master/server/.env) to configure mail server (`SMTP_...`) ;
-- *(Optional)* Set [environment variables](https://github.com/FlorianLeChat/Raven-Url-Shortener/blob/master/server/.env) to enable DKIM authentication (`DKIM_...`) ;
 - Run `php bin/console cache:clear` to clear Symfony's file cache ;
 - Run `composer dump-env prod` to convert environment variables into static variables usable by PHP ;
 - *(Optional)* Run `php bin/console doctrine:database:create --no-interaction --if-not-exists` to create a database ;
