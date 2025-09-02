@@ -3,7 +3,6 @@
 namespace App\Domain\Entity;
 
 use DateTimeImmutable;
-use OpenApi\Attributes as OA;
 use Doctrine\DBAL\Types\Types;
 use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
