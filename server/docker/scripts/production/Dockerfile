@@ -5,7 +5,7 @@
 FROM php:8.4-fpm
 
 # Install system dependencies
-RUN apt update && apt install -y supercronic tzdata && apt clean
+RUN apt update && apt install -y cron tzdata && apt clean
 
 # Install some PHP extensions
 ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
