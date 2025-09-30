@@ -2,10 +2,10 @@
 
 # Use an customized image of PHP
 # https://hub.docker.com/_/php
-FROM php:8.4-fpm-alpine
+FROM php:8.4-fpm
 
 # Install system dependencies
-RUN apk add --no-cache supercronic tzdata
+RUN apt update && apt install -y supercronic tzdata && apt clean
 
 # Install some PHP extensions
 ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
@@ -16,7 +16,6 @@ RUN install-php-extensions zip pdo_mysql pdo_pgsql redis opcache intl bcmath exc
 WORKDIR /var/www/html
 
 # Add some cronjobs for Symfony custom commands
-# https://github.com/webdevops/Dockerfile/issues/280#issuecomment-1311681838
 RUN echo "0 0 * * * /usr/local/bin/php /var/www/html/bin/console app:shortcut-cleanup > /dev/null 2>&1" >> /var/spool/cron/crontabs/www-data && \
 	echo "0 0 * * * /usr/local/bin/php /var/www/html/bin/console app:reports-summary > /dev/null 2>&1" >> /var/spool/cron/crontabs/www-data && \
 	echo "0 0 * * * /usr/local/bin/php /var/www/html/bin/console app:api-keys-rotation > /dev/null 2>&1" >> /var/spool/cron/crontabs/www-data
