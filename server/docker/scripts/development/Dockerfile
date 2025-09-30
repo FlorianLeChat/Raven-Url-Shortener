@@ -2,13 +2,13 @@
 
 # Use an customized image of PHP
 # https://hub.docker.com/_/php
-FROM php:8.4-alpine
+FROM php:8.4-apache
 
 # Install system and PHP extensions
 # https://xdebug.org/docs/all_settings#mode
 ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 
-RUN apk add --no-cache bash supercronic tzdata && \
+RUN RUN apt update && apt install -y supercronic tzdata && apt clean && \
 	install-php-extensions zip pdo_mysql pdo_pgsql redis intl xdebug bcmath excimer @composer && \
 	echo "xdebug.mode=develop,debug" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" && \
 	echo "xdebug.client_port=9003" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" && \
