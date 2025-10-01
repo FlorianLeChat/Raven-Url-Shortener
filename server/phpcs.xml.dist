@@ -12,13 +12,16 @@
 	<!-- Utilisation de la norme PSR12 -->
 	<rule ref="PSR12">
 		<!-- Exclusion des sauts de ligne en début/fin de fichier -->
-	    <exclude name="PSR2.Files.EndFileNewline" />
+		<exclude name="PSR2.Files.EndFileNewline" />
 		<exclude name="PSR12.Files.FileHeader.IncorrectOrder" />
 		<exclude name="PSR12.Files.FileHeader.SpacingAfterBlock" />
 
+		<!-- Excusion des sauts de ligne après les blocs de documentation -->
+		<exclude name="PSR12.Files.FileHeader.SpacingAfterDocblockBlock" />
+
 		<!-- Exclusion des espaces et caractères de terminaison
 			au lieu des tabulations -->
-	    <exclude name="Generic.WhiteSpace.DisallowTabIndent" />
+		<exclude name="Generic.WhiteSpace.DisallowTabIndent" />
 		<exclude name="Generic.Files.LineEndings.InvalidEOLChar" />
 
 		<!-- Exclusion des espaces, accolades et parenthèses sur la même ligne
@@ -59,7 +62,7 @@
 		</properties>
 	</rule>
 
-    <!-- Autorisation des tabulations au lieu des espaces -->
+	<!-- Autorisation des tabulations au lieu des espaces -->
 	<rule ref="Generic.WhiteSpace.ScopeIndent">
 		<properties>
 			<property name="tabIndent" value="true" />
