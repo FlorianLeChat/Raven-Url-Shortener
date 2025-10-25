@@ -2,6 +2,24 @@
 
 ![logo](https://github.com/user-attachments/assets/781ad6e1-7c69-4b76-ae55-04df78f998c5)
 
+![HTML](https://img.shields.io/badge/HTML-E34F26?logo=html5&logoColor=white)
+![CSS](https://img.shields.io/badge/CSS-639?logo=css&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
+![PHP](https://img.shields.io/badge/PHP-777BB4?logo=php&logoColor=white)
+
+![Next.js](https://img.shields.io/badge/Next.js-black?logo=nextdotjs&logoColor=white)
+![Symfony](https://img.shields.io/badge/Symfony-black?logo=symfony)
+![Doctrine](https://img.shields.io/badge/Doctrine-FF8700?logo=doctrine&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?logo=tailwindcss&logoColor=white)
+![Lucide](https://img.shields.io/badge/Lucide-black?logo=lucide&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-%23DD0031.svg?logo=redis&logoColor=white)
+![i18n](https://img.shields.io/badge/i18n-26A69A?logo=googletranslate&logoColor=white)
+![Prettier](https://img.shields.io/badge/Prettier-F7B93E?logo=prettier&logoColor=black)
+![ESLint](https://img.shields.io/badge/ESLint-4B32C3?logo=eslint&logoColor=white)
+![OpenAPI](https://img.shields.io/badge/OpenAPI-6BA539?logo=openapiinitiative&logoColor=white)
+![Swagger](https://img.shields.io/badge/Swagger-85EA2D?logo=swagger&logoColor=black)
+
 ## In French
 
 Voici l'un de mes projets les plus aboutis à ce jour : **un service de raccourcissement de liens Internet (URL)**, inspiré du célèbre [Cparlà](https://cpar.la/) réalisé par... [mon entreprise](https://ciblemut.net/) !, mais avec une approche personnelle plus **moderne**, **personnalisable**, centrée sur la **sécurité** et la **confidentialité**.
