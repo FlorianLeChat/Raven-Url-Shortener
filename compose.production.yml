@@ -44,14 +44,15 @@ services:
             postgres:
                 condition: service_healthy
         environment:
+            PGADMIN_LISTEN_PORT: 8080
             PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
             PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
         healthcheck:
             test: wget -O - http://localhost
             retries: 3
             timeout: 5s
-        ports:
-            - "8080:80"
+        expose:
+            - "8080"
 
     # https://hub.docker.com/r/swaggerapi/swagger-ui
     swagger:
@@ -65,8 +66,8 @@ services:
             test: wget -O - http://127.0.0.1:8080
             retries: 3
             timeout: 5s
-        ports:
-            - "8081:8080"
+        expose:
+            - "8080"
 
     # https://hub.docker.com/_/varnish
     varnish:
@@ -82,8 +83,8 @@ services:
             test: wget -O - http://localhost/
             retries: 3
             timeout: 5s
-        ports:
-            - "80:80"
+        expose:
+            - "80"
 
     # https://github.com/FlorianLeChat/Raven-Url-Shortener
     node:
@@ -126,5 +127,5 @@ services:
         build:
             context: ./server
             dockerfile: ./docker/scripts/production/Dockerfile
-        ports:
-            - "9000:9000"
+        expose:
+            - "9000"

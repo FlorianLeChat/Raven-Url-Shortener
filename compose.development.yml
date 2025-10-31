@@ -41,6 +41,7 @@ services:
             postgres:
                 condition: service_healthy
         environment:
+            PGADMIN_LISTEN_PORT: 8080
             PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
             PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
             PGADMIN_CONFIG_SERVER_MODE: "False"
@@ -50,7 +51,7 @@ services:
             retries: 3
             timeout: 5s
         ports:
-            - "8080:80"
+            - "8080:8080"
 
     # https://hub.docker.com/r/swaggerapi/swagger-ui
     swagger:
