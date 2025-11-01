@@ -10,7 +10,7 @@ import { getLinkDetails } from "./app/[locale]/dashboard/actions/get-link-detail
 // Préfixes des routes de l'application.
 const routePrefixes = [ "dashboard", "redirect", "manager" ];
 
-export default async function middleware( request: NextRequest )
+export default async function proxy( request: NextRequest )
 {
 	// Vérification à l'accès d'un lien raccourci.
 	const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
