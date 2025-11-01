@@ -48,7 +48,7 @@ services:
             PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
             PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
         healthcheck:
-            test: wget -O - http://localhost
+            test: wget -O - http://localhost:8080/
             retries: 3
             timeout: 5s
         expose:
@@ -63,11 +63,9 @@ services:
         environment:
             URL: https://url.florian-dev.fr/api/swagger.json
         healthcheck:
-            test: wget -O - http://127.0.0.1:8080
+            test: wget -O - http://127.0.0.1:8080/
             retries: 3
             timeout: 5s
-        expose:
-            - "8080"
 
     # https://hub.docker.com/_/varnish
     varnish:
@@ -83,8 +81,6 @@ services:
             test: wget -O - http://localhost/
             retries: 3
             timeout: 5s
-        expose:
-            - "80"
 
     # https://github.com/FlorianLeChat/Raven-Url-Shortener
     node:
@@ -97,7 +93,7 @@ services:
         environment:
             TZ: ${APP_TIMEZONE}
         healthcheck:
-            test: wget -O - http://localhost:3000
+            test: wget -O - http://localhost:3000/
             retries: 3
             timeout: 5s
         build:
@@ -127,5 +123,3 @@ services:
         build:
             context: ./server
             dockerfile: ./docker/scripts/production/Dockerfile
-        expose:
-            - "9000"
