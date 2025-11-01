@@ -47,7 +47,7 @@ services:
             PGADMIN_CONFIG_SERVER_MODE: "False"
             PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
         healthcheck:
-            test: wget -O - http://localhost
+            test: wget -O - http://localhost:8080/
             retries: 3
             timeout: 5s
         ports:
@@ -62,7 +62,7 @@ services:
         environment:
             URL: http://localhost:8000/api/swagger.json
         healthcheck:
-            test: wget -O - http://127.0.0.1:8080
+            test: wget -O - http://127.0.0.1:8080/
             retries: 3
             timeout: 5s
         ports:
