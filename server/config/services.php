@@ -21,8 +21,21 @@ return static function (ContainerConfigurator $container): void
 			->autowire()
 			->autoconfigure();
 
+	$excludes = [
+		'../src/Kernel.php',
+		'../src/Domain/Entity',
+		'../src/DependencyInjection',
+	];
+
+	if ($container->env() === 'prod')
+	{
+		// L'environnement de production n'a pas besoin des données
+		//  fictives pour les tests unitaires de PHPUnit.
+		$excludes[] = '../src/Infrastructure/Fixture';
+	}
+
 	$services->load('App\\', '../src/')
-		->exclude('../src/{DependencyInjection,Domain/Entity,Kernel.php}');
+		->exclude($excludes);
 
 	$services->set(UserReportSummary::class)
 		->bind('bool $isSmtpEnabled', '%env(bool:SMTP_ENABLED)%')
