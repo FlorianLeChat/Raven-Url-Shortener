@@ -16,7 +16,7 @@ export default function ServerProvider( {
 	value
 }: Readonly<{
 	children: ReactNode;
-	value: ServerProviderProps["value"];
+	value: ServerProviderProps[ "value" ];
 }> )
 {
 	return (
