@@ -20,7 +20,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
 
-        "doctrine/orm": "3.5.*",
+        "doctrine/orm": "3.6.*",
         "doctrine/dbal": "4.*",
         "doctrine/annotations": "2.0.*",
         "doctrine/doctrine-bundle": "2.16.*",
