@@ -26,7 +26,7 @@
         "doctrine/doctrine-bundle": "2.16.*",
         "doctrine/doctrine-migrations-bundle": "3.7.*",
 
-        "nelmio/api-doc-bundle": "5.8.*",
+        "nelmio/api-doc-bundle": "5.9.*",
 
         "symfony/uid": "7.3.*",
         "symfony/flex": "2.10.*",
