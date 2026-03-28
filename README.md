@@ -1,24 +1,24 @@
 # 🔗 Raven Url Shortener
 
-![logo](https://github.com/user-attachments/assets/781ad6e1-7c69-4b76-ae55-04df78f998c5)
+![logo](.gitlab/images/logo.png)
 
-![HTML](https://img.shields.io/badge/HTML-E34F26?logo=html5&logoColor=white)
-![CSS](https://img.shields.io/badge/CSS-639?logo=css&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
-![PHP](https://img.shields.io/badge/PHP-777BB4?logo=php&logoColor=white)
+![HTML](.gitlab/badges/html.svg)
+![CSS](.gitlab/badges/css.svg)
+![TypeScript](.gitlab/badges/typescript.svg)
+![PHP](.gitlab/badges/php.svg)
 
-![Next.js](https://img.shields.io/badge/Next.js-black?logo=nextdotjs&logoColor=white)
-![Symfony](https://img.shields.io/badge/Symfony-black?logo=symfony)
-![Doctrine](https://img.shields.io/badge/Doctrine-FF8700?logo=doctrine&logoColor=white)
-![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?logo=tailwindcss&logoColor=white)
-![Lucide](https://img.shields.io/badge/Lucide-black?logo=lucide&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
-![Redis](https://img.shields.io/badge/Redis-%23DD0031.svg?logo=redis&logoColor=white)
-![i18n](https://img.shields.io/badge/i18n-26A69A?logo=googletranslate&logoColor=white)
-![Prettier](https://img.shields.io/badge/Prettier-F7B93E?logo=prettier&logoColor=black)
-![ESLint](https://img.shields.io/badge/ESLint-4B32C3?logo=eslint&logoColor=white)
-![OpenAPI](https://img.shields.io/badge/OpenAPI-6BA539?logo=openapiinitiative&logoColor=white)
-![Swagger](https://img.shields.io/badge/Swagger-85EA2D?logo=swagger&logoColor=black)
+![Next.js](.gitlab/badges/nextjs.svg)
+![Symfony](.gitlab/badges/symfony.svg)
+![Doctrine](.gitlab/badges/doctrine.svg)
+![TailwindCSS](.gitlab/badges/tailwindcss.svg)
+![Lucide](.gitlab/badges/lucide.svg)
+![Docker](.gitlab/badges/docker.svg)
+![Redis](.gitlab/badges/redis.svg)
+![i18n](.gitlab/badges/i18n.svg)
+![Prettier](.gitlab/badges/prettier.svg)
+![ESLint](.gitlab/badges/eslint.svg)
+![OpenAPI](.gitlab/badges/openapi.svg)
+![Swagger](.gitlab/badges/swagger.svg)
 
 ## In French
 
@@ -31,7 +31,7 @@ Le *back-end*, quant à lui, est construit sur le solide *framework* [Symfony](h
 À terme, toutes les nouvelles fonctionnalités seront d'abord implémentées côté API avant d'être intégrées dans le front-end, **garantissant ainsi une cohérence et une évolutivité optimales du projet**.
 
 > [!TIP]
-> Voir le fichier [SETUP.md](https://github.com/FlorianLeChat/Raven-Url-Shortener/blob/master/SETUP.md) pour consulter les instructions d'installation.
+> Voir le fichier [SETUP.md](SETUP.md) pour consulter les instructions d'installation.
 
 > [!IMPORTANT]
 > L'entièreté du code de ce projet est commenté dans ma langue natale (en français) et n'est pas voué à être traduit en anglais par soucis de simplicité de développement.
@@ -47,9 +47,9 @@ The back-end, on the other hand, is built on the solid [Symfony](https://symfony
 Ultimately, all new functionalities will first be implemented on API before being integrated into the front-end, **ensuring optimal project consistency and scalability**.
 
 > [!TIP]
-> See the [SETUP.md](https://github.com/FlorianLeChat/Raven-Url-Shortener/blob/master/SETUP.md) file for setup instructions.
+> See the [SETUP.md](SETUP.md) file for setup instructions.
 
 > [!IMPORTANT]
 > The whole code of this project is commented in my native language (in French) and will not be translated in English for easier programming.
 
-![image](https://github.com/user-attachments/assets/fada86a4-cd54-4988-a7a4-4f6884de30d4)
+![image](.gitlab/images/raven_url_shortener.png)
