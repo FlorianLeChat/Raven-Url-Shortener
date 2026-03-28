@@ -24,7 +24,7 @@ export default function GatewayButton()
 		}
 		else
 		{
-			window.location.reload();
+			globalThis.location.reload();
 		}
 	};
 

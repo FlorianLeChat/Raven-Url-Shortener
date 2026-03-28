@@ -60,8 +60,7 @@ export default function SummaryContainer( {
 		document.body.appendChild( link );
 
 		link.click();
-
-		document.body.removeChild( link );
+		link.remove();
 	};
 
 	// Copie de la clé API dans le presse-papiers.
@@ -109,7 +108,7 @@ export default function SummaryContainer( {
 				className="gap-3 bg-success-700 p-4 text-white dark:bg-success-200"
 			>
 				{/* Date de création */}
-				<CircleCheckBig className="inline-block min-w-[24px]" />
+				<CircleCheckBig className="inline-block min-w-6" />
 				{dateMessage}
 			</CardHeader>
 

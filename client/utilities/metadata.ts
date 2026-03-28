@@ -1,10 +1,10 @@
 //
 // Génération des métadonnées du site Internet à partir de l'API GitHub.
 //
-import { join } from "path";
-import { existsSync } from "fs";
+import { join } from "node:path";
+import { existsSync } from "node:fs";
 import type { Metadata } from "next";
-import { mkdir, readFile, writeFile } from "fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 
 const fetchWithCache = async ( url: string ) =>
 {

@@ -101,7 +101,7 @@ export default function CookieConsent()
 			// Exécution des actions de changement.
 			onChange: () =>
 			{
-				window.location.reload();
+				globalThis.location.reload();
 			},
 
 			// Exécution des actions de consentement.

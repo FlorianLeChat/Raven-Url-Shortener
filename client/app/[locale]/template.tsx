@@ -20,7 +20,7 @@ export default function Template( {
 	// Gestion des erreurs de redirection.
 	useEffect( () =>
 	{
-		const parameters = new URLSearchParams( window.location.search );
+		const parameters = new URLSearchParams( globalThis.location.search );
 
 		switch ( parameters.get( "error" ) )
 		{
