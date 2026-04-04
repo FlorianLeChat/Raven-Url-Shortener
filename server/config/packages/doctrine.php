@@ -14,7 +14,7 @@ return static function (DoctrineConfig $doctrine, ContainerConfigurator $contain
 {
 	$runtime = $container->env();
 	$dbalConfig = $doctrine->dbal()->connection('default')
-		->url('%env(DATABASE_TYPE)%://%env(DATABASE_USERNAME)%:%env(DATABASE_PASSWORD)%@%env(DATABASE_HOST)%:%env(DATABASE_PORT)%/%env(DATABASE_NAME)%')
+		->url('%env(DATABASE_TYPE)%://%env(DATABASE_USERNAME)%:%env(DATABASE_PASSWORD)%@%env(DATABASE_HOST)%/%env(DATABASE_NAME)%')
 		->useSavepoints(true)
 		->serverVersion('%env(DATABASE_VERSION)%')
 		->profilingCollectBacktrace('%kernel.debug%');

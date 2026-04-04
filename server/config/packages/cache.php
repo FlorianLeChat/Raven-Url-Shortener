@@ -20,7 +20,7 @@ return static function (FrameworkConfig $framework, ContainerConfigurator $conta
 			->tags(true)
 			->public(true)
 			->adapters([
-				['name' => 'cache.adapter.redis', 'provider' => 'redis://%env(REDIS_USERNAME)%:%env(REDIS_PASSWORD)%@%env(REDIS_HOST)%:%env(REDIS_PORT)%/'],
+				['name' => 'cache.adapter.redis', 'provider' => 'redis://%env(CACHE_USERNAME)%:%env(CACHE_PASSWORD)%@%env(CACHE_HOST)%/'],
 				['name' => 'cache.adapter.doctrine_dbal'],
 				['name' => 'cache.adapter.filesystem']
 			]);

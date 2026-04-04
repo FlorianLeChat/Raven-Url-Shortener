@@ -1,25 +1,26 @@
 name: raven-url-shortener
 
 services:
-    # https://hub.docker.com/_/redis
-    redis:
-        image: redis:8
+    cache:
+        image: valkey/valkey:8
         command: >
-            --requirepass ${REDIS_PASSWORD} --maxmemory 128mb --maxmemory-policy allkeys-lru
+            --requirepass ${CACHE_PASSWORD}
+            --maxmemory 128mb
+            --maxmemory-policy allkeys-lru
         volumes:
-            - ./server/docker/services/cache:/usr/local/etc/redis
+            - valkey_data:/data
+        environment:
+            TZ: ${APP_TIMEZONE}
         healthcheck:
-            test: redis-cli --raw incr ping
+            test: valkey-cli --raw incr ping
             retries: 3
             timeout: 5s
-        expose:
-            - "${REDIS_PORT}"
+            start_period: 30s
 
-    # https://hub.docker.com/_/postgres
-    postgres:
+    database:
         image: postgres:18
         volumes:
-            - ./server/docker/services/database:/var/lib/postgresql/18/docker
+            - postgres_data:/var/lib/postgresql/18/docker
         environment:
             TZ: ${APP_TIMEZONE}
             POSTGRES_DB: ${DATABASE_NAME}
@@ -29,73 +30,51 @@ services:
             test: pg_isready --dbname=${DATABASE_NAME} --username=${DATABASE_USERNAME}
             retries: 3
             timeout: 5s
-        expose:
-            - "${DATABASE_PORT}"
+            start_period: 30s
 
-    # https://hub.docker.com/r/dpage/pgadmin4/
-    pgadmin:
-        image: dpage/pgadmin4:9
-        volumes:
-            - ./server/docker/services/pgadmin:/var/lib/pgadmin
-        depends_on:
-            postgres:
-                condition: service_healthy
-        environment:
-            PGADMIN_LISTEN_PORT: 8080
-            PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
-            PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
-            PGADMIN_CONFIG_SERVER_MODE: "False"
-            PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
-        healthcheck:
-            test: wget -O - http://localhost:8080/
-            retries: 3
-            timeout: 5s
-        ports:
-            - "8080:8080"
-
-    # https://hub.docker.com/r/swaggerapi/swagger-ui
-    swagger:
+    docs:
         image: swaggerapi/swagger-ui:latest
         depends_on:
-            php:
+            server:
                 condition: service_healthy
         environment:
-            URL: http://localhost:8000/api/swagger.json
+            URL: http://server:8000/openapi.json
         healthcheck:
             test: wget -O - http://127.0.0.1:8080/
             retries: 3
             timeout: 5s
+            start_period: 30s
         ports:
-            - "8081:8080"
+            - "8080:8080"
 
-    # https://github.com/FlorianLeChat/Raven-Url-Shortener
-    php:
+    server:
         image: raven-url-shortener-backend
-        command: ./docker/scripts/development/entrypoint.sh
-        develop:
-            watch:
-                - path: ./server
-                  action: sync
-                  target: /var/www/html
-                  ignore:
-                    - vendor/
-                - path: ./server/composer.lock
-                  action: rebuild
+        command: docker/scripts/development/entrypoint.sh
         volumes:
-            - ./server/logs:/var/www/html/logs
+            - ./server:/var/www/html:cached
+            - /var/www/html/.git
+            - /var/www/html/vendor
+            - /var/www/html/var
+            - /var/www/html/node_modules
         depends_on:
-            redis:
+            cache:
                 condition: service_healthy
-            postgres:
+            database:
                 condition: service_healthy
-        environment:
-            TZ: ${APP_TIMEZONE}
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
         healthcheck:
             test: curl -f http://localhost:8000/
             retries: 3
             timeout: 5s
+            start_period: 30s
         build:
+            target: development
             context: ./server
-            dockerfile: ./docker/scripts/development/Dockerfile
+            dockerfile: ./docker/Dockerfile
         ports:
             - "8000:8000"
+
+volumes:
+    valkey_data:
+    postgres_data:

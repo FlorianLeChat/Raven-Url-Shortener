@@ -66,6 +66,7 @@ return static function (MonologConfig $monolog, ContainerConfigurator $container
 			->type('symfony_mailer')
 			->level(LogLevel::INFO)
 			->subject('An Error Occurred! %%message%%')
+            ->enabled('%env(bool:SMTP_ENABLED)%')
 			->toEmail('%env(SMTP_USERNAME)%')
 			->fromEmail('%env(SMTP_USERNAME)%')
 			->formatter('monolog.formatter.html')
