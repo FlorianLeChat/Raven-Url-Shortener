@@ -19,40 +19,40 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 /**
  * Action pour la suppression d'un lien raccourci.
  */
-#[Route('/api/v{version}', stateless: true, requirements: ['version' => '1'])]
+#[Route('/v{version}', requirements: ['version' => '1'], stateless: true)]
 final class DeleteLinkAction extends AbstractController
 {
-	/**
-	 * Constructeur de la classe.
-	 */
-	public function __construct(
-		private readonly LoggerInterface $logger,
-		private readonly ValidatorInterface $validator,
-		private readonly TranslatorInterface $translator,
-		private readonly HttpClientInterface $httpClient,
-		private readonly EntityManagerInterface $entityManager
-	) {}
+    /**
+     * Constructeur de la classe.
+     */
+    public function __construct(
+        private readonly LoggerInterface        $logger,
+        private readonly ValidatorInterface     $validator,
+        private readonly TranslatorInterface    $translator,
+        private readonly HttpClientInterface    $httpClient,
+        private readonly EntityManagerInterface $entityManager
+    ) {}
 
-	/**
-	 * Suppression d'un lien raccourci.
-	 */
-	#[Route('/link/{id}', methods: ['DELETE'], requirements: ['id' => Requirement::UUID_V7])]
-	#[Route('/link/{slug}', methods: ['DELETE'], requirements: ['slug' => Requirement::ASCII_SLUG])]
-	public function deleteLink(Request $request, Link $link): Response
-	{
-		$this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+    /**
+     * Suppression d'un lien raccourci.
+     */
+    #[Route('/link/{id}', requirements: ['id' => Requirement::UUID_V7], methods: ['DELETE'])]
+    #[Route('/link/{slug}', requirements: ['slug' => Requirement::ASCII_SLUG], methods: ['DELETE'])]
+    public function deleteLink(Request $request, Link $link): Response
+    {
+        $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
-		$service = new DeleteLinkService(
-			$link,
-			$this->logger,
-			$this->validator,
-			$this->translator,
-			$this->httpClient,
-			$this->entityManager
-		);
+        $service = new DeleteLinkService(
+            $link,
+            $this->logger,
+            $this->validator,
+            $this->translator,
+            $this->httpClient,
+            $this->entityManager
+        );
 
-		$service->deleteLink($request);
+        $service->deleteLink($request);
 
-		return new Response(status: Response::HTTP_NO_CONTENT);
-	}
+        return new Response(status: Response::HTTP_NO_CONTENT);
+    }
 }
