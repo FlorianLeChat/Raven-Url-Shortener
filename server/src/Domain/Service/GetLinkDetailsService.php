@@ -11,67 +11,52 @@ use App\Domain\Service\Abstract\BaseLinkService;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-/**
- * Service de récupération des informations d'un lien raccourci.
- */
 final class GetLinkDetailsService extends BaseLinkService
 {
-	/**
-	 * Vérification du mot de passe pour accéder au lien.
-	 */
-	private function checkPassword(Request $request, Link $link): void
-	{
-		$this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+    private function checkPassword(Request $request, Link $link): void
+    {
+        $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
-		$headerPassword = $request->headers->get('Authorization');
+        $headerPassword = $request->headers->get('Authorization');
 
-		if (empty($headerPassword))
-		{
-			throw new UnauthorizedHttpException('Password', $this->translator->trans('link.password.missing'));
-		}
+        if (empty($headerPassword)) {
+            throw new UnauthorizedHttpException('Password', $this->translator->trans('link.password.missing'));
+        }
 
-		/** @var string $storedPassword */
-		$storedPassword = $link->getPassword();
-		$headerPassword = str_replace('Password ', '', $headerPassword);
-		$isValidPassword = LinkFactory::verifyPassword($storedPassword, $headerPassword);
+        /** @var string $storedPassword */
+        $storedPassword = $link->getPassword();
+        $headerPassword = str_replace('Password ', '', $headerPassword);
+        $isValidPassword = LinkFactory::verifyPassword($storedPassword, $headerPassword);
 
-		if (!$isValidPassword)
-		{
-			throw new AccessDeniedHttpException($this->translator->trans('link.password.invalid'));
-		}
-	}
+        if (!$isValidPassword) {
+            throw new AccessDeniedHttpException($this->translator->trans('link.password.invalid'));
+        }
+    }
 
-	/**
-	 * Enregistrement de la visite d'un lien raccourci.
-	 */
-	private function saveLinkVisited(Link $link): void
-	{
-		$this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+    private function saveLinkVisited(Link $link): void
+    {
+        $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
-		$link->setVisitedAt(new DateTimeImmutable());
+        $link->setVisitedAt(new DateTimeImmutable());
 
-		$this->repository->save($link, true);
-	}
+        $this->repository->save($link, true);
+    }
 
-	/**
-	 * Récupération des informations d'un lien raccourci.
-	 */
-	public function getLinkDetails(Request $request, Link $link): Link
-	{
-		$this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+    public function getLinkDetails(Request $request, Link $link): Link
+    {
+        $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
-		$isPasswordProtected = !empty($link->getPassword());
+        $isPasswordProtected = !empty($link->getPassword());
 
-		if ($isPasswordProtected)
-		{
-			$this->checkPassword($request, $link);
-		}
+        if ($isPasswordProtected) {
+            $this->checkPassword($request, $link);
+        }
 
-		$currentDate = $link->getVisitedAt();
+        $currentDate = $link->getVisitedAt();
 
-		$this->saveLinkVisited($link);
-		$link->setVisitedAt($currentDate);
+        $this->saveLinkVisited($link);
+        $link->setVisitedAt($currentDate);
 
-		return $link;
-	}
+        return $link;
+    }
 }

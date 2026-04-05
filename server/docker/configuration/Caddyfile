@@ -1,0 +1,30 @@
+{
+    admin off
+    auto_https off
+
+    servers {
+        enable_full_duplex
+    }
+}
+
+:8080 {
+    encode zstd br gzip
+
+    log {
+        output stdout
+        format console
+    }
+
+    header {
+        -Server
+        -X-Powered-By
+    }
+
+    php_server {
+        resolve_root_symlink false
+
+        try_files {path} index.php
+
+        root /var/www/html/public
+    }
+}

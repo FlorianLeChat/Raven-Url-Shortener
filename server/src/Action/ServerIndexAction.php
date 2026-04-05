@@ -7,15 +7,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-/**
- * Action pour la page d'accueil du serveur.
- */
 final class ServerIndexAction extends AbstractController
 {
-	/**
-	 * Art ASCII pour la page d'accueil du serveur.
-	 */
-	private const ASCII_INDEX = <<<EOT
+    private const ASCII_INDEX = <<<EOT
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: ____                                     _   _          _     ____    _                      _                                 ::
@@ -29,26 +23,27 @@ final class ServerIndexAction extends AbstractController
 
 Server is running. Response time: %s ms.
 Ready to handle requests.
-API documentation available at https://url.florian-dev.fr/api/docs.
+API documentation available at https://docs.url.florian-dev.fr.
 EOT;
 
-	/**
-	 * Récupération de l'état de santé du serveur.
-	 */
-	#[Route('/', methods: ['GET'], stateless: true)]
-	#[Route('/api', methods: ['GET'], stateless: true)]
-	public function getHealthCheck(Request $request): Response
-	{
-		$requestTime = $request->server->get('REQUEST_TIME_FLOAT');
-		$currentTime = microtime(true);
-		$executionTime = round(($currentTime - $requestTime) * 1000, 3);
+    #[Route('/', methods: ['GET'], stateless: true)]
+    public function getHealthCheck(Request $request): Response
+    {
+        $requestTime = $request->server->get('REQUEST_TIME_FLOAT');
 
-		return new Response(
-			sprintf(self::ASCII_INDEX, $executionTime),
-			Response::HTTP_OK,
-			[
-				'Content-Type' => 'text/plain; charset=utf-8'
-			]
-		);
-	}
+        if (!is_float($requestTime)) {
+            $requestTime = microtime(true);
+        }
+
+        $currentTime = microtime(true);
+        $executionTime = round(($currentTime - $requestTime) * 1000, 3);
+
+        return new Response(
+            sprintf(self::ASCII_INDEX, $executionTime),
+            Response::HTTP_OK,
+            [
+                'Content-Type' => 'text/plain; charset=utf-8'
+            ]
+        );
+    }
 }

@@ -7,22 +7,19 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 use Symfony\Config\FrameworkConfig;
 
 /**
- * Paramétrage général du framework Symfony.
  * @see https://symfony.com/doc/current/configuration.html
  */
-return static function (FrameworkConfig $framework, ContainerConfigurator $container): void
-{
-	$runtime = $container->env();
-	$framework->secret('%env(APP_SECRET)%');
+return static function (FrameworkConfig $framework, ContainerConfigurator $container): void {
+    $runtime = $container->env();
+    $framework->secret('%env(APP_SECRET)%');
+    $framework->propertyInfo()->withConstructorExtractor(true);
 
-	if ($runtime === 'test')
-	{
-		$framework->test(true);
-		return;
-	}
+    if ($runtime === 'test') {
+        $framework->test(true);
+        return;
+    }
 
-	if ($runtime === 'prod')
-	{
-		$framework->httpCache()->enabled(true);
-	}
+    if ($runtime === 'prod') {
+        $framework->httpCache()->enabled(true);
+    }
 };

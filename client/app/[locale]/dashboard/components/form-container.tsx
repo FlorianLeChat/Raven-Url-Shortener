@@ -96,7 +96,7 @@ export default function FormContainer()
 
 		try
 		{
-			const response = await fetch( `${ process.env.NEXT_PUBLIC_BACKEND_URL }/api/v1/link`, {
+			const response = await fetch( `${ process.env.NEXT_PUBLIC_BACKEND_URL }/v1/link`, {
 				body,
 				method: "POST"
 			} );
