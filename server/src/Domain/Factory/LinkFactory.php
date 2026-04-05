@@ -29,7 +29,6 @@ final class LinkFactory
     }
 
     /**
-     * Création d'un lien raccourci.
      * @param array{
      *  url: string,
      *  slug: string,
@@ -58,7 +57,6 @@ final class LinkFactory
     }
 
     /**
-     * Mise à jour complète d'un lien raccourci.
      * @param array{
      *  url: string,
      *  slug: string,
@@ -86,15 +84,11 @@ final class LinkFactory
         return $link;
     }
 
-    /**
-     * Mise à jour partielle d'un lien raccourci.
-     */
     public static function patch(Link $link, string $field, string $value): Link
     {
         $value = trim($value);
 
-        switch ($field)
-        {
+        switch ($field) {
             case 'url':
                 $link->setUrl($value);
                 $link->setTrusted(TrustedDomains::isTrusted($value));

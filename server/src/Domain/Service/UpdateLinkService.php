@@ -14,14 +14,8 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-/**
- * Service de mise à jour de liens raccourcis.
- */
 final class UpdateLinkService extends BaseLinkService
 {
-    /**
-     * Constructeur de la classe.
-     */
     public function __construct(
         protected Link $link,
         LoggerInterface $logger,
@@ -33,9 +27,6 @@ final class UpdateLinkService extends BaseLinkService
         parent::__construct($logger, $validator, $translator, $httpClient, $entityManager);
     }
 
-    /**
-     * Mise à jour partielle d'un lien raccourci.
-     */
     public function patchLink(Request $request): Link
     {
         $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
@@ -48,8 +39,7 @@ final class UpdateLinkService extends BaseLinkService
         $field = $payload->getString('field');
         $value = $payload->getString('value');
 
-        if ($field === 'slug')
-        {
+        if ($field === 'slug') {
             $this->checkSlug($value);
         }
 
@@ -63,9 +53,6 @@ final class UpdateLinkService extends BaseLinkService
         return $this->link;
     }
 
-    /**
-     * Mise à jour complète d'un lien raccourci.
-     */
     public function replaceLink(Request $request): Link
     {
         $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
@@ -82,14 +69,12 @@ final class UpdateLinkService extends BaseLinkService
         $expiration = $payload->getString('expiration', $this->link->getExpiresAt()?->format('Y-m-d H:i:s') ?? '') ?: null;
         $apiManagement = $payload->getBoolean('api-management', $this->link->getApiKey() !== null);
 
-        if ($apiManagement && $this->link->getApiKey() === null)
-        {
+        if ($apiManagement && $this->link->getApiKey() === null) {
             $apiKey = ApiKeyFactory::create($this->link);
             $this->link->setApiKey($apiKey);
         }
 
-        if ($this->link->getSlug() !== $slug)
-        {
+        if ($this->link->getSlug() !== $slug) {
             $this->checkSlug($slug);
         }
 

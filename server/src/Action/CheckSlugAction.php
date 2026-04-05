@@ -12,23 +12,15 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-/**
- * Action pour la vérification d'un slug personnalisé.
- */
 #[Route('/v{version}', requirements: ['version' => '1'], stateless: true)]
 final class CheckSlugAction extends AbstractController
 {
-    /**
-     * Constructeur de la classe.
-     */
     public function __construct(
         private readonly LoggerInterface $logger,
         private readonly EntityManagerInterface $entityManager
-    ) {}
+    ) {
+    }
 
-    /**
-     * Vérification de la disponibilité d'un slug personnalisé.
-     */
     #[Route('/slug', methods: ['POST'])]
     public function checkSlug(Request $request): JsonResponse
     {

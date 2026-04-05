@@ -16,26 +16,18 @@ use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-/**
- * Action pour la suppression d'un lien raccourci.
- */
 #[Route('/v{version}', requirements: ['version' => '1'], stateless: true)]
 final class DeleteLinkAction extends AbstractController
 {
-    /**
-     * Constructeur de la classe.
-     */
     public function __construct(
         private readonly LoggerInterface $logger,
         private readonly ValidatorInterface $validator,
         private readonly TranslatorInterface $translator,
         private readonly HttpClientInterface $httpClient,
         private readonly EntityManagerInterface $entityManager
-    ) {}
+    ) {
+    }
 
-    /**
-     * Suppression d'un lien raccourci.
-     */
     #[Route('/link/{id}', requirements: ['id' => Requirement::UUID_V7], methods: ['DELETE'])]
     #[Route('/link/{slug}', requirements: ['slug' => Requirement::ASCII_SLUG], methods: ['DELETE'])]
     public function deleteLink(Request $request, Link $link): Response

@@ -20,7 +20,7 @@ class Report
     #[ORM\ManyToOne(inversedBy: 'reports')]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\Type(type: Link::class)]
-    private Link $link ;
+    private Link $link;
 
     #[ORM\Column(type: Types::STRING, length: 500)]
     #[Assert\Length(min: 10, max: 500)]

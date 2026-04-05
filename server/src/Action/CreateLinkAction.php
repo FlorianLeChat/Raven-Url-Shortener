@@ -7,6 +7,7 @@ use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Domain\Service\CreateLinkService;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -14,26 +15,18 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-/**
- * Action pour la création d'un lien raccourci.
- */
 #[Route('/v{version}', requirements: ['version' => '1'], stateless: true)]
 final class CreateLinkAction extends AbstractController
 {
-    /**
-     * Constructeur de la classe.
-     */
     public function __construct(
         private readonly LoggerInterface $logger,
         private readonly ValidatorInterface $validator,
         private readonly TranslatorInterface $translator,
         private readonly HttpClientInterface $httpClient,
         private readonly EntityManagerInterface $entityManager
-    ) {}
+    ) {
+    }
 
-    /**
-     * Création d'un lien raccourci.
-     */
     #[Route('/link', methods: ['POST'])]
     public function createLink(Request $request): JsonResponse
     {
@@ -49,6 +42,6 @@ final class CreateLinkAction extends AbstractController
 
         $link = $service->createLink($request);
 
-        return new JsonResponse($link->toArray(), JsonResponse::HTTP_CREATED);
+        return new JsonResponse($link->toArray(), Response::HTTP_CREATED);
     }
 }

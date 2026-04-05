@@ -11,31 +11,22 @@ use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 /**
- * Écouteur d'événements pour la gestion de la limitation de requêtes.
  * @see https://symfony.com/doc/current/rate_limiter.html#rate-limiting-in-action
  * @see https://symfony.com/doc/current/event_dispatcher.html#creating-an-event-listener
  */
 final class LimiterListener
 {
-    /**
-     * Instance de la requête HTTP entrante.
-     */
     private Request $request;
 
-    /**
-     * Constructeur de la classe.
-     */
     public function __construct(
         private readonly bool $isRateLimitEnabled,
         private readonly LoggerInterface $logger,
         private readonly RateLimiterFactoryInterface $readApiLimiter,
         private readonly RateLimiterFactoryInterface $writeApiLimiter,
         protected readonly TranslatorInterface $translator
-    ) {}
+    ) {
+    }
 
-    /**
-     * Création du limiteur de requêtes en fonction de la méthode HTTP.
-     */
     private function createLimiterFromRequest(): RateLimiterFactoryInterface
     {
         $method = $this->request->getMethod();
@@ -49,9 +40,6 @@ final class LimiterListener
         return $isWriteMethod ? $this->writeApiLimiter : $this->readApiLimiter;
     }
 
-    /**
-     * Consommation du limiteur de requêtes.
-     */
     private function consumeLimiter(RateLimiterFactoryInterface $limiter): void
     {
         $ipAddress = $this->request->getClientIp() ?? '127.0.0.1';
@@ -80,9 +68,6 @@ final class LimiterListener
         ]);
     }
 
-    /**
-     * Appel de l'écouteur d'événements.
-     */
     public function __invoke(RequestEvent $event): void
     {
         if (!$this->isRateLimitEnabled) {

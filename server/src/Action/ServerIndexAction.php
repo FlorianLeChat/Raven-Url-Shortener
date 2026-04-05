@@ -7,14 +7,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-/**
- * Action pour la page d'accueil du serveur.
- */
 final class ServerIndexAction extends AbstractController
 {
-    /**
-     * Art ASCII pour la page d'accueil du serveur.
-     */
     private const ASCII_INDEX = <<<EOT
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -32,9 +26,6 @@ Ready to handle requests.
 API documentation available at https://docs.url.florian-dev.fr.
 EOT;
 
-    /**
-     * Récupération de l'état de santé du serveur.
-     */
     #[Route('/', methods: ['GET'], stateless: true)]
     public function getHealthCheck(Request $request): Response
     {

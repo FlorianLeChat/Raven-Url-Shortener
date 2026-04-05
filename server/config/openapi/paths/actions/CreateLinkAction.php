@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * Route pour la création d'un nouveau lien raccourci.
- */
 return [
     'post' => [
         'tags' => ['Link'],

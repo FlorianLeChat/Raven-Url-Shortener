@@ -8,6 +8,7 @@ use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Domain\Service\GetLinkDetailsService;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Attribute\Cache;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -17,26 +18,18 @@ use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-/**
- * Action pour la récupération des informations d'un lien raccourci.
- */
 #[Route('/v{version}', requirements: ['version' => '1'], stateless: true)]
 final class GetLinkDetailsAction extends AbstractController
 {
-    /**
-     * Constructeur de la classe.
-     */
     public function __construct(
         private readonly LoggerInterface $logger,
         private readonly ValidatorInterface $validator,
         private readonly TranslatorInterface $translator,
         private readonly HttpClientInterface $httpClient,
         private readonly EntityManagerInterface $entityManager
-    ) {}
+    ) {
+    }
 
-    /**
-     * Récupération des informations d'un lien raccourci.
-     */
     #[Cache(maxage: 3600, public: true, mustRevalidate: true)]
     #[Route('/link/{id}', requirements: ['id' => Requirement::UUID_V7], methods: ['GET'])]
     #[Route('/link/{slug}', requirements: ['slug' => Requirement::ASCII_SLUG], methods: ['GET'])]
@@ -54,6 +47,6 @@ final class GetLinkDetailsAction extends AbstractController
 
         $link = $service->getLinkDetails($request, $link);
 
-        return new JsonResponse($link->toArray(), JsonResponse::HTTP_OK);
+        return new JsonResponse($link->toArray(), Response::HTTP_OK);
     }
 }

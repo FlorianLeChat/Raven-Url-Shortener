@@ -7,7 +7,6 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 use Symfony\Config\FrameworkConfig;
 
 /**
- * Paramétrage général du framework Symfony.
  * @see https://symfony.com/doc/current/configuration.html
  */
 return static function (FrameworkConfig $framework, ContainerConfigurator $container): void {

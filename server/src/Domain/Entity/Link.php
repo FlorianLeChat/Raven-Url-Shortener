@@ -213,8 +213,6 @@ class Link
     public function toArray(): array
     {
         if ($this->getVisitedAt() === null) {
-            // La clé API est affichée uniquement lors de la première visite du lien,
-            //  pour éviter de l'exposer à chaque fois que l'on demande les informations du lien.
             $apiKey = $this->getApiKey()?->getKey();
         }
 
