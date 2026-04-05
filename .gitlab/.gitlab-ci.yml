@@ -137,6 +137,8 @@ build:project:
     artifacts:
         paths:
             - .env
+            - client/.env
+            - server/.env
             - .gitlab/ansible/
             - compose.yml
             - varnish.vcl
