@@ -12,6 +12,7 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Infrastructure\Exception\DataValidationException;
+use Symfony\Component\HttpClient\NoPrivateNetworkHttpClient;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
@@ -70,7 +71,8 @@ abstract class BaseLinkService
 
         try {
             $errors = [];
-            $response = $this->httpClient->request('GET', $url, [
+            $client = new NoPrivateNetworkHttpClient($this->httpClient);
+            $response = $client->request('GET', $url, [
                 'timeout' => 5,
                 'max_redirects' => 1
             ]);
