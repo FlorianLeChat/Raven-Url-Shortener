@@ -80,7 +80,6 @@ final class UpdateLinkService extends BaseLinkService
 		$slug = $payload->getString('slug', $this->link->getSlug() ?? '');
 		$password = $payload->getString('password', $this->link->getPassword() ?? '') ?: null;
 		$expiration = $payload->getString('expiration', $this->link->getExpiresAt()?->format('Y-m-d H:i:s') ?? '') ?: null;
-		$customDomain = $payload->getString('custom-domain', $this->link->getCustomDomain() ?? '') ?: null;
 		$apiManagement = $payload->getBoolean('api-management', $this->link->getApiKey() !== null);
 
 		if ($apiManagement && $this->link->getApiKey() === null)
@@ -98,8 +97,7 @@ final class UpdateLinkService extends BaseLinkService
 			'url' => $url,
 			'slug' => $slug,
 			'password' => $password,
-			'expiration' => $expiration,
-			'custom-domain' => $customDomain
+			'expiration' => $expiration
 		]);
 
 		$this->validateLink($this->link);

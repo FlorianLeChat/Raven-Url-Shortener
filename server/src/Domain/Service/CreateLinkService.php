@@ -45,7 +45,6 @@ final class CreateLinkService extends BaseLinkService
 		$slug = $payload->getString('slug', $this->createRandomSlug());
 		$password = $payload->getString('password') ?: null;
 		$expiration = $payload->getString('expiration') ?: null;
-		$customDomain = $payload->getString('custom-domain') ?: null;
 		$apiManagement = $payload->getBoolean('api-management');
 
 		$link = LinkFactory::create([
@@ -53,7 +52,6 @@ final class CreateLinkService extends BaseLinkService
 			'slug' => $slug,
 			'password' => $password,
 			'expiration' => $expiration,
-			'custom-domain' => $customDomain
 		]);
 
 		if ($apiManagement)

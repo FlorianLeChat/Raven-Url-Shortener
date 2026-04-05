@@ -2,6 +2,7 @@
 
 namespace App\Tests\Domain\Factory;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 use App\Domain\Factory\LinkFactory;
 
@@ -19,8 +20,7 @@ final class LinkFactoryTest extends TestCase
 			'url' => 'https://example.com',
 			'slug' => 'example',
 			'password' => 'password',
-			'expiration' => '2023-12-31',
-			'custom-domain' => 'my-domain.com'
+			'expiration' => '2023-12-31'
 		]);
 
 		$this->assertInstanceOf('App\Domain\Entity\Link', $link);
@@ -33,9 +33,6 @@ final class LinkFactoryTest extends TestCase
 
 		// Slug.
 		$this->assertEquals('example', $link->getSlug());
-
-		// Domaine personnalisé.
-		$this->assertEquals('my-domain.com', $link->getCustomDomain());
 
 		// Mot de passe.
 		$this->assertStringStartsWith('$2y$', $link->getPassword());
@@ -65,8 +62,7 @@ final class LinkFactoryTest extends TestCase
 			'url' => 'https://updated.com',
 			'slug' => 'updated',
 			'password' => 'password2',
-			'expiration' => null,
-			'custom-domain' => 'my-super-domain.com'
+			'expiration' => null
 		]);
 
 		$this->assertInstanceOf('App\Domain\Entity\Link', $link);
@@ -76,9 +72,6 @@ final class LinkFactoryTest extends TestCase
 
 		// Slug.
 		$this->assertEquals('updated', $link->getSlug());
-
-		// Domaine personnalisé.
-		$this->assertEquals('my-super-domain.com', $link->getCustomDomain());
 
 		// Mot de passe.
 		$this->assertStringStartsWith('$2y$', $link->getPassword());
@@ -101,8 +94,7 @@ final class LinkFactoryTest extends TestCase
 			'url' => 'https://not-my-example.com',
 			'slug' => 'example',
 			'password' => 'password',
-			'expiration' => '2023-12-30',
-			'custom-domain' => 'not-my-domain.com'
+			'expiration' => '2023-12-30'
 		]);
 
 		$link = LinkFactory::patch($link, 'url', 'https://not-updated.com');
@@ -115,14 +107,11 @@ final class LinkFactoryTest extends TestCase
 		// Slug.
 		$this->assertEquals('example', $link->getSlug());
 
-		// Domaine personnalisé.
-		$this->assertEquals('not-my-domain.com', $link->getCustomDomain());
-
 		// Mot de passe.
 		$this->assertStringStartsWith('$2y$', $link->getPassword());
 
 		// État d'activation.
-		$this->assertEquals(true, $link->isEnabled());
+		$this->assertTrue($link->isEnabled());
 
 		// Dates de création, de dernière mise à jour et d'expiration.
 		$this->assertNotNull($link->getCreatedAt());
