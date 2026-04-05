@@ -10,7 +10,7 @@ services:
         volumes:
             - valkey_data:/data
         environment:
-            TZ: ${APP_TIMEZONE}
+            TZ: ${TZ}
         healthcheck:
             test: valkey-cli --raw incr ping
             retries: 3
@@ -22,7 +22,7 @@ services:
         volumes:
             - postgres_data:/var/lib/postgresql/18/docker
         environment:
-            TZ: ${APP_TIMEZONE}
+            TZ: ${TZ}
             POSTGRES_DB: ${DATABASE_NAME}
             POSTGRES_USER: ${DATABASE_USERNAME}
             POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
