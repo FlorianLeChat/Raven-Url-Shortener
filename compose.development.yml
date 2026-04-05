@@ -38,7 +38,7 @@ services:
             server:
                 condition: service_healthy
         environment:
-            URL: http://server:8000/openapi.json
+            URL: http://localhost:8000/openapi.json
         healthcheck:
             test: wget -O - http://127.0.0.1:8080/
             retries: 3

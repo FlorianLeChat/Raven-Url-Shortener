@@ -56,13 +56,11 @@ services:
         init: true
         image: swaggerapi/swagger-ui:latest
         restart: unless-stopped
-        cap_drop:
-            - ALL
         depends_on:
             server:
                 condition: service_healthy
         environment:
-            URL: http://server:8000/openapi.json
+            URL: http://localhost:${API_PORT:-8080}/openapi.json
         security_opt:
             - no-new-privileges=true
         healthcheck:
@@ -76,13 +74,15 @@ services:
                     pids: 16
                     cpus: "0.5"
                     memory: 128M
+        ports:
+            - "${OPENAPI_PORT:-8081}:8080"
 
     proxy:
         init: true
         image: varnish:8-alpine
         restart: unless-stopped
         volumes:
-            - ./docker/varnish.vcl:/etc/varnish/default.vcl:ro # TODO : à modifier
+            - ./varnish.vcl:/etc/varnish/default.vcl:ro
         cap_drop:
             - ALL
         depends_on:
@@ -104,13 +104,12 @@ services:
                     cpus: "0.5"
                     memory: 256M
         ports:
-            - "${PORT:-80}:80"
+            - "${PROXY_PORT:-80}:80"
 
     client:
         init: true
         user: "${UID:-1000}:${GID:-1000}"
-        # image: registry.florian-dev.fr:443/floriantrayon/raven-url-shortener-ui:${VERSION:-latest}
-        image: raven-url-shortener-ui # TODO : à modifier
+        image: registry.florian-dev.fr:443/floriantrayon/raven-url-shortener-ui:${VERSION:-latest}
         restart: unless-stopped
         command: npm run start
         cap_drop:
@@ -141,10 +140,9 @@ services:
     server:
         init: true
         user: "${UID:-1000}:${GID:-1000}"
-        # image: registry.florian-dev.fr:443/floriantrayon/raven-url-shortener-api:${VERSION:-latest}
-        image: raven-url-shortener-api # TODO : à modifier
+        image: registry.florian-dev.fr:443/floriantrayon/raven-url-shortener-api:${VERSION:-latest}
         restart: unless-stopped
-        command: docker/scripts/production/entrypoint.sh
+        command: /var/www/html/entrypoint.sh
         volumes:
             - ./logs:/usr/src/app/logs
         cap_drop:
@@ -171,6 +169,8 @@ services:
             target: production
             context: ./server
             dockerfile: ./docker/Dockerfile
+        ports:
+            - "${API_PORT:-8080}:8080"
 
 volumes:
     valkey_data:
