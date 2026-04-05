@@ -109,7 +109,7 @@ services:
     client:
         init: true
         user: "${UID:-1000}:${GID:-1000}"
-        image: registry.florian-dev.fr:443/floriantrayon/raven-url-shortener-ui:${VERSION:-latest}
+        image: registry.florian-dev.fr:443/floriantrayon/raven-url-shortener:ui-${VERSION:-latest}
         restart: unless-stopped
         command: npm run start
         cap_drop:
@@ -140,7 +140,7 @@ services:
     server:
         init: true
         user: "${UID:-1000}:${GID:-1000}"
-        image: registry.florian-dev.fr:443/floriantrayon/raven-url-shortener-api:${VERSION:-latest}
+        image: registry.florian-dev.fr:443/floriantrayon/raven-url-shortener:api-${VERSION:-latest}
         restart: unless-stopped
         command: /var/www/html/entrypoint.sh
         volumes:
