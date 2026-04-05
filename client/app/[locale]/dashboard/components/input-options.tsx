@@ -7,8 +7,8 @@
 import { Link2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { lazy, useContext } from "react";
-import { DatePicker, Input } from "@heroui/react";
 import { getLocalTimeZone, now } from "@internationalized/date";
+import { DatePicker, type DateValue, Input } from "@heroui/react";
 import { ServerContext } from "@/components/provider-server";
 
 const SlugValidation = lazy( () => import( "./slug-validation" ) );
@@ -59,8 +59,8 @@ export default function InputOptions()
 				size="lg"
 				name="expiration"
 				label={messages( "expiration_label" )}
-				minValue={minTime}
-				maxValue={maxTime}
+				minValue={minTime as unknown as DateValue}
+				maxValue={maxTime as unknown as DateValue}
 				className="!pb-9"
 				description={(
 					<p className="text-default-500">
