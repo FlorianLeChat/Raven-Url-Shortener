@@ -127,7 +127,7 @@ final class UpdateLinkActionTest extends WebTestCase
             'HTTP_Authorization' => 'Bearer 7hLtoMvpr3NDyd+l3FFeaZD68HGTffHniUUQPjwGy28='
         ], content: json_encode([
             'field' => 'url',
-            'value' => 'https://www.example.com'
+            'value' => 'https://www.google.com/'
         ]));
 
         self::assertResponseStatusCodeSame(Response::HTTP_OK);
@@ -225,7 +225,7 @@ final class UpdateLinkActionTest extends WebTestCase
     public function testPutLinkWithValidData(): void
     {
         $this->client->request('PUT', '/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d9', [
-            'url' => 'https://www.example.com'
+            'url' => 'https://www.google.com/'
         ], server: [
             'HTTP_Authorization' => 'Bearer 7hLtoMvpr3NDyd+l3FFeaZD68HGTffHniUUQPjwGy28='
         ]);
