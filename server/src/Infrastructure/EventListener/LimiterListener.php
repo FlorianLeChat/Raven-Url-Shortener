@@ -26,11 +26,11 @@ final class LimiterListener
      * Constructeur de la classe.
      */
     public function __construct(
-        private readonly bool                        $isRateLimitEnabled,
-        private readonly LoggerInterface             $logger,
+        private readonly bool $isRateLimitEnabled,
+        private readonly LoggerInterface $logger,
         private readonly RateLimiterFactoryInterface $readApiLimiter,
         private readonly RateLimiterFactoryInterface $writeApiLimiter,
-        protected readonly TranslatorInterface       $translator
+        protected readonly TranslatorInterface $translator
     ) {}
 
     /**

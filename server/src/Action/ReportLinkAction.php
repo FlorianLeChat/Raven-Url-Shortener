@@ -25,9 +25,9 @@ final class ReportLinkAction extends AbstractController
      * Constructeur de la classe.
      */
     public function __construct(
-        private readonly LoggerInterface        $logger,
-        private readonly ValidatorInterface     $validator,
-        private readonly TranslatorInterface    $translator,
+        private readonly LoggerInterface $logger,
+        private readonly ValidatorInterface $validator,
+        private readonly TranslatorInterface $translator,
         private readonly EntityManagerInterface $entityManager
     ) {}
 

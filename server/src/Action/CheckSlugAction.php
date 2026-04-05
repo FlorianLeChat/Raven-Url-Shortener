@@ -22,7 +22,7 @@ final class CheckSlugAction extends AbstractController
      * Constructeur de la classe.
      */
     public function __construct(
-        private readonly LoggerInterface        $logger,
+        private readonly LoggerInterface $logger,
         private readonly EntityManagerInterface $entityManager
     ) {}
 

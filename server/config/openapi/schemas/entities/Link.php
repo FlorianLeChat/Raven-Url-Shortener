@@ -9,8 +9,7 @@ return [
         'id' => [
             'title' => 'The unique identifier of the link',
             'type' => 'string',
-            'format' => 'uuid',
-            'nullable' => true
+            'format' => 'uuid'
         ],
         'url' => [
             'title' => 'The shortened URL',

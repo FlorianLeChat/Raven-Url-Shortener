@@ -39,6 +39,11 @@ EOT;
     public function getHealthCheck(Request $request): Response
     {
         $requestTime = $request->server->get('REQUEST_TIME_FLOAT');
+
+        if (!is_float($requestTime)) {
+            $requestTime = microtime(true);
+        }
+
         $currentTime = microtime(true);
         $executionTime = round(($currentTime - $requestTime) * 1000, 3);
 

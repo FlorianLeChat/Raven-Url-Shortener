@@ -12,289 +12,224 @@ use Doctrine\Common\Collections\ArrayCollection;
 use App\Infrastructure\Repository\LinkRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * Entité pour les liens raccourcis.
- */
 #[ORM\Entity(repositoryClass: LinkRepository::class)]
 class Link
 {
-	#[ORM\Id]
-	#[ORM\Column(type: UuidType::NAME, unique: true)]
-	private ?Uuid $id = null;
+    #[ORM\Id]
+    #[ORM\Column(type: UuidType::NAME, unique: true)]
+    private Uuid $id;
 
-	#[ORM\Column(type: Types::TEXT)]
-	#[Assert\Url(requireTld: true)]
-	#[Assert\NotBlank(normalizer: 'trim')]
-	private ?string $url = null;
+    #[ORM\Column(type: Types::TEXT)]
+    #[Assert\Url(requireTld: true)]
+    #[Assert\NotBlank(normalizer: 'trim')]
+    private string $url;
 
-	#[ORM\Column(type: Types::STRING, length: 50, unique: true)]
-	#[Assert\Regex(pattern: '/^[a-zA-Z0-9-]+$/')]
-	#[Assert\Length(min: 1, max: 50)]
-	#[Assert\NotBlank(normalizer: 'trim')]
-	private ?string $slug = null;
+    #[ORM\Column(type: Types::STRING, length: 50, unique: true)]
+    #[Assert\Regex(pattern: '/^[a-zA-Z0-9-]+$/')]
+    #[Assert\Length(min: 1, max: 50)]
+    #[Assert\NotBlank(normalizer: 'trim')]
+    private string $slug;
 
-	#[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
-	#[Assert\Length(max: 255)]
-	private ?string $password = null;
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    #[Assert\Length(max: 255)]
+    private ?string $password = null;
 
-	#[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
-	#[Assert\Length(min: 1, max: 255)]
-	#[Assert\NotBlank(allowNull: true, normalizer: 'trim')]
-	#[Assert\Hostname]
-	private ?string $customDomain = null;
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => true])]
+    private bool $enabled = true;
 
-	#[ORM\Column(type: Types::BOOLEAN, options: ['default' => true])]
-	private ?bool $enabled = true;
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    private bool $trusted = false;
 
-	#[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
-	private ?bool $trusted = false;
+    #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
+    private DateTimeImmutable $createdAt;
 
-	#[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
-	private ?DateTimeImmutable $createdAt = null;
+    #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE, nullable: true)]
+    private ?DateTimeImmutable $updatedAt = null;
 
-	#[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE, nullable: true)]
-	private ?DateTimeImmutable $updatedAt = null;
+    #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE, nullable: true)]
+    private ?DateTimeImmutable $visitedAt = null;
 
-	#[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE, nullable: true)]
-	private ?DateTimeImmutable $visitedAt = null;
+    #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE, nullable: true)]
+    #[Assert\Range(min: 'tomorrow', max: '+1 year')]
+    private ?DateTimeImmutable $expiresAt = null;
 
-	#[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE, nullable: true)]
-	#[Assert\Range(min: 'tomorrow', max: '+1 year')]
-	private ?DateTimeImmutable $expiresAt = null;
+    /** @var Collection<int, Report> */
+    #[ORM\OneToMany(targetEntity: Report::class, mappedBy: "link", cascade: ["persist", "remove"], orphanRemoval: true)]
+    private Collection $reports;
 
-	/** @var Collection<int, Report> */
-	#[ORM\OneToMany(mappedBy: "link", targetEntity: Report::class, orphanRemoval: true, cascade: ["persist", "remove"])]
-	private Collection $reports;
+    #[ORM\OneToOne(targetEntity: ApiKey::class, mappedBy: "link", cascade: ["persist", "remove"], orphanRemoval: true)]
+    private ?ApiKey $apiKey = null;
 
-	#[ORM\OneToOne(mappedBy: "link", targetEntity: ApiKey::class, orphanRemoval: true, cascade: ["persist", "remove"])]
-	private ?ApiKey $apiKey = null;
+    public function __construct()
+    {
+        $this->id = Uuid::v7();
+        $this->reports = new ArrayCollection();
+        $this->createdAt = new DateTimeImmutable();
+    }
 
-	/**
-	 * Création des certaines propriétés de l'entité.
-	 * @see https://github.com/symfony/symfony/discussions/53331
-	 */
-	public function __construct()
-	{
-		$this->id = Uuid::v7();
-		$this->reports = new ArrayCollection();
-		$this->createdAt = new DateTimeImmutable();
-	}
+    public function getId(): Uuid
+    {
+        return $this->id;
+    }
 
-	/**
-	 * Définition ou récupération de l'identifiant du lien.
-	 */
-	public function getId(): ?Uuid
-	{
-		return $this->id;
-	}
+    public function setId(Uuid $id): static
+    {
+        $this->id = $id;
 
-	public function setId(?Uuid $id): static
-	{
-		$this->id = $id;
+        return $this;
+    }
 
-		return $this;
-	}
+    public function getUrl(): string
+    {
+        return $this->url;
+    }
 
-	/**
-	 * Définition ou récupération de l'URL du lien.
-	 */
-	public function getUrl(): ?string
-	{
-		return $this->url;
-	}
+    public function setUrl(string $url): static
+    {
+        $this->url = $url;
 
-	public function setUrl(?string $url): static
-	{
-		$this->url = $url;
+        return $this;
+    }
 
-		return $this;
-	}
+    public function getSlug(): string
+    {
+        return $this->slug;
+    }
 
-	/**
-	 * Définition ou récupération du slug du lien.
-	 */
-	public function getSlug(): ?string
-	{
-		return $this->slug;
-	}
+    public function setSlug(string $slug): static
+    {
+        $this->slug = $slug;
 
-	public function setSlug(?string $slug): static
-	{
-		$this->slug = $slug;
+        return $this;
+    }
 
-		return $this;
-	}
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
 
-	/**
-	 * Définition ou récupération du domaine personnalisé du lien.
-	 */
-	public function getCustomDomain(): ?string
-	{
-		return $this->customDomain;
-	}
+    public function setPassword(?string $password): static
+    {
+        $this->password = $password;
 
-	public function setCustomDomain(?string $customDomain): static
-	{
-		$this->customDomain = $customDomain;
+        return $this;
+    }
 
-		return $this;
-	}
+    public function isEnabled(): bool
+    {
+        return $this->enabled;
+    }
 
-	/**
-	 * Définition ou récupération du mot de passe du lien.
-	 */
-	public function getPassword(): ?string
-	{
-		return $this->password;
-	}
+    public function setEnabled(bool $enabled): static
+    {
+        $this->enabled = $enabled;
 
-	public function setPassword(?string $password): static
-	{
-		$this->password = $password;
+        return $this;
+    }
 
-		return $this;
-	}
+    public function isTrusted(): bool
+    {
+        return $this->trusted;
+    }
 
-	/**
-	 * Définition ou récupération de l'état d'activation d'un lien.
-	 */
-	public function isEnabled(): ?bool
-	{
-		return $this->enabled;
-	}
+    public function setTrusted(bool $trusted): static
+    {
+        $this->trusted = $trusted;
 
-	public function setEnabled(?bool $enabled): static
-	{
-		$this->enabled = $enabled;
+        return $this;
+    }
 
-		return $this;
-	}
+    public function getCreatedAt(): DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
 
-	/**
-	 * Définition ou récupération de l'état de confiance d'un lien.
-	 */
-	public function isTrusted(): ?bool
-	{
-		return $this->trusted;
-	}
+    public function setCreatedAt(DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
 
-	public function setTrusted(?bool $trusted): static
-	{
-		$this->trusted = $trusted;
+        return $this;
+    }
 
-		return $this;
-	}
+    public function getUpdatedAt(): ?DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
 
-	/**
-	 * Définition ou récupération de la date de création du lien.
-	 */
-	public function getCreatedAt(): ?DateTimeImmutable
-	{
-		return $this->createdAt;
-	}
+    public function setUpdatedAt(DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
 
-	public function setCreatedAt(?DateTimeImmutable $createdAt): static
-	{
-		$this->createdAt = $createdAt;
+        return $this;
+    }
 
-		return $this;
-	}
+    public function getVisitedAt(): ?DateTimeImmutable
+    {
+        return $this->visitedAt;
+    }
 
-	/**
-	 * Définition ou récupération de la date de dernière modification du lien.
-	 */
-	public function getUpdatedAt(): ?DateTimeImmutable
-	{
-		return $this->updatedAt;
-	}
+    public function setVisitedAt(?DateTimeImmutable $visitedAt): static
+    {
+        $this->visitedAt = $visitedAt;
 
-	public function setUpdatedAt(DateTimeImmutable $updatedAt): static
-	{
-		$this->updatedAt = $updatedAt;
+        return $this;
+    }
 
-		return $this;
-	}
+    public function getExpiresAt(): ?DateTimeImmutable
+    {
+        return $this->expiresAt;
+    }
 
-	/**
-	 * Définition ou récupération de la date de dernière visite du lien.
-	 */
-	public function getVisitedAt(): ?DateTimeImmutable
-	{
-		return $this->visitedAt;
-	}
+    public function setExpiresAt(?DateTimeImmutable $expiresAt): static
+    {
+        $this->expiresAt = $expiresAt;
 
-	public function setVisitedAt(?DateTimeImmutable $visitedAt): static
-	{
-		$this->visitedAt = $visitedAt;
+        return $this;
+    }
 
-		return $this;
-	}
+    /**
+     * @return Collection<int, Report>
+     */
+    public function getReports()
+    {
+        return $this->reports;
+    }
 
-	/**
-	 * Définition ou récupération de la date d'expiration du lien.
-	 */
-	public function getExpiresAt(): ?DateTimeImmutable
-	{
-		return $this->expiresAt;
-	}
+    public function getApiKey(): ?ApiKey
+    {
+        return $this->apiKey;
+    }
 
-	public function setExpiresAt(?DateTimeImmutable $expiresAt): static
-	{
-		$this->expiresAt = $expiresAt;
+    public function setApiKey(ApiKey $apiKey): static
+    {
+        $this->apiKey = $apiKey;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Récupération des signalements du lien raccourci.
-	 * @return Collection<int, Report>
-	 */
-	public function getReports()
-	{
-		return $this->reports;
-	}
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        if ($this->getVisitedAt() === null) {
+            // La clé API est affichée uniquement lors de la première visite du lien,
+            //  pour éviter de l'exposer à chaque fois que l'on demande les informations du lien.
+            $apiKey = $this->getApiKey()?->getKey();
+        }
 
-	/**
-	 * Récupération ou définition de la clé API.
-	 */
-	public function getApiKey(): ?ApiKey
-	{
-		return $this->apiKey;
-	}
-
-	public function setApiKey(ApiKey $apiKey): static
-	{
-		$this->apiKey = $apiKey;
-
-		return $this;
-	}
-
-	/**
-	 * Conversion de l'entité en tableau.
-	 * @return array<string, mixed>
-	 */
-	public function toArray()
-	{
-		if ($this->getVisitedAt() === null)
-		{
-			// La clé API est affichée uniquement lors de la première visite du lien,
-			//  pour éviter de l'exposer à chaque fois que l'on demande les informations du lien.
-			$apiKey = $this->getApiKey()?->getKey();
-		}
-
-		return [
-			'id' => $this->getId(),
-			'url' => $this->getUrl(),
-			'slug' => $this->getSlug(),
-			'apiKey' => $apiKey ?? '**hidden**',
-			'enabled' => $this->isEnabled(),
-			'trusted' => $this->isTrusted(),
-			'reported' => count($this->getReports()) > 0,
-			'createdAt' => $this->getCreatedAt(),
-			'updatedAt' => $this->getUpdatedAt(),
-			'visitedAt' => $this->getVisitedAt(),
-			'expiresAt' => $this->getExpiresAt(),
-			'customDomain' => $this->getCustomDomain()
-		];
-	}
+        return [
+            'id' => $this->getId(),
+            'url' => $this->getUrl(),
+            'slug' => $this->getSlug(),
+            'apiKey' => $apiKey ?? '**hidden**',
+            'enabled' => $this->isEnabled(),
+            'trusted' => $this->isTrusted(),
+            'reported' => count($this->getReports()) > 0,
+            'createdAt' => $this->getCreatedAt(),
+            'updatedAt' => $this->getUpdatedAt(),
+            'visitedAt' => $this->getVisitedAt(),
+            'expiresAt' => $this->getExpiresAt()
+        ];
+    }
 }

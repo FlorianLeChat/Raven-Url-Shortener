@@ -27,10 +27,10 @@ final class UpdateLinkAction extends AbstractController
      * Constructeur de la classe.
      */
     public function __construct(
-        private readonly LoggerInterface        $logger,
-        private readonly ValidatorInterface     $validator,
-        private readonly TranslatorInterface    $translator,
-        private readonly HttpClientInterface    $httpClient,
+        private readonly LoggerInterface $logger,
+        private readonly ValidatorInterface $validator,
+        private readonly TranslatorInterface $translator,
+        private readonly HttpClientInterface $httpClient,
         private readonly EntityManagerInterface $entityManager
     ) {}
 
