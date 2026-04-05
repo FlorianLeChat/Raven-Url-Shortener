@@ -10,7 +10,7 @@ use Symfony\Config\FrameworkConfig;
  * @see https://symfony.com/doc/current/components/lock.html
  */
 return static function (FrameworkConfig $framework, ContainerConfigurator $container): void {
-    $framework->lock('%env(DATABASE_TYPE)%://%env(DATABASE_USERNAME)%:%env(DATABASE_PASSWORD)%@%env(DATABASE_HOST)%/%env(DATABASE_NAME)%');
+    $framework->lock('%env(DATABASE_TYPE)%://%env(DATABASE_USERNAME)%:%env(DATABASE_PASSWORD)%@%env(DATABASE_HOST)%:%env(DATABASE_PORT)%/%env(DATABASE_NAME)%');
 
     if ($container->env() === 'test') {
         $framework->lock('flock');
