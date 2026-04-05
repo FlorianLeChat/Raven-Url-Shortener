@@ -9,7 +9,6 @@
 
 :8080 {
     encode zstd br gzip
-    file_server
 
     log {
         output stdout
@@ -22,7 +21,7 @@
     }
 
     php_server {
-        resolve_root_symlink
+        resolve_root_symlink false
 
         try_files {path} index.php
 
