@@ -62,6 +62,7 @@ lint:phpstan:
     before_script:
         - cd server
         - composer install --prefer-dist --no-progress --no-interaction --no-scripts
+        - php bin/console cache:warmup
     script:
         - vendor/bin/phpstan analyse --memory-limit=-1 --error-format=gitlab | tee phpstan-report.json
     artifacts:
