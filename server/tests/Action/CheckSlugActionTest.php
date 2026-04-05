@@ -45,7 +45,7 @@ final class CheckSlugActionTest extends WebTestCase
 	 */
 	public function testSlugIsAvailable(): void
 	{
-		$this->client->request('POST', '/api/v1/slug', ['slug' => 'free-slug']);
+		$this->client->request('POST', '/v1/slug', ['slug' => 'free-slug']);
 
 		$this->assertResponseIsSuccessful();
 		$this->assertJsonStringEqualsJsonString('{"available":true}', $this->client->getResponse()->getContent());
@@ -56,7 +56,7 @@ final class CheckSlugActionTest extends WebTestCase
 	 */
 	public function testSlugIsNotAvailable(): void
 	{
-		$this->client->request('POST', '/api/v1/slug', ['slug' => 'test1']);
+		$this->client->request('POST', '/v1/slug', ['slug' => 'test1']);
 
 		$this->assertResponseIsSuccessful();
 		$this->assertJsonStringEqualsJsonString('{"available":false}', $this->client->getResponse()->getContent());

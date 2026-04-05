@@ -30,7 +30,7 @@ export default function SlugValidation()
 
 		try
 		{
-			const response = await fetch( `${ process.env.NEXT_PUBLIC_BACKEND_URL }/api/v1/slug`, {
+			const response = await fetch( `${ process.env.NEXT_PUBLIC_BACKEND_URL }/v1/slug`, {
 				body: data,
 				method: "POST"
 			} );

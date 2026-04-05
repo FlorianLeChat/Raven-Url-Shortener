@@ -45,7 +45,7 @@ final class DeleteLinkActionTest extends WebTestCase
 	 */
 	public function testDeleteLinkWithMissingApiKey(): void
 	{
-		$this->client->request('DELETE', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d9');
+		$this->client->request('DELETE', '/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d9');
 
 		$this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
 
@@ -60,7 +60,7 @@ final class DeleteLinkActionTest extends WebTestCase
 	 */
 	public function testDeleteLinkWithInvalidApiKey(): void
 	{
-		$this->client->request('DELETE', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d9', server: [
+		$this->client->request('DELETE', '/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d9', server: [
 			'HTTP_Authorization' => 'TEST'
 		]);
 
@@ -77,7 +77,7 @@ final class DeleteLinkActionTest extends WebTestCase
 	 */
 	public function testDeleteDisabledLink()
 	{
-		$this->client->request('DELETE', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d0', server: [
+		$this->client->request('DELETE', '/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d0', server: [
 			'HTTP_Authorization' => 'Bearer i8tyoJjI3PUw+cqLdLCGipV6IPodANondBSqBkPzhfo='
 		]);
 
@@ -94,7 +94,7 @@ final class DeleteLinkActionTest extends WebTestCase
 	 */
 	public function testDeleteReportedLink()
 	{
-		$this->client->request('DELETE', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d5', server: [
+		$this->client->request('DELETE', '/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d5', server: [
 			'HTTP_Authorization' => 'Bearer wJY8ad9DVlKD+Sn4/ZjBALwI+qcFebozUFZnb2EFfBI='
 		]);
 
@@ -111,7 +111,7 @@ final class DeleteLinkActionTest extends WebTestCase
 	 */
 	public function testDeleteLinkWithInvalidUuid(): void
 	{
-		$this->client->request('DELETE', '/api/v1/link/phpunit', server: [
+		$this->client->request('DELETE', '/v1/link/phpunit', server: [
 			'HTTP_Authorization' => 'Bearer 7hLtoMvpr3NDyd+l3FFeaZD68HGTffHniUUQPjwGy28='
 		]);
 
@@ -123,7 +123,7 @@ final class DeleteLinkActionTest extends WebTestCase
 	 */
 	public function testDeleteLinkWithSuccess(): void
 	{
-		$this->client->request('DELETE', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d9', server: [
+		$this->client->request('DELETE', '/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d9', server: [
 			'HTTP_Authorization' => 'Bearer 7hLtoMvpr3NDyd+l3FFeaZD68HGTffHniUUQPjwGy28='
 		]);
 

@@ -47,7 +47,7 @@ final class CreateLinkActionTest extends WebTestCase
 	 */
 	public function testCreateLinkWithNoUrl(): void
 	{
-		$this->client->request('POST', '/api/v1/link');
+		$this->client->request('POST', '/v1/link');
 
 		$this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
 
@@ -63,7 +63,7 @@ final class CreateLinkActionTest extends WebTestCase
 	 */
 	public function testCreateLinkWithExistingSlug(): void
 	{
-		$this->client->request('POST', '/api/v1/link', [
+		$this->client->request('POST', '/v1/link', [
 			'url' => 'https://www.google.com/',
 			'slug' => 'test1'
 		]);
@@ -84,7 +84,7 @@ final class CreateLinkActionTest extends WebTestCase
 	public function testCreateLinkWithInvalidExpirationDate(): void
 	{
 		// Date trop ancienne.
-		$this->client->request('POST', '/api/v1/link', [
+		$this->client->request('POST', '/v1/link', [
 			'url' => 'https://www.google.com/',
 			'expiration' => '2023-10-01T00:00:00+00:00'
 		]);
@@ -98,7 +98,7 @@ final class CreateLinkActionTest extends WebTestCase
 		$this->assertStringContainsString('NOT_IN_RANGE_ERROR', $content);
 
 		// Date trop récente.
-		$this->client->request('POST', '/api/v1/link', [
+		$this->client->request('POST', '/v1/link', [
 			'url' => 'https://www.google.com/',
 			'expiration' => '2034-10-01T00:00:00+00:00'
 		]);
@@ -117,7 +117,7 @@ final class CreateLinkActionTest extends WebTestCase
 	 */
 	public function testCreateLinkWithUnreachableUrl(): void
 	{
-		$this->client->request('POST', '/api/v1/link', [
+		$this->client->request('POST', '/v1/link', [
 			'url' => 'https://unreachable.example.com'
 		]);
 
@@ -137,7 +137,7 @@ final class CreateLinkActionTest extends WebTestCase
 	{
 		$date = new DateTime('+1 week');
 
-		$this->client->request('POST', '/api/v1/link', [
+		$this->client->request('POST', '/v1/link', [
 			'url' => 'https://www.google.com/',
 			'slug' => 'custom-slug',
 			'expiration' => $date->format(DateTime::RFC3339)

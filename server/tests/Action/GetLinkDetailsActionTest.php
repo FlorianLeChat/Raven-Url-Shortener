@@ -47,7 +47,7 @@ final class GetLinkDetailsActionTest extends WebTestCase
 	 */
 	public function testGetLinkDetailsWithNoUrl(): void
 	{
-		$this->client->request('GET', '/api/v1/link');
+		$this->client->request('GET', '/v1/link');
 
 		$this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
 	}
@@ -58,7 +58,7 @@ final class GetLinkDetailsActionTest extends WebTestCase
 	 */
 	public function testGetLinkDetailsWithInvalidUuid(): void
 	{
-		$this->client->request('GET', '/api/v1/link/111b8c4-0a2d-4f3e-bb5f-7a9e6c3d8f1b');
+		$this->client->request('GET', '/v1/link/111b8c4-0a2d-4f3e-bb5f-7a9e6c3d8f1b');
 
 		$this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
 	}
@@ -69,7 +69,7 @@ final class GetLinkDetailsActionTest extends WebTestCase
 	 */
 	public function testGetLinkDetailsWithInvalidSlug(): void
 	{
-		$this->client->request('GET', '/api/v1/link/slug-not-found');
+		$this->client->request('GET', '/v1/link/slug-not-found');
 
 		$this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
 	}
@@ -80,7 +80,7 @@ final class GetLinkDetailsActionTest extends WebTestCase
 	 */
 	public function testGetLinkDetailsWithMissingPassword(): void
 	{
-		$this->client->request('GET', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d7');
+		$this->client->request('GET', '/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d7');
 
 		$this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
 
@@ -96,7 +96,7 @@ final class GetLinkDetailsActionTest extends WebTestCase
 	 */
 	public function testGetLinkDetailsWithInvalidPassword(): void
 	{
-		$this->client->request('GET', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d7', server: [
+		$this->client->request('GET', '/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d7', server: [
 			'HTTP_Authorization' => 'Password haha'
 		]);
 
@@ -114,7 +114,7 @@ final class GetLinkDetailsActionTest extends WebTestCase
 	 */
 	public function testGetLinkDetailsWithValidUuid(): void
 	{
-		$this->client->request('GET', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d9');
+		$this->client->request('GET', '/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d9');
 
 		$this->assertResponseIsSuccessful();
 		$this->assertJson($this->client->getResponse()->getContent());
@@ -126,7 +126,7 @@ final class GetLinkDetailsActionTest extends WebTestCase
 	 */
 	public function testGetLinkDetailsWithValidSlug(): void
 	{
-		$this->client->request('GET', '/api/v1/link/test1');
+		$this->client->request('GET', '/v1/link/test1');
 
 		$this->assertResponseIsSuccessful();
 		$this->assertJson($this->client->getResponse()->getContent());
@@ -138,7 +138,7 @@ final class GetLinkDetailsActionTest extends WebTestCase
 	 */
 	public function testGetLinkDetailsWithValidPassword(): void
 	{
-		$this->client->request('GET', '/api/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d7', server: [
+		$this->client->request('GET', '/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d7', server: [
 			'HTTP_Authorization' => 'Password password123'
 		]);
 
