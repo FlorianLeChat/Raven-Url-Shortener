@@ -63,7 +63,7 @@ export default function RedirectionContainer( {
 						size="lg"
 						hideSymbol
 						classNames={{
-							pre: "overflow-auto whitespace-pre-wrap"
+							pre: "overflow-y-auto max-h-6 whitespace-pre-wrap break-all"
 						}}
 						disableTooltip
 					>
