@@ -60,7 +60,7 @@ services:
             server:
                 condition: service_healthy
         environment:
-            URL: http://localhost:${API_PORT:-8080}/openapi.json
+            URL: https://api.url.florian-dev.fr/openapi.json
         security_opt:
             - no-new-privileges=true
         healthcheck:
