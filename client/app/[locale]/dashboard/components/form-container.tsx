@@ -4,6 +4,7 @@
 
 "use client";
 
+import Avatar from "@/images/avatar.jpg";
 import { Form,
 	Link,
 	User,
@@ -270,7 +271,7 @@ export default function FormContainer()
 								</Link>
 							)}
 							avatarProps={{
-								src: "https://avatars.githubusercontent.com/u/26360935?v=4"
+								src: Avatar.src
 							}}
 						/>
 					</div>
