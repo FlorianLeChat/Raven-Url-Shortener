@@ -1,6 +1,3 @@
-//
-// Génération des métadonnées du site Internet à partir de l'API GitHub.
-//
 import { join } from "node:path";
 import { existsSync } from "node:fs";
 import type { Metadata } from "next";
@@ -8,7 +5,6 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 
 const fetchWithCache = async ( url: string ) =>
 {
-	// Récupération des données avec mise en cache forcée.
 	const response = await fetch( url, { cache: "force-cache" } );
 
 	return response.json() as Promise<Record<string, string>>;
@@ -16,8 +12,6 @@ const fetchWithCache = async ( url: string ) =>
 
 export async function fetchMetadata(): Promise<Metadata & { source: string }>
 {
-	// On vérifie d'abord si les métadonnées sont déjà enregistrées
-	//  dans le cache du système de fichiers.
 	const folderPath = join( process.cwd(), "data" );
 	const filePath = join( folderPath, "metadata.json" );
 
@@ -30,8 +24,6 @@ export async function fetchMetadata(): Promise<Metadata & { source: string }>
 		};
 	}
 
-	// On récupère ensuite les informations du dépôt GitHub,
-	//  ceux de l'auteur et le dernier commit.
 	const repository = await fetchWithCache(
 		"https://api.github.com/repos/FlorianLeChat/Raven-Url-Shortener"
 	);
@@ -44,56 +36,50 @@ export async function fetchMetadata(): Promise<Metadata & { source: string }>
 		"https://api.github.com/repos/FlorianLeChat/Raven-Url-Shortener/commits/master"
 	);
 
-	// On détermine après certaines métadonnées récurrentes.
 	const banner = `https://opengraph.githubassets.com/${ commits.sha }/${ repository.full_name }`;
 	const title = repository.name.replaceAll( "-", " " );
 	const url = process.env.NEXT_PUBLIC_ENV === "production"
 		? repository.homepage
 		: `http://localhost:${ process.env.PORT ?? 3000 }`;
 
-	// On retourne également les métadonnées récupérées récemment
-	//  avant de les enregistrer dans un fichier JSON.
 	const metadata = {
-		// Métadonnées du document.
 		title,
 		source: repository.html_url,
 		authors: [ { name: author.name, url: author.html_url } ],
 		keywords: repository.topics,
 		description: repository.description,
 		metadataBase: new URL( url ),
-
-		// Icônes du document.
 		icons: {
 			icon: [
 				{
-					url: "assets/favicons/16x16.webp",
+					url: "/assets/favicons/16x16.webp",
 					type: "image/webp",
 					sizes: "16x16"
 				},
 				{
-					url: "assets/favicons/32x32.webp",
+					url: "/assets/favicons/32x32.webp",
 					type: "image/webp",
 					sizes: "32x32"
 				},
 				{
-					url: "assets/favicons/48x48.webp",
+					url: "/assets/favicons/48x48.webp",
 					type: "image/webp",
 					sizes: "48x48"
 				},
 				{
-					url: "assets/favicons/192x192.webp",
+					url: "/assets/favicons/192x192.webp",
 					type: "image/webp",
 					sizes: "192x192"
 				},
 				{
-					url: "assets/favicons/512x512.webp",
+					url: "/assets/favicons/512x512.webp",
 					type: "image/webp",
 					sizes: "512x512"
 				}
 			],
 			apple: [
 				{
-					url: "assets/favicons/180x180.webp",
+					url: "/assets/favicons/180x180.webp",
 					type: "image/webp",
 					sizes: "180x180"
 				}
@@ -126,8 +112,6 @@ export async function fetchMetadata(): Promise<Metadata & { source: string }>
 		}
 	};
 
-	// On enregistre enfin les métadonnées dans un fichier JSON
-	//  avant de les retourner.
 	await writeFile( filePath, JSON.stringify( metadata ) );
 
 	return metadata;
