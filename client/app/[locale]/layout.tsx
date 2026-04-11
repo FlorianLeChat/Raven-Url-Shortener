@@ -96,14 +96,10 @@ export default async function Layout( {
 				<Script
 					src="/script.js"
 					strategy="lazyOnload"
-					data-website-id={
-						process.env.NEXT_PUBLIC_ANALYTICS_PROJECT_ID
-					}
-					data-do-not-track="true"
+					data-website-id={process.env.NEXT_PUBLIC_ANALYTICS_PROJECT_ID}
+					data-do-not-track={process.env.NEXT_PUBLIC_ANALYTICS_RESPECT_DNT}
 					data-exclude-hash="true"
-					data-exclude-search={
-						process.env.NEXT_PUBLIC_ANALYTICS_RESPECT_DNT
-					}
+					data-exclude-search="false"
 				/>
 			)}
 
