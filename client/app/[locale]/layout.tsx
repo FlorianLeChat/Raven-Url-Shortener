@@ -94,9 +94,10 @@ export default async function Layout( {
 
 			{process.env.NEXT_PUBLIC_ANALYTICS_ENABLED === "true" && (
 				<Script
-					src="/script.js"
+					src="/analytics.js"
 					strategy="lazyOnload"
 					data-website-id={process.env.NEXT_PUBLIC_ANALYTICS_PROJECT_ID}
+					data-performance="true"
 					data-do-not-track={process.env.NEXT_PUBLIC_ANALYTICS_RESPECT_DNT}
 					data-exclude-hash="true"
 					data-exclude-search="false"

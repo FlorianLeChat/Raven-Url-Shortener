@@ -36,7 +36,7 @@ export default function AcceptRedirection( { details }: Readonly<{ details: Link
 
 			if ( typeof umami !== "undefined" )
 			{
-				umami.track( "accept-redirection-only-this-url", {
+				umami.track( "Accept redirection only to this URL", {
 					url: details.url
 				} );
 			}
@@ -51,7 +51,7 @@ export default function AcceptRedirection( { details }: Readonly<{ details: Link
 
 			if ( typeof umami !== "undefined" )
 			{
-				umami.track( "accept-redirection-all-url", {
+				umami.track( "Accept redirection to all URLs", {
 					url: details.url
 				} );
 			}
@@ -69,7 +69,7 @@ export default function AcceptRedirection( { details }: Readonly<{ details: Link
 				onPress={() => router.push( details.url )}
 				aria-label={messages( "default" )}
 				startContent={<Check />}
-				data-umami-event="accept-redirection-once"
+				data-umami-event="Accept redirection only once"
 				data-umami-event-url={details.url}
 			>
 				{messages( "default" )}

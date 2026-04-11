@@ -12,7 +12,7 @@ export default async function proxy( request: NextRequest )
 	const endpoint = process.env.ANALYTICS_SERVER_ENDPOINT;
 	const { pathname } = request.nextUrl;
 
-	if ( pathname === "/script.js" )
+	if ( pathname === "/analytics.js" )
 	{
 		if ( analyticsEnabled && endpoint )
 		{
@@ -87,5 +87,5 @@ export default async function proxy( request: NextRequest )
 }
 
 export const config = {
-	matcher: [ "/script.js", "/api/send", "/((?!api|_next|_vercel|.*\\..*).*)" ]
+	matcher: [ "/analytics.js", "/api/send", "/((?!api|_next|_vercel|.*\\..*).*)" ]
 };
