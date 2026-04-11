@@ -1,7 +1,3 @@
-//
-// Composant du conteneur général du formulaire.
-//
-
 "use client";
 
 import Avatar from "@/images/avatar.jpg";
@@ -35,19 +31,18 @@ type CreateLinkResponse = LinkProperties | ErrorProperties;
 
 export default function FormContainer()
 {
-	// Déclaration des variables d'état.
 	const router = useRouter();
 	const messages = useTranslations();
 	const serverData = useContext( ServerContext );
 	const submitButton = useRef<HTMLButtonElement | null>( null );
-	const [ stepName, setStepName ] = useState( messages( "dashboard.steps.generate_challenge" ) );
+	const [ stepName, setStepName ] = useState(
+		messages( "dashboard.steps.generate_challenge" )
+	);
 	const [ isLoading, setIsLoading ] = useState( false );
 
-	// Lance une animation de confettis lors de la soumission du formulaire.
-	//  Source : https://github.com/heroui-inc/heroui/blob/1485eca48fce8a0acc42fe40590b828c1a90ff48/apps/docs/components/demos/custom-button.tsx#L11-L36
+	// https://github.com/heroui-inc/heroui/blob/1485eca48fce8a0acc42fe40590b828c1a90ff48/apps/docs/components/demos/custom-button.tsx#L11-L36
 	const throwConfettis = async () =>
 	{
-		// Calcul de la position du bouton de soumission.
 		const { clientWidth, clientHeight } = document.documentElement;
 		const boundingBox = submitButton.current?.getBoundingClientRect?.();
 
@@ -55,7 +50,6 @@ export default function FormContainer()
 		const targetY = boundingBox?.y ?? 0;
 		const targetWidth = boundingBox?.width ?? 0;
 
-		// Lancement de l'animation de confettis.
 		const targetCenterX = targetX + targetWidth / 2;
 		const confetti = ( await import( "canvas-confetti" ) ).default;
 
@@ -71,21 +65,18 @@ export default function FormContainer()
 		} );
 	};
 
-	// Réinitialisation de l'état du formulaire.
 	const resetFormState = () =>
 	{
 		setIsLoading( false );
 		setStepName( messages( "dashboard.steps.generate_challenge" ) );
 	};
 
-	// Création d'un nouveau raccourci auprès du back-end PHP.
 	const createLink = async ( data: FormData ) =>
 	{
 		const body = new FormData();
 
 		data.forEach( ( value, key ) =>
 		{
-			// Suppression des champs vides.
 			if ( value )
 			{
 				body.append( key, value );
@@ -97,10 +88,13 @@ export default function FormContainer()
 
 		try
 		{
-			const response = await fetch( `${ process.env.NEXT_PUBLIC_BACKEND_URL }/v1/link`, {
-				body,
-				method: "POST"
-			} );
+			const response = await fetch(
+				`${ process.env.NEXT_PUBLIC_BACKEND_URL }/v1/link`,
+				{
+					body,
+					method: "POST"
+				}
+			);
 
 			const json = ( await response.json() ) as CreateLinkResponse;
 
@@ -132,11 +126,8 @@ export default function FormContainer()
 		}
 	};
 
-	// Requête HTTP de création d'un nouveau raccourci
-	//  auprès du back-end PHP.
 	const onSubmitForm = async ( event: FormEvent<HTMLFormElement> ) =>
 	{
-		// Vérification du consentement de l'utilisateur.
 		event.preventDefault();
 
 		if ( !localStorage.getItem( "NEXT_CONSENT" ) )
@@ -151,8 +142,6 @@ export default function FormContainer()
 		}
 
 		setIsLoading( true );
-
-		// Récupération et résolution d'un défi CAPTCHA.
 		setStepName( messages( "dashboard.steps.solve_challenge" ) );
 
 		const data = new FormData( event.currentTarget );
@@ -171,7 +160,6 @@ export default function FormContainer()
 			return;
 		}
 
-		// Requête de création d'un nouveau raccourci.
 		setStepName( messages( "dashboard.steps.creation_request" ) );
 
 		const createState = await createLink( data );
@@ -188,7 +176,6 @@ export default function FormContainer()
 			return;
 		}
 
-		// Lancement des confettis et redirection.
 		await throwConfettis();
 
 		setStepName( messages( "dashboard.steps.summary_redirect" ) );
@@ -196,41 +183,33 @@ export default function FormContainer()
 		router.push( `/dashboard/${ createState.data.id }` );
 	};
 
-	// Affichage du rendu HTML du composant.
 	return (
 		<Card
 			as="section"
-			className="bg-white dark:bg-default-100/30"
+			className="dark:bg-default-100/30 bg-white"
 			isBlurred
 			isFooterBlurred
 		>
-			{/* Corps du formulaire */}
 			<Form onSubmit={onSubmitForm} validationBehavior="native">
 				<CardHeader
 					as="header"
-					className="gap-3 bg-primary p-4 text-white"
+					className="bg-primary gap-3 p-4 text-white"
 				>
-					{/* Astuce d'utilisation */}
-					<Info className="inline-block min-w-[24px]" />
+					<Info className="inline-block min-w-6" />
 					{messages( "dashboard.hint" )}
 				</CardHeader>
 
 				<CardBody className="p-4 max-md:gap-6 lg:flex-row">
-					{/* Utilisation de i18n */}
 					<I18nProvider locale={serverData?.locale}>
-						{/* Options de saisie */}
 						<InputOptions />
-
-						{/* Options additionnelles */}
 						<CheckboxOptions />
 					</I18nProvider>
 				</CardBody>
 
 				<CardFooter
 					as="footer"
-					className="justify-between gap-6 bg-content2/50 max-lg:flex-col"
+					className="bg-content2/50 justify-between gap-6 max-lg:flex-col"
 				>
-					{/* Boutons de soumission */}
 					<Button
 						ref={submitButton}
 						type="submit"
@@ -243,10 +222,8 @@ export default function FormContainer()
 						{messages( "dashboard.submit_button" )}
 					</Button>
 
-					{/* Consentement de l'utilisateur */}
 					<LegalConsent />
 
-					{/* Barre de progression */}
 					{isLoading && (
 						<Progress
 							size="sm"
@@ -256,16 +233,17 @@ export default function FormContainer()
 						/>
 					)}
 
-					{/* Carte du créateur */}
 					<div className="mr-1 flex items-center gap-2">
 						{messages( "footer.made_with_love" )}
 						<User
 							name="Florian Trayon"
 							description={(
 								<Link
-									href="https://www.florian-dev.fr/"
+									href="https://www.florian-trayon.fr/"
 									size="sm"
 									isExternal
+									data-umami-event="creator-portfolio-access"
+									data-umami-event-url="https://www.florian-trayon.fr/"
 								>
 									@Florian Trayon
 								</Link>

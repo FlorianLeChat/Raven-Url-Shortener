@@ -1,25 +1,14 @@
-//
-// Route vers la page principale du site.
-//  Source : https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts#pages
-//
-
-// Importation des dépendances.
 import { lazy } from "react";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
-// Importation de la configuration.
 import { features } from "@/config/features";
-
-// Importation des fonctions utilitaires.
 import { fetchMetadata } from "@/utilities/metadata";
 
-// Importation des composants.
 const FeatureCard = lazy( () => import( "./components/feature-card" ) );
 const LegalConsent = lazy( () => import( "./components/consent-legal" ) );
 const GatewayButton = lazy( () => import( "./components/gateway-button" ) );
 
-// Déclaration des propriétés de la page.
 export async function generateMetadata(): Promise<Metadata>
 {
 	const metadata = await fetchMetadata();
@@ -30,48 +19,43 @@ export async function generateMetadata(): Promise<Metadata>
 	};
 }
 
-// Affichage de la page.
 export default async function Page( {
 	params
 }: Readonly<{
 	params: Promise<{ locale: string }>;
 }> )
 {
-	// Définition de la langue de la page.
 	const { locale } = await params;
 
 	setRequestLocale( locale );
 
-	// Définition des constantes.
 	const metadata = await fetchMetadata();
 	const messages = await getTranslations();
 
-	// Affichage du rendu HTML de la page.
 	return (
 		<>
-			{/* En-tête de la page */}
-			<header className="container mx-auto max-w-[1440px] p-4 md:p-8">
+			<header className="container mx-auto max-w-360 p-4 md:p-8">
 				<h1 className="inline text-4xl font-semibold tracking-tight lg:text-5xl">
 					{messages( "index.title" )}
 				</h1>
 
-				<h2 className="mt-2 bg-gradient-to-b from-[#5EA2EF] to-[#0072F5] bg-clip-text text-4xl font-semibold tracking-tight text-transparent lg:text-5xl">
+				<h2 className="mt-2 bg-linear-to-b from-[#5EA2EF] to-[#0072F5] bg-clip-text text-4xl font-semibold tracking-tight text-transparent lg:text-5xl">
 					{metadata.title as string}
 				</h2>
 
-				<p className="my-2 w-full max-w-full text-lg font-normal text-default-500 md:w-1/2 lg:text-xl">
+				<p className="text-default-500 my-2 w-full max-w-full text-lg font-normal md:w-1/2 lg:text-xl">
 					{messages( "index.description" )}
 				</p>
 
-				{/* Affichage de l'animation du logo vers le dépôt GitHub */}
-				{/* Source : https://tholman.com/github-corners/ */}
 				<a
 					rel="noopener noreferrer"
 					href={metadata.source}
 					title="GitHub"
 					target="_blank"
-					className="group fixed bottom-auto left-auto right-0 top-0 [clip-path:polygon(0_0,100%_0,100%_100%)] max-sm:hidden"
+					className="group fixed top-0 right-0 bottom-auto left-auto [clip-path:polygon(0_0,100%_0,100%_100%)] max-sm:hidden"
 					aria-label="GitHub"
+					data-umami-event="github-link-click"
+					data-umami-event-url={metadata.source}
 				>
 					<svg width="80" height="80" viewBox="0 0 250 250">
 						<path
@@ -80,7 +64,7 @@ export default async function Page( {
 						/>
 						<path
 							d="M128 109c-15-9-9-19-9-19 3-7 2-11 2-11-1-7 3-2 3-2 4 5 2 11 2 11-3 10 5 15 9 16"
-							className="origin-[130px_106px] fill-current max-md:motion-safe:animate-github md:motion-safe:group-hover:animate-github"
+							className="max-md:motion-safe:animate-github md:motion-safe:group-hover:animate-github origin-[130px_106px] fill-current"
 						/>
 						<path
 							d="M115 115s4 2 5 0l14-14c3-2 6-3 8-3-8-11-15-24 2-41 5-5 10-7 16-7 1-2 3-7 12-11 0 0
@@ -92,9 +76,7 @@ export default async function Page( {
 				</a>
 			</header>
 
-			{/* Contenu de la page */}
-			<main className="container mx-auto max-w-[1440px] p-4 !pt-0 md:p-8">
-				{/* Présentation des fonctionnalités */}
+			<main className="container mx-auto max-w-360 p-4 pt-0! md:p-8">
 				<section className="mb-8">
 					<header className="mb-8">
 						{messages.rich( "index.features.title", {
@@ -104,7 +86,7 @@ export default async function Page( {
 								</h1>
 							),
 							pink: ( children ) => (
-								<h1 className="inline bg-gradient-to-b from-[#FF72E1] to-[#F54C7A] bg-clip-text text-2xl font-semibold tracking-tight text-transparent lg:text-3xl">
+								<h1 className="inline bg-linear-to-b from-[#FF72E1] to-[#F54C7A] bg-clip-text text-2xl font-semibold tracking-tight text-transparent lg:text-3xl">
 									{children}
 								</h1>
 							)
@@ -123,7 +105,6 @@ export default async function Page( {
 					</article>
 				</section>
 
-				{/* Redirection vers le formulaire de création */}
 				<section className="mb-8">
 					<header className="mb-6">
 						{messages.rich( "index.ready.title", {
@@ -133,7 +114,7 @@ export default async function Page( {
 								</h1>
 							),
 							green: ( children ) => (
-								<h1 className="inline bg-gradient-to-b from-[#6FEE8D] to-[#17c964] bg-clip-text text-2xl font-semibold tracking-tight text-transparent lg:text-3xl">
+								<h1 className="inline bg-linear-to-b from-[#6FEE8D] to-[#17c964] bg-clip-text text-2xl font-semibold tracking-tight text-transparent lg:text-3xl">
 									{children}
 								</h1>
 							)
@@ -144,7 +125,6 @@ export default async function Page( {
 				</section>
 			</main>
 
-			{/* Consentement de l'utilisateur */}
 			<LegalConsent />
 		</>
 	);

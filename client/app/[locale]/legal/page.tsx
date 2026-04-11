@@ -1,23 +1,15 @@
-//
-// Route vers la page des mentions légales.
-//
-
-// Importation des dépendances.
 import { setRequestLocale } from "next-intl/server";
 
-// Affichage de la page.
 export default async function Page( {
 	params
 }: Readonly<{
 	params: Promise<{ locale: string }>;
 }> )
 {
-	// Définition de la langue de la page.
 	const { locale } = await params;
 
 	setRequestLocale( locale );
 
-	// Affichage conditionnel du rendu HTML de la page.
 	if ( locale === "fr" )
 	{
 		return (
@@ -29,15 +21,9 @@ export default async function Page( {
 				</h3>
 
 				<p className="mb-3">
-					Le site de téléversement de fichiers en ligne accessible à
-					l&lsquo;adresse{" "}
-					<a
-						href="https://url.florian-dev.fr/"
-						className="underline decoration-dotted underline-offset-4"
-					>
-						https://url.florian-dev.fr/
-					</a>{" "}
-					a été créée et est maintenue par Florian Trayon (personne
+					Le site de création de liens raccourcis accessible à
+					l&lsquo;adresse <code>https://url.florian-dev.fr/</code> a
+					été créée et est maintenue par Florian Trayon (personne
 					physique). Le site Internet est hébergé par OVH – 2 rue
 					Kellermann – 59100 Roubaix – France.
 				</p>
@@ -47,14 +33,7 @@ export default async function Page( {
 					données personnelles (DPO) est Florian Trayon. Pour toute
 					question relative à la gestion de vos données personnelles
 					par ce site, veuillez nous contacter à l&lsquo;adresse
-					suivante :{" "}
-					<a
-						href="mailto:contact@florian-dev.fr"
-						className="underline decoration-dotted underline-offset-4"
-					>
-						contact@florian-dev.fr
-					</a>{" "}
-					ou via le formulaire de contact intégré.
+					suivante : <code>contact@florian-dev.fr</code>.
 				</p>
 
 				<h3 className="py-6 text-2xl font-bold tracking-tight underline underline-offset-4">
@@ -69,17 +48,15 @@ export default async function Page( {
 				</p>
 
 				<p className="mb-3">
-					<strong>Premièrement</strong>, l&lsquo;utilisation de Google
-					Analytics est restreinte au strict nécessaire et requiert
-					explicitement votre consentement. Vous pouvez désactiver
-					Google Analytics sans affecter le fonctionnement du site,
-					celui-ci est utilisé pour obtenir des statistiques de
-					fréquentation. Notez que les scripts de Google ne sont pas
-					chargés si vous refusez leur utilisation. Si vous les
-					acceptez, ces scripts sont alors chargés depuis les serveurs
-					de Google et soumis à leur politique de confidentialité
-					ainsi qu&lsquo;à leurs conditions générales
-					d&lsquo;utilisation.
+					<strong>Premièrement</strong>, afin de produire des
+					statistiques de fréquentation anonymes et d’améliorer le
+					fonctionnement du site, celui-ci peut utiliser la solution
+					de mesure d’audience open source Umami lorsqu’elle est
+					activée. Cet outil est configuré de manière à ne pas
+					utiliser de cookies ni à collecter de données personnelles
+					permettant de vous identifier directement. Les statistiques
+					produites sont anonymes et utilisées uniquement afin
+					d’améliorer le fonctionnement du site.
 				</p>
 
 				<p className="mb-3">
@@ -93,6 +70,19 @@ export default async function Page( {
 					interrogations quant à la manière dont nous utilisons ou
 					traitons vos données, sachez que le code source complet du
 					site est accessible sur GitHub.
+				</p>
+
+				<p className="mb-3">
+					<strong>Troisièmement</strong>, afin de prévenir les abus,
+					les tentatives automatisées et toute utilisation
+					malveillante du service (notamment par des robots), le site
+					peut utiliser la solution ALTCHA lorsqu’elle est activée. Ce
+					mécanisme de protection fonctionne sans recourir à des
+					services tiers intrusifs et sans dépôt de cookies
+					publicitaires. Les vérifications effectuées visent
+					uniquement à assurer la sécurité et le bon fonctionnement du
+					service, sans collecte de données personnelles à des fins de
+					suivi ou de profilage.
 				</p>
 
 				<p>
@@ -179,30 +169,17 @@ export default async function Page( {
 			</h3>
 
 			<p className="mb-3">
-				The online file upload site accessible at{" "}
-				<a
-					href="https://url.florian-dev.fr/"
-					className="underline decoration-dotted underline-offset-4"
-				>
-					https://url.florian-dev.fr/
-				</a>{" "}
-				was created and is maintained by Florian Trayon (an individual).
-				The website is hosted by OVH – 2 rue Kellermann – 59100 Roubaix
-				– France.
+				The URL shortening website accessible at
+				<code>https://url.florian-dev.fr/</code> was created and is
+				maintained by Florian Trayon (natural person). The website is
+				hosted by OVH – 2 rue Kellermann – 59100 Roubaix – France.
 			</p>
 
 			<p>
 				The data controller, publisher, and Data Protection Officer
 				(DPO) is Florian Trayon. For any questions regarding the
 				management of your personal data by this site, please contact us
-				at the following address:{" "}
-				<a
-					href="mailto:contact@florian-dev.fr"
-					className="underline decoration-dotted underline-offset-4"
-				>
-					contact@florian-dev.fr
-				</a>{" "}
-				or via the integrated contact form.
+				at the following address: <code>contact@florian-dev.fr</code>.
 			</p>
 
 			<h3 className="py-6 text-2xl font-bold tracking-tight underline underline-offset-4">
@@ -216,14 +193,13 @@ export default async function Page( {
 			</p>
 
 			<p className="mb-3">
-				<strong>Firstly</strong>, the use of Google Analytics is
-				restricted to what is strictly necessary and explicitly requires
-				your consent. You can disable Google Analytics without affecting
-				the functionality of the site, as it is used to obtain traffic
-				statistics. Please note that Google's scripts are not loaded if
-				you refuse their use. If you accept them, these scripts are then
-				loaded from Google's servers and are subject to their privacy
-				policy as well as their terms of use.
+				<strong>Firstly</strong>, in order to produce anonymous audience
+				statistics and improve the operation of the website, it may use
+				the open-source analytics solution Umami when enabled. This tool
+				is configured not to use cookies and not to collect personal
+				data that could directly identify you. The statistics produced
+				are anonymous and used solely to improve the operation of the
+				website.
 			</p>
 
 			<p className="mb-3">
@@ -235,6 +211,17 @@ export default async function Page( {
 				unauthorized access by third parties. If you have any questions
 				about how we use or process your data, please note that the
 				complete source code of the site is available on GitHub.
+			</p>
+
+			<p className="mb-3">
+				<strong>Thirdly</strong>, in order to prevent abuse, automated
+				requests, and any malicious use of the service (notably by
+				bots), the website may use the ALTCHA solution when enabled.
+				This protection mechanism operates without relying on intrusive
+				third-party services and without placing advertising cookies.
+				The checks performed are intended solely to ensure the security
+				and proper functioning of the service, without collecting
+				personal data for tracking or profiling purposes.
 			</p>
 
 			<p>

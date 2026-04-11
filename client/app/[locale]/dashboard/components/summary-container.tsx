@@ -1,7 +1,3 @@
-//
-// Composant du conteneur général du récapitulatif.
-//
-
 "use client";
 
 import { lazy } from "react";
@@ -15,7 +11,6 @@ import { Card,
 	CardHeader,
 	CardFooter } from "@heroui/react";
 import { useRouter } from "next/navigation";
-import { setCookie } from "@/utilities/cookie";
 import { formatDate } from "@/utilities/date";
 import { QrCode,
 	Terminal,
@@ -32,25 +27,21 @@ export default function SummaryContainer( {
 	details
 }: Readonly<{ domain: string; details: LinkProperties }> )
 {
-	// Déclaration des variables d'état.
 	const locale = useLocale();
 	const router = useRouter();
 	const messages = useTranslations( "summary" );
 
-	// Dates de création et de dernière mise à jour du lien.
 	const createDate = formatDate( new Date( details.createdAt.date ), locale );
 	const updateDate = details.updatedAt?.date
 		? formatDate( new Date( details.updatedAt.date ), locale )
 		: undefined;
 
-	// Message contenant les dates de création et de mise à jour.
 	const dateMessage = messages( "hint", {
 		isUpdated: String( !!updateDate ),
 		createDate: String( createDate ),
 		updateDate: String( updateDate )
 	} );
 
-	// Téléchargement du QR Code pour le lien raccourci.
 	const downloadQrCode = () =>
 	{
 		const link = document.createElement( "a" );
@@ -63,7 +54,6 @@ export default function SummaryContainer( {
 		link.remove();
 	};
 
-	// Copie de la clé API dans le presse-papiers.
 	const copyApiKey = async () =>
 	{
 		if ( !details.apiKey )
@@ -79,35 +69,19 @@ export default function SummaryContainer( {
 			timeout: 10000,
 			description: messages( "api_key.description" )
 		} );
-
-		// Enregistrement de la clé API dans les cookies
-		//  pour une utilisation ultérieure.
-		setCookie( {
-			name: "NEXT_API_KEY",
-			path: "/dashboard/" + details.id,
-			value: details.apiKey
-		} );
-
-		setCookie( {
-			name: "NEXT_API_KEY",
-			path: "/dashboard/" + details.slug,
-			value: details.apiKey
-		} );
 	};
 
-	// Affichage du rendu HTML du composant.
 	return (
 		<Card
 			as="section"
-			className="bg-white dark:bg-default-100/30"
+			className="dark:bg-default-100/30 bg-white"
 			isBlurred
 			isFooterBlurred
 		>
 			<CardHeader
 				as="header"
-				className="gap-3 bg-success-700 p-4 text-white dark:bg-success-200"
+				className="bg-success-700 dark:bg-success-200 gap-3 p-4 text-white"
 			>
-				{/* Date de création */}
 				<CircleCheckBig className="inline-block min-w-6" />
 				{dateMessage}
 			</CardHeader>
@@ -119,10 +93,9 @@ export default function SummaryContainer( {
 					alt={messages( "qr_code" )}
 					width={200}
 					height={200}
-					className="max-h-[200px] min-h-[200px] min-w-[200px] max-w-[200px]"
+					className="max-h-50 min-h-50 max-w-50 min-w-50"
 				/>
 
-				{/* Liens de partage */}
 				<div className="flex max-w-full flex-col gap-3">
 					<h3 className="text-xl font-semibold">
 						{messages( "links_label" )}
@@ -150,61 +123,60 @@ export default function SummaryContainer( {
 						{domain + details.id}
 					</Snippet>
 
-					<p className="text-sm text-default-500">
+					<p className="text-default-500 text-sm">
 						{messages.rich( "links_description", {
 							br: () => <br />
 						} )}
 					</p>
 				</div>
 
-				{/* Actions rapides */}
 				<SummaryActions />
 			</CardBody>
 
 			<CardFooter
 				as="footer"
-				className="items-center gap-3 bg-content2/50"
+				className="bg-content2/50 items-center gap-3"
 			>
-				{/* Bouton de retour au tableau de bord */}
 				<Button
 					type="button"
 					variant="flat"
 					onPress={() => router.push( "/dashboard" )}
 					className="max-sm:min-w-16"
 					startContent={<ArrowLeft />}
+					data-umami-event="Back to dashboard after shortened link access"
 				>
 					<span className="hidden lg:inline">
 						{messages( "back_to_dashboard" )}
 					</span>
 				</Button>
 
-				{/* Bouton d'accès au lien */}
 				<Button
 					type="button"
 					variant="flat"
 					onPress={() => router.push( details.url )}
 					className="max-sm:min-w-16"
 					startContent={<SquareArrowOutUpRight />}
+					data-umami-event="Go to shortened link"
+					data-umami-event-url={details.url}
 				>
 					<span className="hidden lg:inline">
 						{messages( "access_to_link" )}
 					</span>
 				</Button>
 
-				{/* Bouton de téléchargement du QR Code */}
 				<Button
 					type="button"
 					variant="flat"
 					onPress={downloadQrCode}
 					className="max-sm:min-w-16"
 					startContent={<QrCode />}
+					data-umami-event="Download QR code for shortened link"
 				>
 					<span className="hidden lg:inline">
 						{messages( "download_qr_code" )}
 					</span>
 				</Button>
 
-				{/* Bouton de copie de la clé API */}
 				<Button
 					type="button"
 					variant="flat"
@@ -212,6 +184,7 @@ export default function SummaryContainer( {
 					isDisabled={!details.apiKey}
 					className="max-sm:min-w-16"
 					startContent={<Terminal />}
+					data-umami-event="Copy API key to manage shortened link"
 				>
 					<span className="hidden lg:inline">
 						{messages( "copy_api_key" )}
