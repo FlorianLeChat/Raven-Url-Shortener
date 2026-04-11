@@ -22,8 +22,8 @@ export default function CookieConsent()
 			disablePageInteraction: true,
 			hideFromBots: process.env.NEXT_PUBLIC_ENV === "production",
 			autoShow:
-                process.env.NEXT_PUBLIC_ENV === "production"
-                && !pathname.startsWith( "/legal" ),
+				process.env.NEXT_PUBLIC_ENV === "production"
+				&& !pathname.startsWith( "/legal" ),
 			cookie: {
 				name: "NEXT_COOKIE",
 				path: "/"

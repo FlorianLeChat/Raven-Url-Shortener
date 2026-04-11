@@ -121,13 +121,7 @@ export default async function Page( {
 					rectification, de modification et de suppression des données
 					personnelles que vous nous avez communiquées. Vous pouvez
 					exercer ce droit à tout moment en écrivant à :{" "}
-					<a
-						href="mailto:contact@florian-dev.fr"
-						className="underline decoration-dotted underline-offset-4"
-					>
-						contact@florian-dev.fr
-					</a>{" "}
-					.
+					<code>contact@florian-dev.fr</code>
 				</p>
 
 				<h3 className="py-6 text-2xl font-bold tracking-tight underline underline-offset-4">
@@ -162,7 +156,7 @@ export default async function Page( {
 
 	return (
 		<>
-			<em>Effective from January 1, 2025.</em>
+			<em>Effective from April 11, 2026.</em>
 
 			<h3 className="py-6 text-2xl font-bold tracking-tight underline underline-offset-4">
 				Credits
@@ -237,7 +231,7 @@ export default async function Page( {
 			<p className="mb-3">
 				Any person using the services of Raven Url Shortener agrees to
 				abide by these general terms of use. The use of Raven Url
-				Shortner is free and unrestricted, regardless of the context,
+				Shortener is free and unrestricted, regardless of the context,
 				with the project&lsquo;s source code being available on GitHub.
 				However, any malicious or illegal activity is strictly
 				prohibited.
@@ -256,13 +250,7 @@ export default async function Page( {
 				(GDPR), you have the right to access, rectify, modify, and
 				delete the personal data you have provided to us. You can
 				exercise this right at any time by writing to:{" "}
-				<a
-					href="mailto:contact@florian-dev.fr"
-					className="underline decoration-dotted underline-offset-4"
-				>
-					contact@florian-dev.fr
-				</a>{" "}
-				.
+				<code>contact@florian-dev.fr</code>.
 			</p>
 
 			<h3 className="py-6 text-2xl font-bold tracking-tight underline underline-offset-4">

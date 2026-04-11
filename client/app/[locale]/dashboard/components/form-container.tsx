@@ -35,9 +35,7 @@ export default function FormContainer()
 	const messages = useTranslations();
 	const serverData = useContext( ServerContext );
 	const submitButton = useRef<HTMLButtonElement | null>( null );
-	const [ stepName, setStepName ] = useState(
-		messages( "dashboard.steps.generate_challenge" )
-	);
+	const [ stepName, setStepName ] = useState( messages( "dashboard.steps.generate_challenge" ) );
 	const [ isLoading, setIsLoading ] = useState( false );
 
 	// https://github.com/heroui-inc/heroui/blob/1485eca48fce8a0acc42fe40590b828c1a90ff48/apps/docs/components/demos/custom-button.tsx#L11-L36
@@ -88,13 +86,10 @@ export default function FormContainer()
 
 		try
 		{
-			const response = await fetch(
-				`${ process.env.NEXT_PUBLIC_BACKEND_URL }/v1/link`,
-				{
-					body,
-					method: "POST"
-				}
-			);
+			const response = await fetch( `${ process.env.NEXT_PUBLIC_BACKEND_URL }/v1/link`, {
+				body,
+				method: "POST"
+			} );
 
 			const json = ( await response.json() ) as CreateLinkResponse;
 
