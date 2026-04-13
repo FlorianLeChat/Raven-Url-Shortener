@@ -9,7 +9,6 @@ parameters:
 	scanFiles:
 		- vendor/symfony/dependency-injection/Loader/Configurator/ContainerConfigurator.php
 	excludePaths:
-		- config/reference.php (?)
 		- src/Infrastructure/Fixture/
 	scanDirectories:
 		- var/cache/dev/Symfony/Config

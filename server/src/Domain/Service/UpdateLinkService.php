@@ -65,8 +65,8 @@ final class UpdateLinkService extends BaseLinkService
 
         $url = $payload->getString('url', $this->link->getUrl());
         $slug = $payload->getString('slug', $this->link->getSlug());
-        $password = $payload->getString('password', $this->link->getPassword() ?? '') ?: null;
-        $expiration = $payload->getString('expiration', $this->link->getExpiresAt()?->format('Y-m-d H:i:s') ?? '') ?: null;
+        $password = $payload->getString('password', $this->link->getPassword() ?? '');
+        $expiration = $payload->getString('expiration', $this->link->getExpiresAt()?->format('Y-m-d H:i:s') ?? '');
         $apiManagement = $payload->getBoolean('api-management', $this->link->getApiKey() !== null);
 
         if ($apiManagement && $this->link->getApiKey() === null) {

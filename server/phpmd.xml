@@ -2,11 +2,9 @@
 
 <ruleset xmlns="http://pmd.sf.net/ruleset/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd" xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
 	<rule ref="rulesets/design.xml">
-		<!-- Voir la règle définie « CouplingBetweenObjects » -->
 		<exclude name="CouplingBetweenObjects" />
 	</rule>
 
-	<!-- Augmentation du nombre de dépendances couplées à une classe -->
 	<rule ref="rulesets/design.xml/CouplingBetweenObjects">
 		<properties>
 			<property name="maximum" value="20" />
@@ -14,23 +12,16 @@
 	</rule>
 
 	<rule ref="rulesets/naming.xml">
-		<!-- Taille minimale de caractères d'une variable -->
 		<exclude name="ShortVariable" />
 	</rule>
 
 	<rule ref="rulesets/cleancode.xml">
-		<!-- Accès aux propriétés et méthodes statiques -->
 		<exclude name="StaticAccess" />
-
-		<!-- Utilisation de booléens comme paramètres -->
-		<exclude name="BooleanArgumentFlag" />
-
-		<!-- Utilisation de l'expression « else » -->
-		<exclude name="ElseExpression" />
+        <exclude name="BooleanArgumentFlag" />
+        <exclude name="ElseExpression" />
 	</rule>
 
 	<rule ref="rulesets/codesize.xml">
-		<!-- Exécution de méthodes ayant une complexité importante -->
 		<exclude name="NPathComplexity" />
 		<exclude name="CyclomaticComplexity" />
 		<exclude name="ExcessiveClassComplexity" />
