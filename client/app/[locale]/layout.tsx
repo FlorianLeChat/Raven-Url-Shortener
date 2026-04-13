@@ -100,7 +100,7 @@ export default async function Layout( {
 					data-performance="true"
 					data-do-not-track={process.env.NEXT_PUBLIC_ANALYTICS_RESPECT_DNT}
 					data-exclude-hash="true"
-					data-exclude-search="false"
+					data-exclude-search="true"
 				/>
 			)}
 

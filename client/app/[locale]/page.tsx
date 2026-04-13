@@ -54,7 +54,7 @@ export default async function Page( {
 					target="_blank"
 					className="group fixed top-0 right-0 bottom-auto left-auto [clip-path:polygon(0_0,100%_0,100%_100%)] max-sm:hidden"
 					aria-label="GitHub"
-					data-umami-event="Open the creator's GitHub profile"
+					data-umami-event="Open the GitHub repository link"
 					data-umami-event-url={metadata.source}
 				>
 					<svg width="80" height="80" viewBox="0 0 250 250">

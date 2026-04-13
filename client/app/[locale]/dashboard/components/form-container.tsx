@@ -237,7 +237,7 @@ export default function FormContainer()
 									href="https://www.florian-trayon.fr/"
 									size="sm"
 									isExternal
-									data-umami-event="creator-portfolio-access"
+									data-umami-event="Open the author's portfolio website"
 									data-umami-event-url="https://www.florian-trayon.fr/"
 								>
 									@Florian Trayon
