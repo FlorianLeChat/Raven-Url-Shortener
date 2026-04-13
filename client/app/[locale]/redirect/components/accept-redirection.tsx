@@ -1,7 +1,3 @@
-//
-// Composant du bouton d'acceptation de la redirection.
-//
-
 "use client";
 
 import { useRouter } from "next/navigation";
@@ -19,17 +15,13 @@ import { Check, ChevronDownIcon } from "lucide-react";
 
 export default function AcceptRedirection( { details }: Readonly<{ details: LinkProperties }> )
 {
-	// Déclaration des variables d'état.
 	const router = useRouter();
 	const messages = useTranslations( "redirect.accept" );
 
-	// Fonction de gestion de l'acceptation de la redirection.
 	const onAcceptRedirection = ( selection: SharedSelection ) =>
 	{
 		if ( selection.currentKey === "only-this-url" )
 		{
-			// Si la redirection n'est acceptée que pour cette URL, on ajoute le cookie
-			//  uniquement pour le chemin de l'URL avec son identifiant unique et son slug.
 			setCookie( {
 				name: "NEXT_REDIRECTION",
 				value: "true",
@@ -41,25 +33,35 @@ export default function AcceptRedirection( { details }: Readonly<{ details: Link
 				value: "true",
 				path: `/${ details.slug }`
 			} );
+
+			if ( typeof umami !== "undefined" )
+			{
+				umami.track( "Accept redirection only to this URL", {
+					url: details.url
+				} );
+			}
 		}
 
 		if ( selection.currentKey === "all-url" )
 		{
-			// Si toutes les redirections ont acceptées, on ajoute le cookie à la racine
-			//  du domaine pour couvrir toutes les URL.
 			setCookie( {
 				name: "NEXT_REDIRECTION",
 				value: "true"
 			} );
+
+			if ( typeof umami !== "undefined" )
+			{
+				umami.track( "Accept redirection to all URLs", {
+					url: details.url
+				} );
+			}
 		}
 
 		router.push( details.url );
 	};
 
-	// Affichage du rendu HTML du composant.
 	return (
 		<ButtonGroup variant="flat">
-			{/* Bouton par défaut */}
 			<Button
 				size="lg"
 				color="success"
@@ -67,6 +69,8 @@ export default function AcceptRedirection( { details }: Readonly<{ details: Link
 				onPress={() => router.push( details.url )}
 				aria-label={messages( "default" )}
 				startContent={<Check />}
+				data-umami-event="Accept redirection only once"
+				data-umami-event-url={details.url}
 			>
 				{messages( "default" )}
 			</Button>
@@ -84,12 +88,11 @@ export default function AcceptRedirection( { details }: Readonly<{ details: Link
 				</DropdownTrigger>
 
 				<DropdownMenu
-					className="max-w-[350px]"
+					className="max-w-87.5"
 					aria-label={messages( "options" )}
 					selectionMode="single"
 					onSelectionChange={onAcceptRedirection}
 				>
-					{/* Uniquement cette fois-ci */}
 					<DropdownItem
 						key="only-once"
 						classNames={{
@@ -100,7 +103,6 @@ export default function AcceptRedirection( { details }: Readonly<{ details: Link
 						{messages( "only_once_title" )}
 					</DropdownItem>
 
-					{/* Uniquement pour cette URL */}
 					<DropdownItem
 						key="only-this-url"
 						classNames={{
@@ -111,7 +113,6 @@ export default function AcceptRedirection( { details }: Readonly<{ details: Link
 						{messages( "only_this_url_title" )}
 					</DropdownItem>
 
-					{/* Pour toutes les URL */}
 					<DropdownItem
 						key="all-url"
 						classNames={{
