@@ -215,7 +215,7 @@ analyze:docker-container:
         - gtcs scan
     parallel:
         matrix:
-            - REALMS: [client, server]
+            - REALMS: [ui, api]
     variables:
         CS_DOCKERFILE_PATH: docker/Dockerfile
     artifacts:
