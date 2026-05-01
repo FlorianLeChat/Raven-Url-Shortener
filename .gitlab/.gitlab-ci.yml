@@ -211,8 +211,8 @@ analyze:docker-container:
     image: $CI_TEMPLATE_REGISTRY_HOST/security-products/container-scanning
     script:
         - export CS_DOCKERFILE_PATH="${DOCKER_FILE}"
-        - export CI_APPLICATION_TAG="${CI_COMMIT_TAG:-$CI_COMMIT_SHORT_SHA}"
-        - export CI_APPLICATION_REPOSITORY="${CI_REGISTRY_IMAGE}-${REALMS}"
+        - export CI_APPLICATION_TAG="${REALMS}-${CI_COMMIT_TAG:-$CI_COMMIT_SHORT_SHA}"
+        - export CI_APPLICATION_REPOSITORY="${CI_REGISTRY_IMAGE}"
         - gtcs scan
     parallel:
         matrix:
