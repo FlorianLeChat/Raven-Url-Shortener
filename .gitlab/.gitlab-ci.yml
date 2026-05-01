@@ -212,7 +212,7 @@ analyze:docker-container:
     script:
         - export CS_DOCKERFILE_PATH="${DOCKER_FILE}"
         - export CI_APPLICATION_TAG="${CI_COMMIT_TAG:-$CI_COMMIT_SHORT_SHA}"
-        - export CI_APPLICATION_REPOSITORY="${CI_REGISTRY_IMAGE}:${REALMS}"
+        - export CI_APPLICATION_REPOSITORY="${CI_REGISTRY_IMAGE}-${REALMS}"
         - gtcs scan
     parallel:
         matrix:
