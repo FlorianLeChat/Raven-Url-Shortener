@@ -9,7 +9,7 @@
 
 #### Côté client (dossier `client/`)
 
-- Installer [Node.js LTS](https://nodejs.org/) (>20 ou plus) ;
+- Installer [Node.js LTS](https://nodejs.org/) (>22 ou plus) ;
 - Installer les dépendances du projet avec la commande `npm install` ;
 - Modifier la [variable d'environnement](client/.env) `NEXT_PUBLIC_ENV` sur `development` ;
 - Démarrer le serveur local Next.js avec la commande `npm run dev`.
@@ -37,7 +37,7 @@
 
 #### Côté client (dossier `client/`)
 
-- Installer [Node.js LTS](https://nodejs.org/) (>20 ou plus) ;
+- Installer [Node.js LTS](https://nodejs.org/) (>22 ou plus) ;
 - Installer les dépendances du projet avec la commande `npm install` ;
 - Compiler les fichiers statiques du site Internet avec la commande `npm run build` ;
 - Supprimer les dépendances de développement avec la commande `npm prune --omit=dev` ;
@@ -75,7 +75,7 @@
 
 #### Client side (`client/` folder)
 
-- Install [Node.js LTS](https://nodejs.org/) (>20 or higher) ;
+- Install [Node.js LTS](https://nodejs.org/) (>22 or higher) ;
 - Install project dependencies using `npm install` ;
 - Set `NEXT_PUBLIC_ENV` [environment variable](client/.env) to `development` ;
 - Start Next.js local server using `npm run dev`.
@@ -103,7 +103,7 @@
 
 #### Client side (`client/` folder)
 
-- Install [Node.js LTS](https://nodejs.org/) (>20 or higher) ;
+- Install [Node.js LTS](https://nodejs.org/) (>22 or higher) ;
 - Install project dependencies using `npm install` ;
 - Build static website files using `npm run build` ;
 - Remove development dependencies using `npm prune --omit=dev` ;

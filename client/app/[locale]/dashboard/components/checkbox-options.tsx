@@ -18,7 +18,7 @@ export default function CheckboxOptions()
 		<Accordion
 			as="ul"
 			variant="splitted"
-			className="overflow-y-auto p-1 lg:ml-4 lg:max-h-[382px] lg:w-1/2"
+			className="overflow-y-auto p-1 lg:ml-4 lg:max-h-95.5 lg:w-1/2"
 			isDisabled={process.env.NEXT_PUBLIC_ENV === "production"}
 			keepContentMounted
 		>
@@ -45,7 +45,7 @@ export default function CheckboxOptions()
 				<Checkbox
 					name="password-protection"
 					value="true"
-					className="m-0 mt-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
+					className="m-0 mt-2 inline-flex items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
 					aria-label={messages( "security.options.password.label" )}
 				>
 					<div className="flex justify-between gap-2">
@@ -67,7 +67,7 @@ export default function CheckboxOptions()
 				<Checkbox
 					name="proxy-server"
 					value="true"
-					className="m-0 mb-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
+					className="m-0 mb-2 inline-flex items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
 					aria-label={messages( "security.options.proxy.label" )}
 				>
 					<p>{messages( "security.options.proxy.label" )}</p>
@@ -81,7 +81,7 @@ export default function CheckboxOptions()
 				<Checkbox
 					name="api-management"
 					value="true"
-					className="m-0 mb-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
+					className="m-0 mb-2 inline-flex items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
 					aria-label={messages( "security.options.api.label" )}
 				>
 					<div className="flex justify-between gap-2">
@@ -123,7 +123,7 @@ export default function CheckboxOptions()
 				<Checkbox
 					name="clicks-views"
 					value="true"
-					className="m-0 mt-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
+					className="m-0 mt-2 inline-flex items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
 					aria-label={messages( "statistics.options.access_count.label" )}
 				>
 					<p>{messages( "statistics.options.access_count.label" )}</p>
@@ -137,7 +137,7 @@ export default function CheckboxOptions()
 				<Checkbox
 					name="client-data"
 					value="true"
-					className="m-0 my-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
+					className="m-0 my-2 inline-flex items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
 					aria-label={messages( "statistics.options.visitor_data.label" )}
 				>
 					<p>{messages( "statistics.options.visitor_data.label" )}</p>
@@ -165,7 +165,7 @@ export default function CheckboxOptions()
 				<Checkbox
 					name="cache-page"
 					value="true"
-					className="m-0 mb-2 inline-flex cursor-pointer items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
+					className="m-0 mb-2 inline-flex items-center justify-start gap-2 rounded-lg border-2 border-transparent p-4 hover:bg-content2 data-[selected=true]:border-primary"
 					aria-label={messages( "performance.options.cache.label" )}
 				>
 					<div className="flex justify-between gap-2">
