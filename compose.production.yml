@@ -16,7 +16,7 @@ services:
         security_opt:
             - no-new-privileges=true
         healthcheck:
-            test: valkey-cli --raw incr ping
+            test: ["CMD", "valkey-cli", "ping"]
             retries: 3
             timeout: 5s
             start_period: 30s
@@ -41,7 +41,7 @@ services:
         security_opt:
             - no-new-privileges=true
         healthcheck:
-            test: pg_isready --dbname=${DATABASE_NAME} --username=${DATABASE_USERNAME}
+            test: ["CMD-SHELL", "pg_isready -U $${DATABASE_USERNAME} -d $${DATABASE_NAME}"]
             retries: 3
             timeout: 5s
             start_period: 30s
@@ -64,7 +64,7 @@ services:
         security_opt:
             - no-new-privileges=true
         healthcheck:
-            test: wget -O - http://127.0.0.1:8080/
+            test: ["CMD", "wget", "--quiet", "--spider", "http://127.0.0.1:8080/"]
             retries: 3
             timeout: 5s
             start_period: 30s
@@ -93,7 +93,7 @@ services:
         security_opt:
             - no-new-privileges=true
         healthcheck:
-            test: wget -O - http://localhost/
+            test: ["CMD", "wget", "--quiet", "--spider", "http://localhost/"]
             retries: 3
             timeout: 5s
             start_period: 30s
@@ -122,7 +122,7 @@ services:
         security_opt:
             - no-new-privileges=true
         healthcheck:
-            test: wget -O - http://localhost:3000/
+            test: ["CMD", "wget", "--quiet", "--spider", "http://localhost:3000/"]
             retries: 3
             timeout: 5s
             start_period: 30s
@@ -155,7 +155,7 @@ services:
         security_opt:
             - no-new-privileges=true
         healthcheck:
-            test: curl -f http://localhost:8080/
+            test: ["CMD", "curl", "-f", "http://localhost:8080/"]
             retries: 3
             timeout: 5s
             start_period: 30s

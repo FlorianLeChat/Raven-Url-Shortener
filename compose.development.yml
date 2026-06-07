@@ -12,7 +12,7 @@ services:
         environment:
             TZ: ${TZ}
         healthcheck:
-            test: valkey-cli --raw incr ping
+            test: ["CMD", "valkey-cli", "ping"]
             retries: 3
             timeout: 5s
             start_period: 30s
@@ -27,7 +27,7 @@ services:
             POSTGRES_USER: ${DATABASE_USERNAME}
             POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
         healthcheck:
-            test: pg_isready --dbname=${DATABASE_NAME} --username=${DATABASE_USERNAME}
+            test: ["CMD-SHELL", "pg_isready -U $${DATABASE_USERNAME} -d $${DATABASE_NAME}"]
             retries: 3
             timeout: 5s
             start_period: 30s
@@ -40,7 +40,7 @@ services:
         environment:
             URL: http://localhost:8000/openapi.json
         healthcheck:
-            test: wget -O - http://127.0.0.1:8080/
+            test: ["CMD", "wget", "--quiet", "--spider", "http://127.0.0.1:8080/"]
             retries: 3
             timeout: 5s
             start_period: 30s
@@ -64,7 +64,7 @@ services:
         extra_hosts:
             - "host.docker.internal:host-gateway"
         healthcheck:
-            test: curl -f http://localhost:8000/
+            test: ["CMD", "curl", "-f", "http://localhost:8000/"]
             retries: 3
             timeout: 5s
             start_period: 30s
