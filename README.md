@@ -62,4 +62,4 @@ Ultimately, all new functionalities will first be implemented on API before bein
 > [!NOTE]
 > All or part of the code may contain comments in my native language (French) to ease development. 🌐
 
-![image](.gitlab/images/raven_url_shortener.png)
+![image](.gitlab/images/raven-url-shortener.png)
