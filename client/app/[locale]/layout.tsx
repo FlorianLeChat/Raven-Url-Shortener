@@ -94,7 +94,7 @@ export default async function Layout( {
 
 			{process.env.NEXT_PUBLIC_ANALYTICS_ENABLED === "true" && (
 				<Script
-					src="/analytics.js"
+					src={process.env.NEXT_PUBLIC_ANALYTICS_ENDPOINT}
 					strategy="lazyOnload"
 					data-website-id={process.env.NEXT_PUBLIC_ANALYTICS_PROJECT_ID}
 					data-performance="true"

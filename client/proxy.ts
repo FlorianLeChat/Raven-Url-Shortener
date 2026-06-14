@@ -8,33 +8,6 @@ const routePrefixes = [ "dashboard", "redirect", "manager" ];
 
 export default async function proxy( request: NextRequest )
 {
-	const analyticsEnabled = process.env.NEXT_PUBLIC_ANALYTICS_ENABLED === "true";
-	const endpoint = process.env.ANALYTICS_SERVER_ENDPOINT;
-	const { pathname } = request.nextUrl;
-
-	if ( pathname === "/analytics.js" )
-	{
-		if ( analyticsEnabled && endpoint )
-		{
-			return NextResponse.rewrite( new URL( `${ endpoint }/script.js` ) );
-		}
-		else
-		{
-			return NextResponse.next();
-		}
-	}
-	else if ( pathname === "/api/send" )
-	{
-		if ( analyticsEnabled && endpoint )
-		{
-			return NextResponse.rewrite( new URL( `${ endpoint }/api/send` ) );
-		}
-		else
-		{
-			return NextResponse.next();
-		}
-	}
-
 	// Vérification à l'accès d'un lien raccourci.
 	const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 	const slugPattern = /^[a-zA-Z0-9-]+$/;
@@ -87,5 +60,5 @@ export default async function proxy( request: NextRequest )
 }
 
 export const config = {
-	matcher: [ "/analytics.js", "/api/send", "/((?!api|_next|_vercel|.*\\..*).*)" ]
+	matcher: [ "/((?!api|_next|_vercel|.*\\..*).*)" ]
 };
