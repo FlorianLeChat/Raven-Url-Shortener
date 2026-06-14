@@ -11,8 +11,8 @@ final class ReportFixtureTest extends TestCase
     {
         $report = ReportFactory::create($this->createMock('App\Domain\Entity\Link'), 'Spam', 'test@domain.com');
 
-        $this->assertEquals('test@domain.com', $report->getEmail());
-        $this->assertEquals('Spam', $report->getReason());
+        $this->assertSame('test@domain.com', $report->getEmail());
+        $this->assertSame('Spam', $report->getReason());
         $this->assertNotNull($report->getCreatedAt());
         $this->assertNull($report->getUpdatedAt());
     }

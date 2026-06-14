@@ -17,13 +17,13 @@ final class LinkFactoryTest extends TestCase
             'expiration' => '2023-12-31'
         ]);
 
-        $this->assertEquals('https://example.com', $link->getUrl());
-        $this->assertEquals('example', $link->getSlug());
+        $this->assertSame('https://example.com', $link->getUrl());
+        $this->assertSame('example', $link->getSlug());
         $this->assertStringStartsWith('$2y$', $link->getPassword());
         $this->assertTrue($link->isEnabled());
         $this->assertNotNull($link->getCreatedAt());
         $this->assertNull($link->getUpdatedAt());
-        $this->assertEquals('2023-12-31', $link->getExpiresAt()->format('Y-m-d'));
+        $this->assertSame('2023-12-31', $link->getExpiresAt()->format('Y-m-d'));
     }
 
     public function testUpdateLink(): void
@@ -42,8 +42,8 @@ final class LinkFactoryTest extends TestCase
             'expiration' => null
         ]);
 
-        $this->assertEquals('https://updated.com', $link->getUrl());
-        $this->assertEquals('updated', $link->getSlug());
+        $this->assertSame('https://updated.com', $link->getUrl());
+        $this->assertSame('updated', $link->getSlug());
         $this->assertStringStartsWith('$2y$', $link->getPassword());
         $this->assertTrue($link->isEnabled());
         $this->assertNotNull($link->getCreatedAt());
@@ -62,12 +62,12 @@ final class LinkFactoryTest extends TestCase
 
         $link = LinkFactory::patch($link, 'url', 'https://not-updated.com');
 
-        $this->assertEquals('https://not-updated.com', $link->getUrl());
-        $this->assertEquals('example', $link->getSlug());
+        $this->assertSame('https://not-updated.com', $link->getUrl());
+        $this->assertSame('example', $link->getSlug());
         $this->assertStringStartsWith('$2y$', $link->getPassword());
         $this->assertTrue($link->isEnabled());
         $this->assertNotNull($link->getCreatedAt());
         $this->assertNotNull($link->getUpdatedAt());
-        $this->assertEquals('2023-12-30', $link->getExpiresAt()->format('Y-m-d'));
+        $this->assertSame('2023-12-30', $link->getExpiresAt()->format('Y-m-d'));
     }
 }

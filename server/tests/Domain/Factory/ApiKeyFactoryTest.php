@@ -12,7 +12,7 @@ final class ApiKeyFactoryTest extends TestCase
     {
         $apiKey = ApiKeyFactory::create($this->createMock('App\Domain\Entity\Link'));
 
-        $this->assertEquals(44, strlen($apiKey->getKey()));
+        $this->assertSame(44, strlen($apiKey->getKey()));
         $this->assertNotNull($apiKey->getCreatedAt());
         $this->assertNull($apiKey->getUpdatedAt());
         $this->assertLessThan((new DateTimeImmutable())->modify('+3 months'), $apiKey->getExpiresAt());
