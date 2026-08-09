@@ -1,5 +1,5 @@
 cd client
-npm.cmd run lint-staged
+npm run lint-staged
 cd ../server
 vendor/bin/phpcs -s
 vendor/bin/phpstan analyse --memory-limit=-1

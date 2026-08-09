@@ -1,2 +1,2 @@
 cd client
-npm.cmd run commitlint ${1}
+npm run commitlint ${1}

@@ -1,6 +1,6 @@
 cd client
-cspell locales/** ../server/locales/** --no-summary --no-progress --no-must-find-files
-npm.cmd run build
+npm run check-spell -- --no-must-find-files
+npm run build
 cd ../server
 rm -f var/data.db
 touch var/data.db
