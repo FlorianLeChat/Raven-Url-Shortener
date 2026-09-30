@@ -93,15 +93,23 @@ export default async function Layout( {
 			</head>
 
 			{process.env.NEXT_PUBLIC_ANALYTICS_ENABLED === "true" && (
-				<Script
-					src={process.env.NEXT_PUBLIC_ANALYTICS_ENDPOINT}
-					strategy="lazyOnload"
-					data-website-id={process.env.NEXT_PUBLIC_ANALYTICS_PROJECT_ID}
-					data-performance="true"
-					data-do-not-track={process.env.NEXT_PUBLIC_ANALYTICS_RESPECT_DNT}
-					data-exclude-hash="true"
-					data-exclude-search="true"
-				/>
+				<>
+					<Script
+						src={process.env.NEXT_PUBLIC_ANALYTICS_ENDPOINT + "/script.js"}
+						strategy="lazyOnload"
+						data-website-id={process.env.NEXT_PUBLIC_ANALYTICS_PROJECT_ID}
+						data-performance="true"
+						data-do-not-track={process.env.NEXT_PUBLIC_ANALYTICS_RESPECT_DNT}
+						data-exclude-hash="true"
+						data-exclude-search="true"
+					/>
+
+					<Script
+						src={process.env.NEXT_PUBLIC_ANALYTICS_ENDPOINT + "/recorder.js"}
+						strategy="lazyOnload"
+						data-website-id={process.env.NEXT_PUBLIC_ANALYTICS_PROJECT_ID}
+					/>
+				</>
 			)}
 
 			<body>
