@@ -160,8 +160,7 @@ build:docker:
     script:
         - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
         - docker compose build
-        - docker compose push server
-        - docker compose push client
+        - docker compose push
     dependencies:
         - build:project
 
