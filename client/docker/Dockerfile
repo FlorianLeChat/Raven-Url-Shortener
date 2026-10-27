@@ -2,14 +2,15 @@
 
 FROM node:22-slim AS base
 
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends tzdata wget && \
+    rm -rf /var/lib/apt/lists/*
+
 WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends tzdata wget && \
-    rm -rf /var/lib/apt/lists/* && \
-    npm ci
+RUN npm ci
 
 COPY . .
 
