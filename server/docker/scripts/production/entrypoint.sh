@@ -1,6 +1,6 @@
 #!/bin/sh
 
 /usr/local/bin/php bin/console doctrine:database:create --no-interaction --if-not-exists
-/usr/local/bin/php bin/console doctrine:schema:update --force
+/usr/local/bin/php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
 
 frankenphp run --config /etc/frankenphp/Caddyfile
