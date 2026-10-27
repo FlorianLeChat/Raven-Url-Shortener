@@ -40,13 +40,14 @@ RUN install-php-extensions \
 
 COPY --chown=www-data:www-data composer.json composer.lock ./
 
-RUN composer install \
-    --no-dev \
-    --prefer-dist \
-    --no-interaction \
-    --no-progress \
-    --optimize-autoloader \
-    --no-scripts
+RUN --mount=type=cache,target=/tmp/composer-cache \
+    COMPOSER_CACHE_DIR=/tmp/composer-cache composer install \
+        --no-dev \
+        --prefer-dist \
+        --no-interaction \
+        --no-progress \
+        --optimize-autoloader \
+        --no-scripts
 
 COPY docker/configuration/Caddyfile /etc/frankenphp/Caddyfile
 COPY --chown=www-data:www-data docker/scripts/production/entrypoint.sh /var/www/html/entrypoint.sh
