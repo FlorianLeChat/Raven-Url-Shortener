@@ -46,14 +46,15 @@ RUN --mount=type=cache,target=/tmp/composer-cache \
         --prefer-dist \
         --no-interaction \
         --no-progress \
-        --optimize-autoloader \
-        --no-scripts
+        --no-scripts \
+        --no-autoloader
 
 COPY docker/configuration/Caddyfile /etc/frankenphp/Caddyfile
 COPY --chown=www-data:www-data docker/scripts/production/entrypoint.sh /var/www/html/entrypoint.sh
 COPY --chown=www-data:www-data . .
 
-RUN composer dump-env prod && \
+RUN composer dump-autoload --no-dev --no-scripts --classmap-authoritative && \
+    composer dump-env prod && \
     echo "0 0 * * * /usr/local/bin/php /var/www/html/bin/console app:shortcut-cleanup > /dev/null 2>&1" >> /var/spool/cron/crontabs/www-data && \
     echo "0 0 * * * /usr/local/bin/php /var/www/html/bin/console app:reports-summary > /dev/null 2>&1" >> /var/spool/cron/crontabs/www-data && \
     echo "0 0 * * * /usr/local/bin/php /var/www/html/bin/console app:api-keys-rotation > /dev/null 2>&1" >> /var/spool/cron/crontabs/www-data && \
