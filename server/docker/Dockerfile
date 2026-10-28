@@ -58,19 +58,19 @@ RUN composer dump-autoload --no-dev --no-scripts --classmap-authoritative && \
     echo "0 0 * * * /usr/local/bin/php /var/www/html/bin/console app:shortcut-cleanup > /dev/null 2>&1" >> /var/spool/cron/crontabs/www-data && \
     echo "0 0 * * * /usr/local/bin/php /var/www/html/bin/console app:reports-summary > /dev/null 2>&1" >> /var/spool/cron/crontabs/www-data && \
     echo "0 0 * * * /usr/local/bin/php /var/www/html/bin/console app:api-keys-rotation > /dev/null 2>&1" >> /var/spool/cron/crontabs/www-data && \
-    mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
     chmod +x /var/www/html/entrypoint.sh && \
-    sed -i \
-        -e "s/;realpath_cache_ttl = 120/realpath_cache_ttl = 600/g" \
-        -e "s/expose_php = On/expose_php = Off/g" \
-        -e "s/session.use_strict_mode = 0/session.use_strict_mode = 1/g" \
-        -e "s/;session.cookie_secure =/session.cookie_secure = 1/g" \
-        -e "s/session.name = PHPSESSID/session.name = __SECURE-PHPSESSID/g" \
-        -e "s/session.cookie_httponly =/session.cookie_httponly = 1/g" \
-        -e "s/session.cookie_samesite =/session.cookie_samesite = Strict/g" \
-        -e "s/;opcache.revalidate_freq=2/opcache.revalidate_freq=60/g" \
-        -e "s/;opcache.validate_timestamps=1/opcache.validate_timestamps=0/g" \
-        -e "s/;opcache.memory_consumption=128/opcache.memory_consumption=256/g" \
-        -e "s/;opcache.interned_strings_buffer=8/opcache.interned_strings_buffer=16/g" \
-        -e "s/;opcache.max_accelerated_files=10000/opcache.max_accelerated_files=20000/g" \
-        "$PHP_INI_DIR/php.ini"
+    mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
+    printf '%s\n' \
+      'realpath_cache_ttl = 600' \
+      'expose_php = Off' \
+      'session.use_strict_mode = 1' \
+      'session.cookie_secure = 1' \
+      'session.name = __SECURE-PHPSESSID' \
+      'session.cookie_httponly = 1' \
+      'session.cookie_samesite = Strict' \
+      'opcache.revalidate_freq = 60' \
+      'opcache.validate_timestamps = 0' \
+      'opcache.memory_consumption = 256' \
+      'opcache.interned_strings_buffer = 16' \
+      'opcache.max_accelerated_files = 20000' \
+    > "$PHP_INI_DIR/conf.d/zz-custom.ini"
