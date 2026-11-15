@@ -1,7 +1,6 @@
 import "../layout.css";
 import "vanilla-cookieconsent/dist/cookieconsent.css";
 
-import Script from "next/script";
 import { Inter } from "next/font/google";
 import { lazy, type ReactNode } from "react";
 import { getMessages, setRequestLocale } from "next-intl/server";
@@ -11,6 +10,7 @@ import { getDomain,
 	getTimeZoneOffset } from "@/utilities/server";
 import { getLanguages } from "@/utilities/i18n";
 import { fetchMetadata } from "@/utilities/metadata";
+import AnalyticsScripts from "@/components/analytics-scripts";
 
 import type { Viewport } from "next";
 
@@ -92,25 +92,7 @@ export default async function Layout( {
 				/>
 			</head>
 
-			{process.env.NEXT_PUBLIC_ANALYTICS_ENABLED === "true" && (
-				<>
-					<Script
-						src={process.env.NEXT_PUBLIC_ANALYTICS_ENDPOINT + "/script.js"}
-						strategy="lazyOnload"
-						data-website-id={process.env.NEXT_PUBLIC_ANALYTICS_PROJECT_ID}
-						data-performance="true"
-						data-do-not-track={process.env.NEXT_PUBLIC_ANALYTICS_RESPECT_DNT}
-						data-exclude-hash="true"
-						data-exclude-search="true"
-					/>
-
-					<Script
-						src={process.env.NEXT_PUBLIC_ANALYTICS_ENDPOINT + "/recorder.js"}
-						strategy="lazyOnload"
-						data-website-id={process.env.NEXT_PUBLIC_ANALYTICS_PROJECT_ID}
-					/>
-				</>
-			)}
+			{process.env.NEXT_PUBLIC_ANALYTICS_ENABLED === "true" && <AnalyticsScripts />}
 
 			<body>
 				<video
