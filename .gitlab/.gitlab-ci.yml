@@ -49,18 +49,24 @@ lint:eslint:
         expire_in: 1 hour
 
 lint:phpcs:
-    image: composer:2
+    image: php:8.2-cli-alpine
     stage: lint
     before_script:
+        - curl -sSLf -o /usr/local/bin/install-php-extensions https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions
+        - chmod +x /usr/local/bin/install-php-extensions
+        - install-php-extensions zip @composer
         - cd server
         - composer install --prefer-dist --no-progress --no-interaction --no-scripts
     script:
         - vendor/bin/phpcs -s
 
 lint:phpstan:
-    image: composer:2
+    image: php:8.2-cli-alpine
     stage: lint
     before_script:
+        - curl -sSLf -o /usr/local/bin/install-php-extensions https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions
+        - chmod +x /usr/local/bin/install-php-extensions
+        - install-php-extensions zip @composer
         - cd server
         - composer install --prefer-dist --no-progress --no-interaction --no-scripts
         - php bin/console cache:warmup
@@ -73,9 +79,12 @@ lint:phpstan:
         expire_in: 1 hour
 
 lint:phpmd:
-    image: composer:2
+    image: php:8.2-cli-alpine
     stage: lint
     before_script:
+        - curl -sSLf -o /usr/local/bin/install-php-extensions https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions
+        - chmod +x /usr/local/bin/install-php-extensions
+        - install-php-extensions zip @composer
         - cd server
         - composer install --prefer-dist --no-progress --no-interaction --no-scripts
     script:
@@ -87,7 +96,7 @@ lint:phpmd:
         expire_in: 1 hour
 
 test:phpunit:
-    image: composer:2
+    image: php:8.2-cli-alpine
     stage: test
     variables:
         XDEBUG_MODE: coverage
@@ -95,7 +104,7 @@ test:phpunit:
         - apk add --no-cache unzip
         - curl -sSLf -o /usr/local/bin/install-php-extensions https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions
         - chmod +x /usr/local/bin/install-php-extensions
-        - install-php-extensions zip bcmath intl xdebug
+        - install-php-extensions zip bcmath intl xdebug @composer
         - cd server
         - composer install --prefer-dist --no-progress --no-interaction --no-scripts
         - mkdir var
@@ -150,11 +159,11 @@ build:project:
 
 build:docker:
     stage: build
-    image: docker:29.5
+    image: docker:29
     needs:
         - build:project
     services:
-        - docker:29.5.0-dind-rootless
+        - docker:29-dind-rootless
     variables:
         DOCKER_TLS_CERTDIR: "/certs"
     script:
