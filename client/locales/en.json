@@ -109,10 +109,6 @@
 					"cache": {
 						"label": "Page caching",
 						"description": "When your link is created, the target page will be cached and served to visitors, speeding up page loading."
-					},
-					"domain": {
-						"label": "Use a custom domain",
-						"description": "Your link will be accessible via a custom domain that you configure, which will enhance your online identity and boost visitor trust."
 					}
 				}
 			}
