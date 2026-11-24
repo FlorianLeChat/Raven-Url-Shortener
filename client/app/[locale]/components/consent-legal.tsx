@@ -43,7 +43,7 @@ export default function LegalConsent()
 				<>
 					{messages( "description" )}
 					<Link
-						href="/legal"
+						href={`${ process.env.NEXT_PUBLIC_BASE_PATH ?? "" }/legal`}
 						color="primary"
 						isExternal
 						showAnchorIcon

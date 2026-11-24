@@ -28,13 +28,13 @@ export default async function proxy( request: NextRequest )
 			if ( !details.data.enabled )
 			{
 				// Le lien est désactivé, redirection vers la page d'accueil.
-				return NextResponse.redirect( new URL( "/?error=disabled", request.nextUrl ) );
+				return NextResponse.redirect( new URL( `${ request.nextUrl.basePath }/?error=disabled`, request.nextUrl ) );
 			}
 
 			if ( details.data.reported )
 			{
 				// Le lien a été signalé, redirection vers la page d'accueil.
-				return NextResponse.redirect( new URL( "/?error=reported", request.nextUrl ) );
+				return NextResponse.redirect( new URL( `${ request.nextUrl.basePath }/?error=reported`, request.nextUrl ) );
 			}
 
 			if ( details.data.trusted || request.cookies.has( "NEXT_REDIRECTION" ) )
@@ -44,7 +44,7 @@ export default async function proxy( request: NextRequest )
 			}
 
 			// Redirection vers la page d'avertissement.
-			return NextResponse.redirect( new URL( `/redirect/${ pathName }`, request.nextUrl ) );
+			return NextResponse.redirect( new URL( `${ request.nextUrl.basePath }/redirect/${ pathName }`, request.nextUrl ) );
 		}
 	}
 
@@ -60,5 +60,5 @@ export default async function proxy( request: NextRequest )
 }
 
 export const config = {
-	matcher: [ "/((?!api|_next|_vercel|.*\\..*).*)" ]
+	matcher: [ "/", "/((?!api|_next|_vercel|.*\\..*).*)" ]
 };

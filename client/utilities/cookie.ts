@@ -26,7 +26,7 @@ export const setCookie = ( { ...options }: CookieOptions ) =>
 {
 	// Valeurs par défaut pour les options.
 	options.days = options.days ?? 365;
-	options.path = options.path ?? "/";
+	options.path = options.path ?? ( process.env.NEXT_PUBLIC_BASE_PATH || "/" );
 	options.secure = options.secure ?? true;
 
 	// Définition d'un cookie.
@@ -60,7 +60,7 @@ export const getCookie = ( name: string ): string | null =>
 	return null;
 };
 
-export const deleteCookie = ( name: string, path = "/" ) =>
+export const deleteCookie = ( name: string, path = process.env.NEXT_PUBLIC_BASE_PATH || "/" ) =>
 {
 	// Supprime un cookie.
 	document.cookie = `${ name }=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=${ path }; SameSite=Lax`;

@@ -21,5 +21,13 @@ return static function (FrameworkConfig $framework, ContainerConfigurator $conta
 
     if ($runtime === 'prod') {
         $framework->httpCache()->enabled(true);
+        $framework->trustedProxies('private_ranges');
+        $framework->trustedHeaders([
+            'x-forwarded-for',
+            'x-forwarded-host',
+            'x-forwarded-proto',
+            'x-forwarded-port',
+            'x-forwarded-prefix',
+        ]);
     }
 };
