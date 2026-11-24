@@ -3,7 +3,7 @@
 FROM dunglas/frankenphp:1-php8.2 AS base
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends cron tzdata && \
+    apt-get install -y --no-install-recommends tzdata && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /var/www/html
@@ -16,9 +16,7 @@ RUN install-php-extensions zip pdo_pgsql redis intl xdebug bcmath excimer @compo
     echo "xdebug.client_port=9003" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" && \
     echo "xdebug.log=/tmp/xdebug.log" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" && \
     echo "xdebug.start_with_request=yes" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" && \
-    echo "xdebug.client_host=host.docker.internal" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" && \
-    echo "* * * * * /usr/local/bin/php /var/www/html/bin/console app:tasks-executor > /dev/null 2>&1" >> /var/spool/cron/crontabs/www-data && \
-    echo "0 * * * * /usr/local/bin/php /var/www/html/bin/console app:statistics-collector > /dev/null 2>&1" >> /var/spool/cron/crontabs/www-data
+    echo "xdebug.client_host=host.docker.internal" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini"
 
 COPY --from=ghcr.io/symfony-cli/symfony-cli:latest /usr/local/bin/symfony /usr/local/bin/symfony
 
@@ -50,15 +48,10 @@ RUN --mount=type=cache,target=/tmp/composer-cache \
         --no-autoloader
 
 COPY docker/configuration/Caddyfile /etc/frankenphp/Caddyfile
-COPY --chown=www-data:www-data docker/scripts/production/entrypoint.sh /var/www/html/entrypoint.sh
 COPY --chown=www-data:www-data . .
 
 RUN composer dump-autoload --no-dev --no-scripts --classmap-authoritative && \
     composer dump-env prod && \
-    echo "0 0 * * * /usr/local/bin/php /var/www/html/bin/console app:shortcut-cleanup > /dev/null 2>&1" >> /var/spool/cron/crontabs/www-data && \
-    echo "0 0 * * * /usr/local/bin/php /var/www/html/bin/console app:reports-summary > /dev/null 2>&1" >> /var/spool/cron/crontabs/www-data && \
-    echo "0 0 * * * /usr/local/bin/php /var/www/html/bin/console app:api-keys-rotation > /dev/null 2>&1" >> /var/spool/cron/crontabs/www-data && \
-    chmod +x /var/www/html/entrypoint.sh && \
     mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
     printf '%s\n' \
       'realpath_cache_ttl = 600' \

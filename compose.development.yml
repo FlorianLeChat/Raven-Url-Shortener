@@ -47,20 +47,52 @@ services:
         ports:
             - "8080:8080"
 
-    server:
+    migration:
         image: raven-url-shortener-backend
-        command: docker/scripts/development/entrypoint.sh
-        volumes:
+        command: >
+            sh -c "composer install --no-interaction
+            && /usr/local/bin/php bin/console doctrine:database:create --no-interaction --if-not-exists
+            && /usr/local/bin/php bin/console doctrine:schema:update --force"
+        volumes: &server_volumes
             - ./server:/var/www/html:cached
             - /var/www/html/.git
-            - /var/www/html/vendor
-            - /var/www/html/var
             - /var/www/html/node_modules
+            - cache_data:/var/www/html/var
+            - vendor_data:/var/www/html/vendor
         depends_on:
             cache:
                 condition: service_healthy
             database:
                 condition: service_healthy
+        build:
+            target: development
+            context: ./server
+            dockerfile: ./docker/Dockerfile
+
+    scheduler:
+        image: raven-url-shortener-backend
+        command: /usr/local/bin/php bin/console messenger:consume scheduler_default --time-limit=3600 --memory-limit=96M
+        volumes: *server_volumes
+        depends_on:
+            cache:
+                condition: service_healthy
+            migration:
+                condition: service_completed_successfully
+        healthcheck:
+            test: ["CMD-SHELL", "find /tmp/scheduler.heartbeat -mmin -2 | grep -q ."]
+            retries: 3
+            timeout: 5s
+            start_period: 30s
+
+    server:
+        image: raven-url-shortener-backend
+        command: symfony server:start --allow-all-ip
+        volumes: *server_volumes
+        depends_on:
+            cache:
+                condition: service_healthy
+            migration:
+                condition: service_completed_successfully
         extra_hosts:
             - "host.docker.internal:host-gateway"
         healthcheck:
@@ -76,5 +108,7 @@ services:
             - "8000:8000"
 
 volumes:
+    cache_data:
     valkey_data:
+    vendor_data:
     postgres_data:

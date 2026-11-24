@@ -12,8 +12,10 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Scheduler\Attribute\AsPeriodicTask;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
+#[AsPeriodicTask('1 day', from: 'midnight')]
 #[AsCommand('app:reports-summary', 'Creates a summary of user reports and sends it by email.')]
 final class UserReportSummary extends Command
 {
