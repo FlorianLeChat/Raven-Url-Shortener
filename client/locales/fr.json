@@ -109,10 +109,6 @@
 					"cache": {
 						"label": "Mise en cache de la page",
 						"description": "Lors de la création de votre lien, la page cible sera mise en cache et sera servie pour les visiteurs, ce qui permettra d'accélérer le chargement de la page."
-					},
-					"domain": {
-						"label": "Utiliser un domaine personnalisé",
-						"description": "Votre lien sera accessible via un domaine personnalisé que vous aurez configuré, ce qui permettra de renforcer votre identité en ligne et d'améliorer la confiance de vos visiteurs."
 					}
 				}
 			}

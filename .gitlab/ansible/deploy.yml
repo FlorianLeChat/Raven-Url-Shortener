@@ -1,7 +1,5 @@
 ---
 -   hosts: proxmox
-    vars:
-        application_path: "/var/www/url.florian-dev.fr"
     tasks:
         -   name: Installation des dépendances système
             apt:
