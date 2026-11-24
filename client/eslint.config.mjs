@@ -45,12 +45,7 @@ export default defineConfig(
 					props: false
 				}
 			],
-			"no-underscore-dangle": [
-				"error",
-				{
-					allow: [ "__NEXT_ROUTER_BASEPATH" ]
-				}
-			],
+			"no-underscore-dangle": "error",
 
 			// Règles de style
 			"@stylistic/semi": [ "error", "always" ],

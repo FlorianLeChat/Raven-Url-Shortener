@@ -12,7 +12,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Scheduler\Attribute\AsPeriodicTask;
 
+#[AsPeriodicTask('1 day', from: 'midnight')]
 #[AsCommand('app:shortcut-cleanup', 'Deletes expired shortcut links from the database.')]
 final class OutdatedShortcutCleanup extends Command
 {

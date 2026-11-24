@@ -102,7 +102,7 @@ export default async function Layout( {
 					className="fixed -z-10 hidden size-full object-cover opacity-25 dark:block"
 				>
 					<source
-						src={`${ process.env.__NEXT_ROUTER_BASEPATH }/assets/videos/background.mp4`}
+						src={`${ process.env.NEXT_PUBLIC_BASE_PATH ?? "" }/assets/videos/background.mp4`}
 						type="video/mp4"
 					/>
 				</video>

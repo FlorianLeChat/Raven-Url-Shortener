@@ -26,9 +26,7 @@
 - *(Facultatif)* Exécuter la commande `php bin/console doctrine:database:create --no-interaction --if-not-exists` pour créer la base de données ;
 - Exécuter la commande `php doctrine:schema:update --force` pour créer les tables dans la base de données ;
 - Démarrer le serveur local Symfony avec la commande `symfony server:start` ;
-- *(Facultatif)* Configurer une tâche planifiée pour exécuter la commande `php bin/console app:shortcut-cleanup` pour la [suppression automatique des liens raccourcis expirés](server/src/Infrastructure/Command/OutdatedShortcutCleanup.php) ;
-- *(Facultatif)* Configurer une tâche planifiée pour exécuter la commande `php bin/console app:reports-summary` pour la [collecte périodique des signalements utilisateurs](server/src/Infrastructure/Command/UserReportSummary.php) ;
-- *(Facultatif)* Configurer une tâche planifiée pour exécuter la commande `php bin/console app:api-keys-rotation` pour la [rotation des clés API expirées](server/src/Infrastructure/Command/ApiKeysRotation.php).
+- *(Facultatif)* Exécuter la commande `php bin/console messenger:consume scheduler_default` pour la [suppression automatique des liens raccourcis expirés](server/src/Infrastructure/Command/OutdatedShortcutCleanup.php), la [collecte périodique des signalements utilisateurs](server/src/Infrastructure/Command/UserReportSummary.php) et la [rotation des clés API expirées](server/src/Infrastructure/Command/ApiKeysRotation.php) (ce processus doit rester actif en permanence).
 
 > [!TIP]
 > Pour tester le projet, vous pouvez utiliser [Docker](https://www.docker.com/). Une fois installé, il suffit de lancer l'image Docker de développement à l'aide de la commande `docker compose -f compose.development.yml up --detach --build`. Le site devrait être accessible à l'adresse suivante : http://localhost:8000/. 🐳
@@ -57,9 +55,7 @@
 - *(Facultatif)* Exécuter la commande `php bin/console doctrine:database:create --no-interaction --if-not-exists` pour créer une base de données ;
 - Exécuter la commande `php doctrine:schema:update --force` pour créer les tables dans la base de données ;
 - Utiliser un serveur Web pour servir les scripts PHP ;
-- *(Facultatif)* Configurer une tâche planifiée pour exécuter la commande `php bin/console app:shortcut-cleanup` pour la [suppression automatique des liens raccourcis expirés](server/src/Infrastructure/Command/OutdatedShortcutCleanup.php) ;
-- *(Facultatif)* Configurer une tâche planifiée pour exécuter la commande `php bin/console app:reports-summary` pour la [collecte périodique des signalements utilisateurs](server/src/Infrastructure/Command/UserReportSummary.php) ;
-- *(Facultatif)* Configurer une tâche planifiée pour exécuter la commande `php bin/console app:api-keys-rotation` pour la [rotation des clés API expirées](server/src/Infrastructure/Command/ApiKeysRotation.php).
+- *(Facultatif)* Exécuter la commande `php bin/console messenger:consume scheduler_default` pour la [suppression automatique des liens raccourcis expirés](server/src/Infrastructure/Command/OutdatedShortcutCleanup.php), la [collecte périodique des signalements utilisateurs](server/src/Infrastructure/Command/UserReportSummary.php) et la [rotation des clés API expirées](server/src/Infrastructure/Command/ApiKeysRotation.php) (ce processus doit rester actif en permanence).
 
 > [!CAUTION]
 > Le déploiement en environnement de production (**avec ou sans Docker**) **nécessite des connaissances approfondies pour déployer, optimiser et sécuriser correctement votre installation** afin d'éviter toute conséquence indésirable. ⚠️
@@ -92,9 +88,7 @@
 - *(Optional)* Run `php bin/console doctrine:database:create --no-interaction --if-not-exists` to create a database ;
 - Run `php doctrine:schema:update --force` to create tables in the database ;
 - Start local Symfony server with `symfony server:start` ;
-- Configure a scheduled task to run `php bin/console app:shortcut-cleanup` for [automatic deletion of expired shortcut links](server/src/Infrastructure/Command/OutdatedShortcutCleanup.php) ;
-- Configure a scheduled task to run `php bin/console app:statistics-collector` for [periodic collection of user reports](server/src/Infrastructure/Command/UserReportSummary.php) ;
-- Configure a scheduled task to run `php bin/console app:api-keys-rotation` for [rotation of expired API keys](server/src/Infrastructure/Command/ApiKeysRotation.php).
+- Run `php bin/console messenger:consume scheduler_default` for [automatic deletion of expired shortcut links](server/src/Infrastructure/Command/OutdatedShortcutCleanup.php), [periodic collection of user reports](server/src/Infrastructure/Command/UserReportSummary.php) and [rotation of expired API keys](server/src/Infrastructure/Command/ApiKeysRotation.php) (this process must keep running).
 
 > [!TIP]
 > To test the project, you can use [Docker](https://www.docker.com/). Once installed, simply start the development Docker image using the command `docker compose -f compose.development.yml up --detach --build`. When the Docker container is ready, run the `npm run watch` command to automatically compile all *TypeScript* and *SASS* files each time you make changes. The website should then be accessible at the following address: http://localhost:8000/. 🐳
@@ -123,9 +117,7 @@
 - *(Optional)* Run `php bin/console doctrine:database:create --no-interaction --if-not-exists` to create a database ;
 - Run `php doctrine:schema:update --force` to create tables in the database ;
 - Use a web server to serve PHP scripts ;
-- *(Optional)* Configure a scheduled task to run `php bin/console app:shortcut-cleanup` for [automatic deletion of expired shortcut links](server/src/Infrastructure/Command/OutdatedShortcutCleanup.php) ;
-- *(Optional)* Configure a scheduled task to run `php bin/console app:statistics-collector` for [periodic collection of user reports](server/src/Infrastructure/Command/UserReportSummary.php) ;
-- *(Optional)* Configure a scheduled task to run `php bin/console app:api-keys-rotation` for [rotation of expired API keys](server/src/Infrastructure/Command/ApiKeysRotation.php).
+- *(Optional)* Run `php bin/console messenger:consume scheduler_default` for [automatic deletion of expired shortcut links](server/src/Infrastructure/Command/OutdatedShortcutCleanup.php), [periodic collection of user reports](server/src/Infrastructure/Command/UserReportSummary.php) and [rotation of expired API keys](server/src/Infrastructure/Command/ApiKeysRotation.php) (this process must keep running).
 
 > [!CAUTION]
 > Deploying in a production environment (**with or without Docker**) **requires advanced knowledge to properly deploy, optimize, and secure your installation** in order to avoid any unwanted consequences. ⚠️
