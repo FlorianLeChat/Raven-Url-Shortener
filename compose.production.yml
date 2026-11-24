@@ -1,4 +1,4 @@
-name: raven-url-shortener
+name: raven-url-shortener-${ENV_NAME}
 
 services:
     cache:
@@ -60,7 +60,7 @@ services:
             server:
                 condition: service_healthy
         environment:
-            URL: https://api.url.florian-dev.fr/openapi.json
+            URL: ${OPENAPI_URL:-https://api.url.florian-dev.fr/openapi.json}
         security_opt:
             - no-new-privileges=true
         healthcheck:
@@ -93,7 +93,7 @@ services:
         security_opt:
             - no-new-privileges=true
         healthcheck:
-            test: ["CMD", "wget", "--quiet", "--spider", "http://localhost/"]
+            test: ["CMD", "wget", "--quiet", "--spider", "http://localhost${NEXT_PUBLIC_BASE_PATH:-}/"]
             retries: 3
             timeout: 5s
             start_period: 30s
@@ -109,7 +109,7 @@ services:
     client:
         init: true
         user: "${UID:-1000}:${GID:-1000}"
-        image: registry.florian-dev.fr:443/floriantrayon/raven-url-shortener/ui:${VERSION:-latest}
+        image: registry.florian-dev.fr:443/floriantrayon/raven-url-shortener/ui:${VERSION:-latest}-${ENV_NAME}
         restart: unless-stopped
         command: npm run start
         cap_drop:
@@ -122,7 +122,7 @@ services:
         security_opt:
             - no-new-privileges=true
         healthcheck:
-            test: ["CMD", "wget", "--quiet", "--spider", "http://localhost:3000/"]
+            test: ["CMD", "wget", "--quiet", "--spider", "http://localhost:3000${NEXT_PUBLIC_BASE_PATH:-}/"]
             retries: 3
             timeout: 5s
             start_period: 30s
@@ -140,7 +140,7 @@ services:
     server:
         init: true
         user: "${UID:-1000}:${GID:-1000}"
-        image: registry.florian-dev.fr:443/floriantrayon/raven-url-shortener/api:${VERSION:-latest}
+        image: registry.florian-dev.fr:443/floriantrayon/raven-url-shortener/api:${VERSION:-latest}-${ENV_NAME}
         restart: unless-stopped
         command: /var/www/html/entrypoint.sh
         volumes:

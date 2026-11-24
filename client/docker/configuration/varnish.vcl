@@ -18,7 +18,7 @@ sub vcl_recv {
 		return (pipe);
 	}
 
-	if (req.url ~ "^/_next" || req.url ~ "^/assets") {
+	if (req.url ~ "^(/[^/]+)?/(_next|assets)/") {
 		unset req.http.Cookie;
 		return (hash);
 	}

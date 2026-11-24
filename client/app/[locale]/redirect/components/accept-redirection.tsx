@@ -25,13 +25,13 @@ export default function AcceptRedirection( { details }: Readonly<{ details: Link
 			setCookie( {
 				name: "NEXT_REDIRECTION",
 				value: "true",
-				path: `/${ details.id }`
+				path: `${ process.env.NEXT_PUBLIC_BASE_PATH ?? "" }/${ details.id }`
 			} );
 
 			setCookie( {
 				name: "NEXT_REDIRECTION",
 				value: "true",
-				path: `/${ details.slug }`
+				path: `${ process.env.NEXT_PUBLIC_BASE_PATH ?? "" }/${ details.slug }`
 			} );
 
 			if ( typeof umami !== "undefined" )

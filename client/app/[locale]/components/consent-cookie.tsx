@@ -26,7 +26,7 @@ export default function CookieConsent()
 				&& !pathname.startsWith( "/legal" ),
 			cookie: {
 				name: "NEXT_COOKIE",
-				path: "/"
+				path: process.env.NEXT_PUBLIC_BASE_PATH || "/"
 			},
 			guiOptions: {
 				consentModal: {
