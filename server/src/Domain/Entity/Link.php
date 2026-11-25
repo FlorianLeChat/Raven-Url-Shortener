@@ -212,15 +212,17 @@ class Link
      */
     public function toArray(): array
     {
-        if ($this->getVisitedAt() === null) {
-            $apiKey = $this->getApiKey()?->getKey();
+        $apiKey = $this->getApiKey()?->getKey();
+
+        if ($apiKey !== null && $this->getVisitedAt() !== null) {
+            $apiKey = '**hidden**';
         }
 
         return [
             'id' => $this->getId(),
             'url' => $this->getUrl(),
             'slug' => $this->getSlug(),
-            'apiKey' => $apiKey ?? '**hidden**',
+            'apiKey' => $apiKey,
             'enabled' => $this->isEnabled(),
             'trusted' => $this->isTrusted(),
             'reported' => count($this->getReports()) > 0,

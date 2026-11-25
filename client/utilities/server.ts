@@ -26,5 +26,8 @@ export const getDomain = async () =>
 	// Adresse de base du domaine.
 	const requestHeaders = await headers();
 
-	return `${ requestHeaders.get( "x-forwarded-proto" ) ?? "http" }://${ requestHeaders.get( "host" ) }/`;
+	const protocol = requestHeaders.get( "x-forwarded-proto" ) ?? "http";
+	const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
+	return `${ protocol }://${ requestHeaders.get( "host" ) }${ basePath }/`;
 };
