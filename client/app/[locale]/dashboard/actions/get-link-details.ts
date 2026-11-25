@@ -4,6 +4,7 @@
 
 "use server";
 
+import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import type { LinkProperties } from "@/interfaces/LinkProperties";
 import type { ErrorProperties } from "@/interfaces/ErrorProperties";
@@ -24,8 +25,13 @@ export async function getLinkDetails( id?: string )
 
 	try
 	{
+		const requestHeaders = await headers();
+		const forwardedFor = requestHeaders.get( "x-forwarded-for" );
+		const forwardedHeaders: Record<string, string> = forwardedFor ? { "X-Forwarded-For": forwardedFor } : {};
+
 		const response = await fetch( `${ process.env.NEXT_PUBLIC_BACKEND_URL }/v1/link/${ id }`, {
-			cache: "no-store"
+			cache: "no-store",
+			headers: forwardedHeaders
 		} );
 
 		const json = ( await response.json() ) as GetLinkDetailsResponse;

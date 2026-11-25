@@ -49,6 +49,7 @@ return static function (ContainerConfigurator $container): void {
     if ($container->env() === 'prod') {
         $services->set(LimiterListener::class)
             ->bind('bool $isRateLimitEnabled', '%env(bool:APP_RATE_LIMIT_ENABLED)%')
-            ->tag('kernel.event_listener');
+            ->bind('array $enabledLocales', '%kernel.enabled_locales%')
+            ->tag('kernel.event_listener', ['priority' => 64]);
     }
 };

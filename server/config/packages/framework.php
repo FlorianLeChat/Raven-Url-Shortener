@@ -20,8 +20,8 @@ return static function (FrameworkConfig $framework, ContainerConfigurator $conta
     }
 
     if ($runtime === 'prod') {
-        $framework->httpCache()->enabled(true);
-        $framework->trustedProxies('private_ranges');
+        $container->parameters()->set('app.trusted_proxies', 'private_ranges');
+        $framework->trustedProxies((string) env('APP_TRUSTED_PROXIES')->default('app.trusted_proxies'));
         $framework->trustedHeaders([
             'x-forwarded-for',
             'x-forwarded-host',
