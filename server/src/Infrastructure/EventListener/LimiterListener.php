@@ -18,8 +18,12 @@ final class LimiterListener
 {
     private Request $request;
 
+    /**
+     * @param string[] $enabledLocales Langues disponibles pour traduire le message d'erreur.
+     */
     public function __construct(
         private readonly bool $isRateLimitEnabled,
+        private readonly array $enabledLocales,
         private readonly LoggerInterface $logger,
         private readonly RateLimiterFactoryInterface $readApiLimiter,
         private readonly RateLimiterFactoryInterface $writeApiLimiter,
@@ -49,8 +53,9 @@ final class LimiterListener
         $isRateLimited = !$limit->isAccepted();
 
         if ($isRateLimited) {
+            $locale = $this->request->getPreferredLanguage($this->enabledLocales);
             $retryAfter = $limit->getRetryAfter()->getTimestamp() - time();
-            $errorMessage = $this->translator->trans('http.too_many_requests');
+            $errorMessage = $this->translator->trans('http.too_many_requests', locale: $locale);
 
             $this->logger->warning('Rate limit exceeded for {ip}', ['ip' => $anonymizedIpAddress]);
 
