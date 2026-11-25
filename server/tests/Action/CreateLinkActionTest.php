@@ -12,6 +12,8 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 final class CreateLinkActionTest extends WebTestCase
 {
+    private const API_KEY_PATTERN = '/^.{43}=$/';
+
     protected KernelBrowser $client;
 
     protected function setUp(): void
@@ -117,5 +119,32 @@ final class CreateLinkActionTest extends WebTestCase
 
         self::assertResponseIsSuccessful();
         $this->assertJson($this->client->getResponse()->getContent());
+    }
+
+    public function testCreateLinkWithoutApiManagement(): void
+    {
+        $this->client->request('POST', '/v1/link', [
+            'url' => 'https://www.google.com/'
+        ]);
+
+        self::assertResponseIsSuccessful();
+
+        $content = json_decode($this->client->getResponse()->getContent(), true);
+
+        self::assertNull($content['apiKey']);
+    }
+
+    public function testCreateLinkWithApiManagement(): void
+    {
+        $this->client->request('POST', '/v1/link', [
+            'url' => 'https://www.google.com/',
+            'api-management' => 'true'
+        ]);
+
+        self::assertResponseIsSuccessful();
+
+        $content = json_decode($this->client->getResponse()->getContent(), true);
+
+        self::assertMatchesRegularExpression(self::API_KEY_PATTERN, $content['apiKey']);
     }
 }
