@@ -16,8 +16,6 @@ use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
  */
 final class LimiterListener
 {
-    private Request $request;
-
     /**
      * @param string[] $enabledLocales Langues disponibles pour traduire le message d'erreur.
      */
@@ -31,29 +29,29 @@ final class LimiterListener
     ) {
     }
 
-    private function createLimiterFromRequest(): RateLimiterFactoryInterface
+    private function createLimiterFromRequest(Request $request): RateLimiterFactoryInterface
     {
-        $method = $this->request->getMethod();
+        $method = $request->getMethod();
         $isWriteMethod = $method === 'POST' || $method === 'PUT' || $method === 'PATCH' || $method === 'DELETE';
 
         $this->logger->debug('{method} API request from {ip}', [
             'method' => $isWriteMethod ? 'Write' : 'Read',
-            'ip' => IpUtils::anonymize($this->request->getClientIp() ?? '127.0.0.1')
+            'ip' => IpUtils::anonymize($request->getClientIp() ?? '127.0.0.1')
         ]);
 
         return $isWriteMethod ? $this->writeApiLimiter : $this->readApiLimiter;
     }
 
-    private function consumeLimiter(RateLimiterFactoryInterface $limiter): void
+    private function consumeLimiter(Request $request, RateLimiterFactoryInterface $limiter): void
     {
-        $ipAddress = $this->request->getClientIp() ?? '127.0.0.1';
+        $ipAddress = $request->getClientIp() ?? '127.0.0.1';
         $anonymizedIpAddress = IpUtils::anonymize($ipAddress);
 
         $limit = $limiter->create($ipAddress)->consume();
         $isRateLimited = !$limit->isAccepted();
 
         if ($isRateLimited) {
-            $locale = $this->request->getPreferredLanguage($this->enabledLocales);
+            $locale = $request->getPreferredLanguage($this->enabledLocales);
             $retryAfter = $limit->getRetryAfter()->getTimestamp() - time();
             $errorMessage = $this->translator->trans('http.too_many_requests', locale: $locale);
 
@@ -79,10 +77,9 @@ final class LimiterListener
             return;
         }
 
-        $this->request = $event->getRequest();
+        $request = $event->getRequest();
+        $limiter = $this->createLimiterFromRequest($request);
 
-        $limiter = $this->createLimiterFromRequest();
-
-        $this->consumeLimiter($limiter);
+        $this->consumeLimiter($request, $limiter);
     }
 }
