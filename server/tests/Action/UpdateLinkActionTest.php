@@ -2,14 +2,18 @@
 
 namespace App\Tests\Action;
 
-use Symfony\Component\Process\Process;
+use App\Tests\TestHelperTrait;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
+/**
+ * Tests of `PATCH` and `PUT /v1/link/{id|slug}`.
+ */
 final class UpdateLinkActionTest extends WebTestCase
 {
+    use TestHelperTrait;
+
     protected KernelBrowser $client;
 
     protected function setUp(): void
@@ -18,17 +22,7 @@ final class UpdateLinkActionTest extends WebTestCase
 
         $this->client = self::createClient();
 
-        $php = new PhpExecutableFinder();
-        $process = new Process([
-            $php->find(),
-            sprintf('%s/bin/console', $this->client->getKernel()->getProjectDir()),
-            'doctrine:fixtures:load',
-            '--env=test',
-            '--no-interaction'
-        ]);
-
-        $process->disableOutput();
-        $process->run();
+        self::loadFixtures($this->client->getKernel()->getProjectDir());
     }
 
     public function testPatchLinkWithMissingApiKey(): void
@@ -39,8 +33,8 @@ final class UpdateLinkActionTest extends WebTestCase
 
         $content = $this->client->getResponse()->getContent();
 
-        $this->assertJson($content);
-        $this->assertJsonStringEqualsJsonString('{"code":401,"message":"The API key is missing. Please provide it in the \"Authorization\" HTTP header."}', $content);
+        self::assertJson($content);
+        self::assertJsonStringEqualsJsonString('{"code":401,"message":"The API key is missing. Please provide it in the \"Authorization\" HTTP header."}', $content);
     }
 
     public function testPatchLinkWithInvalidApiKey(): void
@@ -53,8 +47,8 @@ final class UpdateLinkActionTest extends WebTestCase
 
         $content = $this->client->getResponse()->getContent();
 
-        $this->assertJson($content);
-        $this->assertJsonStringEqualsJsonString('{"code":403,"message":"The provided API key is invalid. Please check it and try again."}', $content);
+        self::assertJson($content);
+        self::assertJsonStringEqualsJsonString('{"code":403,"message":"The provided API key is invalid. Please check it and try again."}', $content);
     }
 
     public function testPatchDisabledLink(): void
@@ -67,8 +61,8 @@ final class UpdateLinkActionTest extends WebTestCase
 
         $content = $this->client->getResponse()->getContent();
 
-        $this->assertJson($content);
-        $this->assertJsonStringEqualsJsonString('{"code":403,"message":"The specified shortcut link has been disabled by its owner or by an administrator."}', $content);
+        self::assertJson($content);
+        self::assertJsonStringEqualsJsonString('{"code":403,"message":"The specified shortcut link has been disabled by its owner or by an administrator."}', $content);
     }
 
     public function testPatchReportedLink(): void
@@ -81,8 +75,8 @@ final class UpdateLinkActionTest extends WebTestCase
 
         $content = $this->client->getResponse()->getContent();
 
-        $this->assertJson($content);
-        $this->assertJsonStringEqualsJsonString('{"code":403,"message":"The specified shortcut link has been reported by one or more users. This link must be verified by an administrator before it can be reached again."}', $content);
+        self::assertJson($content);
+        self::assertJsonStringEqualsJsonString('{"code":403,"message":"The specified shortcut link has been reported by one or more users. This link must be verified by an administrator before it can be reached again."}', $content);
     }
 
     public function testPatchLinkWithInvalidData(): void
@@ -98,9 +92,9 @@ final class UpdateLinkActionTest extends WebTestCase
 
         $content = $this->client->getResponse()->getContent();
 
-        $this->assertJson($content);
-        $this->assertStringStartsWith('{"code":400,"message":"An error occurred during data validation."', $content);
-        $this->assertStringContainsString('INVALID_URL_ERROR', $content);
+        self::assertJson($content);
+        self::assertStringStartsWith('{"code":400,"message":"An error occurred during data validation."', $content);
+        self::assertStringContainsString('INVALID_URL_ERROR', $content);
     }
 
     public function testPatchLinkWithDuplicatedSlug(): void
@@ -116,9 +110,9 @@ final class UpdateLinkActionTest extends WebTestCase
 
         $content = $this->client->getResponse()->getContent();
 
-        $this->assertJson($content);
-        $this->assertStringStartsWith('{"code":400,"message":"An error occurred during data validation."', $content);
-        $this->assertStringContainsString('DUPLICATE_SLUG_ERROR', $content);
+        self::assertJson($content);
+        self::assertStringStartsWith('{"code":400,"message":"An error occurred during data validation."', $content);
+        self::assertStringContainsString('DUPLICATE_SLUG_ERROR', $content);
     }
 
     public function testPatchLinkWithValidData(): void
@@ -131,7 +125,7 @@ final class UpdateLinkActionTest extends WebTestCase
         ]));
 
         self::assertResponseStatusCodeSame(Response::HTTP_OK);
-        $this->assertJson($this->client->getResponse()->getContent());
+        self::assertJson($this->client->getResponse()->getContent());
     }
 
     public function testPutLinkWithMissingApiKey(): void
@@ -142,8 +136,8 @@ final class UpdateLinkActionTest extends WebTestCase
 
         $content = $this->client->getResponse()->getContent();
 
-        $this->assertJson($content);
-        $this->assertJsonStringEqualsJsonString('{"code":401,"message":"The API key is missing. Please provide it in the \"Authorization\" HTTP header."}', $content);
+        self::assertJson($content);
+        self::assertJsonStringEqualsJsonString('{"code":401,"message":"The API key is missing. Please provide it in the \"Authorization\" HTTP header."}', $content);
     }
 
     public function testPutLinkWithInvalidApiKey(): void
@@ -156,8 +150,8 @@ final class UpdateLinkActionTest extends WebTestCase
 
         $content = $this->client->getResponse()->getContent();
 
-        $this->assertJson($content);
-        $this->assertJsonStringEqualsJsonString('{"code":403,"message":"The provided API key is invalid. Please check it and try again."}', $content);
+        self::assertJson($content);
+        self::assertJsonStringEqualsJsonString('{"code":403,"message":"The provided API key is invalid. Please check it and try again."}', $content);
     }
 
     public function testPutDisabledLink(): void
@@ -170,8 +164,8 @@ final class UpdateLinkActionTest extends WebTestCase
 
         $content = $this->client->getResponse()->getContent();
 
-        $this->assertJson($content);
-        $this->assertJsonStringEqualsJsonString('{"code":403,"message":"The specified shortcut link has been disabled by its owner or by an administrator."}', $content);
+        self::assertJson($content);
+        self::assertJsonStringEqualsJsonString('{"code":403,"message":"The specified shortcut link has been disabled by its owner or by an administrator."}', $content);
     }
 
     public function testPutReportedLink(): void
@@ -184,8 +178,8 @@ final class UpdateLinkActionTest extends WebTestCase
 
         $content = $this->client->getResponse()->getContent();
 
-        $this->assertJson($content);
-        $this->assertJsonStringEqualsJsonString('{"code":403,"message":"The specified shortcut link has been reported by one or more users. This link must be verified by an administrator before it can be reached again."}', $content);
+        self::assertJson($content);
+        self::assertJsonStringEqualsJsonString('{"code":403,"message":"The specified shortcut link has been reported by one or more users. This link must be verified by an administrator before it can be reached again."}', $content);
     }
 
     public function testPutLinkWithInvalidData(): void
@@ -200,9 +194,9 @@ final class UpdateLinkActionTest extends WebTestCase
 
         $content = $this->client->getResponse()->getContent();
 
-        $this->assertJson($content);
-        $this->assertStringStartsWith('{"code":400,"message":"An error occurred during data validation."', $content);
-        $this->assertStringContainsString('INVALID_URL_ERROR', $content);
+        self::assertJson($content);
+        self::assertStringStartsWith('{"code":400,"message":"An error occurred during data validation."', $content);
+        self::assertStringContainsString('INVALID_URL_ERROR', $content);
     }
 
     public function testPutLinkWithDuplicatedSlug(): void
@@ -217,9 +211,9 @@ final class UpdateLinkActionTest extends WebTestCase
 
         $content = $this->client->getResponse()->getContent();
 
-        $this->assertJson($content);
-        $this->assertStringStartsWith('{"code":400,"message":"An error occurred during data validation."', $content);
-        $this->assertStringContainsString('DUPLICATE_SLUG_ERROR', $content);
+        self::assertJson($content);
+        self::assertStringStartsWith('{"code":400,"message":"An error occurred during data validation."', $content);
+        self::assertStringContainsString('DUPLICATE_SLUG_ERROR', $content);
     }
 
     public function testPutLinkWithValidData(): void
@@ -231,6 +225,6 @@ final class UpdateLinkActionTest extends WebTestCase
         ]);
 
         self::assertResponseStatusCodeSame(Response::HTTP_OK);
-        $this->assertJson($this->client->getResponse()->getContent());
+        self::assertJson($this->client->getResponse()->getContent());
     }
 }

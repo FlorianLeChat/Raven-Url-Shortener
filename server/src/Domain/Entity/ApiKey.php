@@ -9,6 +9,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use App\Infrastructure\Repository\ApiKeyRepository;
 
+/**
+ * Key granting access to the management API of a single link.
+ * It expires three months after its creation and is rotated by the `app:api-keys-rotation` command.
+ */
 #[ORM\Entity(repositoryClass: ApiKeyRepository::class)]
 class ApiKey
 {
@@ -32,6 +36,9 @@ class ApiKey
     #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
     private DateTimeImmutable $expiresAt;
 
+    /**
+     * Generates the identifier and stamps the creation date.
+     */
     public function __construct()
     {
         $this->id = Uuid::v7();
@@ -104,6 +111,8 @@ class ApiKey
     }
 
     /**
+     * Serializes the key with the link it belongs to.
+     *
      * @return array<string, mixed>
      */
     public function toArray(): array

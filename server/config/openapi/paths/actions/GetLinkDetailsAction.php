@@ -84,6 +84,16 @@ return [
                     ]
                 ]
             ],
+            Response::HTTP_GONE => [
+                'description' => 'Link expired',
+                'content' => [
+                    'application/json' => [
+                        'schema' => [
+                            '$ref' => '#/components/schemas/HttpGone'
+                        ]
+                    ]
+                ]
+            ],
             Response::HTTP_TOO_MANY_REQUESTS => [
                 'description' => 'Link fetch rate limit exceeded',
                 'content' => [

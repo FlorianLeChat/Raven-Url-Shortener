@@ -6,6 +6,9 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Messenger\Event\WorkerRunningEvent;
 use App\Infrastructure\EventListener\SchedulerHeartbeatListener;
 
+/**
+ * Tests of SchedulerHeartbeatListener.
+ */
 final class SchedulerHeartbeatListenerTest extends TestCase
 {
     public function testSubscribedEvents(): void

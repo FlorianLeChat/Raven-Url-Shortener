@@ -2,13 +2,17 @@
 
 namespace App\Tests\Action;
 
-use Symfony\Component\Process\Process;
+use App\Tests\TestHelperTrait;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
+/**
+ * Tests of `POST /v1/slug`.
+ */
 final class CheckSlugActionTest extends WebTestCase
 {
+    use TestHelperTrait;
+
     protected KernelBrowser $client;
 
     protected function setUp(): void
@@ -17,17 +21,7 @@ final class CheckSlugActionTest extends WebTestCase
 
         $this->client = self::createClient();
 
-        $php = new PhpExecutableFinder();
-        $process = new Process([
-            $php->find(),
-            sprintf('%s/bin/console', $this->client->getKernel()->getProjectDir()),
-            'doctrine:fixtures:load',
-            '--env=test',
-            '--no-interaction'
-        ]);
-
-        $process->disableOutput();
-        $process->run();
+        self::loadFixtures($this->client->getKernel()->getProjectDir());
     }
 
     public function testSlugIsAvailable(): void
@@ -35,7 +29,7 @@ final class CheckSlugActionTest extends WebTestCase
         $this->client->request('POST', '/v1/slug', ['slug' => 'free-slug']);
 
         self::assertResponseIsSuccessful();
-        $this->assertJsonStringEqualsJsonString('{"available":true}', $this->client->getResponse()->getContent());
+        self::assertJsonStringEqualsJsonString('{"available":true}', $this->client->getResponse()->getContent());
     }
 
     public function testSlugIsNotAvailable(): void
@@ -43,6 +37,6 @@ final class CheckSlugActionTest extends WebTestCase
         $this->client->request('POST', '/v1/slug', ['slug' => 'test1']);
 
         self::assertResponseIsSuccessful();
-        $this->assertJsonStringEqualsJsonString('{"available":false}', $this->client->getResponse()->getContent());
+        self::assertJsonStringEqualsJsonString('{"available":false}', $this->client->getResponse()->getContent());
     }
 }

@@ -2,10 +2,12 @@
 
 namespace App\Action;
 
+use Exception;
 use App\Kernel;
 use App\Domain\Entity\Link;
 use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Exception\ORMException;
 use App\Domain\Service\UpdateLinkService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,8 +17,12 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+/**
+ * Endpoints updating a shortened link through its management API key.
+ */
 #[Route('/v{version}', requirements: ['version' => '1'], stateless: true)]
 final class UpdateLinkAction extends AbstractController
 {
@@ -29,6 +35,10 @@ final class UpdateLinkAction extends AbstractController
     ) {
     }
 
+    /**
+     * Updates the single field named by `field` with `value`.
+     * @throws UniqueConstraintViolationException|ORMException|Exception
+     */
     #[Route('/link/{id}', requirements: ['id' => Requirement::UUID_V7], methods: ['PATCH'])]
     #[Route('/link/{slug}', requirements: ['slug' => Requirement::ASCII_SLUG], methods: ['PATCH'])]
     public function patchLink(Request $request, Link $link): JsonResponse
@@ -49,6 +59,10 @@ final class UpdateLinkAction extends AbstractController
         return new JsonResponse($updatedLink->toArray(), Response::HTTP_OK);
     }
 
+    /**
+     * Replaces the link with the request body, keeping the current value of every field left out.
+     * @throws UniqueConstraintViolationException|ORMException|Exception
+     */
     #[Route('/link/{id}', requirements: ['id' => Requirement::UUID_V7], methods: ['PUT'])]
     #[Route('/link/{slug}', requirements: ['slug' => Requirement::ASCII_SLUG], methods: ['PUT'])]
     public function replaceLink(Request $request, Link $link): JsonResponse

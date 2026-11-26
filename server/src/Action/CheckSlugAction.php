@@ -12,6 +12,9 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+/**
+ * Endpoint telling the dashboard whether a custom slug is still free.
+ */
 #[Route('/v{version}', requirements: ['version' => '1'], stateless: true)]
 final class CheckSlugAction extends AbstractController
 {
@@ -21,6 +24,9 @@ final class CheckSlugAction extends AbstractController
     ) {
     }
 
+    /**
+     * Answers `{"available": true}` when no link uses the `slug` field of the request body yet.
+     */
     #[Route('/slug', methods: ['POST'])]
     public function checkSlug(Request $request): JsonResponse
     {

@@ -8,6 +8,14 @@ parameters:
 		containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml
 	scanFiles:
 		- vendor/symfony/dependency-injection/Loader/Configurator/ContainerConfigurator.php
+	exceptions:
+		check:
+			tooWideThrowType: true
+			missingCheckedExceptionInThrows: true
+		uncheckedExceptionClasses:
+			- Error
+			- LogicException
+			- RuntimeException
 	excludePaths:
 		- src/Infrastructure/Fixture/
 	scanDirectories:

@@ -7,6 +7,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+/**
+ * Root endpoint, used as a health check by Docker and as a landing page for curious visitors.
+ */
 final class ServerIndexAction extends AbstractController
 {
     private const ASCII_INDEX = <<<EOT
@@ -26,6 +29,10 @@ Ready to handle requests.
 API documentation available at https://docs.url.florian-dev.fr.
 EOT;
 
+    /**
+     * Answers a plain text banner with the time spent handling the request.
+     * `REQUEST_TIME_FLOAT` is missing when the request does not come from a web server: the time then starts now.
+     */
     #[Route('/', methods: ['GET'], stateless: true)]
     public function getHealthCheck(Request $request): Response
     {

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Entité pour les clés API de gestion des liens raccourcis.
+ * Entity of the API keys managing shortened links.
  */
 return [
     'type' => 'object',

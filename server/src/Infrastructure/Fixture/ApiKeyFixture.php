@@ -9,13 +9,22 @@ use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
+/**
+ * API keys of the test links, all of them long expired.
+ */
 final class ApiKeyFixture extends Fixture implements DependentFixtureInterface
 {
+    /**
+     * Expiration date shared by every key, long past.
+     */
     private function getExpiresAt(): DateTimeImmutable
     {
         return new DateTimeImmutable('2014-01-01 00:00:00');
     }
 
+    /**
+     * Key of `link1`, the link every successful update and deletion goes through.
+     */
     private function createApiKeyWithoutIssue(): ApiKey
     {
         $apiKey = new ApiKey();
@@ -26,6 +35,9 @@ final class ApiKeyFixture extends Fixture implements DependentFixtureInterface
         return $apiKey;
     }
 
+    /**
+     * Key of `link2`, the disabled link.
+     */
     private function createDisabledApiKey(): ApiKey
     {
         $apiKey = new ApiKey();
@@ -36,6 +48,9 @@ final class ApiKeyFixture extends Fixture implements DependentFixtureInterface
         return $apiKey;
     }
 
+    /**
+     * Key of `link3`, the reported link.
+     */
     private function createReportedApiKey(): ApiKey
     {
         $apiKey = new ApiKey();
@@ -46,6 +61,9 @@ final class ApiKeyFixture extends Fixture implements DependentFixtureInterface
         return $apiKey;
     }
 
+    /**
+     * Saves the three keys.
+     */
     public function load(ObjectManager $manager): void
     {
         $manager->persist($this->createApiKeyWithoutIssue());
@@ -54,6 +72,9 @@ final class ApiKeyFixture extends Fixture implements DependentFixtureInterface
         $manager->flush();
     }
 
+    /**
+     * The keys need the links of LinkFixture.
+     */
     public function getDependencies(): array
     {
         return [

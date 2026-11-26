@@ -5,6 +5,9 @@ namespace App\Tests\Infrastructure\Security;
 use PHPUnit\Framework\TestCase;
 use App\Infrastructure\Security\TrustedDomains;
 
+/**
+ * Tests of TrustedDomains.
+ */
 final class TrustedDomainsTest extends TestCase
 {
     private const TRUSTED_MAIN_DOMAINS = [
@@ -42,28 +45,33 @@ final class TrustedDomainsTest extends TestCase
     public function testTrustedMainDomains(): void
     {
         foreach (self::TRUSTED_MAIN_DOMAINS as $url) {
-            $this->assertTrue(TrustedDomains::isTrusted($url), "Le domaine principal « $url » devrait être de confiance.");
+            self::assertTrue(TrustedDomains::isTrusted($url), "The main domain \"$url\" should be trusted.");
         }
     }
 
     public function testTrustedSubDomains(): void
     {
         foreach (self::TRUSTED_SUB_DOMAINS as $url) {
-            $this->assertTrue(TrustedDomains::isTrusted($url), "Le sous-domaine « $url » devrait être de confiance.");
+            self::assertTrue(TrustedDomains::isTrusted($url), "The subdomain \"$url\" should be trusted.");
         }
     }
 
     public function testTrustedPortDomains(): void
     {
         foreach (self::TRUSTED_PORT_DOMAINS as $url) {
-            $this->assertTrue(TrustedDomains::isTrusted($url), "Le domaine avec port « $url » devrait être de confiance.");
+            self::assertTrue(TrustedDomains::isTrusted($url), "The domain with a port \"$url\" should be trusted.");
         }
+    }
+
+    public function testUrlWithoutHost(): void
+    {
+        self::assertFalse(TrustedDomains::isTrusted('not an url'));
     }
 
     public function testUntrustedDomains(): void
     {
         foreach (self::UNTRUSTED_DOMAINS as $url) {
-            $this->assertFalse(TrustedDomains::isTrusted($url), "Le domaine non fiable « $url » ne devrait pas être de confiance.");
+            self::assertFalse(TrustedDomains::isTrusted($url), "The untrusted domain \"$url\" should not be trusted.");
         }
     }
 }

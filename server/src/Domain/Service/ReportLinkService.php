@@ -8,30 +8,42 @@ use Psr\Log\LoggerInterface;
 use App\Domain\Entity\Report;
 use App\Domain\Factory\ReportFactory;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Exception\ORMException;
 use Symfony\Component\HttpFoundation\Request;
 use App\Infrastructure\Repository\ReportRepository;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Infrastructure\Exception\DataValidationException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
-final class ReportLinkService
+/**
+ * Files the report of a visitor against a link.
+ */
+final readonly class ReportLinkService
 {
     private const MAX_REPORTS_PER_LINK = 3;
-    private readonly ReportRepository $repository;
+    private ReportRepository $repository;
 
+    /**
+     * @param Link $link Link reached by the request, resolved from its identifier or its slug.
+     */
     public function __construct(
-        private readonly Link $link,
-        private readonly LoggerInterface $logger,
-        private readonly ValidatorInterface $validator,
-        private readonly TranslatorInterface $translator,
-        private readonly EntityManagerInterface $entityManager
+        private Link $link,
+        private LoggerInterface $logger,
+        private ValidatorInterface $validator,
+        private TranslatorInterface $translator,
+        private EntityManagerInterface $entityManager
     ) {
         $this->repository = $this->entityManager->getRepository(Report::class);
     }
 
+    /**
+     * Runs the entity constraints on the report.
+     * @throws DataValidationException When at least one constraint fails, with every violation by field.
+     */
     private function validateReport(Report $report): void
     {
         $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
@@ -52,6 +64,9 @@ final class ReportLinkService
         }
     }
 
+    /**
+     * @throws ConflictHttpException When this email address has already reported the link.
+     */
     protected function checkReportExists(string $email): void
     {
         $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
@@ -63,6 +78,9 @@ final class ReportLinkService
         }
     }
 
+    /**
+     * @throws AccessDeniedHttpException When the link targets a trusted domain.
+     */
     private function checkTrustedLink(Link $link): void
     {
         $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
@@ -72,6 +90,9 @@ final class ReportLinkService
         }
     }
 
+    /**
+     * @throws TooManyRequestsHttpException When the link already has the maximum number of reports.
+     */
     private function checkMaximumReports(Link $link): void
     {
         $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
@@ -85,6 +106,10 @@ final class ReportLinkService
         }
     }
 
+    /**
+     * Validates and saves the report. The email address is optional; when given, it can report the link once.
+     * @throws UniqueConstraintViolationException|ORMException
+     */
     public function createReport(Request $request): Report
     {
         $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));

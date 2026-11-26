@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Symfony\Config\FrameworkConfig;
+use App\Tests\Mock\HttpClientResponseFactory;
 
 /**
  * @see https://symfony.com/doc/current/configuration.html
@@ -16,6 +17,7 @@ return static function (FrameworkConfig $framework, ContainerConfigurator $conta
 
     if ($runtime === 'test') {
         $framework->test(true);
+        $framework->httpClient()->mockResponseFactory(HttpClientResponseFactory::class);
         return;
     }
 

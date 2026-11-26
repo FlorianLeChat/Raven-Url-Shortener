@@ -2,14 +2,18 @@
 
 namespace App\Tests\Action;
 
-use Symfony\Component\Process\Process;
+use App\Tests\TestHelperTrait;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
+/**
+ * Tests of `POST /v1/link/{id|slug}/report`.
+ */
 final class ReportLinkActionTest extends WebTestCase
 {
+    use TestHelperTrait;
+
     protected KernelBrowser $client;
 
     protected function setUp(): void
@@ -18,17 +22,7 @@ final class ReportLinkActionTest extends WebTestCase
 
         $this->client = self::createClient();
 
-        $php = new PhpExecutableFinder();
-        $process = new Process([
-            $php->find(),
-            sprintf('%s/bin/console', $this->client->getKernel()->getProjectDir()),
-            'doctrine:fixtures:load',
-            '--env=test',
-            '--no-interaction'
-        ]);
-
-        $process->disableOutput();
-        $process->run();
+        self::loadFixtures($this->client->getKernel()->getProjectDir());
     }
 
     public function testReportWithNoReason(): void
@@ -39,9 +33,9 @@ final class ReportLinkActionTest extends WebTestCase
 
         $content = $this->client->getResponse()->getContent();
 
-        $this->assertJson($content);
-        $this->assertStringStartsWith('{"code":400,"message":"An error occurred during data validation."', $content);
-        $this->assertStringContainsString('TOO_SHORT_ERROR', $content);
+        self::assertJson($content);
+        self::assertStringStartsWith('{"code":400,"message":"An error occurred during data validation."', $content);
+        self::assertStringContainsString('TOO_SHORT_ERROR', $content);
     }
 
     public function testReportWithExistingEmail(): void
@@ -55,8 +49,8 @@ final class ReportLinkActionTest extends WebTestCase
 
         $content = $this->client->getResponse()->getContent();
 
-        $this->assertJson($content);
-        $this->assertJsonStringEqualsJsonString('{"code":409,"message":"You have already reported this shortcut link, you cannot report it again."}', $content);
+        self::assertJson($content);
+        self::assertJsonStringEqualsJsonString('{"code":409,"message":"You have already reported this shortcut link, you cannot report it again."}', $content);
     }
 
     public function testReportTrustedLink(): void
@@ -69,8 +63,8 @@ final class ReportLinkActionTest extends WebTestCase
 
         $content = $this->client->getResponse()->getContent();
 
-        $this->assertJson($content);
-        $this->assertJsonStringEqualsJsonString('{"code":403,"message":"You cannot report a trusted link. If you think this link is malicious, please contact an administrator."}', $content);
+        self::assertJson($content);
+        self::assertJsonStringEqualsJsonString('{"code":403,"message":"You cannot report a trusted link. If you think this link is malicious, please contact an administrator."}', $content);
     }
 
     public function testReportMaximumReached(): void
@@ -81,7 +75,7 @@ final class ReportLinkActionTest extends WebTestCase
             ]);
 
             self::assertResponseIsSuccessful();
-            $this->assertJson($this->client->getResponse()->getContent());
+            self::assertJson($this->client->getResponse()->getContent());
         }
 
         $this->client->request('POST', '/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d9/report', [
@@ -92,8 +86,8 @@ final class ReportLinkActionTest extends WebTestCase
 
         $content = $this->client->getResponse()->getContent();
 
-        $this->assertJson($content);
-        $this->assertJsonStringEqualsJsonString('{"code":429,"message":"The maximum number of reports for this link has been reached (3). It cannot be reported again."}', $content);
+        self::assertJson($content);
+        self::assertJsonStringEqualsJsonString('{"code":429,"message":"The maximum number of reports for this link has been reached (3). It cannot be reported again."}', $content);
     }
 
     public function testReportSuccessfully(): void
@@ -103,6 +97,6 @@ final class ReportLinkActionTest extends WebTestCase
         ]);
 
         self::assertResponseIsSuccessful();
-        $this->assertJson($this->client->getResponse()->getContent());
+        self::assertJson($this->client->getResponse()->getContent());
     }
 }

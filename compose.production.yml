@@ -149,6 +149,8 @@ services:
             - ./logs:/var/www/html/logs
         cap_drop:
             - ALL
+        environment:
+            TZ: ${TZ}
         depends_on:
             database:
                 condition: service_healthy
@@ -171,6 +173,8 @@ services:
             - ./logs:/var/www/html/logs
         cap_drop:
             - ALL
+        environment:
+            TZ: ${TZ}
         depends_on:
             cache:
                 condition: service_healthy
@@ -200,6 +204,8 @@ services:
             - ./logs:/var/www/html/logs
         cap_drop:
             - ALL
+        environment:
+            TZ: ${TZ}
         depends_on:
             cache:
                 condition: service_healthy
