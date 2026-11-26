@@ -12,8 +12,14 @@ use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use App\Infrastructure\EventListener\ExceptionListener;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
+/**
+ * Tests of ExceptionListener.
+ */
 final class ExceptionListenerTest extends TestCase
 {
+    /**
+     * Runs the listener on an exception event and returns the event holding the response.
+     */
     private function dispatch(ExceptionListener $listener, Throwable $exception): ExceptionEvent
     {
         $event = new ExceptionEvent(

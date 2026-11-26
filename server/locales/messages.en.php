@@ -6,6 +6,7 @@ return [
     'http.invalid_api_key' => 'Access to the service is denied because an API key is required and was not provided or is invalid. Please provide a valid API key in the "Authorization" HTTP header.',
     'link.unreachable_url' => 'The specified URL is unreachable.',
     'link.disabled' => 'The specified shortcut link has been disabled by its owner or by an administrator.',
+    'link.expired' => 'The specified shortcut link has expired.',
     'link.reported' => 'The specified shortcut link has been reported by one or more users. This link must be verified by an administrator before it can be reached again.',
     'link.password.missing' => 'The specified shortcut link is protected by a password. Please provide it in the "Authorization" HTTP header.',
     'link.password.invalid' => 'The password you provided for the shortcut link is invalid. Please check it and try again.',

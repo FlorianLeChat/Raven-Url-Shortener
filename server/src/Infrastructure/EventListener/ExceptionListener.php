@@ -12,16 +12,21 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 /**
+ * Turns every exception into the JSON error body of the API.
+ *
  * @see https://symfony.com/doc/current/controller/error_pages.html#working-with-the-kernel-exception-event
  * @see https://symfony.com/doc/current/event_dispatcher.html#creating-an-event-listener
  */
-final class ExceptionListener
+final readonly class ExceptionListener
 {
     public function __construct(
-        private readonly LoggerInterface $logger
+        private LoggerInterface $logger
     ) {
     }
 
+    /**
+     * Answers a 500 error for any exception outside HTTP ones, and logs it as critical.
+     */
     private function handleInternalException(Throwable $exception): JsonResponse
     {
         $data = [
@@ -38,6 +43,9 @@ final class ExceptionListener
         return new JsonResponse($data, Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
+    /**
+     * Answers the status and the headers of the HTTP exception, with the violations of a DataValidationException.
+     */
     private function handleHttpException(HttpExceptionInterface $exception): JsonResponse
     {
         $data = [
@@ -62,6 +70,10 @@ final class ExceptionListener
         return $response;
     }
 
+    /**
+     * Replaces the response of the event with the JSON error. A new response is built for each event,
+     *  so the headers of one error never leak into the next one in worker mode.
+     */
     public function __invoke(ExceptionEvent $event): void
     {
         $exception = $event->getThrowable();

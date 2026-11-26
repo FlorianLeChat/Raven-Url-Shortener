@@ -8,8 +8,14 @@ use App\Domain\Entity\Report;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 
+/**
+ * Report filed against `link3`, the reported link of LinkFixture.
+ */
 final class ReportFixture extends Fixture
 {
+    /**
+     * Saves the report.
+     */
     public function load(ObjectManager $manager): void
     {
         $link = $this->getReference("link3", Link::class);

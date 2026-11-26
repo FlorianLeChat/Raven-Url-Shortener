@@ -2,6 +2,9 @@
 
 namespace App\Infrastructure\Security;
 
+/**
+ * Domains considered safe: their links skip the warning page and cannot be reported.
+ */
 final class TrustedDomains
 {
     public const DOMAINS = [
@@ -80,6 +83,9 @@ final class TrustedDomains
         'behance.net'
     ];
 
+    /**
+     * Tells whether the host of the URL is a trusted domain or one of its subdomains, ignoring `www.`.
+     */
     public static function isTrusted(string $url): bool
     {
         $host = parse_url($url, PHP_URL_HOST);

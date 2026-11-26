@@ -11,24 +11,30 @@ use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 /**
+ * Limits the number of API requests per IP address, with separate limits for reads and writes.
+ * Only registered in the production environment (see `config/services.php`).
+ *
  * @see https://symfony.com/doc/current/rate_limiter.html#rate-limiting-in-action
  * @see https://symfony.com/doc/current/event_dispatcher.html#creating-an-event-listener
  */
-final class LimiterListener
+final readonly class LimiterListener
 {
     /**
-     * @param string[] $enabledLocales Langues disponibles pour traduire le message d'erreur.
+     * @param string[] $enabledLocales Locales the error message can be translated into.
      */
     public function __construct(
-        private readonly bool $isRateLimitEnabled,
-        private readonly array $enabledLocales,
-        private readonly LoggerInterface $logger,
-        private readonly RateLimiterFactoryInterface $readApiLimiter,
-        private readonly RateLimiterFactoryInterface $writeApiLimiter,
-        protected readonly TranslatorInterface $translator
+        private bool $isRateLimitEnabled,
+        private array $enabledLocales,
+        private LoggerInterface $logger,
+        private RateLimiterFactoryInterface $readApiLimiter,
+        private RateLimiterFactoryInterface $writeApiLimiter,
+        protected TranslatorInterface $translator
     ) {
     }
 
+    /**
+     * Picks the write limiter for `POST`, `PUT`, `PATCH` and `DELETE`, the read limiter otherwise.
+     */
     private function createLimiterFromRequest(Request $request): RateLimiterFactoryInterface
     {
         $method = $request->getMethod();
@@ -42,6 +48,10 @@ final class LimiterListener
         return $isWriteMethod ? $this->writeApiLimiter : $this->readApiLimiter;
     }
 
+    /**
+     * Consumes a token for the client IP address. IP addresses are anonymized in the logs.
+     * @throws TooManyRequestsHttpException When the limit is reached, with the `X-RateLimit-*` headers.
+     */
     private function consumeLimiter(Request $request, RateLimiterFactoryInterface $limiter): void
     {
         $ipAddress = $request->getClientIp() ?? '127.0.0.1';
@@ -71,6 +81,9 @@ final class LimiterListener
         ]);
     }
 
+    /**
+     * Checks the limit of every request when `APP_RATE_LIMIT_ENABLED` is set.
+     */
     public function __invoke(RequestEvent $event): void
     {
         if (!$this->isRateLimitEnabled) {

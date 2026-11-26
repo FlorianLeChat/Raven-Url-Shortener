@@ -6,6 +6,7 @@ use App\Kernel;
 use App\Domain\Entity\Link;
 use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Exception\ORMException;
 use Symfony\Component\HttpFoundation\Request;
 use App\Domain\Service\GetLinkDetailsService;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,8 +17,12 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+/**
+ * Endpoint reading the details of a shortened link, used by the client before any redirection.
+ */
 #[Route('/v{version}', requirements: ['version' => '1'], stateless: true)]
 final class GetLinkDetailsAction extends AbstractController
 {
@@ -30,6 +35,11 @@ final class GetLinkDetailsAction extends AbstractController
     ) {
     }
 
+    /**
+     * Answers the link reached by its identifier or its slug and records the visit.
+     * Expired and password protected links are checked by GetLinkDetailsService.
+     * @throws UniqueConstraintViolationException|ORMException
+     */
     #[Cache(maxage: 3600, public: true, mustRevalidate: true)]
     #[Route('/link/{id}', requirements: ['id' => Requirement::UUID_V7], methods: ['GET'])]
     #[Route('/link/{slug}', requirements: ['slug' => Requirement::ASCII_SLUG], methods: ['GET'])]

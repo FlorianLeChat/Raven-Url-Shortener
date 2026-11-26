@@ -38,9 +38,6 @@ Le *back-end*, quant à lui, est construit sur le solide *framework* [Symfony](h
 > [!TIP]
 > Voir le fichier [SETUP.md](SETUP.md) pour consulter les instructions d'installation.
 
-> [!NOTE]
-> Tout ou partie du code peut contenir des commentaires dans ma langue natale (le français) afin de faciliter le développement. 🌐
-
 ## In English
 
 > [!IMPORTANT]
@@ -58,8 +55,5 @@ Ultimately, all new functionalities will first be implemented on API before bein
 
 > [!TIP]
 > See the [SETUP.md](SETUP.md) file for setup instructions.
-
-> [!NOTE]
-> All or part of the code may contain comments in my native language (French) to ease development. 🌐
 
 ![image](.gitlab/images/raven-url-shortener.png)

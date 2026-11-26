@@ -12,12 +12,15 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Infrastructure\Exception\DataValidationException;
-use Symfony\Component\HttpClient\NoPrivateNetworkHttpClient;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
-use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
+/**
+ * Checks shared by the services creating or changing a link.
+ * Each check throws the HTTP exception the API answers with.
+ */
 abstract class BaseLinkService
 {
     protected readonly LinkRepository $repository;
@@ -32,6 +35,10 @@ abstract class BaseLinkService
         $this->repository = $this->entityManager->getRepository(Link::class);
     }
 
+    /**
+     * Runs the entity constraints on the link.
+     * @throws DataValidationException When at least one constraint fails, with every violation by field.
+     */
     protected function validateLink(Link $link): void
     {
         $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
@@ -52,6 +59,11 @@ abstract class BaseLinkService
         }
     }
 
+    /**
+     * Tells whether the target site refused the check itself (firewall, rate limiting, bot challenge)
+     *  rather than being unreachable: such a URL is accepted.
+     * @throws ExceptionInterface
+     */
     private function isBlockedRequest(string $url, ResponseInterface $response): bool
     {
         $content = strtolower($response->getContent(false));
@@ -65,14 +77,18 @@ abstract class BaseLinkService
         return $isBlocked;
     }
 
+    /**
+     * Makes sure the target URL answers, following at most one redirection.
+     * The HTTP client refuses private network addresses outside the test environment (see `config/services.php`).
+     * @throws DataValidationException When the URL is unreachable or does not answer with a 200 status.
+     */
     protected function checkUrl(string $url): void
     {
         $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
         try {
             $errors = [];
-            $client = new NoPrivateNetworkHttpClient($this->httpClient);
-            $response = $client->request('GET', $url, [
+            $response = $this->httpClient->request('GET', $url, [
                 'timeout' => 5,
                 'max_redirects' => 1
             ]);
@@ -89,7 +105,7 @@ abstract class BaseLinkService
 
                 throw new DataValidationException($errors);
             }
-        } catch (TransportExceptionInterface $exception) {
+        } catch (ExceptionInterface $exception) {
             $errors['url'][] = [
                 'code' => 'UNREACHABLE_URL_ERROR',
                 'value' => $url,
@@ -100,6 +116,9 @@ abstract class BaseLinkService
         }
     }
 
+    /**
+     * @throws DataValidationException When another link already uses the slug.
+     */
     protected function checkSlug(string $slug): void
     {
         $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
@@ -118,6 +137,9 @@ abstract class BaseLinkService
         }
     }
 
+    /**
+     * @throws AccessDeniedHttpException When the link has been disabled.
+     */
     protected function checkEnabled(Link $link): void
     {
         $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
@@ -127,6 +149,9 @@ abstract class BaseLinkService
         }
     }
 
+    /**
+     * @throws AccessDeniedHttpException When the link has been reported and waits for an administrator.
+     */
     protected function checkForReports(Link $link): void
     {
         $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
@@ -138,6 +163,12 @@ abstract class BaseLinkService
         }
     }
 
+    /**
+     * Compares the `Authorization: Bearer <key>` header with the API key of the link, in constant time.
+     * A link without an API key refuses every key.
+     * @throws UnauthorizedHttpException When the header is missing.
+     * @throws AccessDeniedHttpException When the key is malformed or does not match.
+     */
     protected function checkApiKey(Link $link, Request $request): void
     {
         $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));

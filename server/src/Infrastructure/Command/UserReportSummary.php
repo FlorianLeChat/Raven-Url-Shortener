@@ -15,10 +15,17 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Scheduler\Attribute\AsPeriodicTask;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
+/**
+ * Daily task emailing the administrator the number of reports waiting for a review.
+ */
 #[AsPeriodicTask('1 day', from: 'midnight')]
 #[AsCommand('app:reports-summary', 'Creates a summary of user reports and sends it by email.')]
 final class UserReportSummary extends Command
 {
+    /**
+     * @param bool $isSmtpEnabled Whether emails can be sent (`SMTP_ENABLED`).
+     * @param string $smtpUsername Address receiving the summary, which is also the SMTP account (`SMTP_USERNAME`).
+     */
     public function __construct(
         private readonly bool $isSmtpEnabled,
         private readonly string $smtpUsername,
@@ -28,6 +35,9 @@ final class UserReportSummary extends Command
         parent::__construct();
     }
 
+    /**
+     * Builds the summary email for the given number of reports.
+     */
     private function createEmail(int $count): Email
     {
         return (new Email())
@@ -36,6 +46,10 @@ final class UserReportSummary extends Command
             ->subject('Report summary');
     }
 
+    /**
+     * Sends the email and turns a transport failure into a failed command.
+     * @return int `Command::SUCCESS` or `Command::FAILURE`.
+     */
     private function sendEmail(Email $email, SymfonyStyle $io): int
     {
         try {
@@ -51,6 +65,9 @@ final class UserReportSummary extends Command
         }
     }
 
+    /**
+     * Sends the summary only when reports exist and SMTP is enabled. Neither case fails the command.
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $repository = $this->entityManager->getRepository(Report::class);

@@ -10,6 +10,9 @@ use Symfony\Bridge\Doctrine\Types\UuidType;
 use App\Infrastructure\Repository\ReportRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Report filed by a visitor against a link, with an optional email address to reach them.
+ */
 #[ORM\Entity(repositoryClass: ReportRepository::class)]
 class Report
 {
@@ -40,6 +43,9 @@ class Report
     #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE, nullable: true)]
     private ?DateTimeImmutable $updatedAt = null;
 
+    /**
+     * Generates the identifier and stamps the creation date.
+     */
     public function __construct()
     {
         $this->id = Uuid::v7();
@@ -112,6 +118,8 @@ class Report
     }
 
     /**
+     * Serializes the report with the reported link.
+     *
      * @return array<string, mixed>
      */
     public function toArray(): array

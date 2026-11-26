@@ -12,6 +12,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use App\Infrastructure\Repository\LinkRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Shortened link: the target URL, the slug it is reached by and the options chosen at its creation.
+ */
 #[ORM\Entity(repositoryClass: LinkRepository::class)]
 class Link
 {
@@ -60,6 +63,9 @@ class Link
     #[ORM\OneToOne(targetEntity: ApiKey::class, mappedBy: "link", cascade: ["persist", "remove"], orphanRemoval: true)]
     private ?ApiKey $apiKey = null;
 
+    /**
+     * Generates the identifier and stamps the creation date.
+     */
     public function __construct()
     {
         $this->id = Uuid::v7();
@@ -188,6 +194,8 @@ class Link
     }
 
     /**
+     * Reports filed by visitors. A link with at least one report is locked until an administrator checks it.
+     *
      * @return Collection<int, Report>
      */
     public function getReports()
@@ -208,6 +216,9 @@ class Link
     }
 
     /**
+     * Serializes the link for the API.
+     * The API key is disclosed only while the link has never been visited: afterwards it is replaced by `**hidden**`.
+     *
      * @return array<string, mixed>
      */
     public function toArray(): array

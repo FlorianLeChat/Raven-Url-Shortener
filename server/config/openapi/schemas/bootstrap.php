@@ -6,6 +6,7 @@ return [
     'HttpForbidden' => require __DIR__ . '/errors/HttpForbidden.php',
     'HttpNotFound' => require __DIR__ . '/errors/HttpNotFound.php',
     'HttpConflict' => require __DIR__ . '/errors/HttpConflict.php',
+    'HttpGone' => require __DIR__ . '/errors/HttpGone.php',
     'HttpTooManyRequests' => require __DIR__ . '/errors/HttpTooManyRequests.php',
     'HttpInternalServerError' => require __DIR__ . '/errors/HttpInternalServerError.php',
     'Link' => require __DIR__ . '/entities/Link.php',

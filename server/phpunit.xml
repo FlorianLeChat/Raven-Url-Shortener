@@ -32,5 +32,9 @@
 		<include>
 			<directory suffix=".php">src</directory>
 		</include>
+
+		<exclude>
+			<directory>src/Infrastructure/Fixture</directory>
+		</exclude>
 	</source>
 </phpunit>

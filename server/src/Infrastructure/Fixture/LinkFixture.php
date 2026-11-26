@@ -9,8 +9,14 @@ use Symfony\Component\Uid\Uuid;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 
+/**
+ * Links of the test database, one per state the API has to handle. Their identifiers are fixed so tests can reach them.
+ */
 final class LinkFixture extends Fixture
 {
+    /**
+     * `test1`: an enabled link, with an API key.
+     */
     private function createLinkWithoutIssue(): Link
     {
         $link = new Link();
@@ -24,6 +30,9 @@ final class LinkFixture extends Fixture
         return $link;
     }
 
+    /**
+     * `test2`: a disabled link, last visited in 2014 so that `app:shortcut-cleanup` deletes it.
+     */
     private function createDisabledLink(): Link
     {
         $link = new Link();
@@ -38,6 +47,9 @@ final class LinkFixture extends Fixture
         return $link;
     }
 
+    /**
+     * `test3`: a link reported by ReportFixture.
+     */
     private function createReportedLink(): Link
     {
         $link = new Link();
@@ -51,6 +63,9 @@ final class LinkFixture extends Fixture
         return $link;
     }
 
+    /**
+     * `test4`: a link targeting a trusted domain, which cannot be reported.
+     */
     private function createTrustedLink(): Link
     {
         $link = new Link();
@@ -63,6 +78,9 @@ final class LinkFixture extends Fixture
         return $link;
     }
 
+    /**
+     * `test5`: a link protected by the password `password123`, hashed with a low cost to keep the tests fast.
+     */
     private function createPasswordProtectedLink(): Link
     {
         $link = new Link();
@@ -75,6 +93,9 @@ final class LinkFixture extends Fixture
         return $link;
     }
 
+    /**
+     * Saves the five links.
+     */
     public function load(ObjectManager $manager): void
     {
         $manager->persist($this->createLinkWithoutIssue());

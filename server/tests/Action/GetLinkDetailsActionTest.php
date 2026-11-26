@@ -2,14 +2,21 @@
 
 namespace App\Tests\Action;
 
-use Symfony\Component\Process\Process;
+use DateTimeImmutable;
+use App\Domain\Entity\Link;
+use App\Tests\TestHelperTrait;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
+/**
+ * Tests of `GET /v1/link/{id|slug}`.
+ */
 final class GetLinkDetailsActionTest extends WebTestCase
 {
+    use TestHelperTrait;
+
     protected KernelBrowser $client;
 
     protected function setUp(): void
@@ -18,17 +25,23 @@ final class GetLinkDetailsActionTest extends WebTestCase
 
         $this->client = self::createClient();
 
-        $php = new PhpExecutableFinder();
-        $process = new Process([
-            $php->find(),
-            sprintf('%s/bin/console', $this->client->getKernel()->getProjectDir()),
-            'doctrine:fixtures:load',
-            '--env=test',
-            '--no-interaction'
-        ]);
+        self::loadFixtures($this->client->getKernel()->getProjectDir());
+    }
 
-        $process->disableOutput();
-        $process->run();
+    public function testGetExpiredLinkDetails(): void
+    {
+        $entityManager = self::getContainer()->get(EntityManagerInterface::class);
+        $link = $entityManager->getRepository(Link::class)->findOneBy(['slug' => 'test5']);
+        $link->setExpiresAt(new DateTimeImmutable('-1 hour'));
+        $entityManager->flush();
+
+        $this->client->request('GET', '/v1/link/test5');
+
+        self::assertResponseStatusCodeSame(Response::HTTP_GONE);
+        self::assertJsonStringEqualsJsonString(
+            '{"code":410,"message":"The specified shortcut link has expired."}',
+            $this->client->getResponse()->getContent()
+        );
     }
 
     public function testGetLinkDetailsWithNoUrl(): void
@@ -60,8 +73,8 @@ final class GetLinkDetailsActionTest extends WebTestCase
 
         $content = $this->client->getResponse()->getContent();
 
-        $this->assertJson($content);
-        $this->assertJsonStringEqualsJsonString('{"code":401,"message":"The specified shortcut link is protected by a password. Please provide it in the \"Authorization\" HTTP header."}', $content);
+        self::assertJson($content);
+        self::assertJsonStringEqualsJsonString('{"code":401,"message":"The specified shortcut link is protected by a password. Please provide it in the \"Authorization\" HTTP header."}', $content);
     }
 
     public function testGetLinkDetailsWithInvalidPassword(): void
@@ -74,8 +87,8 @@ final class GetLinkDetailsActionTest extends WebTestCase
 
         $content = $this->client->getResponse()->getContent();
 
-        $this->assertJson($content);
-        $this->assertJsonStringEqualsJsonString('{"code":403,"message":"The password you provided for the shortcut link is invalid. Please check it and try again."}', $content);
+        self::assertJson($content);
+        self::assertJsonStringEqualsJsonString('{"code":403,"message":"The password you provided for the shortcut link is invalid. Please check it and try again."}', $content);
     }
 
     public function testGetLinkDetailsWithValidUuid(): void
@@ -83,7 +96,7 @@ final class GetLinkDetailsActionTest extends WebTestCase
         $this->client->request('GET', '/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d9');
 
         self::assertResponseIsSuccessful();
-        $this->assertJson($this->client->getResponse()->getContent());
+        self::assertJson($this->client->getResponse()->getContent());
     }
 
     public function testGetLinkDetailsWithValidSlug(): void
@@ -91,7 +104,7 @@ final class GetLinkDetailsActionTest extends WebTestCase
         $this->client->request('GET', '/v1/link/test1');
 
         self::assertResponseIsSuccessful();
-        $this->assertJson($this->client->getResponse()->getContent());
+        self::assertJson($this->client->getResponse()->getContent());
     }
 
     public function testGetLinkDetailsWithValidPassword(): void
@@ -101,6 +114,6 @@ final class GetLinkDetailsActionTest extends WebTestCase
         ]);
 
         self::assertResponseIsSuccessful();
-        $this->assertJson($this->client->getResponse()->getContent());
+        self::assertJson($this->client->getResponse()->getContent());
     }
 }

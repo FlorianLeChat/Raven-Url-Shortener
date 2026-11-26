@@ -2,15 +2,26 @@
 
 namespace App\Domain\Service;
 
+use Exception;
 use App\Kernel;
 use App\Domain\Entity\Link;
+use Random\RandomException;
 use App\Domain\Factory\LinkFactory;
 use App\Domain\Factory\ApiKeyFactory;
+use Doctrine\ORM\Exception\ORMException;
 use Symfony\Component\HttpFoundation\Request;
 use App\Domain\Service\Abstract\BaseLinkService;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
+/**
+ * Creates a shortened link from the request body.
+ */
 final class CreateLinkService extends BaseLinkService
 {
+    /**
+     * Generates a random alphanumeric slug of 5 to 20 characters.
+     * @throws RandomException
+     */
     private function createRandomSlug(): string
     {
         $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
@@ -25,6 +36,11 @@ final class CreateLinkService extends BaseLinkService
         return $slug;
     }
 
+    /**
+     * Creates, validates and saves the link, with an API key when `api-management` is set.
+     * The slug is random when none is given.
+     * @throws RandomException|UniqueConstraintViolationException|ORMException|Exception
+     */
     public function createLink(Request $request): Link
     {
         $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));

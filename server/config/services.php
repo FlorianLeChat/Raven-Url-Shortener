@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use App\Tests\Mock\HttpClientResponseFactory;
 use App\Infrastructure\Command\UserReportSummary;
 use App\Infrastructure\EventListener\OriginListener;
 use App\Infrastructure\EventListener\LimiterListener;
 use App\Infrastructure\EventListener\ExceptionListener;
+use Symfony\Component\HttpClient\NoPrivateNetworkHttpClient;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 /**
@@ -45,6 +47,16 @@ return static function (ContainerConfigurator $container): void {
         ->bind('array $allowedOrigins', '%env(csv:APP_PRIVATE_API_ALLOWED_ORIGINS)%')
         ->bind('string $apiKey', '%env(string:APP_PRIVATE_API_KEY)%')
         ->tag('kernel.event_listener');
+
+    if ($container->env() === 'test') {
+        $services->set(HttpClientResponseFactory::class);
+    } else {
+        // Shortened URLs are typed by users: checking them must never reach
+        //  a service of the private network.
+        $services->set(NoPrivateNetworkHttpClient::class)
+            ->decorate('http_client')
+            ->args([service('.inner')]);
+    }
 
     if ($container->env() === 'prod') {
         $services->set(LimiterListener::class)
