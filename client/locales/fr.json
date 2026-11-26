@@ -177,6 +177,7 @@
 		"description": "Les mentions légales sont des informations obligatoires que nous devons vous fournir pour garantir la transparence et la sécurité de notre service."
 	},
 	"footer": {
+		"version": "Version {version}",
 		"made_with_love": "Fait avec ❤️ par",
 		"rights_reserved": "Tous droits réservés",
 		"captcha_protected": "Ce site est protégé par <a>ALTCHA</a>, une alternative en source libre, gratuite et respectueuse de la vie privée à reCAPTCHA."

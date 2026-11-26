@@ -24,13 +24,21 @@ final class ServerIndexAction extends AbstractController
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
+Version: %s.
 Server is running. Response time: %s ms.
 Ready to handle requests.
 API documentation available at https://docs.url.florian-dev.fr.
 EOT;
 
     /**
-     * Answers a plain text banner with the time spent handling the request.
+     * @param string $version Version of the deployed API, set by the CI/CD pipeline.
+     */
+    public function __construct(private readonly string $version)
+    {
+    }
+
+    /**
+     * Answers a plain text banner with the time spent handling the request and the version of the API.
      * `REQUEST_TIME_FLOAT` is missing when the request does not come from a web server: the time then starts now.
      */
     #[Route('/', methods: ['GET'], stateless: true)]
@@ -46,7 +54,7 @@ EOT;
         $executionTime = round(($currentTime - $requestTime) * 1000, 3);
 
         return new Response(
-            sprintf(self::ASCII_INDEX, $executionTime),
+            sprintf(self::ASCII_INDEX, $this->version, $executionTime),
             Response::HTTP_OK,
             [
                 'Content-Type' => 'text/plain; charset=utf-8'

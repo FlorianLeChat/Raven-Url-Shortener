@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use App\Action\ServerIndexAction;
 use App\Tests\Mock\HttpClientResponseFactory;
 use App\Infrastructure\Command\UserReportSummary;
 use App\Infrastructure\EventListener\OriginListener;
@@ -38,6 +39,9 @@ return static function (ContainerConfigurator $container): void {
         ->bind('bool $isSmtpEnabled', '%env(bool:SMTP_ENABLED)%')
         ->bind('string $smtpUsername', '%env(string:SMTP_USERNAME)%')
         ->tag('console.command');
+
+    $services->set(ServerIndexAction::class)
+        ->bind('string $version', '%env(string:VERSION)%');
 
     $services->set(ExceptionListener::class)
         ->tag('kernel.event_listener');

@@ -15,12 +15,13 @@ return static function (NelmioApiDocConfig $nelmioApiDoc, ContainerConfigurator 
         'path_patterns' => ['^/api(?!/doc$)'],
     ]);
 
+    $version = $container->processValue('%env(VERSION)%');
     $readLimit = $container->processValue('%env(int:APP_RATE_LIMIT_READ_API)%');
     $writeLimit = $container->processValue('%env(int:APP_RATE_LIMIT_WRITE_API)%');
     $isRateLimiting = $container->processValue('%env(APP_RATE_LIMIT_ENABLED)%');
     $documentation = $nelmioApiDoc->documentation('info', [
         'title' => 'Raven Url Shortener',
-        'version' => '1.0.0',
+        'version' => $version,
         'description' => 'This is the documentation for the Raven Url Shortener API.<br /><br />
             <strong>By using this service, you accept our legal notice, which can be found <a href="https://url.florian-dev.fr/legal">here</a>.</strong><br />
             All API endpoints can be limited (currently: <strong>' . $isRateLimiting . '</strong>) in number of requests to prevent abuse and ensure fair use.<br />
@@ -61,7 +62,7 @@ return static function (NelmioApiDocConfig $nelmioApiDoc, ContainerConfigurator 
     if ($container->env() === 'prod') {
         $nelmioApiDoc->cache([
             'pool' => 'raven_cache_pool',
-            'item_id' => 'nelmio_api_doc_caches'
+            'item_id' => 'nelmio_api_doc_caches_' . $version
         ]);
     } else {
         $nelmioApiDoc->cache([

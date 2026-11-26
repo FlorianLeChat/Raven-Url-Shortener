@@ -19,6 +19,7 @@ final class ServerIndexActionTest extends WebTestCase
         self::assertResponseIsSuccessful();
         self::assertResponseHeaderSame('Content-Type', 'text/plain; charset=utf-8');
         self::assertMatchesRegularExpression(self::RESPONSE_TIME_PATTERN, (string) $client->getResponse()->getContent());
+        self::assertStringContainsString('Version: 0.0.1.', (string) $client->getResponse()->getContent());
     }
 
     public function testHealthCheckWithoutRequestTime(): void

@@ -130,16 +130,20 @@ test:phpunit:
     stage: build
     image: alpine:3
     before_script:
+        - export VERSION="${CI_COMMIT_TAG:-$CI_COMMIT_SHORT_SHA}"
         - apk add --no-cache zip
         - mv $CLIENT_ENV_FILE client/.env
         - echo "" >> client/.env
+        - echo "NEXT_PUBLIC_VERSION=${VERSION}" >> client/.env
         - echo "NEXT_PUBLIC_BASE_PATH=${BASE_PATH}" >> client/.env
         - cp client/.env .env
         - echo "" >> .env
         - mv $SERVER_ENV_FILE server/.env
+        - echo "" >> server/.env
+        - echo "VERSION=${VERSION}" >> server/.env
         - cat server/.env >> .env
         - echo "" >> .env
-        - echo "VERSION=${CI_COMMIT_TAG:-$CI_COMMIT_SHORT_SHA}" >> .env
+        - echo "VERSION=${VERSION}" >> .env
         - echo "ENV_NAME=${CI_ENVIRONMENT_NAME}" >> .env
         - echo "OPENAPI_URL=${OPENAPI_URL}" >> .env
     script:

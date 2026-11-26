@@ -177,6 +177,7 @@
 		"description": "Legal notices are mandatory information which we must provide to guarantee the transparency and security of our service."
 	},
 	"footer": {
+		"version": "Version {version}",
 		"made_with_love": "Made with ❤️ by",
 		"rights_reserved": "All rights reserved",
 		"captcha_protected": "This site is protected by <a>ALTCHA</a>, a free, open-source and privacy-friendly alternative to reCAPTCHA."
