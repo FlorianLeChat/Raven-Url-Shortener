@@ -160,6 +160,11 @@ test:phpunit:
     dependencies: []
 
 build:project:test:
+    rules:
+        - if: $CI_COMMIT_TAG
+          when: on_success
+        - if: $CI_COMMIT_BRANCH
+          when: manual
     extends: .build:project
     variables:
         BASE_PATH: "/url"
@@ -167,13 +172,13 @@ build:project:test:
     environment:
         name: test
         action: prepare
+
+build:project:production:
     rules:
         - if: $CI_COMMIT_TAG
           when: on_success
-        - if: $CI_COMMIT_BRANCH
+        - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
           when: manual
-
-build:project:production:
     extends: .build:project
     variables:
         BASE_PATH: ""
@@ -181,9 +186,6 @@ build:project:production:
     environment:
         name: production
         action: prepare
-    rules:
-        - if: $CI_COMMIT_TAG
-          when: on_success
 
 .build:docker:
     stage: build
@@ -198,17 +200,19 @@ build:project:production:
         - docker compose push
 
 build:docker:test:
-    extends: .build:docker
     needs:
         - build:project:test
+    extends: .build:docker
 
 build:docker:production:
-    extends: .build:docker
-    needs:
-        - build:project:production
     rules:
         - if: $CI_COMMIT_TAG
           when: on_success
+        - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+          when: on_success
+    needs:
+        - build:project:production
+    extends: .build:docker
 
 analyze:sast:
     stage: analyze
@@ -306,14 +310,16 @@ deploy:test:
         - build:project:test
 
 deploy:production:
+    rules:
+        - if: $CI_COMMIT_TAG
+          when: on_success
+        - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+          when: on_success
     extends: .deploy:ansible
     variables:
         APPLICATION_PATH: "/var/www/url.florian-dev.fr"
     environment:
         name: production
         url: https://url.florian-dev.fr
-    rules:
-        - if: $CI_COMMIT_TAG
-          when: on_success
     dependencies:
         - build:project:production

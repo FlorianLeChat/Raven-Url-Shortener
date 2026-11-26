@@ -11,10 +11,6 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 final class OriginListener
 {
-    private Request $request;
-    private Response $response;
-    private string $headerOrigin;
-
     /**
      * @param string[] $allowedOrigins Allowed origins list for CORS requests.
      */
@@ -27,9 +23,9 @@ final class OriginListener
     ) {
     }
 
-    private function isLocalRequest(): bool
+    private function isLocalRequest(Request $request): bool
     {
-        $ipAddress = $this->request->getClientIp() ?? '';
+        $ipAddress = $request->getClientIp() ?? '';
 
         return
             $ipAddress === '127.0.0.1' || $ipAddress === '::1' ||
@@ -38,27 +34,27 @@ final class OriginListener
             preg_match('/^172\.(1[6-9]|2[0-9]|3[0-1])\./', $ipAddress);
     }
 
-    private function isAllowedOrigin(): bool
+    private function isAllowedOrigin(string $headerOrigin): bool
     {
-        return in_array($this->headerOrigin, $this->allowedOrigins, true) || $this->allowedOrigins[0] === '*';
+        return in_array($headerOrigin, $this->allowedOrigins, true) || $this->allowedOrigins[0] === '*';
     }
 
-    private function checkRequestOrigin(): void
+    private function checkRequestOrigin(Request $request, string $headerOrigin): void
     {
-        $isValidOrigin = $this->isAllowedOrigin() || $this->isLocalRequest();
+        $isValidOrigin = $this->isAllowedOrigin($headerOrigin) || $this->isLocalRequest($request);
 
         if (!$isValidOrigin) {
             $this->logger->error('HTTP request from unauthorized origin: {origin}', [
-                'origin' => $this->headerOrigin
+                'origin' => $headerOrigin
             ]);
 
             throw new AccessDeniedHttpException($this->translator->trans('http.invalid_origin'));
         }
     }
 
-    private function checkApiKey(): void
+    private function checkApiKey(Request $request): void
     {
-        $headerApiKey = $this->request->headers->get('Authorization') ?? '';
+        $headerApiKey = $request->headers->get('Authorization') ?? '';
         $headerApiKey = str_replace('Bearer ', '', $headerApiKey);
         $isValidApiKey = hash_equals($this->apiKey, $headerApiKey);
 
@@ -71,40 +67,40 @@ final class OriginListener
         }
     }
 
-    private function handleCorsHeaders(): void
+    private function handleCorsHeaders(Response $response, string $headerOrigin): void
     {
         if (!$this->isPrivateApi || $this->allowedOrigins[0] === '*') {
-            $this->response->headers->set('Access-Control-Allow-Origin', '*');
-        } elseif ($this->isAllowedOrigin()) {
-            $this->response->headers->set('Access-Control-Allow-Origin', $this->headerOrigin);
+            $response->headers->set('Access-Control-Allow-Origin', '*');
+        } elseif ($this->isAllowedOrigin($headerOrigin)) {
+            $response->headers->set('Access-Control-Allow-Origin', $headerOrigin);
         }
 
-        $this->response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
-        $this->response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+        $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+        $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     }
 
     public function __invoke(ResponseEvent $event): void
     {
-        $this->request = $event->getRequest();
-        $this->response = $event->getResponse();
-        $this->headerOrigin = $this->request->headers->get('Origin') ?? '';
+        $request = $event->getRequest();
+        $response = $event->getResponse();
+        $headerOrigin = $request->headers->get('Origin') ?? '';
 
-        if ($this->headerOrigin !== '') {
-            $this->handleCorsHeaders();
+        if ($headerOrigin !== '') {
+            $this->handleCorsHeaders($response, $headerOrigin);
         }
 
-        if ($this->request->getMethod() === 'OPTIONS') {
-            $this->response->setStatusCode(200);
+        if ($request->getMethod() === 'OPTIONS') {
+            $response->setStatusCode(200);
 
-            $event->setResponse($this->response);
+            $event->setResponse($response);
             return;
         }
 
         if ($this->isPrivateApi) {
-            $this->checkRequestOrigin();
-            $this->checkApiKey();
+            $this->checkRequestOrigin($request, $headerOrigin);
+            $this->checkApiKey($request);
         }
 
-        $event->setResponse($this->response);
+        $event->setResponse($response);
     }
 }

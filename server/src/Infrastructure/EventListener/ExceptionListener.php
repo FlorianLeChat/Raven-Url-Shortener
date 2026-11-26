@@ -17,15 +17,12 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
  */
 final class ExceptionListener
 {
-    private JsonResponse $response;
-
     public function __construct(
         private readonly LoggerInterface $logger
     ) {
-        $this->response = new JsonResponse();
     }
 
-    private function handleInternalException(Throwable $exception): void
+    private function handleInternalException(Throwable $exception): JsonResponse
     {
         $data = [
             'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
@@ -38,11 +35,10 @@ final class ExceptionListener
             'code' => $exception->getCode()
         ]);
 
-        $this->response->setData($data);
-        $this->response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+        return new JsonResponse($data, Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
-    private function handleHttpException(HttpExceptionInterface $exception): void
+    private function handleHttpException(HttpExceptionInterface $exception): JsonResponse
     {
         $data = [
             'code' => $exception->getStatusCode(),
@@ -60,19 +56,19 @@ final class ExceptionListener
             'data' => $exception instanceof DataValidationException ? $exception->getViolations() : []
         ]);
 
-        $this->response->setData($data);
-        $this->response->setStatusCode($exception->getStatusCode());
-        $this->response->headers->replace($exception->getHeaders());
-        $this->response->headers->set('Content-Type', 'application/json');
+        $response = new JsonResponse($data, $exception->getStatusCode(), $exception->getHeaders());
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
     }
 
     public function __invoke(ExceptionEvent $event): void
     {
         $exception = $event->getThrowable();
-        $exception instanceof HttpException
+        $response = $exception instanceof HttpException
             ? $this->handleHttpException($exception)
             : $this->handleInternalException($exception);
 
-        $event->setResponse($this->response);
+        $event->setResponse($response);
     }
 }

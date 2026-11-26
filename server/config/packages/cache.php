@@ -11,13 +11,16 @@ use Symfony\Config\FrameworkConfig;
  */
 return static function (FrameworkConfig $framework, ContainerConfigurator $container): void {
     if ($container->env() === 'prod') {
+        $redisProvider = 'redis://%env(CACHE_USERNAME)%:%env(CACHE_PASSWORD)%@%env(CACHE_HOST)%/';
+
         $cache = $framework->cache();
         $cache->app('raven_cache_pool');
+        $cache->defaultRedisProvider($redisProvider);
         $cache->pool('raven_cache_pool')
             ->tags(true)
             ->public(true)
             ->adapters([
-                ['name' => 'cache.adapter.redis', 'provider' => 'redis://%env(CACHE_USERNAME)%:%env(CACHE_PASSWORD)%@%env(CACHE_HOST)%/'],
+                ['name' => 'cache.adapter.redis', 'provider' => $redisProvider],
                 ['name' => 'cache.adapter.doctrine_dbal'],
                 ['name' => 'cache.adapter.filesystem']
             ]);
