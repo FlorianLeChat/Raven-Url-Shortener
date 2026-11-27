@@ -46,11 +46,20 @@ final class GetLinkDetailsService extends BaseLinkService
 
     /**
      * Stamps the visit date, which delays the deletion of a link left unvisited for a year.
+     * The date is written once a day at most: a day is precise enough for that cleanup,
+     *  and a popular link does not cost a database write per visit.
      * @throws UniqueConstraintViolationException|ORMException
      */
     private function saveLinkVisited(Link $link): void
     {
         $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+
+        $visitedAt = $link->getVisitedAt();
+        $isVisitedToday = $visitedAt !== null && $visitedAt >= new DateTimeImmutable('today');
+
+        if ($isVisitedToday) {
+            return;
+        }
 
         $link->setVisitedAt(new DateTimeImmutable());
 

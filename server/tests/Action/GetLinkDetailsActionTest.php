@@ -101,10 +101,41 @@ final class GetLinkDetailsActionTest extends WebTestCase
 
     public function testGetLinkDetailsWithValidSlug(): void
     {
+        $today = new DateTimeImmutable('today');
+
+        $this->setVisitedAt($today);
         $this->client->request('GET', '/v1/link/test1');
 
         self::assertResponseIsSuccessful();
         self::assertJson($this->client->getResponse()->getContent());
+        self::assertEquals($today, $this->getVisitedAt());
+
+        $this->setVisitedAt(new DateTimeImmutable('-2 days'));
+        $this->client->request('GET', '/v1/link/test1');
+
+        self::assertResponseIsSuccessful();
+        self::assertGreaterThanOrEqual($today, $this->getVisitedAt());
+    }
+
+    /**
+     * Writes the last visit date of `test1` in the database.
+     */
+    private function setVisitedAt(DateTimeImmutable $visitedAt): void
+    {
+        $entityManager = self::getContainer()->get(EntityManagerInterface::class);
+        $entityManager->getRepository(Link::class)->findOneBy(['slug' => 'test1'])->setVisitedAt($visitedAt);
+        $entityManager->flush();
+    }
+
+    /**
+     * Reads the last visit date of `test1` from the database.
+     */
+    private function getVisitedAt(): ?DateTimeImmutable
+    {
+        $entityManager = self::getContainer()->get(EntityManagerInterface::class);
+        $entityManager->clear();
+
+        return $entityManager->getRepository(Link::class)->findOneBy(['slug' => 'test1'])->getVisitedAt();
     }
 
     public function testGetLinkDetailsWithValidPassword(): void
