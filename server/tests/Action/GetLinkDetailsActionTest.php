@@ -115,5 +115,6 @@ final class GetLinkDetailsActionTest extends WebTestCase
 
         self::assertResponseIsSuccessful();
         self::assertJson($this->client->getResponse()->getContent());
+        self::assertResponseHeaderSame('Cache-Control', 'no-cache, private');
     }
 }

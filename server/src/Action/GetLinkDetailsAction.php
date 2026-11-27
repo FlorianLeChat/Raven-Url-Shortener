@@ -11,7 +11,6 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Domain\Service\GetLinkDetailsService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\HttpKernel\Attribute\Cache;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -38,9 +37,10 @@ final class GetLinkDetailsAction extends AbstractController
     /**
      * Answers the link reached by its identifier or its slug and records the visit.
      * Expired and password protected links are checked by GetLinkDetailsService.
+     * No cache attribute: the response keeps the `no-cache, private` default of Symfony, since it may follow
+     *  a password check and each request records a visit.
      * @throws UniqueConstraintViolationException|ORMException
      */
-    #[Cache(maxage: 3600, public: true, mustRevalidate: true)]
     #[Route('/link/{id}', requirements: ['id' => Requirement::UUID_V7], methods: ['GET'])]
     #[Route('/link/{slug}', requirements: ['slug' => Requirement::ASCII_SLUG], methods: ['GET'])]
     public function getLinkDetails(Request $request, Link $link): JsonResponse
