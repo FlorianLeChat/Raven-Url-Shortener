@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use App\Action\ServerIndexAction;
+use App\Tests\Mock\DnsRecordResolver;
 use App\Tests\Mock\HttpClientResponseFactory;
 use App\Infrastructure\Command\UserReportSummary;
 use App\Infrastructure\EventListener\OriginListener;
 use App\Infrastructure\EventListener\LimiterListener;
 use App\Infrastructure\EventListener\ExceptionListener;
+use Egulias\EmailValidator\Validation\DNSGetRecordWrapper;
 use Symfony\Component\HttpClient\NoPrivateNetworkHttpClient;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -54,7 +56,10 @@ return static function (ContainerConfigurator $container): void {
 
     if ($container->env() === 'test') {
         $services->set(HttpClientResponseFactory::class);
+        $services->set(DNSGetRecordWrapper::class, DnsRecordResolver::class);
     } else {
+        $services->set(DNSGetRecordWrapper::class);
+
         // Shortened URLs are typed by users: checking them must never reach
         //  a service of the private network.
         $services->set(NoPrivateNetworkHttpClient::class)

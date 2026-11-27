@@ -197,7 +197,8 @@
 			"creation_failed": "La création du lien a échouée. Vérifiez les informations saisies et réessayez."
 		},
 		"report": {
-			"send_failed": "L'envoi du signalement pour ce lien raccourci a échoué. Vérifiez les informations saisies et réessayez."
+			"send_failed": "L'envoi du signalement pour ce lien raccourci a échoué. Vérifiez les informations saisies et réessayez.",
+			"undeliverable_email": "Le domaine de votre adresse électronique ne peut pas recevoir de courrier. Vérifiez son orthographe ou laissez le champ vide."
 		},
 		"redirection": {
 			"not-found": {

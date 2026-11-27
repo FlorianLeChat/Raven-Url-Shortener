@@ -197,7 +197,8 @@
 			"creation_failed": "Link creation failed. Please try again."
 		},
 		"report": {
-			"send_failed": "Report sending for this shortened link failed. Please try again."
+			"send_failed": "Report sending for this shortened link failed. Please try again.",
+			"undeliverable_email": "The domain of your email address cannot receive mail. Check its spelling or leave the field empty."
 		},
 		"redirection": {
 			"not-found": {
