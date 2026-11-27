@@ -141,6 +141,21 @@ final class CreateLinkActionTest extends WebTestCase
         $content = json_decode($this->client->getResponse()->getContent(), true);
 
         self::assertMatchesRegularExpression(self::API_KEY_PATTERN, $content['apiKey']);
+
+        $this->client->request('GET', '/v1/link/' . $content['id']);
+
+        self::assertResponseIsSuccessful();
+        self::assertNull(json_decode($this->client->getResponse()->getContent(), true)['apiKey']);
+
+        $this->client->request('PATCH', '/v1/link/' . $content['id'], server: [
+            'HTTP_Authorization' => 'Bearer ' . $content['apiKey']
+        ], content: json_encode([
+            'field' => 'slug',
+            'value' => 'managed-slug'
+        ]));
+
+        self::assertResponseIsSuccessful();
+        self::assertNull(json_decode($this->client->getResponse()->getContent(), true)['apiKey']);
     }
 
     public function testCreateLinkWithFailedUrl(): void

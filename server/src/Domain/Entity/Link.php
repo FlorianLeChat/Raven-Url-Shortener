@@ -208,7 +208,7 @@ class Link
         return $this->apiKey;
     }
 
-    public function setApiKey(ApiKey $apiKey): static
+    public function setApiKey(?ApiKey $apiKey): static
     {
         $this->apiKey = $apiKey;
 
@@ -217,23 +217,17 @@ class Link
 
     /**
      * Serializes the link for the API.
-     * The API key is disclosed only while the link has never been visited: afterwards it is replaced by `**hidden**`.
+     * The API key appears only in the response creating the link, the one request that knows its clear value.
      *
      * @return array<string, mixed>
      */
     public function toArray(): array
     {
-        $apiKey = $this->getApiKey()?->getKey();
-
-        if ($apiKey !== null && $this->getVisitedAt() !== null) {
-            $apiKey = '**hidden**';
-        }
-
         return [
             'id' => $this->getId(),
             'url' => $this->getUrl(),
             'slug' => $this->getSlug(),
-            'apiKey' => $apiKey,
+            'apiKey' => $this->getApiKey()?->getPlainKey(),
             'enabled' => $this->isEnabled(),
             'trusted' => $this->isTrusted(),
             'reported' => count($this->getReports()) > 0,

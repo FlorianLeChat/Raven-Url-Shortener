@@ -47,7 +47,7 @@ return [
                             ],
                             'api-management' => [
                                 'type' => 'boolean',
-                                'description' => 'Indicates if the link can be managed using the API.'
+                                'description' => 'Generates an API key managing the link, returned only in this response.'
                             ]
                         ]
                     ]

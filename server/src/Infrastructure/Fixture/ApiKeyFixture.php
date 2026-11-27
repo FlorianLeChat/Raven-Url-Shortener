@@ -5,12 +5,13 @@ namespace App\Infrastructure\Fixture;
 use DateTimeImmutable;
 use App\Domain\Entity\Link;
 use App\Domain\Entity\ApiKey;
+use App\Domain\Factory\ApiKeyFactory;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
 /**
- * API keys of the test links, all of them long expired.
+ * API keys of the test links, all of them long expired. Tests send the clear values hashed here.
  */
 final class ApiKeyFixture extends Fixture implements DependentFixtureInterface
 {
@@ -28,7 +29,7 @@ final class ApiKeyFixture extends Fixture implements DependentFixtureInterface
     private function createApiKeyWithoutIssue(): ApiKey
     {
         $apiKey = new ApiKey();
-        $apiKey->setKey('7hLtoMvpr3NDyd+l3FFeaZD68HGTffHniUUQPjwGy28=');
+        $apiKey->setKey(ApiKeyFactory::hashKey('7hLtoMvpr3NDyd+l3FFeaZD68HGTffHniUUQPjwGy28='));
         $apiKey->setLink($this->getReference("link1", Link::class));
         $apiKey->setExpiresAt($this->getExpiresAt());
 
@@ -41,7 +42,7 @@ final class ApiKeyFixture extends Fixture implements DependentFixtureInterface
     private function createDisabledApiKey(): ApiKey
     {
         $apiKey = new ApiKey();
-        $apiKey->setKey('i8tyoJjI3PUw+cqLdLCGipV6IPodANondBSqBkPzhfo=');
+        $apiKey->setKey(ApiKeyFactory::hashKey('i8tyoJjI3PUw+cqLdLCGipV6IPodANondBSqBkPzhfo='));
         $apiKey->setLink($this->getReference("link2", Link::class));
         $apiKey->setExpiresAt($this->getExpiresAt());
 
@@ -54,7 +55,7 @@ final class ApiKeyFixture extends Fixture implements DependentFixtureInterface
     private function createReportedApiKey(): ApiKey
     {
         $apiKey = new ApiKey();
-        $apiKey->setKey('wJY8ad9DVlKD+Sn4/ZjBALwI+qcFebozUFZnb2EFfBI=');
+        $apiKey->setKey(ApiKeyFactory::hashKey('wJY8ad9DVlKD+Sn4/ZjBALwI+qcFebozUFZnb2EFfBI='));
         $apiKey->setLink($this->getReference("link3", Link::class));
         $apiKey->setExpiresAt($this->getExpiresAt());
 

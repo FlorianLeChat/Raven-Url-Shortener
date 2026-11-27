@@ -144,7 +144,7 @@ services:
         restart: "no"
         command: >
             sh -c "/usr/local/bin/php bin/console doctrine:database:create --no-interaction --if-not-exists
-            && /usr/local/bin/php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration"
+            && /usr/local/bin/php bin/console doctrine:migrations:migrate --no-interaction"
         volumes:
             - ./logs:/var/www/html/logs
         cap_drop:

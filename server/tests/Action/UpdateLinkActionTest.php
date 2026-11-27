@@ -227,4 +227,17 @@ final class UpdateLinkActionTest extends WebTestCase
         self::assertResponseStatusCodeSame(Response::HTTP_OK);
         self::assertJson($this->client->getResponse()->getContent());
     }
+
+    public function testPutLinkWithoutApiManagement(): void
+    {
+        $server = ['HTTP_Authorization' => 'Bearer 7hLtoMvpr3NDyd+l3FFeaZD68HGTffHniUUQPjwGy28='];
+
+        $this->client->request('PUT', '/v1/link/test1', ['api-management' => 'false'], server: $server);
+
+        self::assertResponseStatusCodeSame(Response::HTTP_OK);
+
+        $this->client->request('PUT', '/v1/link/test1', server: $server);
+
+        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
 }

@@ -5,10 +5,8 @@ namespace App\Domain\Service;
 use Exception;
 use App\Kernel;
 use App\Domain\Entity\Link;
-use Random\RandomException;
 use Psr\Log\LoggerInterface;
 use App\Domain\Factory\LinkFactory;
-use App\Domain\Factory\ApiKeyFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\ORMException;
 use Symfony\Component\HttpFoundation\Request;
@@ -70,8 +68,9 @@ final class UpdateLinkService extends BaseLinkService
 
     /**
      * Replaces the values of the link once the API key is checked, keeping the current value of every field left out.
+     * `api-management` set to false deletes the API key: the link can then no longer be managed, for good.
      * A disabled or reported link cannot be updated.
-     * @throws UniqueConstraintViolationException|ORMException|RandomException|Exception
+     * @throws UniqueConstraintViolationException|ORMException|Exception
      */
     public function replaceLink(Request $request): Link
     {
@@ -87,16 +86,7 @@ final class UpdateLinkService extends BaseLinkService
         $slug = $payload->getString('slug', $this->link->getSlug());
         $password = $payload->getString('password', $this->link->getPassword() ?? '');
         $expiration = $payload->getString('expiration', $this->link->getExpiresAt()?->format('Y-m-d H:i:s') ?? '');
-        $apiManagement = $payload->getBoolean('api-management', $this->link->getApiKey() !== null);
-
-        if ($apiManagement && $this->link->getApiKey() === null) {
-            // Unfinished feature, kept on purpose: checkApiKey() still refuses every link
-            //  without an API key, so no test can reach this block.
-            // @codeCoverageIgnoreStart
-            $apiKey = ApiKeyFactory::create($this->link);
-            $this->link->setApiKey($apiKey);
-            // @codeCoverageIgnoreEnd
-        }
+        $apiManagement = $payload->getBoolean('api-management', true);
 
         if ($this->link->getSlug() !== $slug) {
             $this->checkSlug($slug);
@@ -111,6 +101,13 @@ final class UpdateLinkService extends BaseLinkService
 
         $this->validateLink($this->link);
         $this->checkUrl($this->link->getUrl());
+
+        $apiKey = $this->link->getApiKey();
+
+        if (!$apiManagement && $apiKey !== null) {
+            $this->entityManager->remove($apiKey);
+            $this->link->setApiKey(null);
+        }
 
         $this->repository->save($this->link, true);
 
