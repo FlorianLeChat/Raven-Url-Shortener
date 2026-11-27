@@ -189,7 +189,7 @@ return [
                             ],
                             'api-management' => [
                                 'type' => 'boolean',
-                                'description' => 'Indicates if the link can be managed using the API.'
+                                'description' => 'Set to false to delete the API key: the link can then no longer be managed.'
                             ]
                         ]
                     ]

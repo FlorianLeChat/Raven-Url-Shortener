@@ -11,6 +11,7 @@ use App\Infrastructure\Repository\ApiKeyRepository;
 
 /**
  * Key granting access to the management API of a single link.
+ * Only its SHA-256 hash is stored: the clear value is known to the request that created it, then lost.
  * It expires three months after its creation and is rotated by the `app:api-keys-rotation` command.
  */
 #[ORM\Entity(repositoryClass: ApiKeyRepository::class)]
@@ -24,8 +25,14 @@ class ApiKey
     #[ORM\JoinColumn(nullable: false)]
     private Link $link;
 
-    #[ORM\Column(type: Types::STRING, length: 44)]
+    #[ORM\Column(type: Types::STRING, length: 64)]
     private string $key;
+
+    /**
+     * Clear value of the key, set only by the factory that generated it and never persisted:
+     *  a key read from the database has none.
+     */
+    private ?string $plainKey = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
     private DateTimeImmutable $createdAt;
@@ -70,6 +77,18 @@ class ApiKey
     public function setKey(string $key): static
     {
         $this->key = $key;
+
+        return $this;
+    }
+
+    public function getPlainKey(): ?string
+    {
+        return $this->plainKey;
+    }
+
+    public function setPlainKey(?string $plainKey): static
+    {
+        $this->plainKey = $plainKey;
 
         return $this;
     }

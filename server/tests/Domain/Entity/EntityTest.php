@@ -47,17 +47,17 @@ final class EntityTest extends TestCase
         self::assertCount(0, $link->getReports());
     }
 
-    public function testLinkHidesApiKeyOnceVisited(): void
+    public function testLinkDisclosesOnlyPlainApiKey(): void
     {
         $link = $this->createLink();
-        $apiKey = (new ApiKey())->setKey('key')->setLink($link);
+        $apiKey = (new ApiKey())->setKey('hash')->setLink($link);
         $link->setApiKey($apiKey);
 
+        self::assertNull($link->toArray()['apiKey']);
+
+        $apiKey->setPlainKey('key');
+
         self::assertSame('key', $link->toArray()['apiKey']);
-
-        $link->setVisitedAt(new DateTimeImmutable());
-
-        self::assertSame('**hidden**', $link->toArray()['apiKey']);
     }
 
     public function testApiKey(): void

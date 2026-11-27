@@ -10,6 +10,5 @@ return [
     'HttpTooManyRequests' => require __DIR__ . '/errors/HttpTooManyRequests.php',
     'HttpInternalServerError' => require __DIR__ . '/errors/HttpInternalServerError.php',
     'Link' => require __DIR__ . '/entities/Link.php',
-    'Report' => require __DIR__ . '/entities/Report.php',
-    'ApiKey' => require __DIR__ . '/entities/ApiKey.php'
+    'Report' => require __DIR__ . '/entities/Report.php'
 ];

@@ -20,6 +20,7 @@ use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 /**
  * Daily task rotating the API keys expired for more than a day.
+ * The new keys are never disclosed: rotation ends API access to the links.
  */
 #[AsPeriodicTask('1 day', from: 'midnight')]
 #[AsCommand('app:api-keys-rotation', 'Rotates expired API keys for shortcut links.')]

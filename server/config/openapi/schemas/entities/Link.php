@@ -69,11 +69,9 @@ return [
             ],
         ],
         'apiKey' => [
-            'title' => 'The API key associated with the link',
-            'nullable' => true,
-            'oneOf' => [
-                ['$ref' => '#/components/schemas/ApiKey']
-            ]
+            'title' => 'The API key managing the link, returned only by the request creating it',
+            'type' => 'string',
+            'nullable' => true
         ]
     ]
 ];
