@@ -5,7 +5,6 @@ namespace App\Action;
 use App\Kernel;
 use App\Domain\Entity\Link;
 use Psr\Log\LoggerInterface;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\ORMException;
 use App\Domain\Service\ReportLinkService;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,8 +12,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Requirement\Requirement;
-use Symfony\Contracts\Translation\TranslatorInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -26,9 +23,7 @@ final class ReportLinkAction extends AbstractController
 {
     public function __construct(
         private readonly LoggerInterface $logger,
-        private readonly ValidatorInterface $validator,
-        private readonly TranslatorInterface $translator,
-        private readonly EntityManagerInterface $entityManager
+        private readonly ReportLinkService $service
     ) {
     }
 
@@ -42,15 +37,7 @@ final class ReportLinkAction extends AbstractController
     {
         $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
-        $service = new ReportLinkService(
-            $link,
-            $this->logger,
-            $this->validator,
-            $this->translator,
-            $this->entityManager
-        );
-
-        $report = $service->createReport($request);
+        $report = $this->service->createReport($request, $link);
 
         return new JsonResponse($report->toArray(), Response::HTTP_CREATED);
     }

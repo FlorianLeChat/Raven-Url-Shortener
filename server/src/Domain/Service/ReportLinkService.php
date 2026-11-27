@@ -27,11 +27,7 @@ final readonly class ReportLinkService
     private const MAX_REPORTS_PER_LINK = 3;
     private ReportRepository $repository;
 
-    /**
-     * @param Link $link Link reached by the request, resolved from its identifier or its slug.
-     */
     public function __construct(
-        private Link $link,
         private LoggerInterface $logger,
         private ValidatorInterface $validator,
         private TranslatorInterface $translator,
@@ -67,11 +63,11 @@ final readonly class ReportLinkService
     /**
      * @throws ConflictHttpException When this email address has already reported the link.
      */
-    protected function checkReportExists(string $email): void
+    private function checkReportExists(Link $link, string $email): void
     {
         $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
-        $result = $this->repository->findOneBy(['link' => $this->link, 'email' => $email]);
+        $result = $this->repository->findOneBy(['link' => $link, 'email' => $email]);
 
         if (!empty($result)) {
             throw new ConflictHttpException($this->translator->trans('report.duplicated'));
@@ -110,24 +106,24 @@ final readonly class ReportLinkService
      * Validates and saves the report. The email address is optional; when given, it can report the link once.
      * @throws UniqueConstraintViolationException|ORMException
      */
-    public function createReport(Request $request): Report
+    public function createReport(Request $request, Link $link): Report
     {
         $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
-        $this->checkTrustedLink($this->link);
-        $this->checkMaximumReports($this->link);
+        $this->checkTrustedLink($link);
+        $this->checkMaximumReports($link);
 
         $payload = $request->getPayload();
 
         $email = $payload->getString('email') ?: null;
         $reason = $payload->getString('reason');
 
-        $report = ReportFactory::create($this->link, $reason, $email);
+        $report = ReportFactory::create($link, $reason, $email);
 
         $this->validateReport($report);
 
         if (!empty($report->getEmail())) {
-            $this->checkReportExists($report->getEmail());
+            $this->checkReportExists($link, $report->getEmail());
         }
 
         $this->repository->save($report, true);

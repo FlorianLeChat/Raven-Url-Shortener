@@ -5,7 +5,6 @@ namespace App\Action;
 use App\Kernel;
 use Psr\Log\LoggerInterface;
 use App\Domain\Service\CheckSlugService;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -20,7 +19,7 @@ final class CheckSlugAction extends AbstractController
 {
     public function __construct(
         private readonly LoggerInterface $logger,
-        private readonly EntityManagerInterface $entityManager
+        private readonly CheckSlugService $service
     ) {
     }
 
@@ -32,9 +31,7 @@ final class CheckSlugAction extends AbstractController
     {
         $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
-        $service = new CheckSlugService($this->logger, $this->entityManager);
-
-        $isAvailable = $service->checkSlug($request);
+        $isAvailable = $this->service->checkSlug($request);
 
         return new JsonResponse(['available' => $isAvailable], Response::HTTP_OK);
     }
