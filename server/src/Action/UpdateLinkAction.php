@@ -36,7 +36,7 @@ final class UpdateLinkAction extends AbstractController
     #[Route('/link/{slug}', requirements: ['slug' => Requirement::ASCII_SLUG], methods: ['PATCH'])]
     public function patchLink(Request $request, Link $link): JsonResponse
     {
-        $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+        $this->logger->debug(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
         $updatedLink = $this->service->patchLink($request, $link);
 
@@ -51,7 +51,7 @@ final class UpdateLinkAction extends AbstractController
     #[Route('/link/{slug}', requirements: ['slug' => Requirement::ASCII_SLUG], methods: ['PUT'])]
     public function replaceLink(Request $request, Link $link): JsonResponse
     {
-        $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+        $this->logger->debug(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
         $updatedLink = $this->service->replaceLink($request, $link);
 

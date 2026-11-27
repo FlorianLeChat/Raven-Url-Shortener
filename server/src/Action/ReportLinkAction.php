@@ -35,7 +35,7 @@ final class ReportLinkAction extends AbstractController
     #[Route('/link/{slug}/report', requirements: ['slug' => Requirement::ASCII_SLUG], methods: ['POST'])]
     public function createReport(Request $request, Link $link): JsonResponse
     {
-        $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+        $this->logger->debug(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
         $report = $this->service->createReport($request, $link);
 

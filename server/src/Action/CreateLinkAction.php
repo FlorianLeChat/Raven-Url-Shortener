@@ -35,7 +35,7 @@ final class CreateLinkAction extends AbstractController
     #[Route('/link', methods: ['POST'])]
     public function createLink(Request $request): JsonResponse
     {
-        $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+        $this->logger->debug(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
         $link = $this->service->createLink($request);
 

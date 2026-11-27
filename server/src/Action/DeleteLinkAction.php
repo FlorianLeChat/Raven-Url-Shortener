@@ -34,7 +34,7 @@ final class DeleteLinkAction extends AbstractController
     #[Route('/link/{slug}', requirements: ['slug' => Requirement::ASCII_SLUG], methods: ['DELETE'])]
     public function deleteLink(Request $request, Link $link): Response
     {
-        $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+        $this->logger->debug(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
         $this->service->deleteLink($request, $link);
 

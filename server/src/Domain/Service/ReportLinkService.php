@@ -42,7 +42,7 @@ final readonly class ReportLinkService
      */
     private function validateReport(Report $report): void
     {
-        $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+        $this->logger->debug(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
         $errors = [];
         $violations = $this->validator->validate($report);
@@ -65,7 +65,7 @@ final readonly class ReportLinkService
      */
     private function checkReportExists(Link $link, string $email): void
     {
-        $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+        $this->logger->debug(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
         $result = $this->repository->findOneBy(['link' => $link, 'email' => $email]);
 
@@ -79,7 +79,7 @@ final readonly class ReportLinkService
      */
     private function checkTrustedLink(Link $link): void
     {
-        $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+        $this->logger->debug(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
         if ($link->isTrusted()) {
             throw new AccessDeniedHttpException($this->translator->trans('report.trusted_link'));
@@ -91,7 +91,7 @@ final readonly class ReportLinkService
      */
     private function checkMaximumReports(Link $link): void
     {
-        $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+        $this->logger->debug(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
         $reports = $this->repository->count(['link' => $link]);
 
@@ -108,7 +108,7 @@ final readonly class ReportLinkService
      */
     public function createReport(Request $request, Link $link): Report
     {
-        $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+        $this->logger->debug(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
         $this->checkTrustedLink($link);
         $this->checkMaximumReports($link);

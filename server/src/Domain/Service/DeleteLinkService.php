@@ -20,7 +20,7 @@ final class DeleteLinkService extends BaseLinkService
      */
     public function deleteLink(Request $request, Link $link): Link
     {
-        $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+        $this->logger->debug(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
         $this->checkApiKey($link, $request);
         $this->checkEnabled($link);

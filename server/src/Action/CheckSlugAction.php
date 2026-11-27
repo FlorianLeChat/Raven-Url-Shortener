@@ -29,7 +29,7 @@ final class CheckSlugAction extends AbstractController
     #[Route('/slug', methods: ['POST'])]
     public function checkSlug(Request $request): JsonResponse
     {
-        $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+        $this->logger->debug(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
         $isAvailable = $this->service->checkSlug($request);
 

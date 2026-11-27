@@ -12,6 +12,9 @@ final class Kernel extends BaseKernel
 {
     use MicroKernelTrait;
 
+    /**
+     * Trace written at the start of each method, at the debug level: production only keeps info and above.
+     */
     public const LOG_FUNCTION = '> file %s - namespace %s - function %s - line %s';
 
     /**

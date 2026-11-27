@@ -26,7 +26,7 @@ final class GetLinkDetailsService extends BaseLinkService
      */
     private function checkPassword(Request $request, Link $link): void
     {
-        $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+        $this->logger->debug(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
         $headerPassword = $request->headers->get('Authorization');
 
@@ -52,7 +52,7 @@ final class GetLinkDetailsService extends BaseLinkService
      */
     private function saveLinkVisited(Link $link): void
     {
-        $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+        $this->logger->debug(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
         $visitedAt = $link->getVisitedAt();
         $isVisitedToday = $visitedAt !== null && $visitedAt >= new DateTimeImmutable('today');
@@ -71,7 +71,7 @@ final class GetLinkDetailsService extends BaseLinkService
      */
     private function checkExpiration(Link $link): void
     {
-        $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+        $this->logger->debug(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
         $expiresAt = $link->getExpiresAt();
         $isExpired = $expiresAt !== null && $expiresAt <= new DateTimeImmutable();
@@ -89,7 +89,7 @@ final class GetLinkDetailsService extends BaseLinkService
      */
     public function getLinkDetails(Request $request, Link $link): Link
     {
-        $this->logger->info(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+        $this->logger->debug(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
         $this->checkExpiration($link);
 
