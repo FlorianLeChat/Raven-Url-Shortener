@@ -2,6 +2,7 @@ parameters:
 	level: 9
 	paths:
 		- bin/
+		- config/
 		- public/
 		- src/
 	symfony:
@@ -18,5 +19,3 @@ parameters:
 			- RuntimeException
 	excludePaths:
 		- src/Infrastructure/Fixture/
-	scanDirectories:
-		- var/cache/dev/Symfony/Config
