@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Symfony\Config\FrameworkConfig;
-
 /**
  * @see https://symfony.com/doc/current/routing.html
  */
-return static function (FrameworkConfig $framework, ContainerConfigurator $container): void {
-    if ($container->env() === 'prod') {
-        $framework->router()->strictRequirements(null);
-    }
-};
+return App::config([
+    'when@prod' => [
+        'framework' => [
+            'router' => [
+                'strict_requirements' => null,
+            ],
+        ],
+    ],
+]);
