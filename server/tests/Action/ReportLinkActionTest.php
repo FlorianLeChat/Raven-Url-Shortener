@@ -3,6 +3,7 @@
 namespace App\Tests\Action;
 
 use App\Tests\TestHelperTrait;
+use App\Tests\Mock\DnsRecordResolver;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -25,9 +26,11 @@ final class ReportLinkActionTest extends WebTestCase
         self::loadFixtures($this->client->getKernel()->getProjectDir());
     }
 
-    public function testReportWithNoReason(): void
+    public function testReportWithInvalidData(): void
     {
-        $this->client->request('POST', '/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d0/report');
+        $this->client->request('POST', '/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d0/report', [
+            'email' => 'johndoe@' . DnsRecordResolver::NO_RECORD_HOST
+        ]);
 
         self::assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
 
@@ -36,6 +39,8 @@ final class ReportLinkActionTest extends WebTestCase
         self::assertJson($content);
         self::assertStringStartsWith('{"code":400,"message":"An error occurred during data validation."', $content);
         self::assertStringContainsString('TOO_SHORT_ERROR', $content);
+        self::assertStringContainsString('UNDELIVERABLE_ERROR', $content);
+        self::assertStringContainsString('The domain of this email address cannot receive mail.', $content);
     }
 
     public function testReportWithExistingEmail(): void

@@ -1,7 +1,3 @@
-//
-// Composant du bouton de signalement de la redirection.
-//
-
 "use client";
 
 import { Form,
@@ -24,23 +20,27 @@ import { verifyCaptchaResolution } from "../../dashboard/actions/check-captcha";
 import { useState, type FormEvent } from "react";
 import { Flag, Mail, OctagonAlert, Send } from "lucide-react";
 
+/**
+ * Button opening the form that reports the shortened link to the administrators.
+ */
 export default function ReportRedirection( { id }: Readonly<{ id: string }> )
 {
-	// Déclaration des variables d'état.
 	const messages = useTranslations();
 	const [ isLoading, setIsLoading ] = useState( false );
 	const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
 	const [ isConsentChecked, setIsConsentChecked ] = useState( false );
 	const [ isConsentRequired, setIsConsentRequired ] = useState( false );
 
-	// Création d'un signalement auprès du back-end PHP.
+	/**
+	 * Sends the report to the API without its empty fields. An email address whose domain cannot
+	 *  receive mail gets its own message, so the visitor can fix it or leave it out.
+	 */
 	const reportLink = async ( data: FormData ) =>
 	{
 		const body = new FormData();
 
 		data.forEach( ( value, key ) =>
 		{
-			// Suppression des champs vides.
 			if ( value )
 			{
 				body.append( key, value );
@@ -68,9 +68,12 @@ export default function ReportRedirection( { id }: Readonly<{ id: string }> )
 				return { state: true };
 			}
 
+			const isUndeliverableEmail = json.errors?.email?.some( ( error ) => error.code === "UNDELIVERABLE_ERROR" );
+			const errorKey = isUndeliverableEmail ? "errors.report.undeliverable_email" : "errors.report.send_failed";
+
 			return {
 				state: false,
-				message: messages( "errors.report.send_failed" )
+				message: messages( errorKey )
 			};
 		}
 		catch ( error )
@@ -85,10 +88,11 @@ export default function ReportRedirection( { id }: Readonly<{ id: string }> )
 		}
 	};
 
-	// Soumission du formulaire de signalement.
+	/**
+	 * Solves the captcha challenge, then files the report and tells the result in a toast.
+	 */
 	const onSubmitForm = async ( event: FormEvent<HTMLFormElement> ) =>
 	{
-		// Activation de l'état de chargement.
 		event.preventDefault();
 
 		const formData = new FormData( event.currentTarget );
@@ -96,7 +100,6 @@ export default function ReportRedirection( { id }: Readonly<{ id: string }> )
 
 		setIsLoading( true );
 
-		// Récupération du jeton reCAPTCHA et vérification de sa validité.
 		const captchaPayload = await solveCaptchaChallenge();
 		const isValidCaptcha = await verifyCaptchaResolution( captchaPayload );
 
@@ -114,7 +117,6 @@ export default function ReportRedirection( { id }: Readonly<{ id: string }> )
 			return;
 		}
 
-		// Requête de création d'un nouveau signalement.
 		const reportState = await reportLink( formData );
 
 		if ( !reportState.state || "message" in reportState )
@@ -131,7 +133,6 @@ export default function ReportRedirection( { id }: Readonly<{ id: string }> )
 			return;
 		}
 
-		// Message de confirmation de la création du signalement.
 		addToast( {
 			color: "success",
 			title: messages( "redirect.report.success_title" ),
@@ -142,7 +143,6 @@ export default function ReportRedirection( { id }: Readonly<{ id: string }> )
 		setIsLoading( false );
 	};
 
-	// Affichage du rendu HTML du composant.
 	return (
 		<>
 			<Modal
@@ -152,7 +152,6 @@ export default function ReportRedirection( { id }: Readonly<{ id: string }> )
 				onOpenChange={onOpenChange}
 			>
 				<ModalContent>
-					{/* En-tête du formulaire */}
 					<ModalHeader className="flex items-center gap-2">
 						<OctagonAlert />
 						{messages( "redirect.report.default" )}
@@ -166,7 +165,6 @@ export default function ReportRedirection( { id }: Readonly<{ id: string }> )
 								description={messages( "redirect.report.warning_description" )}
 							/>
 
-							{/* Description */}
 							<Textarea
 								size="lg"
 								name="reason"
@@ -184,7 +182,6 @@ export default function ReportRedirection( { id }: Readonly<{ id: string }> )
 								labelPlacement="outside"
 							/>
 
-							{/* Adresse électronique */}
 							<Input
 								size="lg"
 								type="email"
@@ -199,7 +196,6 @@ export default function ReportRedirection( { id }: Readonly<{ id: string }> )
 								labelPlacement="outside"
 							/>
 
-							{/* Consentement */}
 							<Checkbox
 								isInvalid={isConsentRequired && !isConsentChecked}
 								isDisabled={isLoading || !isConsentRequired}
@@ -209,7 +205,6 @@ export default function ReportRedirection( { id }: Readonly<{ id: string }> )
 							</Checkbox>
 						</ModalBody>
 
-						{/* Pied de page du formulaire */}
 						<ModalFooter className="w-full">
 							<Button
 								type="submit"
@@ -224,7 +219,6 @@ export default function ReportRedirection( { id }: Readonly<{ id: string }> )
 				</ModalContent>
 			</Modal>
 
-			{/* Bouton d'ouverture du formulaire */}
 			<Button
 				size="lg"
 				color="danger"

@@ -7,11 +7,13 @@ use Doctrine\DBAL\Types\Types;
 use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
+use App\Infrastructure\Validator\DeliverableEmail;
 use App\Infrastructure\Repository\ReportRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Report filed by a visitor against a link, with an optional email address to reach them.
+ * Report filed by a visitor against a link, with an optional email address to reach them,
+ *  whose domain must be able to receive mail.
  */
 #[ORM\Entity(repositoryClass: ReportRepository::class)]
 class Report
@@ -35,6 +37,7 @@ class Report
     #[Assert\Length(min: 10, max: 100)]
     #[Assert\NotBlank(allowNull: true, normalizer: 'trim')]
     #[Assert\NoSuspiciousCharacters]
+    #[DeliverableEmail]
     private ?string $email = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
