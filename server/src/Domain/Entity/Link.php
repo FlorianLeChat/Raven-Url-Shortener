@@ -57,7 +57,13 @@ class Link
     private ?DateTimeImmutable $expiresAt = null;
 
     /** @var Collection<int, Report> */
-    #[ORM\OneToMany(targetEntity: Report::class, mappedBy: "link", cascade: ["persist", "remove"], orphanRemoval: true)]
+    #[ORM\OneToMany(
+        targetEntity: Report::class,
+        mappedBy: "link",
+        cascade: ["persist", "remove"],
+        fetch: "EXTRA_LAZY",
+        orphanRemoval: true
+    )]
     private Collection $reports;
 
     #[ORM\OneToOne(targetEntity: ApiKey::class, mappedBy: "link", cascade: ["persist", "remove"], orphanRemoval: true)]
@@ -195,6 +201,7 @@ class Link
 
     /**
      * Reports filed by visitors. A link with at least one report is locked until an administrator checks it.
+     * The collection is extra lazy: counting it runs a `COUNT` query instead of loading every report.
      *
      * @return Collection<int, Report>
      */
