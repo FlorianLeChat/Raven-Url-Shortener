@@ -170,6 +170,12 @@ final class CreateLinkActionTest extends WebTestCase
 
         self::assertStringContainsString('UNREACHABLE_URL_ERROR', $content);
         self::assertStringContainsString('The specified URL is unreachable.', $content);
+
+        $this->client->request('POST', '/v1/link', [
+            'url' => 'https://' . HttpClientResponseFactory::LARGE_PAGE_HOST . '/page'
+        ]);
+
+        self::assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
     }
 
     public function testCreateLinkWithBlockedUrl(): void

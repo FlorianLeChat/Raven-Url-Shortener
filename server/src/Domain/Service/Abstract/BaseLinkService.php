@@ -29,6 +29,20 @@ abstract class BaseLinkService
      */
     private const API_KEY_PATTERN = '/^.{43}=$/';
 
+    /**
+     * Options of the request checking a target URL: 5 seconds without data, 10 seconds at most in all.
+     */
+    private const CHECK_URL_OPTIONS = [
+        'timeout' => 5,
+        'max_duration' => 10,
+        'max_redirects' => 1
+    ];
+
+    /**
+     * Bytes of the body read to recognize a firewall page (64 KiB).
+     */
+    private const MAX_BODY_LENGTH = 65536;
+
     protected readonly LinkRepository $repository;
 
     public function __construct(
@@ -66,13 +80,34 @@ abstract class BaseLinkService
     }
 
     /**
+     * Reads the start of the body, then drops the rest of the download.
+     * @throws ExceptionInterface
+     */
+    private function readBodyStart(ResponseInterface $response): string
+    {
+        $body = '';
+
+        foreach ($this->httpClient->stream($response) as $chunk) {
+            $body .= $chunk->getContent();
+
+            if (strlen($body) >= self::MAX_BODY_LENGTH) {
+                $response->cancel();
+                break;
+            }
+        }
+
+        return substr($body, 0, self::MAX_BODY_LENGTH);
+    }
+
+    /**
      * Tells whether the target site refused the check itself (firewall, rate limiting, bot challenge)
      *  rather than being unreachable: such a URL is accepted.
+     * Only the start of the body is searched for the challenge keywords.
      * @throws ExceptionInterface
      */
     private function isBlockedRequest(string $url, ResponseInterface $response): bool
     {
-        $content = strtolower($response->getContent(false));
+        $content = strtolower($this->readBodyStart($response));
         $keywords = str_contains($content, 'access denied') || str_contains($content, 'verify you are human');
         $isBlocked = in_array($response->getStatusCode(), [403, 429], true) || $keywords;
 
@@ -85,6 +120,7 @@ abstract class BaseLinkService
 
     /**
      * Makes sure the target URL answers, following at most one redirection.
+     * The body of a 200 response is never downloaded, and only the start of any other one is read.
      * The HTTP client refuses private network addresses outside the test environment (see `config/services.php`).
      * @throws DataValidationException When the URL is unreachable or does not answer with a 200 status.
      */
@@ -94,13 +130,12 @@ abstract class BaseLinkService
 
         try {
             $errors = [];
-            $response = $this->httpClient->request('GET', $url, [
-                'timeout' => 5,
-                'max_redirects' => 1
-            ]);
+            $response = $this->httpClient->request('GET', $url, self::CHECK_URL_OPTIONS);
 
-            $isBlocked = $this->isBlockedRequest($url, $response);
-            $isFailed = $response->getStatusCode() !== 200 && !$isBlocked;
+            $isSuccessful = $response->getStatusCode() === 200;
+            $isFailed = !$isSuccessful && !$this->isBlockedRequest($url, $response);
+
+            $response->cancel();
 
             if ($isFailed) {
                 $errors['url'][] = [

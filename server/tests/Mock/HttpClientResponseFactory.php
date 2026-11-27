@@ -16,9 +16,12 @@ final class HttpClientResponseFactory
 
     public const FORBIDDEN_HOST = 'forbidden.example.com';
 
+    public const LARGE_PAGE_HOST = 'large-page.example.com';
+
     /**
      * Answers the scenario picked by the host of the URL: a transport error, a 404 status,
-     *  a 403 status with a firewall page, or a 200 status for any other host.
+     *  a 403 status with a firewall page, a 404 status whose challenge keywords lie past the 64 KiB
+     *  read by the check, or a 200 status for any other host.
      */
     public function __invoke(string $method, string $url): MockResponse
     {
@@ -26,6 +29,10 @@ final class HttpClientResponseFactory
             self::UNREACHABLE_HOST => new MockResponse(info: ['error' => 'Could not resolve host.']),
             self::NOT_FOUND_HOST => new MockResponse(info: ['http_code' => 404]),
             self::FORBIDDEN_HOST => new MockResponse('Access denied', ['http_code' => 403]),
+            self::LARGE_PAGE_HOST => new MockResponse(
+                [str_repeat('a', 65536), 'Verify you are human'],
+                ['http_code' => 404]
+            ),
             default => new MockResponse('OK')
         };
     }
