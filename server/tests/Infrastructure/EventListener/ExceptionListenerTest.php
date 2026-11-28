@@ -8,6 +8,7 @@ use Psr\Log\NullLogger;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Translation\IdentityTranslator;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use App\Infrastructure\EventListener\ExceptionListener;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
@@ -36,7 +37,7 @@ final class ExceptionListenerTest extends TestCase
 
     public function testHttpException(): void
     {
-        $listener = new ExceptionListener(new NullLogger());
+        $listener = new ExceptionListener(new NullLogger(), new IdentityTranslator());
         $event = $this->dispatch($listener, new TooManyRequestsHttpException(30, 'Too many requests'));
         $response = $event->getResponse();
 
@@ -48,7 +49,7 @@ final class ExceptionListenerTest extends TestCase
 
     public function testResponseIsNotSharedBetweenRequests(): void
     {
-        $listener = new ExceptionListener(new NullLogger());
+        $listener = new ExceptionListener(new NullLogger(), new IdentityTranslator());
         $firstEvent = $this->dispatch($listener, new TooManyRequestsHttpException(30, 'Too many requests'));
         $secondEvent = $this->dispatch($listener, new RuntimeException('Internal error'));
         $secondResponse = $secondEvent->getResponse();
@@ -57,5 +58,6 @@ final class ExceptionListenerTest extends TestCase
         self::assertNotSame($firstEvent->getResponse(), $secondResponse);
         self::assertSame(500, $secondResponse->getStatusCode());
         self::assertFalse($secondResponse->headers->has('Retry-After'));
+        self::assertSame('{"code":500,"message":"http.internal_server_error"}', $secondResponse->getContent());
     }
 }

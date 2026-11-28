@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Raven Url Shortener is a URL shortener split into two applications: a Next.js 16 front-end in `client/` (TypeScript, React 19, HeroUI, Tailwind CSS, next-intl) and a Symfony 7.4 REST API in `server/` (PHP 8.2+, Doctrine, PostgreSQL, Valkey). In production, Varnish sits in front of the client and Swagger UI serves the OpenAPI documentation. The code is hosted on a private GitLab instance; GitHub is a mirror.
+Raven Url Shortener is a URL shortener split into two applications: a Next.js 16 front-end in `client/` (TypeScript, React 19, HeroUI, Tailwind CSS, next-intl) and a Symfony 7.4 REST API in `server/` (PHP 8.2+, Doctrine, PostgreSQL, Valkey). In production, Varnish sits in front of the client, and the server image ships the OpenAPI documentation as a static page built with Redocly CLI and served at `/docs`. The code is hosted on a private GitLab instance; GitHub is a mirror.
 
 ## Environment
 
@@ -65,6 +65,14 @@ PhpStorm also runs EA Extended and SonarLint inspections. Code must be free of t
 - Documentation lives in the doc block of the class or method. **No inline comment** (`//`, `/* */` inside a body, `{/* */}` in JSX) is written beside the lines of a change or a fix to explain it: when a decision needs recording, it goes in the doc block of the enclosing method or class. The one exception is a technical trap, a line that looks wrong or useless and would be "fixed" into a bug without its comment (the `NoPrivateNetworkHttpClient` decoration in `config/services.php`).
 - A change that alters what a doc block or an existing comment describes updates it in the same commit. A non-obvious method that gains a responsibility gets a doc block. A comment that would stay true whatever the code becomes, or that drifted from it, is worse than none.
 - Do not add comments that repeat the code or narrate a change ("now", "used to", "fixed"): the git history owns that. Commented out code goes.
+
+## API documentation
+
+- The OpenAPI 3.0 specification is `server/openapi.yaml`, written by hand. The Docker build turns it into the Redocly page served at `/docs`; the API itself does not serve it.
+- Its `${VERSION}`, `${APP_RATE_LIMIT_ENABLED}`, `${APP_RATE_LIMIT_READ_API}` and `${APP_RATE_LIMIT_WRITE_API}` placeholders are replaced from `server/.env` by `envsubst` in `server/docker/Dockerfile`. A new placeholder must be added to both lists of that step.
+- **Every change to the API updates the specification in the same commit**: a new or changed endpoint, request body field, validation constraint, status code, error message, response header or response field. Keep its descriptions, examples (`examples`, taken from real responses) and `x-codeSamples` in line with the code.
+- A nullable `$ref` is written `allOf` with a nullable schema, such as `NullableDateTime`: OpenAPI 3.0 ignores the siblings of a `$ref`.
+- Check it from `server/` with `npx @redocly/cli@2.78.0 lint openapi.yaml`: no error allowed. The Docker build runs the same lint.
 
 ## Client
 

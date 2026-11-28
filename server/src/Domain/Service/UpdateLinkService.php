@@ -37,6 +37,10 @@ final class UpdateLinkService extends BaseLinkService
             $this->checkSlug($value);
         }
 
+        if ($field === 'expiresAt') {
+            $this->checkExpirationFormat($value);
+        }
+
         LinkFactory::patch($link, $field, $value);
 
         $this->validateLink($link);
@@ -65,7 +69,6 @@ final class UpdateLinkService extends BaseLinkService
 
         $url = $payload->getString('url', $link->getUrl());
         $slug = $payload->getString('slug', $link->getSlug());
-        $password = $payload->getString('password', $link->getPassword() ?? '');
         $expiration = $payload->getString('expiration', $link->getExpiresAt()?->format('Y-m-d H:i:s') ?? '');
         $apiManagement = $payload->getBoolean('api-management', true);
 
@@ -73,12 +76,19 @@ final class UpdateLinkService extends BaseLinkService
             $this->checkSlug($slug);
         }
 
-        LinkFactory::update($link, [
+        $this->checkExpirationFormat($expiration);
+
+        $options = [
             'url' => $url,
             'slug' => $slug,
-            'password' => $password,
             'expiration' => $expiration
-        ]);
+        ];
+
+        if ($payload->has('password')) {
+            $options['password'] = $payload->getString('password');
+        }
+
+        LinkFactory::update($link, $options);
 
         $this->validateLink($link);
         $this->checkUrl($link->getUrl());

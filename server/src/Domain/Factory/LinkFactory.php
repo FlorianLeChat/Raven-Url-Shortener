@@ -76,6 +76,7 @@ final class LinkFactory
 
     /**
      * Replaces every value of the link. An empty password or expiration date removes the option.
+     * A password left out keeps the current hash: hashing it again would lock the link.
      *
      * @param array{
      *  url: string,
@@ -89,16 +90,17 @@ final class LinkFactory
     {
         $url = $options['url'];
 
-        $password = $options['password'] ?? null;
-        $password = !empty($password) ? self::hashPassword($password) : null;
-
         $expiration = $options['expiration'] ?? null;
         $expiration = !empty($expiration) ? self::parseExpiration($expiration) : null;
+
+        if (array_key_exists('password', $options)) {
+            $password = $options['password'];
+            $link->setPassword(!empty($password) ? self::hashPassword($password) : null);
+        }
 
         $link->setUrl($url);
         $link->setSlug($options['slug']);
         $link->setTrusted(TrustedDomains::isTrusted($url));
-        $link->setPassword($password);
         $link->setUpdatedAt(new DateTimeImmutable());
         $link->setExpiresAt($expiration);
 

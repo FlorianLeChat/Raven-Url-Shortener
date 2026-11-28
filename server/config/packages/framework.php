@@ -12,9 +12,6 @@ use App\Tests\Mock\HttpClientResponseFactory;
 return App::config([
     'framework' => [
         'secret' => '%env(APP_SECRET)%',
-        'property_info' => [
-            'with_constructor_extractor' => true,
-        ],
     ],
     'when@test' => [
         'framework' => [

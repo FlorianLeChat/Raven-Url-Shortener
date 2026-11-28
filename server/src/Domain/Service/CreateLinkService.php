@@ -53,6 +53,8 @@ final class CreateLinkService extends BaseLinkService
         $expiration = $payload->getString('expiration') ?: null;
         $apiManagement = $payload->getBoolean('api-management');
 
+        $this->checkExpirationFormat((string) $expiration);
+
         $link = LinkFactory::create([
             'url' => $url,
             'slug' => $slug,

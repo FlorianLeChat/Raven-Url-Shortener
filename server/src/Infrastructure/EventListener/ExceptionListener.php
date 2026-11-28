@@ -7,8 +7,10 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Infrastructure\Exception\DataValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 /**
@@ -20,18 +22,20 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 final readonly class ExceptionListener
 {
     public function __construct(
-        private LoggerInterface $logger
+        private LoggerInterface $logger,
+        private TranslatorInterface $translator
     ) {
     }
 
     /**
      * Answers a 500 error for any exception outside HTTP ones, and logs it as critical.
+     * The client gets a generic message: the one of the exception can disclose internals (SQL, paths, PHP errors).
      */
     private function handleInternalException(Throwable $exception): JsonResponse
     {
         $data = [
             'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
-            'message' => $exception->getMessage()
+            'message' => $this->translator->trans('http.internal_server_error')
         ];
 
         $this->logger->critical($exception->getMessage(), [
@@ -45,12 +49,15 @@ final readonly class ExceptionListener
 
     /**
      * Answers the status and the headers of the HTTP exception, with the violations of a DataValidationException.
+     * A 404 gets a generic message: the ones of the router and the entity resolver disclose class names.
      */
     private function handleHttpException(HttpExceptionInterface $exception): JsonResponse
     {
+        $isNotFound = $exception instanceof NotFoundHttpException;
+
         $data = [
             'code' => $exception->getStatusCode(),
-            'message' => $exception->getMessage()
+            'message' => $isNotFound ? $this->translator->trans('http.not_found') : $exception->getMessage()
         ];
 
         if ($exception instanceof DataValidationException) {
