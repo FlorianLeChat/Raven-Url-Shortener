@@ -35,7 +35,7 @@ final readonly class ExceptionListener
     {
         $data = [
             'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
-            'message' => $this->translator->trans('http.internal_server_error')
+            'message' => $this->translator->trans('internal_server_error', domain: 'http')
         ];
 
         $this->logger->critical($exception->getMessage(), [
@@ -57,7 +57,7 @@ final readonly class ExceptionListener
 
         $data = [
             'code' => $exception->getStatusCode(),
-            'message' => $isNotFound ? $this->translator->trans('http.not_found') : $exception->getMessage()
+            'message' => $isNotFound ? $this->translator->trans('not_found', domain: 'http') : $exception->getMessage()
         ];
 
         if ($exception instanceof DataValidationException) {

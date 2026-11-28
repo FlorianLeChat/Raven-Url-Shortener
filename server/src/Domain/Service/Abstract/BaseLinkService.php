@@ -15,6 +15,7 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Infrastructure\Exception\DataValidationException;
+use App\Infrastructure\EventListener\AdminApiKeyListener;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -143,7 +144,7 @@ abstract class BaseLinkService
                 $errors['url'][] = [
                     'code' => 'UNREACHABLE_URL_ERROR',
                     'value' => $url,
-                    'message' => $this->translator->trans('link.unreachable_url')
+                    'message' => $this->translator->trans('unreachable_url', domain: 'link')
                 ];
 
                 throw new DataValidationException($errors);
@@ -173,7 +174,7 @@ abstract class BaseLinkService
             $errors['slug'][] = [
                 'code' => 'DUPLICATE_SLUG_ERROR',
                 'value' => $slug,
-                'message' => $this->translator->trans('slug.already_used')
+                'message' => $this->translator->trans('already_used', domain: 'slug')
             ];
 
             throw new DataValidationException($errors);
@@ -216,7 +217,7 @@ abstract class BaseLinkService
         $this->logger->debug(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
         if (!$link->isEnabled()) {
-            throw new AccessDeniedHttpException($this->translator->trans('link.disabled'));
+            throw new AccessDeniedHttpException($this->translator->trans('disabled', domain: 'link'));
         }
     }
 
@@ -228,13 +229,14 @@ abstract class BaseLinkService
         $this->logger->debug(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
         if ($link->hasPendingReports()) {
-            throw new AccessDeniedHttpException($this->translator->trans('link.reported'));
+            throw new AccessDeniedHttpException($this->translator->trans('reported', domain: 'link'));
         }
     }
 
     /**
      * Compares the hash of the `Authorization: Bearer <key>` header with the stored hash of the API key of the link,
      *  in constant time. A link without an API key refuses every key.
+     * An administrator request manages any link without its key (see AdminApiKeyListener).
      * @throws UnauthorizedHttpException When the header is missing.
      * @throws AccessDeniedHttpException When the key is malformed or does not match.
      */
@@ -242,10 +244,14 @@ abstract class BaseLinkService
     {
         $this->logger->debug(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
+        if ($request->attributes->getBoolean(AdminApiKeyListener::IS_ADMIN)) {
+            return;
+        }
+
         $headerApiKey = $request->headers->get('Authorization');
 
         if (empty($headerApiKey)) {
-            throw new UnauthorizedHttpException('Bearer', $this->translator->trans('api_key.missing'));
+            throw new UnauthorizedHttpException('Bearer', $this->translator->trans('missing', domain: 'api_key'));
         }
 
         $headerApiKey = str_replace('Bearer ', '', $headerApiKey);
@@ -254,7 +260,7 @@ abstract class BaseLinkService
         $isValidApiKey = $isWellFormed && hash_equals($storedApiKey, ApiKeyFactory::hashKey($headerApiKey));
 
         if (!$isValidApiKey) {
-            throw new AccessDeniedHttpException($this->translator->trans('api_key.invalid'));
+            throw new AccessDeniedHttpException($this->translator->trans('invalid', domain: 'api_key'));
         }
     }
 }

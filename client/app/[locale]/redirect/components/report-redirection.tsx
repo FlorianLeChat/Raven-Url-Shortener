@@ -16,7 +16,6 @@ import { Form,
 import { useTranslations } from "next-intl";
 import type { ErrorProperties } from "@/interfaces/ErrorProperties";
 import { solveCaptchaChallenge } from "@/utilities/captcha";
-import { verifyCaptchaResolution } from "../../dashboard/actions/check-captcha";
 import { useState, type FormEvent } from "react";
 import { Flag, Mail, OctagonAlert, Send } from "lucide-react";
 
@@ -68,8 +67,10 @@ export default function ReportRedirection( { id }: Readonly<{ id: string }> )
 				return { state: true };
 			}
 
+			const isCaptchaError = json.errors?.captcha !== undefined;
 			const isUndeliverableEmail = json.errors?.email?.some( ( error ) => error.code === "UNDELIVERABLE_ERROR" );
-			const errorKey = isUndeliverableEmail ? "errors.report.undeliverable_email" : "errors.report.send_failed";
+			const emailErrorKey = isUndeliverableEmail ? "errors.report.undeliverable_email" : "errors.report.send_failed";
+			const errorKey = isCaptchaError ? "errors.captcha.check_failed" : emailErrorKey;
 
 			return {
 				state: false,
@@ -101,9 +102,13 @@ export default function ReportRedirection( { id }: Readonly<{ id: string }> )
 		setIsLoading( true );
 
 		const captchaPayload = await solveCaptchaChallenge();
-		const isValidCaptcha = await verifyCaptchaResolution( captchaPayload );
 
-		if ( !isValidCaptcha )
+		if ( captchaPayload )
+		{
+			formData.set( "captcha", captchaPayload );
+		}
+
+		if ( captchaPayload === null )
 		{
 			addToast( {
 				color: "danger",

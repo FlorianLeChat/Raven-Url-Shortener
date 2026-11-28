@@ -14,8 +14,8 @@ info:
 
         **By using this service, you accept our [legal notice](https://url.florian-dev.fr/legal).**
 
-        Rate limiting enabled: **${APP_RATE_LIMIT_ENABLED}**. When it is, each IP address can send
-        **${APP_RATE_LIMIT_READ_API} read requests** and **${APP_RATE_LIMIT_WRITE_API} write requests** per minute.
+        Rate limiting enabled: **${RATE_LIMIT_ENABLED}**. When it is, each IP address can send
+        **${RATE_LIMIT_READ_API} read requests** and **${RATE_LIMIT_WRITE_API} write requests** per minute.
         These limits may change with the use and the load of the service. To raise them for your own use,
         contact an administrator at `contact@florian-dev.fr`.
 
@@ -33,16 +33,34 @@ info:
 
         # Authentication
 
-        The `Authorization` HTTP header carries two different secrets, depending on the endpoint:
+        The `Authorization` HTTP header carries different secrets, depending on the endpoint:
 
         - **API key** (`Authorization: Bearer <key>`): created with the link when `api-management` is
           `true`, and returned only once, in the response creating the link. Store it: it cannot be read
           again. It is required to update or delete the link.
         - **Link password** (`Authorization: Password <password>`): required to read the details of a link
           protected by a password.
-        - **Private API key** (`Authorization: Bearer <key>`): the key of the server itself. When the server
-          runs as a private API, every request must send it from an allowed origin. Whether the API is private
-          or public, the administrator endpoints also require it, such as the review of a report.
+        - **Administrator API key** (`Authorization: Bearer <key>`): required by the administrator endpoints,
+          such as the review of a report, whether the API is private or public. Sent to any endpoint, it
+          replaces the private API key, the password and the API key of a link, skips the CAPTCHA and is not
+          counted by the rate limiter. A link locked by a pending report still waits for its review.
+
+        The **private API key** travels in its own header, `X-Api-Key: <key>`. When the server runs as
+        a private API with a key, every request must send it from an allowed origin, beside the secret
+        of the endpoint, unless it sends the administrator API key.
+
+        An endpoint answers `400` to an `Authorization` header it does not read, unless it carries the
+        administrator API key, and an API without private API key answers `400` to the `X-Api-Key` header.
+        Reading a link without password refuses a password the same way.
+
+        # CAPTCHA
+
+        A private API also requires a solved [ALTCHA](https://altcha.org/) proof of work challenge on the
+        link creation and report requests. Get a challenge from `GET /v1/captcha`, find the `number` whose
+        SHA-256 hash of `salt` + `number` equals `challenge` (as `altcha-lib` does), then send the JSON object
+        `{algorithm, challenge, number, salt, signature}` encoded in base64 in the `captcha` body field.
+        A challenge expires after 60 seconds and its solution is accepted only once. A public API, and a request
+        sending the administrator API key, require no CAPTCHA: the field is then ignored.
 
         # Errors
 
@@ -55,7 +73,8 @@ info:
 
         # Rate limiting
 
-        When the rate limit of your IP address is reached, the API returns `429` with these headers:
+        When the rate limit of your IP address is reached, the API returns `429` with these headers.
+        The requests sending the administrator API key are not counted.
 
         - `Retry-After`: seconds to wait before the next request;
         - `X-RateLimit-Limit`: number of requests allowed in the window;
@@ -83,6 +102,8 @@ tags:
             returned by its creation.
     -   name: Slug
         description: 'Custom slugs, the readable part of a short link URL.'
+    -   name: Captcha
+        description: 'Proof of work challenges required by the write requests of a private API.'
     -   name: Report
         description: >-
             Reports of malicious links. A link with a pending report is locked until an administrator
@@ -113,6 +134,8 @@ paths:
                                 Version: 1.4.2.
                                 Server is running. Response time: 12.345 ms.
                                 Ready to handle requests.
+                '400':
+                    $ref: '#/components/responses/UnexpectedAuthorization'
                 '429':
                     $ref: '#/components/responses/TooManyRequests'
                 '500':
@@ -170,6 +193,56 @@ paths:
                                     summary: 'Slug already used'
                                     value:
                                         available: false
+                '400':
+                    $ref: '#/components/responses/UnexpectedAuthorization'
+                '429':
+                    $ref: '#/components/responses/TooManyRequests'
+                '500':
+                    $ref: '#/components/responses/InternalServerError'
+    /v1/captcha:
+        get:
+            tags:
+                - Captcha
+            operationId: getCaptchaChallenge
+            summary: 'Get a CAPTCHA challenge'
+            description: >-
+                Get a new ALTCHA challenge to solve before creating or reporting a link on a private API.
+                The challenge expires after 60 seconds and is never stored by a cache. A public API requires
+                no CAPTCHA and answers `404`.
+            security: []
+            x-codeSamples:
+                -   lang: Shell
+                    label: cURL
+                    source: 'curl https://internal.florian-dev.fr/url-api/v1/captcha'
+            responses:
+                '200':
+                    description: 'Challenge to solve'
+                    headers:
+                        Cache-Control:
+                            schema:
+                                type: string
+                            example: 'no-store, private'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CaptchaChallenge'
+                            example:
+                                algorithm: SHA-256
+                                challenge: 43f208e0e54d56a0f93aebd4b25fa746681f46cb057cb98c748bf5521d603294
+                                maxnumber: 100000
+                                salt: '3fe7e8d3a8744a66e556dd53?expires=1795869558&'
+                                signature: 07c4e0b1475b4b1d3df2c7c9ba65c45fca15fbd6959fa44d61957b7ae3e0f265
+                '404':
+                    description: 'The API is public and requires no CAPTCHA'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                            example:
+                                code: 404
+                                message: 'The requested resource was not found.'
+                '400':
+                    $ref: '#/components/responses/UnexpectedAuthorization'
                 '429':
                     $ref: '#/components/responses/TooManyRequests'
                 '500':
@@ -189,6 +262,8 @@ paths:
 
                 When `api-management` is `true`, the response holds the `apiKey` managing the link.
                 **It is returned only in this response**: store it to update or delete the link later.
+
+                A private API also requires a solved CAPTCHA challenge in the `captcha` field.
             security: []
             x-codeSamples:
                 -   lang: Shell
@@ -219,6 +294,8 @@ paths:
                                     default: false
                                     description: >-
                                         Generates an API key to manage the link, returned only in this response.
+                                captcha:
+                                    $ref: '#/components/schemas/CaptchaSolution'
                         examples:
                             minimal:
                                 summary: 'URL only, random slug'
@@ -289,6 +366,8 @@ paths:
                     $ref: '#/components/responses/TooManyRequests'
                 '500':
                     $ref: '#/components/responses/InternalServerError'
+                '503':
+                    $ref: '#/components/responses/CaptchaUnavailable'
     /v1/link/{link}:
         parameters:
             -   $ref: '#/components/parameters/Link'
@@ -311,6 +390,7 @@ paths:
             security:
                 -   {}
                 -   PasswordAuth: []
+                -   AdminApiKeyAuth: []
             x-codeSamples:
                 -   lang: Shell
                     label: cURL
@@ -348,6 +428,17 @@ paths:
                                     date: '2027-06-30 23:59:59.000000'
                                     timezone_type: 3
                                     timezone: Europe/Paris
+                '400':
+                    description: 'Password sent to a link without one, or unexpected "Authorization" header'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                            example:
+                                code: 400
+                                message: >-
+                                    The specified shortcut link is not protected by a password.
+                                    Please remove the "Authorization" HTTP header.
                 '401':
                     description: 'Link password required'
                     headers:
@@ -407,6 +498,7 @@ paths:
                 updated or deleted again**.
             security:
                 -   ApiKeyAuth: []
+                -   AdminApiKeyAuth: []
             x-codeSamples:
                 -   lang: Shell
                     label: cURL
@@ -478,6 +570,7 @@ paths:
                 An unknown `field` returns `400` without `errors`.
             security:
                 -   ApiKeyAuth: []
+                -   AdminApiKeyAuth: []
             x-codeSamples:
                 -   lang: Shell
                     label: cURL
@@ -554,6 +647,7 @@ paths:
                 A disabled or reported link cannot be deleted.
             security:
                 -   ApiKeyAuth: []
+                -   AdminApiKeyAuth: []
             x-codeSamples:
                 -   lang: Shell
                     label: cURL
@@ -591,6 +685,7 @@ paths:
                   must be able to receive mail.
                 - The reporter who leaves an email address receives the outcome of the review, in the language
                   of the `Accept-Language` header of this request (`en` or `fr`).
+                - A private API also requires a solved CAPTCHA challenge in the `captcha` field.
             security: []
             x-codeSamples:
                 -   lang: Shell
@@ -612,6 +707,8 @@ paths:
                                     $ref: '#/components/schemas/ReportReason'
                                 email:
                                     $ref: '#/components/schemas/ReportEmail'
+                                captcha:
+                                    $ref: '#/components/schemas/CaptchaSolution'
                         examples:
                             anonymous:
                                 summary: 'Anonymous report'
@@ -711,6 +808,8 @@ paths:
                                             It cannot be reported again.
                 '500':
                     $ref: '#/components/responses/InternalServerError'
+                '503':
+                    $ref: '#/components/responses/CaptchaUnavailable'
     /v1/report/{report}:
         parameters:
             -   in: path
@@ -728,7 +827,7 @@ paths:
             summary: 'Accept or reject a report'
             description: |
                 Close a pending report with the decision of an administrator. Reserved to the administrators:
-                the request requires the private API key.
+                the request requires the administrator API key.
 
                 - `accepted`: the link is disabled.
                 - `rejected`: the report no longer locks the link, which is released once no other report
@@ -739,13 +838,13 @@ paths:
                 When the reporter left an email address, they receive the outcome in the language of their report,
                 once the response is sent. A failure to send this email does not fail the review.
             security:
-                -   PrivateApiKeyAuth: []
+                -   AdminApiKeyAuth: []
             x-codeSamples:
                 -   lang: Shell
                     label: cURL
                     source: |
                         curl -X PATCH https://api.url.florian-dev.fr/v1/report/0196cb20-1c4a-7d3e-9f21-5a8b7c6d4e3f \
-                            -H "Authorization: Bearer <private API key>" \
+                            -H "Authorization: Bearer <administrator API key>" \
                             -H "Content-Type: application/json" \
                             -d '{"status": "rejected", "trusted": true}'
             requestBody:
@@ -833,7 +932,7 @@ paths:
                 '401':
                     $ref: '#/components/responses/ApiKeyMissing'
                 '403':
-                    description: 'Private API key invalid'
+                    description: 'Administrator API key invalid'
                     content:
                         application/json:
                             schema:
@@ -877,14 +976,14 @@ components:
             name: Authorization
             description: >-
                 Password of a protected link, prefixed by `Password `: `Authorization: Password <password>`.
-        PrivateApiKeyAuth:
+        AdminApiKeyAuth:
             type: http
             scheme: bearer
             description: >-
-                Private API key, set by `APP_PRIVATE_API_KEY` on the server: required by every request of a private
-                API, and by the administrator endpoints of a private or public API.
-                Send it as `Authorization: Bearer <key>`. When the server sets no key, the administrator endpoints
-                refuse every request.
+                Administrator API key, set by `ADMIN_API_KEY` on the server: required by the administrator
+                endpoints of a private or public API. Send it as `Authorization: Bearer <key>`. On any endpoint,
+                it replaces the private API key and the secrets of a link, skips the CAPTCHA and the rate limit.
+                When the server sets no key, the administrator endpoints refuse every request.
     parameters:
         Link:
             in: path
@@ -1041,6 +1140,30 @@ components:
                                         -   code: UNDELIVERABLE_ERROR
                                             value: 'jane.doe@no-mail.example'
                                             message: 'The domain of this email address cannot receive mail.'
+                        captchaMissing:
+                            summary: 'CAPTCHA solution missing (private API)'
+                            value:
+                                code: 400
+                                message: 'An error occurred during data validation.'
+                                errors:
+                                    captcha:
+                                        -   code: CAPTCHA_MISSING_ERROR
+                                            value: null
+                                            message: >-
+                                                A solved CAPTCHA challenge is required.
+                                                Please provide it in the "captcha" field.
+                        captchaInvalid:
+                            summary: 'CAPTCHA solution invalid, expired or already used (private API)'
+                            value:
+                                code: 400
+                                message: 'An error occurred during data validation.'
+                                errors:
+                                    captcha:
+                                        -   code: CAPTCHA_INVALID_ERROR
+                                            value: null
+                                            message: >-
+                                                The CAPTCHA solution is invalid, expired or already used.
+                                                Please solve a new challenge.
         ApiKeyMissing:
             description: 'API key missing'
             headers:
@@ -1111,6 +1234,15 @@ components:
                         message: >-
                             Too many requests made for the current IP address.
                             See response headers for more information.
+        UnexpectedAuthorization:
+            description: 'The request sends an "Authorization" header the endpoint does not read'
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/Error'
+                    example:
+                        code: 400
+                        message: 'This endpoint does not read the "Authorization" HTTP header. Please remove it.'
         InternalServerError:
             description: 'Internal server error'
             content:
@@ -1120,6 +1252,15 @@ components:
                     example:
                         code: 500
                         message: 'There was an error while processing your request.'
+        CaptchaUnavailable:
+            description: 'CAPTCHA check unavailable, the database storing the solved challenges cannot be reached'
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/Error'
+                    example:
+                        code: 503
+                        message: 'The CAPTCHA check is temporarily unavailable. Please try again later.'
     schemas:
         DateTime:
             type: object
@@ -1309,6 +1450,38 @@ components:
                 The email address of the reporter, so an administrator can reply. Its domain must be able
                 to receive mail.
             example: jane.doe@example.org
+        CaptchaChallenge:
+            type: object
+            required:
+                - algorithm
+                - challenge
+                - maxnumber
+                - salt
+                - signature
+            properties:
+                algorithm:
+                    type: string
+                    enum:
+                        - SHA-256
+                    description: 'The hash algorithm of the challenge.'
+                challenge:
+                    type: string
+                    description: 'The hash to find, in hexadecimal.'
+                maxnumber:
+                    type: integer
+                    description: 'The highest number to try.'
+                salt:
+                    type: string
+                    description: 'The salt to prepend to the number, holding the expiration timestamp.'
+                signature:
+                    type: string
+                    description: 'The HMAC signature of the challenge, in hexadecimal.'
+        CaptchaSolution:
+            type: string
+            format: byte
+            description: >-
+                The solved CAPTCHA challenge, required by a private API and ignored by a public API:
+                the JSON object `{algorithm, challenge, number, salt, signature}` encoded in base64.
         Error:
             type: object
             required:
@@ -1346,7 +1519,8 @@ components:
                         The machine-readable violation code, such as `INVALID_URL_ERROR`, `MISSING_TLD_ERROR`,
                         `UNREACHABLE_URL_ERROR`, `DUPLICATE_SLUG_ERROR`, `REGEX_FAILED_ERROR`, `TOO_SHORT_ERROR`,
                         `TOO_LONG_ERROR`, `NOT_IN_RANGE_ERROR`, `INVALID_DATE_ERROR`, `INVALID_FORMAT_ERROR`,
-                        `UNDELIVERABLE_ERROR` or `NO_SUCH_CHOICE_ERROR`.
+                        `UNDELIVERABLE_ERROR`, `NO_SUCH_CHOICE_ERROR`, `CAPTCHA_MISSING_ERROR` or
+                        `CAPTCHA_INVALID_ERROR`.
                 value:
                     description: 'The rejected value.'
                 message:

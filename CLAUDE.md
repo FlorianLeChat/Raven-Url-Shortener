@@ -69,7 +69,7 @@ PhpStorm also runs EA Extended and SonarLint inspections. Code must be free of t
 ## API documentation
 
 - The OpenAPI 3.0 specification is `server/openapi.yaml`, written by hand. The Docker build turns it into the Redocly page served at `/docs`; the API itself does not serve it.
-- Its `${VERSION}`, `${APP_RATE_LIMIT_ENABLED}`, `${APP_RATE_LIMIT_READ_API}` and `${APP_RATE_LIMIT_WRITE_API}` placeholders are replaced from `server/.env` by `envsubst` in `server/docker/Dockerfile`. A new placeholder must be added to both lists of that step.
+- Its `${VERSION}`, `${RATE_LIMIT_ENABLED}`, `${RATE_LIMIT_READ_API}` and `${RATE_LIMIT_WRITE_API}` placeholders are replaced from `server/.env` by `envsubst` in `server/docker/Dockerfile`. A new placeholder must be added to both lists of that step.
 - **Every change to the API updates the specification in the same commit**: a new or changed endpoint, request body field, validation constraint, status code, error message, response header or response field. Keep its descriptions, examples (`examples`, taken from real responses) and `x-codeSamples` in line with the code.
 - A nullable `$ref` is written `allOf` with a nullable schema, such as `NullableDateTime`: OpenAPI 3.0 ignores the siblings of a `$ref`.
 - Check it from `server/` with `npx @redocly/cli@2.78.0 lint openapi.yaml`: no error allowed. The Docker build runs the same lint.
@@ -91,7 +91,7 @@ PhpStorm also runs EA Extended and SonarLint inspections. Code must be free of t
   - accessibility regressions on anything touched;
   - tests the change made redundant.
 - A large change (new feature, new endpoint, new dependency, change to the Docker images, the CI or the proxy) ends with a read-only security and performance audit, reported in the reply with `file:line` and severity, even when nothing is wrong:
-  - security: user-supplied URLs reaching a redirect, an `href` or a `src`; validation and size limits on API input; who can read the secrets (`APP_PRIVATE_API_KEY`, `CAPTCHA_HMAC`, database and cache passwords); new third-party scripts or origins; `npm audit --omit=dev` and `composer audit`;
+  - security: user-supplied URLs reaching a redirect, an `href` or a `src`; validation and size limits on API input; who can read the secrets (`PRIVATE_API_KEY`, `ADMIN_API_KEY`, `CAPTCHA_HMAC`, database and cache passwords); new third-party scripts or origins; `npm audit --omit=dev` and `composer audit`;
   - performance: Doctrine queries run in loops, missing cache on hot read paths, what Varnish can no longer cache, bundle size from `npm run build`;
   - method: prove a finding through the real code path (a PHPUnit test, the build, a request), not on a copy of the logic. Each finding states its severity and whether it is proven or only suspected.
 - Fix what the change introduced. Report the rest instead of widening the change; a fix found by the audit is a commit of its own.

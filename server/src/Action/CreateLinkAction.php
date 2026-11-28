@@ -11,6 +11,7 @@ use App\Domain\Service\CreateLinkService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Infrastructure\Security\CaptchaVerifier;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,12 +24,14 @@ final class CreateLinkAction extends AbstractController
 {
     public function __construct(
         private readonly LoggerInterface $logger,
+        private readonly CaptchaVerifier $captcha,
         private readonly CreateLinkService $service
     ) {
     }
 
     /**
      * Creates a link from the request body and answers it with a 201 status.
+     * A private API first checks the CAPTCHA solution, with CaptchaVerifier.
      * Validation, URL reachability and slug uniqueness errors are raised by CreateLinkService.
      * @throws UniqueConstraintViolationException|ORMException|RandomException|Exception
      */
@@ -36,6 +39,8 @@ final class CreateLinkAction extends AbstractController
     public function createLink(Request $request): JsonResponse
     {
         $this->logger->debug(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+
+        $this->captcha->verifyRequest($request);
 
         $link = $this->service->createLink($request);
 

@@ -63,7 +63,7 @@ final readonly class LimiterListener
         if ($isRateLimited) {
             $locale = $request->getPreferredLanguage($this->enabledLocales);
             $retryAfter = $limit->getRetryAfter()->getTimestamp() - time();
-            $errorMessage = $this->translator->trans('http.too_many_requests', locale: $locale);
+            $errorMessage = $this->translator->trans('too_many_requests', domain: 'http', locale: $locale);
 
             $this->logger->warning('Rate limit exceeded for {ip}', ['ip' => $anonymizedIpAddress]);
 
@@ -82,15 +82,18 @@ final readonly class LimiterListener
     }
 
     /**
-     * Checks the limit of every request when `APP_RATE_LIMIT_ENABLED` is set.
+     * Checks the limit of every request when `RATE_LIMIT_ENABLED` is set, except the administrator ones
+     *  (see AdminApiKeyListener).
      */
     public function __invoke(RequestEvent $event): void
     {
-        if (!$this->isRateLimitEnabled) {
+        $request = $event->getRequest();
+        $isAdmin = $request->attributes->getBoolean(AdminApiKeyListener::IS_ADMIN);
+
+        if (!$this->isRateLimitEnabled || $isAdmin) {
             return;
         }
 
-        $request = $event->getRequest();
         $limiter = $this->createLimiterFromRequest($request);
 
         $this->consumeLimiter($request, $limiter);

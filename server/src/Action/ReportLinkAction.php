@@ -10,6 +10,7 @@ use App\Domain\Service\ReportLinkService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Infrastructure\Security\CaptchaVerifier;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
@@ -23,12 +24,14 @@ final class ReportLinkAction extends AbstractController
 {
     public function __construct(
         private readonly LoggerInterface $logger,
+        private readonly CaptchaVerifier $captcha,
         private readonly ReportLinkService $service
     ) {
     }
 
     /**
      * Creates a report on the link reached by its identifier or its slug and answers it with a 201 status.
+     * A private API first checks the CAPTCHA solution, with CaptchaVerifier.
      * @throws UniqueConstraintViolationException|ORMException
      */
     #[Route('/link/{id}/report', requirements: ['id' => Requirement::UUID_V7], methods: ['POST'])]
@@ -36,6 +39,8 @@ final class ReportLinkAction extends AbstractController
     public function createReport(Request $request, Link $link): JsonResponse
     {
         $this->logger->debug(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+
+        $this->captcha->verifyRequest($request);
 
         $report = $this->service->createReport($request, $link);
 

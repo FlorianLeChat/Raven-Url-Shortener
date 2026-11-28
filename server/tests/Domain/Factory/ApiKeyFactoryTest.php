@@ -3,6 +3,7 @@
 namespace App\Tests\Domain\Factory;
 
 use DateTimeImmutable;
+use App\Domain\Entity\Link;
 use PHPUnit\Framework\TestCase;
 use App\Domain\Factory\ApiKeyFactory;
 
@@ -13,7 +14,7 @@ final class ApiKeyFactoryTest extends TestCase
 {
     public function testCreateApiKey(): void
     {
-        $apiKey = ApiKeyFactory::create($this->createMock('App\Domain\Entity\Link'));
+        $apiKey = ApiKeyFactory::create($this->createMock(Link::class));
 
         self::assertSame(44, strlen($apiKey->getPlainKey()));
         self::assertSame(hash('sha256', $apiKey->getPlainKey()), $apiKey->getKey());
@@ -24,7 +25,7 @@ final class ApiKeyFactoryTest extends TestCase
 
     public function testRotateApiKey(): void
     {
-        $apiKey = ApiKeyFactory::create($this->createMock('App\Domain\Entity\Link'));
+        $apiKey = ApiKeyFactory::create($this->createMock(Link::class));
         $plainKey = $apiKey->getPlainKey();
 
         self::assertNotEquals($apiKey->getKey(), ApiKeyFactory::rotate($apiKey)->getKey());

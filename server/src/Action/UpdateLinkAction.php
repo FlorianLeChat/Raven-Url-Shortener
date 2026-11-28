@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Infrastructure\EventListener\OriginListener;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,7 +20,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 /**
  * Endpoints updating a shortened link through its management API key.
  */
-#[Route('/v{version}', requirements: ['version' => '1'], stateless: true)]
+#[Route(
+    '/v{version}',
+    requirements: ['version' => '1'],
+    defaults: [OriginListener::CREDENTIALS_ROUTE => OriginListener::LINK_API_KEY],
+    stateless: true
+)]
 final class UpdateLinkAction extends AbstractController
 {
     public function __construct(

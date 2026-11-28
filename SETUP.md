@@ -20,7 +20,8 @@
 - Installer [Symfony CLI](https://symfony.com/download) ;
 - Installer les extensions PHP additionnelles suivantes : `zip`, `pdo_pgsql`, `redis`, `opcache`, `intl`, `xdebug`, `bcmath`, `excimer` ;
 - Installer les dépendances du projet avec la commande `composer install` ;
-- Modifier la [variable d'environnement](server/.env) `APP_PRIVATE_API_KEY` avec un secret aléatoire (`openssl rand -base64 32`) ;
+- Modifier la [variable d'environnement](server/.env) `PRIVATE_API_KEY` avec un secret aléatoire (`openssl rand -base64 32`) ;
+- Modifier la [variable d'environnement](server/.env) `ADMIN_API_KEY` avec un autre secret aléatoire pour les routes d'administration ;
 - Modifier les [variables d'environnement](server/.env) pour la connexion à la base de données (`DATABASE_...`) ;
 - Modifier les [variables d'environnement](server/.env) pour la connexion au serveur de cache (`CACHE_...`) ;
 - Modifier les [variables d'environnement](server/.env) pour configurer le serveur de messagerie (`SMTP_...`) ;
@@ -48,8 +49,9 @@
 - Installer [PHP LTS](https://www.php.net/downloads.php) (>8.2 ou plus) ;
 - Installer les extensions PHP additionnelles suivantes : `zip`, `pdo_pgsql`, `redis`, `opcache`, `intl`, `bcmath`, `excimer` ;
 - Installer les dépendances du projet avec la commande `composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader --no-scripts` ;
-- Modifier la [variable d'environnement](server/.env) `APP_ENV` sur `prod` ;
-- Modifier la [variable d'environnement](server/.env) `APP_PRIVATE_API_KEY` avec un secret aléatoire (`openssl rand -base64 32`) ;
+- Modifier la [variable d'environnement](server/.env) `ENV_NAME` sur `prod` ;
+- Modifier la [variable d'environnement](server/.env) `PRIVATE_API_KEY` avec un secret aléatoire (`openssl rand -base64 32`) ;
+- Modifier la [variable d'environnement](server/.env) `ADMIN_API_KEY` avec un autre secret aléatoire pour les routes d'administration ;
 - Modifier les [variables d'environnement](server/.env) pour la connexion à la base de données (`DATABASE_...`) ;
 - Modifier les [variables d'environnement](server/.env) pour la connexion au serveur de cache (`CACHE_...`) ;
 - Modifier les [variables d'environnement](server/.env) pour configurer le serveur de messagerie (`SMTP_...`) ;
@@ -84,7 +86,8 @@
 - Install [Symfony CLI](https://symfony.com/download) ;
 - Install the following additional PHP extensions: `zip`, `pdo_pgsql`, `redis`, `opcache`, `intl`, `xdebug`, `bcmath`, `excimer` ;
 - Install project dependencies using `composer install` ;
-- Set `APP_PRIVATE_API_KEY` [environment variable](server/.env) to a random secret (`openssl rand -base64 32`) ;
+- Set `PRIVATE_API_KEY` [environment variable](server/.env) to a random secret (`openssl rand -base64 32`) ;
+- Set `ADMIN_API_KEY` [environment variable](server/.env) to another random secret for the administrator routes ;
 - Set [environment variables](server/.env) for database connection (`DATABASE_...`) ;
 - Set [environment variables](server/.env) for cache server connection (`CACHE_...`) ;
 - Set [environment variables](server/.env) to configure mail server (`SMTP_...`) ;
@@ -112,8 +115,9 @@
 - Install [PHP LTS](https://www.php.net/downloads.php) (>8.2 or higher) ;
 - Install the following additional PHP extensions: `zip`, `pdo_pgsql`, `pdo_oci`, `redis`, `opcache`, `intl`, `bcmath`, `excimer` ;
 - Install project dependencies with `composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader --no-scripts` ;
-- Set `APP_ENV` [environment variable](server/.env) to `prod` ;
-- Set `APP_PRIVATE_API_KEY` [environment variable](server/.env) to a random secret (`openssl rand -base64 32`) ;
+- Set `ENV_NAME` [environment variable](server/.env) to `prod` ;
+- Set `PRIVATE_API_KEY` [environment variable](server/.env) to a random secret (`openssl rand -base64 32`) ;
+- Set `ADMIN_API_KEY` [environment variable](server/.env) to another random secret for the administrator routes ;
 - Set [environment variables](server/.env) for database connection (`DATABASE_...`) ;
 - Set [environment variables](server/.env) for cache server connection (`CACHE_...`) ;
 - Set [environment variables](server/.env) to configure mail server (`SMTP_...`) ;

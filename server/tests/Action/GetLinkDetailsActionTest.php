@@ -93,10 +93,26 @@ final class GetLinkDetailsActionTest extends WebTestCase
 
         self::assertJson($content);
         self::assertJsonStringEqualsJsonString('{"code":403,"message":"The password you provided for the shortcut link is invalid. Please check it and try again."}', $content);
+
+        $this->client->request('GET', '/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d7', server: [
+            'HTTP_Authorization' => 'Bearer test_admin_api_key'
+        ]);
+
+        self::assertResponseIsSuccessful();
     }
 
     public function testGetLinkDetailsWithValidUuid(): void
     {
+        $this->client->request('GET', '/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d9', server: [
+            'HTTP_Authorization' => 'Password haha'
+        ]);
+
+        self::assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
+        self::assertJsonStringEqualsJsonString(
+            '{"code":400,"message":"The specified shortcut link is not protected by a password. Please remove the \\"Authorization\\" HTTP header."}',
+            $this->client->getResponse()->getContent()
+        );
+
         $this->client->request('GET', '/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d9');
 
         self::assertResponseIsSuccessful();

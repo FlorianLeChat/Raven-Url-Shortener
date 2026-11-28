@@ -10,6 +10,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\RateLimiter\RateLimiterFactory;
 use App\Infrastructure\EventListener\LimiterListener;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use App\Infrastructure\EventListener\AdminApiKeyListener;
 use Symfony\Component\RateLimiter\Storage\InMemoryStorage;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
@@ -52,11 +53,12 @@ final class LimiterListenerTest extends TestCase
     }
 
     /**
-     * Runs the listener on a request from a public IP address.
+     * Runs the listener on a request from a public IP address, marked by AdminApiKeyListener when `$isAdmin`.
      */
-    private function dispatch(LimiterListener $listener, string $method): void
+    private function dispatch(LimiterListener $listener, string $method, bool $isAdmin = false): void
     {
         $request = Request::create('/v1/link', $method, server: ['REMOTE_ADDR' => self::CLIENT_IP]);
+        $request->attributes->set(AdminApiKeyListener::IS_ADMIN, $isAdmin);
 
         $listener(new RequestEvent(
             $this->createStub(HttpKernelInterface::class),
@@ -79,7 +81,9 @@ final class LimiterListenerTest extends TestCase
     {
         $listener = $this->createListener(true);
 
+        $this->dispatch($listener, 'GET', true);
         $this->dispatch($listener, 'GET');
+        $this->dispatch($listener, 'GET', true);
         $this->dispatch($listener, 'POST');
 
         $this->expectNotToPerformAssertions();
@@ -97,7 +101,7 @@ final class LimiterListenerTest extends TestCase
         } catch (TooManyRequestsHttpException $exception) {
             $headers = $exception->getHeaders();
 
-            self::assertSame('http.too_many_requests', $exception->getMessage());
+            self::assertSame('too_many_requests', $exception->getMessage());
             self::assertSame(1, $headers['X-RateLimit-Limit']);
             self::assertSame(0, $headers['X-RateLimit-Remaining']);
             self::assertArrayHasKey('X-RateLimit-Reset', $headers);
