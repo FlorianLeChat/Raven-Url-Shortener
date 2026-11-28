@@ -12,7 +12,9 @@ use App\Infrastructure\Mailer\ReportReviewMailer;
 use App\Infrastructure\Command\UserReportSummary;
 use App\Infrastructure\EventListener\OriginListener;
 use App\Infrastructure\EventListener\LimiterListener;
+use App\Infrastructure\EventListener\AccessKeyListener;
 use App\Infrastructure\EventListener\ExceptionListener;
+use App\Infrastructure\EventListener\AdminRouteListener;
 use App\Infrastructure\EventListener\AdminApiKeyListener;
 use Egulias\EmailValidator\Validation\DNSGetRecordWrapper;
 use Symfony\Component\HttpClient\NoPrivateNetworkHttpClient;
@@ -51,10 +53,16 @@ return static function (ContainerConfigurator $container): void {
 
     $services->set(ReportReviewMailer::class)
         ->bind('bool $isSmtpEnabled', '%env(bool:SMTP_ENABLED)%')
-        ->tag('kernel.event_listener', ['event' => 'kernel.terminate', 'method' => 'sendQueuedOutcomes']);
+        ->tag('kernel.event_listener', ['event' => 'kernel.terminate', 'method' => 'sendQueuedOutcomes'])
+        ->tag('kernel.event_listener', ['event' => 'console.terminate', 'method' => 'sendQueuedOutcomes']);
 
     $services->set(AdminApiKeyListener::class)
         ->bind('string $adminApiKey', '%env(string:ADMIN_API_KEY)%')
+        ->tag('kernel.event_listener', ['event' => 'kernel.request', 'method' => 'onKernelRequest', 'priority' => 128]);
+
+    $services->set(AccessKeyListener::class)
+        ->bind('bool $isPrivateApi', '%app.private_api%')
+        ->bind('string $privateApiKey', '%env(string:PRIVATE_API_KEY)%')
         ->tag('kernel.event_listener', ['event' => 'kernel.request', 'method' => 'onKernelRequest', 'priority' => 128]);
 
     $services->set(CaptchaVerifier::class)
@@ -74,6 +82,9 @@ return static function (ContainerConfigurator $container): void {
         ->bind('string $apiKey', '%env(string:PRIVATE_API_KEY)%')
         ->tag('kernel.event_listener', ['event' => 'kernel.request', 'method' => 'onKernelRequest', 'priority' => 24])
         ->tag('kernel.event_listener', ['event' => 'kernel.response', 'method' => 'onKernelResponse']);
+
+    $services->set(AdminRouteListener::class)
+        ->tag('kernel.event_listener', ['event' => 'kernel.request', 'method' => 'onKernelRequest', 'priority' => 20]);
 
     if ($container->env() === 'test') {
         $services->set(HttpClientResponseFactory::class);

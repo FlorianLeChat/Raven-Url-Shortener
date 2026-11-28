@@ -4,6 +4,7 @@ namespace App\Infrastructure\Exception;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
  * 400 error raised when the data received by the API breaks a constraint.
@@ -25,6 +26,27 @@ final class DataValidationException extends HttpException
         parent::__construct(Response::HTTP_BAD_REQUEST, 'An error occurred during data validation.');
 
         $this->violations = $violations;
+    }
+
+    /**
+     * Throws the violations found by the Symfony validator, grouped by property, when there is at least one.
+     * @throws self
+     */
+    public static function throwOnViolations(ConstraintViolationListInterface $violations): void
+    {
+        $errors = [];
+
+        foreach ($violations as $violation) {
+            $errors[$violation->getPropertyPath()][] = [
+                'code' => $violation->getConstraint()?->getErrorName($violation->getCode() ?? '') ?? '',
+                'value' => $violation->getInvalidValue(),
+                'message' => $violation->getMessage()
+            ];
+        }
+
+        if (!empty($errors)) {
+            throw new self($errors);
+        }
     }
 
     /**

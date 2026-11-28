@@ -3,6 +3,7 @@
 namespace App\Infrastructure\EventListener;
 
 use Psr\Log\LoggerInterface;
+use App\Domain\Enum\AccessKeyCapability;
 use Symfony\Component\HttpFoundation\IpUtils;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -83,14 +84,16 @@ final readonly class LimiterListener
 
     /**
      * Checks the limit of every request when `RATE_LIMIT_ENABLED` is set, except the administrator ones
-     *  (see AdminApiKeyListener).
+     *  (see AdminApiKeyListener) and those of an access key granting the `rate_limit_bypass` capability
+     *  (see AccessKeyListener).
      */
     public function __invoke(RequestEvent $event): void
     {
         $request = $event->getRequest();
         $isAdmin = $request->attributes->getBoolean(AdminApiKeyListener::IS_ADMIN);
+        $isBypassed = AccessKeyListener::hasCapability($request, AccessKeyCapability::RateLimitBypass);
 
-        if (!$this->isRateLimitEnabled || $isAdmin) {
+        if (!$this->isRateLimitEnabled || $isAdmin || $isBypassed) {
             return;
         }
 

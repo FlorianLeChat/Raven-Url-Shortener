@@ -15,7 +15,8 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
  * The templates are the `report.<status>.*` keys of the `emails` translation domain (`locales/emails.*.php`).
  * The email names the link by its slug only: the target URL of an accepted report must not become a clickable link.
  * Outcomes are queued during the request and sent on `kernel.terminate` (see `config/services.php`), once FrankenPHP
- *  has sent the response: a slow SMTP server no longer delays the administrator.
+ *  has sent the response: a slow SMTP server no longer delays the administrator. A review from the console
+ *  (see ReportCommand) sends them on `console.terminate`.
  */
 final class ReportReviewMailer
 {

@@ -4,17 +4,17 @@ namespace App\Infrastructure\Command;
 
 use DateTime;
 use Random\RandomException;
-use App\Domain\Entity\ApiKey;
 use Doctrine\DBAL\Types\Types;
-use App\Domain\Factory\ApiKeyFactory;
+use App\Domain\Entity\LinkApiKey;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\ORMException;
+use App\Domain\Factory\LinkApiKeyFactory;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
-use App\Infrastructure\Repository\ApiKeyRepository;
 use Symfony\Component\Console\Output\OutputInterface;
+use App\Infrastructure\Repository\LinkApiKeyRepository;
 use Symfony\Component\Scheduler\Attribute\AsPeriodicTask;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
@@ -24,13 +24,13 @@ use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
  */
 #[AsPeriodicTask('1 day', from: 'midnight')]
 #[AsCommand('app:api-keys-rotation', 'Rotates expired API keys for shortcut links.')]
-final class ApiKeysRotation extends Command
+final class LinkApiKeysRotation extends Command
 {
-    private readonly ApiKeyRepository $repository;
+    private readonly LinkApiKeyRepository $repository;
 
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {
-        $this->repository = $this->entityManager->getRepository(ApiKey::class);
+        $this->repository = $this->entityManager->getRepository(LinkApiKey::class);
 
         parent::__construct();
     }
@@ -38,7 +38,7 @@ final class ApiKeysRotation extends Command
     /**
      * Finds the keys whose expiration date is more than a day old.
      *
-     * @return ApiKey[]
+     * @return LinkApiKey[]
      */
     private function getExpiredApiKeys(): array
     {
@@ -46,7 +46,7 @@ final class ApiKeysRotation extends Command
         $query->where($query->expr()->lte('key.expiresAt', ':oneDayAgo'))
             ->setParameter('oneDayAgo', new DateTime('-1 day'), Types::DATETIME_MUTABLE);
 
-        /** @var ApiKey[] */
+        /** @var LinkApiKey[] */
         return $query->getQuery()->getResult();
     }
 
@@ -54,7 +54,7 @@ final class ApiKeysRotation extends Command
      * Gives the key a new value and a new expiration date, without flushing it yet.
      * @throws RandomException
      */
-    private function rotateExpiredApiKey(SymfonyStyle $io, ApiKey $apiKey): void
+    private function rotateExpiredApiKey(SymfonyStyle $io, LinkApiKey $apiKey): void
     {
         $io->text(sprintf(
             'Rotating API key \'%s (%s)\'...',
@@ -62,7 +62,7 @@ final class ApiKeysRotation extends Command
             $apiKey->getId()
         ));
 
-        $apiKey = ApiKeyFactory::rotate($apiKey);
+        $apiKey = LinkApiKeyFactory::rotate($apiKey);
 
         $this->entityManager->persist($apiKey);
     }

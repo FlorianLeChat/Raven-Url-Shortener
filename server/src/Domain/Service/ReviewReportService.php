@@ -9,20 +9,15 @@ use App\Domain\Enum\ReportStatus;
 use App\Domain\Factory\ReportFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\ORMException;
-use Symfony\Component\HttpFoundation\Request;
 use App\Infrastructure\Mailer\ReportReviewMailer;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Infrastructure\Exception\DataValidationException;
-use App\Infrastructure\EventListener\AdminApiKeyListener;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 /**
  * Closes a report with the decision of an administrator, then tells the reporter the outcome.
- * Administrators are recognized by the administrator API key (`ADMIN_API_KEY`, see AdminApiKeyListener)
- *  until the API gets an authentication of its own.
+ * Reserved to the administrators (see AdminRouteListener).
  */
 final readonly class ReviewReportService
 {
@@ -40,26 +35,6 @@ final readonly class ReviewReportService
     }
 
     /**
-     * Requires the administrator API key in the `Authorization: Bearer <key>` header.
-     * @throws UnauthorizedHttpException When the header is missing.
-     * @throws AccessDeniedHttpException When the key does not match, or no administrator API key is configured.
-     */
-    private function checkAdminApiKey(Request $request): void
-    {
-        $this->logger->debug(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
-
-        $headerApiKey = $request->headers->get('Authorization');
-
-        if (empty($headerApiKey)) {
-            throw new UnauthorizedHttpException('Bearer', $this->translator->trans('missing', domain: 'api_key'));
-        }
-
-        if (!$request->attributes->getBoolean(AdminApiKeyListener::IS_ADMIN)) {
-            throw new AccessDeniedHttpException($this->translator->trans('invalid', domain: 'api_key'));
-        }
-    }
-
-    /**
      * @throws ConflictHttpException When an administrator has already reviewed the report.
      */
     private function checkPending(Report $report): void
@@ -72,7 +47,7 @@ final readonly class ReviewReportService
     }
 
     /**
-     * Reads the decision of the request body. The message reuses the translation of the Symfony `Choice` constraint.
+     * Reads the decision. The message reuses the translation of the Symfony `Choice` constraint.
      * @throws DataValidationException When `status` is neither `accepted` nor `rejected`.
      */
     private function getReviewStatus(string $value): ReportStatus
@@ -99,21 +74,20 @@ final readonly class ReviewReportService
     /**
      * Accepts or rejects a pending report. An accepted report disables its link; a rejected one releases it
      *  once no other report is pending, and `trusted` then prevents any further report.
-     * The reporter who left an email address receives the outcome once the response is sent.
+     * The reporter who left an email address receives the outcome once the response is sent, or once the console
+     *  command ends (see ReportReviewMailer).
+     * Called by the API (see ReviewReportAction) and the console (see ReportCommand).
+     * @throws DataValidationException When `status` is neither `accepted` nor `rejected`.
+     * @throws ConflictHttpException When the report has already been reviewed.
      * @throws UniqueConstraintViolationException|ORMException
      */
-    public function reviewReport(Request $request, Report $report): Report
+    public function reviewReport(Report $report, string $status, bool $trusted): Report
     {
         $this->logger->debug(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
-        $this->checkAdminApiKey($request);
         $this->checkPending($report);
 
-        $payload = $request->getPayload();
-        $status = $this->getReviewStatus($payload->getString('status'));
-        $trusted = $payload->getBoolean('trusted');
-
-        ReportFactory::review($report, $status, $trusted);
+        ReportFactory::review($report, $this->getReviewStatus($status), $trusted);
 
         $this->entityManager->flush();
         $this->mailer->queueOutcome($report);

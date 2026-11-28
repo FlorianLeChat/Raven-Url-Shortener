@@ -4,12 +4,14 @@ namespace App\Tests\Infrastructure\EventListener;
 
 use Psr\Log\NullLogger;
 use PHPUnit\Framework\TestCase;
+use App\Domain\Enum\AccessKeyCapability;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\RateLimiter\RateLimiterFactory;
 use App\Infrastructure\EventListener\LimiterListener;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use App\Infrastructure\EventListener\AccessKeyListener;
 use App\Infrastructure\EventListener\AdminApiKeyListener;
 use Symfony\Component\RateLimiter\Storage\InMemoryStorage;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
@@ -53,12 +55,20 @@ final class LimiterListenerTest extends TestCase
     }
 
     /**
-     * Runs the listener on a request from a public IP address, marked by AdminApiKeyListener when `$isAdmin`.
+     * Runs the listener on a request from a public IP address, marked by AdminApiKeyListener when `$isAdmin`
+     *  and by AccessKeyListener with the `$capabilities` of an access key.
+     *
+     * @param list<string> $capabilities
      */
-    private function dispatch(LimiterListener $listener, string $method, bool $isAdmin = false): void
-    {
+    private function dispatch(
+        LimiterListener $listener,
+        string $method,
+        bool $isAdmin = false,
+        array $capabilities = []
+    ): void {
         $request = Request::create('/v1/link', $method, server: ['REMOTE_ADDR' => self::CLIENT_IP]);
         $request->attributes->set(AdminApiKeyListener::IS_ADMIN, $isAdmin);
+        $request->attributes->set(AccessKeyListener::CAPABILITIES, $capabilities);
 
         $listener(new RequestEvent(
             $this->createStub(HttpKernelInterface::class),
@@ -84,6 +94,7 @@ final class LimiterListenerTest extends TestCase
         $this->dispatch($listener, 'GET', true);
         $this->dispatch($listener, 'GET');
         $this->dispatch($listener, 'GET', true);
+        $this->dispatch($listener, 'GET', capabilities: [AccessKeyCapability::RateLimitBypass->value]);
         $this->dispatch($listener, 'POST');
 
         $this->expectNotToPerformAssertions();

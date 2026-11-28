@@ -7,15 +7,15 @@ use Doctrine\DBAL\Types\Types;
 use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
-use App\Infrastructure\Repository\ApiKeyRepository;
+use App\Infrastructure\Repository\LinkApiKeyRepository;
 
 /**
  * Key granting access to the management API of a single link.
  * Only its SHA-256 hash is stored: the clear value is known to the request that created it, then lost.
  * It expires three months after its creation and is rotated by the `app:api-keys-rotation` command.
  */
-#[ORM\Entity(repositoryClass: ApiKeyRepository::class)]
-class ApiKey
+#[ORM\Entity(repositoryClass: LinkApiKeyRepository::class)]
+class LinkApiKey
 {
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]

@@ -58,6 +58,10 @@ final class ReviewReportActionTest extends WebTestCase
 
         self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
         self::assertJsonStringEqualsJsonString('{"code":403,"message":"The provided API key is invalid. Please check it and try again."}', $content);
+
+        $this->client->request('PATCH', '/v1/report/0196cb20-1c4a-7d3e-9f21-5a8b7c6d4e3f', ['status' => 'accepted']);
+
+        self::assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
 
     public function testReviewWithInvalidStatus(): void

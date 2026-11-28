@@ -7,8 +7,8 @@ use App\Kernel;
 use App\Domain\Entity\Link;
 use Random\RandomException;
 use App\Domain\Factory\LinkFactory;
-use App\Domain\Factory\ApiKeyFactory;
 use Doctrine\ORM\Exception\ORMException;
+use App\Domain\Factory\LinkApiKeyFactory;
 use Symfony\Component\HttpFoundation\Request;
 use App\Domain\Service\Abstract\BaseLinkService;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
@@ -38,7 +38,7 @@ final class CreateLinkService extends BaseLinkService
 
     /**
      * Creates, validates and saves the link, with an API key when `api-management` is set.
-     * The slug is random when none is given.
+     * The slug is random when none is given. An access key granting `trusted_links` marks the link as trusted.
      * @throws RandomException|UniqueConstraintViolationException|ORMException|Exception
      */
     public function createLink(Request $request): Link
@@ -62,8 +62,10 @@ final class CreateLinkService extends BaseLinkService
             'expiration' => $expiration,
         ]);
 
+        $this->applyAccessKeyTrust($request, $link);
+
         if ($apiManagement) {
-            $apiKey = ApiKeyFactory::create($link);
+            $apiKey = LinkApiKeyFactory::create($link);
             $link->setApiKey($apiKey);
         }
 

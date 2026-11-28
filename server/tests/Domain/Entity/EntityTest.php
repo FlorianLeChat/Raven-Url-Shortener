@@ -4,13 +4,13 @@ namespace App\Tests\Domain\Entity;
 
 use DateTimeImmutable;
 use App\Domain\Entity\Link;
-use App\Domain\Entity\ApiKey;
 use App\Domain\Entity\Report;
 use Symfony\Component\Uid\Uuid;
 use PHPUnit\Framework\TestCase;
+use App\Domain\Entity\LinkApiKey;
 
 /**
- * Tests of the accessors and the serialization of the Link, ApiKey and Report entities.
+ * Tests of the accessors and the serialization of the Link, LinkApiKey and Report entities.
  */
 final class EntityTest extends TestCase
 {
@@ -49,7 +49,7 @@ final class EntityTest extends TestCase
     public function testLinkDisclosesOnlyPlainApiKey(): void
     {
         $link = $this->createLink();
-        $apiKey = (new ApiKey())->setKey('hash')->setLink($link);
+        $apiKey = (new LinkApiKey())->setKey('hash')->setLink($link);
         $link->setApiKey($apiKey);
 
         self::assertNull($link->toArray()['apiKey']);
@@ -63,7 +63,7 @@ final class EntityTest extends TestCase
     {
         $date = new DateTimeImmutable('2020-01-01 00:00:00');
         $link = $this->createLink();
-        $apiKey = new ApiKey();
+        $apiKey = new LinkApiKey();
         $apiKey->setKey('key');
         $apiKey->setLink($link);
         $apiKey->setCreatedAt($date);
