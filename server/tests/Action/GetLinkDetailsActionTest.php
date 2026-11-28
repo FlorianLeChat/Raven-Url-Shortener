@@ -60,9 +60,13 @@ final class GetLinkDetailsActionTest extends WebTestCase
 
     public function testGetLinkDetailsWithInvalidSlug(): void
     {
-        $this->client->request('GET', '/v1/link/slug-not-found');
+        $this->client->request('GET', '/v1/link/slug-not-found', server: ['HTTP_ACCEPT_LANGUAGE' => 'fr']);
 
         self::assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+        self::assertJsonStringEqualsJsonString(
+            '{"code":404,"message":"La ressource demandée est introuvable."}',
+            $this->client->getResponse()->getContent()
+        );
     }
 
     public function testGetLinkDetailsWithMissingPassword(): void

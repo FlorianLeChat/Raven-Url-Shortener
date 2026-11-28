@@ -85,6 +85,21 @@ final class CreateLinkActionTest extends WebTestCase
 
         self::assertJson($content);
         self::assertStringStartsWith('{"code":400,"message":"An error occurred during data validation."', $content);
+
+        $this->client->request('POST', '/v1/link', [
+            'url' => 'https://www.google.com/',
+            'expiration' => 'not a date'
+        ], server: ['HTTP_ACCEPT_LANGUAGE' => 'fr']);
+
+        self::assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
+
+        $content = $this->client->getResponse()->getContent();
+
+        self::assertJson($content);
+        $violation = json_decode($content, true)['errors']['expiresAt'][0];
+
+        self::assertSame('INVALID_DATE_ERROR', $violation['code']);
+        self::assertSame('Cette valeur n\'est pas une date valide.', $violation['message']);
     }
 
     public function testCreateLinkWithUnreachableUrl(): void

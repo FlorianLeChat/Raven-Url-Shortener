@@ -145,7 +145,6 @@ test:phpunit:
         - echo "" >> .env
         - echo "VERSION=${VERSION}" >> .env
         - echo "ENV_NAME=${CI_ENVIRONMENT_NAME}" >> .env
-        - echo "OPENAPI_URL=${OPENAPI_URL}" >> .env
     script:
         - mv client/docker/configuration/varnish.vcl varnish.vcl
         - mv compose.production.yml compose.yml
@@ -172,7 +171,6 @@ build:project:test:
     extends: .build:project
     variables:
         BASE_PATH: "/url"
-        OPENAPI_URL: "https://internal.florian-dev.fr/url-api/openapi.json"
     environment:
         name: test
         action: prepare
@@ -186,7 +184,6 @@ build:project:production:
     extends: .build:project
     variables:
         BASE_PATH: ""
-        OPENAPI_URL: "https://api.url.florian-dev.fr/openapi.json"
     environment:
         name: production
         action: prepare
@@ -263,9 +260,6 @@ analyze:secret-detection:
 analyze:docker-container:
     stage: analyze
     image: $CI_TEMPLATE_REGISTRY_HOST/security-products/container-scanning
-    needs:
-        - job: build:docker:test
-          artifacts: false
     script:
         - export CS_DOCKERFILE_PATH="${DOCKER_FILE}"
         - export CI_APPLICATION_TAG="${CI_COMMIT_TAG:-$CI_COMMIT_SHORT_SHA}-test"

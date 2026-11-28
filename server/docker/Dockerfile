@@ -22,7 +22,7 @@ COPY --from=ghcr.io/symfony-cli/symfony-cli:latest /usr/local/bin/symfony /usr/l
 
 COPY --chown=www-data:www-data . .
 
-FROM base AS production
+FROM base AS application
 
 RUN install-php-extensions \
         pdo_pgsql \
@@ -70,3 +70,27 @@ RUN --mount=type=bind,from=composer:2,source=/usr/bin/composer,target=/usr/local
       'opcache.interned_strings_buffer = 16' \
       'opcache.max_accelerated_files = 20000' \
     > "$PHP_INI_DIR/conf.d/zz-custom.ini"
+
+FROM node:22-alpine AS documentation
+
+WORKDIR /documentation
+
+RUN apk add --no-cache gettext
+
+COPY .env openapi.yaml ./
+
+RUN export $(grep -E \
+        '^(VERSION|APP_RATE_LIMIT_ENABLED|APP_RATE_LIMIT_READ_API|APP_RATE_LIMIT_WRITE_API)=' \
+        .env | xargs) && \
+    envsubst '${VERSION} ${APP_RATE_LIMIT_ENABLED} ${APP_RATE_LIMIT_READ_API} ${APP_RATE_LIMIT_WRITE_API}' \
+        < openapi.yaml > openapi.resolved.yaml && \
+    rm .env && \
+    npx --yes @redocly/cli@2.78.0 lint openapi.resolved.yaml && \
+    npx --yes @redocly/cli@2.78.0 build-docs openapi.resolved.yaml \
+        --inlineBundle \
+        --title "Raven Url Shortener API" \
+        --output index.html
+
+FROM application AS production
+
+COPY --from=documentation --chown=www-data:www-data /documentation/index.html public/docs/index.html

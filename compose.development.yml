@@ -32,21 +32,6 @@ services:
             timeout: 5s
             start_period: 30s
 
-    docs:
-        image: swaggerapi/swagger-ui:latest
-        depends_on:
-            server:
-                condition: service_healthy
-        environment:
-            URL: http://localhost:8000/openapi.json
-        healthcheck:
-            test: ["CMD", "wget", "--quiet", "--spider", "http://127.0.0.1:8080/"]
-            retries: 3
-            timeout: 5s
-            start_period: 30s
-        ports:
-            - "8080:8080"
-
     migration:
         image: raven-url-shortener-backend
         command: >

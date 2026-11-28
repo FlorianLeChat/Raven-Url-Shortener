@@ -1,0 +1,1169 @@
+openapi: 3.0.3
+info:
+    title: 'Raven Url Shortener'
+    version: '${VERSION}'
+    contact:
+        name: 'Raven Url Shortener administrator'
+        email: 'contact@florian-dev.fr'
+        url: 'https://url.florian-dev.fr'
+    license:
+        name: MIT
+        url: 'https://opensource.org/licenses/MIT'
+    description: |
+        Documentation of the Raven Url Shortener API.
+
+        **By using this service, you accept our [legal notice](https://url.florian-dev.fr/legal).**
+
+        Rate limiting enabled: **${APP_RATE_LIMIT_ENABLED}**. When it is, each IP address can send
+        **${APP_RATE_LIMIT_READ_API} read requests** and **${APP_RATE_LIMIT_WRITE_API} write requests** per minute.
+        These limits may change with the use and the load of the service. To raise them for your own use,
+        contact an administrator at `contact@florian-dev.fr`.
+
+        # Getting started
+
+        Every request and response body is JSON, so send the `Content-Type: application/json` header.
+        A link is reached by its UUID or by its slug: `/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d9`
+        and `/v1/link/my-link` target the same resource.
+
+        ```shell
+        curl -X POST https://api.url.florian-dev.fr/v1/link \
+            -H "Content-Type: application/json" \
+            -d '{"url": "https://www.example.org/a/very/long/path", "api-management": true}'
+        ```
+
+        # Authentication
+
+        The `Authorization` HTTP header carries two different secrets, depending on the endpoint:
+
+        - **API key** (`Authorization: Bearer <key>`): created with the link when `api-management` is
+          `true`, and returned only once, in the response creating the link. Store it: it cannot be read
+          again. It is required to update or delete the link.
+        - **Link password** (`Authorization: Password <password>`): required to read the details of a link
+          protected by a password.
+
+        # Errors
+
+        Every error returns a JSON body with the HTTP status `code` and a `message`.
+        A `400` validation error adds `errors`, the violations grouped by field: each one gives a
+        machine-readable `code`, the rejected `value` and a `message`.
+
+        Messages are translated according to the `Accept-Language` header: `en` (default) or `fr`.
+        The `Content-Language` response header gives the language used.
+
+        # Rate limiting
+
+        When the rate limit of your IP address is reached, the API returns `429` with these headers:
+
+        - `Retry-After`: seconds to wait before the next request;
+        - `X-RateLimit-Limit`: number of requests allowed in the window;
+        - `X-RateLimit-Remaining`: number of requests left in the window;
+        - `X-RateLimit-Reset`: Unix timestamp when the window resets.
+
+        # Dates
+
+        Dates are serialized as PHP date objects: the local `date`, its `timezone_type`
+        and its `timezone` name, for example
+        `{"date": "2026-11-28 09:06:10.000000", "timezone_type": 3, "timezone": "Europe/Paris"}`.
+servers:
+    -   url: 'https://api.url.florian-dev.fr'
+        description: 'Production API'
+    -   url: 'http://localhost:8000'
+        description: 'Development API'
+tags:
+    -   name: Server
+        description: 'Health of the API server.'
+    -   name: Link
+        description: >-
+            Short links: creation, reading and management. Updating or deleting a link requires the API key
+            returned by its creation.
+    -   name: Slug
+        description: 'Custom slugs, the readable part of a short link URL.'
+    -   name: Report
+        description: >-
+            Reports of malicious links. A reported link is locked until an administrator checks it.
+paths:
+    /:
+        get:
+            tags:
+                - Server
+            operationId: getServerHealth
+            summary: 'Check the server health'
+            description: >-
+                Check if the server is running and get its version and response time.
+                This endpoint is used as the health check of the Docker container.
+            security: []
+            x-codeSamples:
+                -   lang: Shell
+                    label: cURL
+                    source: 'curl https://api.url.florian-dev.fr/'
+            responses:
+                '200':
+                    description: 'Server is running'
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                            example: |
+                                Version: 1.4.2.
+                                Server is running. Response time: 12.345 ms.
+                                Ready to handle requests.
+                '429':
+                    $ref: '#/components/responses/TooManyRequests'
+                '500':
+                    $ref: '#/components/responses/InternalServerError'
+    /v1/slug:
+        post:
+            tags:
+                - Slug
+            operationId: checkSlug
+            summary: 'Check slug availability'
+            description: >-
+                Check if a custom slug is still free before creating a link with it.
+                The answer is only a hint: another link can take the slug before yours is created.
+            security: []
+            x-codeSamples:
+                -   lang: Shell
+                    label: cURL
+                    source: |
+                        curl -X POST https://api.url.florian-dev.fr/v1/slug \
+                            -H "Content-Type: application/json" \
+                            -d '{"slug": "my-link"}'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - slug
+                            properties:
+                                slug:
+                                    type: string
+                                    description: 'The slug to check for availability.'
+                        example:
+                            slug: my-link
+            responses:
+                '200':
+                    description: 'Slug availability'
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                required:
+                                    - available
+                                properties:
+                                    available:
+                                        type: boolean
+                                        description: 'True if the slug is available, false otherwise.'
+                            examples:
+                                available:
+                                    summary: 'Slug available'
+                                    value:
+                                        available: true
+                                taken:
+                                    summary: 'Slug already used'
+                                    value:
+                                        available: false
+                '429':
+                    $ref: '#/components/responses/TooManyRequests'
+                '500':
+                    $ref: '#/components/responses/InternalServerError'
+    /v1/link:
+        post:
+            tags:
+                - Link
+            operationId: createLink
+            summary: 'Create a new short link'
+            description: |
+                Create a new short link, with optional custom slug, password and expiration date.
+
+                Before saving the link, the API requests the target URL: it must answer with a `200` status,
+                following at most one redirection. A target protected by a firewall or a bot challenge
+                is accepted. Private network addresses are refused.
+
+                When `api-management` is `true`, the response holds the `apiKey` managing the link.
+                **It is returned only in this response**: store it to update or delete the link later.
+            security: []
+            x-codeSamples:
+                -   lang: Shell
+                    label: cURL
+                    source: |
+                        curl -X POST https://api.url.florian-dev.fr/v1/link \
+                            -H "Content-Type: application/json" \
+                            -d '{"url": "https://www.example.org/a/very/long/path", "slug": "my-link"}'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - url
+                            properties:
+                                url:
+                                    $ref: '#/components/schemas/LinkUrl'
+                                slug:
+                                    $ref: '#/components/schemas/LinkSlug'
+                                password:
+                                    $ref: '#/components/schemas/LinkPassword'
+                                expiration:
+                                    $ref: '#/components/schemas/LinkExpiration'
+                                api-management:
+                                    type: boolean
+                                    default: false
+                                    description: >-
+                                        Generates an API key to manage the link, returned only in this response.
+                        examples:
+                            minimal:
+                                summary: 'URL only, random slug'
+                                value:
+                                    url: 'https://www.example.org/a/very/long/path'
+                            customSlug:
+                                summary: 'Custom slug'
+                                value:
+                                    url: 'https://www.example.org/a/very/long/path'
+                                    slug: my-link
+                            protected:
+                                summary: 'Password and expiration date'
+                                value:
+                                    url: 'https://www.example.org/a/very/long/path'
+                                    password: 'correct horse battery staple'
+                                    expiration: '2027-06-30T23:59:59+02:00'
+                            managed:
+                                summary: 'With an API key to manage the link'
+                                value:
+                                    url: 'https://www.example.org/a/very/long/path'
+                                    slug: my-link
+                                    api-management: true
+            responses:
+                '201':
+                    description: 'Link created successfully'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Link'
+                            examples:
+                                created:
+                                    summary: 'Link without API key'
+                                    value:
+                                        id: 0196cb17-b0f8-7e9c-b381-ef17aa05f3d9
+                                        url: 'https://www.example.org/a/very/long/path'
+                                        slug: FMQKolPRcGo6K
+                                        apiKey: null
+                                        enabled: true
+                                        trusted: false
+                                        reported: false
+                                        createdAt:
+                                            date: '2026-11-28 09:06:10.154645'
+                                            timezone_type: 3
+                                            timezone: Europe/Paris
+                                        updatedAt: null
+                                        visitedAt: null
+                                        expiresAt: null
+                                managed:
+                                    summary: 'Link with its API key'
+                                    value:
+                                        id: 0196cb17-b0f8-7e9c-b381-ef17aa05f3d9
+                                        url: 'https://www.example.org/a/very/long/path'
+                                        slug: my-link
+                                        apiKey: kY3n0QwV8pZ2rT5uX7aB9cD1eF4gH6jL0mN2oP8qR3s=
+                                        enabled: true
+                                        trusted: false
+                                        reported: false
+                                        createdAt:
+                                            date: '2026-11-28 09:06:10.154645'
+                                            timezone_type: 3
+                                            timezone: Europe/Paris
+                                        updatedAt: null
+                                        visitedAt: null
+                                        expiresAt: null
+                '400':
+                    $ref: '#/components/responses/ValidationFailed'
+                '429':
+                    $ref: '#/components/responses/TooManyRequests'
+                '500':
+                    $ref: '#/components/responses/InternalServerError'
+    /v1/link/{link}:
+        parameters:
+            -   $ref: '#/components/parameters/Link'
+        get:
+            tags:
+                - Link
+            operationId: getLink
+            summary: 'Get the details of a short link'
+            description: |
+                Get the details of a short link by its UUID or its custom slug. Call it before redirecting
+                a visitor to the target URL.
+
+                - An expired link returns `410`, even with the right password.
+                - A link protected by a password requires the `Authorization: Password <password>` header.
+                - A disabled or reported link is still returned: check `enabled` and `reported`
+                  before redirecting.
+
+                The request records the visit, at most once a day. The `visitedAt` field of the response
+                holds the date of the visit before this one.
+            security:
+                -   {}
+                -   PasswordAuth: []
+            x-codeSamples:
+                -   lang: Shell
+                    label: cURL
+                    source: 'curl https://api.url.florian-dev.fr/v1/link/my-link'
+                -   lang: Shell
+                    label: 'cURL (password)'
+                    source: |
+                        curl https://api.url.florian-dev.fr/v1/link/my-link \
+                            -H "Authorization: Password correct horse battery staple"
+            responses:
+                '200':
+                    description: 'Link details retrieved successfully'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Link'
+                            example:
+                                id: 0196cb17-b0f8-7e9c-b381-ef17aa05f3d9
+                                url: 'https://www.example.org/a/very/long/path'
+                                slug: my-link
+                                apiKey: null
+                                enabled: true
+                                trusted: false
+                                reported: false
+                                createdAt:
+                                    date: '2026-11-28 09:06:10.154645'
+                                    timezone_type: 3
+                                    timezone: Europe/Paris
+                                updatedAt: null
+                                visitedAt:
+                                    date: '2026-11-29 18:42:03.512908'
+                                    timezone_type: 3
+                                    timezone: Europe/Paris
+                                expiresAt:
+                                    date: '2027-06-30 23:59:59.000000'
+                                    timezone_type: 3
+                                    timezone: Europe/Paris
+                '401':
+                    description: 'Link password required'
+                    headers:
+                        WWW-Authenticate:
+                            schema:
+                                type: string
+                                enum:
+                                    - Password
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                            example:
+                                code: 401
+                                message: >-
+                                    The specified shortcut link is protected by a password.
+                                    Please provide it in the "Authorization" HTTP header.
+                '403':
+                    description: 'Link password incorrect'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                            example:
+                                code: 403
+                                message: >-
+                                    The password you provided for the shortcut link is invalid.
+                                    Please check it and try again.
+                '404':
+                    $ref: '#/components/responses/LinkNotFound'
+                '410':
+                    description: 'Link expired'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                            example:
+                                code: 410
+                                message: 'The specified shortcut link has expired.'
+                '429':
+                    $ref: '#/components/responses/TooManyRequests'
+                '500':
+                    $ref: '#/components/responses/InternalServerError'
+        put:
+            tags:
+                - Link
+            operationId: replaceLink
+            summary: 'Update several fields of a short link'
+            description: |
+                Update several fields of a short link at once, by its UUID or its custom slug.
+                A field left out keeps its current value; an empty `password` or `expiration`
+                removes the option.
+
+                The target URL is checked again, as on creation. A disabled or reported link cannot be updated.
+
+                Setting `api-management` to `false` deletes the API key: **the link can then never be
+                updated or deleted again**.
+            security:
+                -   ApiKeyAuth: []
+            x-codeSamples:
+                -   lang: Shell
+                    label: cURL
+                    source: |
+                        curl -X PUT https://api.url.florian-dev.fr/v1/link/my-link \
+                            -H "Authorization: Bearer kY3n0QwV8pZ2rT5uX7aB9cD1eF4gH6jL0mN2oP8qR3s=" \
+                            -H "Content-Type: application/json" \
+                            -d '{"url": "https://www.example.org/new/path", "slug": "my-new-link"}'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                url:
+                                    $ref: '#/components/schemas/LinkUrl'
+                                slug:
+                                    $ref: '#/components/schemas/LinkSlug'
+                                password:
+                                    $ref: '#/components/schemas/LinkPassword'
+                                expiration:
+                                    $ref: '#/components/schemas/LinkExpiration'
+                                api-management:
+                                    type: boolean
+                                    default: true
+                                    description: >-
+                                        Set to false to delete the API key: the link can then no longer be managed.
+                        examples:
+                            target:
+                                summary: 'New target URL and slug'
+                                value:
+                                    url: 'https://www.example.org/new/path'
+                                    slug: my-new-link
+                            removeOptions:
+                                summary: 'Remove the password and the expiration date'
+                                value:
+                                    password: ''
+                                    expiration: ''
+                            release:
+                                summary: 'Delete the API key for good'
+                                value:
+                                    api-management: false
+            responses:
+                '200':
+                    $ref: '#/components/responses/LinkUpdated'
+                '400':
+                    $ref: '#/components/responses/ValidationFailed'
+                '401':
+                    $ref: '#/components/responses/ApiKeyMissing'
+                '403':
+                    $ref: '#/components/responses/ManagementForbidden'
+                '404':
+                    $ref: '#/components/responses/LinkNotFound'
+                '429':
+                    $ref: '#/components/responses/TooManyRequests'
+                '500':
+                    $ref: '#/components/responses/InternalServerError'
+        patch:
+            tags:
+                - Link
+            operationId: patchLink
+            summary: 'Update one field of a short link'
+            description: |
+                Update a single field of a short link, by its UUID or its custom slug.
+                Unlike the `PUT` request, the expiration date field is named `expiresAt`.
+
+                The target URL is checked again, as on creation. A disabled or reported link cannot be updated.
+                An unknown `field` returns `400` without `errors`.
+            security:
+                -   ApiKeyAuth: []
+            x-codeSamples:
+                -   lang: Shell
+                    label: cURL
+                    source: |
+                        curl -X PATCH https://api.url.florian-dev.fr/v1/link/my-link \
+                            -H "Authorization: Bearer kY3n0QwV8pZ2rT5uX7aB9cD1eF4gH6jL0mN2oP8qR3s=" \
+                            -H "Content-Type: application/json" \
+                            -d '{"field": "url", "value": "https://www.example.org/new/path"}'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - field
+                                - value
+                            properties:
+                                field:
+                                    type: string
+                                    enum:
+                                        - url
+                                        - slug
+                                        - password
+                                        - expiresAt
+                                    description: 'The field to update.'
+                                value:
+                                    type: string
+                                    description: >-
+                                        The new value of the field, with the same constraints as on link creation.
+                        examples:
+                            url:
+                                summary: 'New target URL'
+                                value:
+                                    field: url
+                                    value: 'https://www.example.org/new/path'
+                            slug:
+                                summary: 'New slug'
+                                value:
+                                    field: slug
+                                    value: my-new-link
+                            password:
+                                summary: 'New password'
+                                value:
+                                    field: password
+                                    value: 'another secret passphrase'
+                            expiresAt:
+                                summary: 'New expiration date'
+                                value:
+                                    field: expiresAt
+                                    value: '2027-06-30T23:59:59+02:00'
+            responses:
+                '200':
+                    $ref: '#/components/responses/LinkUpdated'
+                '400':
+                    $ref: '#/components/responses/ValidationFailed'
+                '401':
+                    $ref: '#/components/responses/ApiKeyMissing'
+                '403':
+                    $ref: '#/components/responses/ManagementForbidden'
+                '404':
+                    $ref: '#/components/responses/LinkNotFound'
+                '429':
+                    $ref: '#/components/responses/TooManyRequests'
+                '500':
+                    $ref: '#/components/responses/InternalServerError'
+        delete:
+            tags:
+                - Link
+            operationId: deleteLink
+            summary: 'Delete a short link'
+            description: >-
+                Delete a short link by its UUID or its custom slug, with its reports and its API key.
+                A disabled or reported link cannot be deleted.
+            security:
+                -   ApiKeyAuth: []
+            x-codeSamples:
+                -   lang: Shell
+                    label: cURL
+                    source: |
+                        curl -X DELETE https://api.url.florian-dev.fr/v1/link/my-link \
+                            -H "Authorization: Bearer kY3n0QwV8pZ2rT5uX7aB9cD1eF4gH6jL0mN2oP8qR3s="
+            responses:
+                '204':
+                    description: 'Link deleted successfully'
+                '401':
+                    $ref: '#/components/responses/ApiKeyMissing'
+                '403':
+                    $ref: '#/components/responses/ManagementForbidden'
+                '404':
+                    $ref: '#/components/responses/LinkNotFound'
+                '429':
+                    $ref: '#/components/responses/TooManyRequests'
+                '500':
+                    $ref: '#/components/responses/InternalServerError'
+    /v1/link/{link}/report:
+        parameters:
+            -   $ref: '#/components/parameters/Link'
+        post:
+            tags:
+                - Report
+            operationId: reportLink
+            summary: 'Create a report for a short link'
+            description: |
+                Report a malicious short link, by its UUID or its custom slug. Once reported, the link is
+                locked until an administrator checks it: it can no longer be updated or deleted.
+
+                - A trusted link cannot be reported (`403`).
+                - A link accepts 3 reports at most (`429`, without rate limit headers).
+                - An email address can report the same link only once (`409`). Its domain must be able
+                  to receive mail.
+            security: []
+            x-codeSamples:
+                -   lang: Shell
+                    label: cURL
+                    source: |
+                        curl -X POST https://api.url.florian-dev.fr/v1/link/my-link/report \
+                            -H "Content-Type: application/json" \
+                            -d '{"reason": "This link leads to a phishing page.", "email": "jane.doe@example.org"}'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - reason
+                            properties:
+                                reason:
+                                    $ref: '#/components/schemas/ReportReason'
+                                email:
+                                    $ref: '#/components/schemas/ReportEmail'
+                        examples:
+                            anonymous:
+                                summary: 'Anonymous report'
+                                value:
+                                    reason: 'This link leads to a phishing page.'
+                            withEmail:
+                                summary: 'Report with a contact email'
+                                value:
+                                    reason: 'This link leads to a phishing page.'
+                                    email: jane.doe@example.org
+            responses:
+                '201':
+                    description: 'Report created successfully'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Report'
+                            example:
+                                id: 0196cb20-1c4a-7d3e-9f21-5a8b7c6d4e3f
+                                link:
+                                    id: 0196cb17-b0f8-7e9c-b381-ef17aa05f3d9
+                                    url: 'https://www.example.org/a/very/long/path'
+                                    slug: my-link
+                                    apiKey: null
+                                    enabled: true
+                                    trusted: false
+                                    reported: true
+                                    createdAt:
+                                        date: '2026-11-28 09:06:10.154645'
+                                        timezone_type: 3
+                                        timezone: Europe/Paris
+                                    updatedAt: null
+                                    visitedAt: null
+                                    expiresAt: null
+                                reason: 'This link leads to a phishing page.'
+                                email: jane.doe@example.org
+                                createdAt:
+                                    date: '2026-11-30 14:21:37.004512'
+                                    timezone_type: 3
+                                    timezone: Europe/Paris
+                                updatedAt: null
+                '400':
+                    $ref: '#/components/responses/ValidationFailed'
+                '403':
+                    description: 'Trusted links cannot be reported'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                            example:
+                                code: 403
+                                message: >-
+                                    You cannot report a trusted link. If you think this link is malicious,
+                                    please contact an administrator.
+                '404':
+                    $ref: '#/components/responses/LinkNotFound'
+                '409':
+                    description: 'Report already exists'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                            example:
+                                code: 409
+                                message: 'You have already reported this shortcut link, you cannot report it again.'
+                '429':
+                    description: 'Rate limit exceeded, or maximum number of reports reached'
+                    headers:
+                        Retry-After:
+                            $ref: '#/components/headers/Retry-After'
+                        X-RateLimit-Limit:
+                            $ref: '#/components/headers/X-RateLimit-Limit'
+                        X-RateLimit-Remaining:
+                            $ref: '#/components/headers/X-RateLimit-Remaining'
+                        X-RateLimit-Reset:
+                            $ref: '#/components/headers/X-RateLimit-Reset'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                            examples:
+                                rateLimit:
+                                    summary: 'Rate limit exceeded'
+                                    value:
+                                        code: 429
+                                        message: >-
+                                            Too many requests made for the current IP address.
+                                            See response headers for more information.
+                                maximumReports:
+                                    summary: 'Maximum number of reports reached'
+                                    value:
+                                        code: 429
+                                        message: >-
+                                            The maximum number of reports for this link has been reached (3).
+                                            It cannot be reported again.
+                '500':
+                    $ref: '#/components/responses/InternalServerError'
+components:
+    securitySchemes:
+        ApiKeyAuth:
+            type: http
+            scheme: bearer
+            description: >-
+                API key returned once, when a link is created with `api-management` set to `true`.
+                Send it as `Authorization: Bearer <key>`.
+        PasswordAuth:
+            type: apiKey
+            in: header
+            name: Authorization
+            description: >-
+                Password of a protected link, prefixed by `Password `: `Authorization: Password <password>`.
+    parameters:
+        Link:
+            in: path
+            name: link
+            required: true
+            description: 'The UUID v7 or the slug of the link.'
+            schema:
+                type: string
+                pattern: '^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$'
+            examples:
+                uuid:
+                    summary: UUID
+                    value: 0196cb17-b0f8-7e9c-b381-ef17aa05f3d9
+                slug:
+                    summary: Slug
+                    value: my-link
+    headers:
+        Retry-After:
+            description: 'Seconds to wait before the next request.'
+            schema:
+                type: integer
+            example: 42
+        X-RateLimit-Limit:
+            description: 'Number of requests allowed in the window.'
+            schema:
+                type: integer
+            example: 30
+        X-RateLimit-Remaining:
+            description: 'Number of requests left in the window.'
+            schema:
+                type: integer
+            example: 0
+        X-RateLimit-Reset:
+            description: 'Unix timestamp when the window resets.'
+            schema:
+                type: integer
+            example: 1796036842
+    responses:
+        LinkUpdated:
+            description: 'Link updated successfully'
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/Link'
+                    example:
+                        id: 0196cb17-b0f8-7e9c-b381-ef17aa05f3d9
+                        url: 'https://www.example.org/new/path'
+                        slug: my-new-link
+                        apiKey: null
+                        enabled: true
+                        trusted: false
+                        reported: false
+                        createdAt:
+                            date: '2026-11-28 09:06:10.154645'
+                            timezone_type: 3
+                            timezone: Europe/Paris
+                        updatedAt:
+                            date: '2026-12-01 11:15:48.731002'
+                            timezone_type: 3
+                            timezone: Europe/Paris
+                        visitedAt: null
+                        expiresAt: null
+        ValidationFailed:
+            description: 'Data validation failed'
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/ValidationError'
+                    examples:
+                        invalidUrl:
+                            summary: 'Invalid URL'
+                            value:
+                                code: 400
+                                message: 'An error occurred during data validation.'
+                                errors:
+                                    url:
+                                        -   code: INVALID_URL_ERROR
+                                            value: 'example.org'
+                                            message: 'This value is not a valid URL.'
+                        unreachableUrl:
+                            summary: 'Unreachable URL'
+                            value:
+                                code: 400
+                                message: 'An error occurred during data validation.'
+                                errors:
+                                    url:
+                                        -   code: UNREACHABLE_URL_ERROR
+                                            value: 'https://www.example.org/missing'
+                                            message: 'The specified URL is unreachable.'
+                        duplicateSlug:
+                            summary: 'Slug already used'
+                            value:
+                                code: 400
+                                message: 'An error occurred during data validation.'
+                                errors:
+                                    slug:
+                                        -   code: DUPLICATE_SLUG_ERROR
+                                            value: my-link
+                                            message: >-
+                                                The custom slug you chose is already used by another link.
+                                                Please choose another one.
+                        invalidSlug:
+                            summary: 'Invalid slug'
+                            value:
+                                code: 400
+                                message: 'An error occurred during data validation.'
+                                errors:
+                                    slug:
+                                        -   code: REGEX_FAILED_ERROR
+                                            value: 'my link!'
+                                            message: 'This value is not valid.'
+                        expirationOutOfRange:
+                            summary: 'Expiration date out of range'
+                            value:
+                                code: 400
+                                message: 'An error occurred during data validation.'
+                                errors:
+                                    expiresAt:
+                                        -   code: NOT_IN_RANGE_ERROR
+                                            value:
+                                                date: '2020-01-01 00:00:00.000000'
+                                                timezone_type: 3
+                                                timezone: Europe/Paris
+                                            message: >-
+                                                This value should be between Nov 29, 2026, 12:00 AM
+                                                and Nov 28, 2027, 9:06 AM.
+                        invalidExpiration:
+                            summary: 'Expiration date not understood'
+                            value:
+                                code: 400
+                                message: 'An error occurred during data validation.'
+                                errors:
+                                    expiresAt:
+                                        -   code: INVALID_DATE_ERROR
+                                            value: 'next blue moon'
+                                            message: 'This value is not a valid date.'
+                        reasonTooShort:
+                            summary: 'Report reason too short'
+                            value:
+                                code: 400
+                                message: 'An error occurred during data validation.'
+                                errors:
+                                    reason:
+                                        -   code: TOO_SHORT_ERROR
+                                            value: 'Spam'
+                                            message: 'This value is too short. It should have 10 characters or more.'
+                        undeliverableEmail:
+                            summary: 'Report email that cannot receive mail'
+                            value:
+                                code: 400
+                                message: 'An error occurred during data validation.'
+                                errors:
+                                    email:
+                                        -   code: UNDELIVERABLE_ERROR
+                                            value: 'jane.doe@no-mail.example'
+                                            message: 'The domain of this email address cannot receive mail.'
+        ApiKeyMissing:
+            description: 'API key missing'
+            headers:
+                WWW-Authenticate:
+                    schema:
+                        type: string
+                        enum:
+                            - Bearer
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/Error'
+                    example:
+                        code: 401
+                        message: 'The API key is missing. Please provide it in the "Authorization" HTTP header.'
+        ManagementForbidden:
+            description: 'API key invalid, or link disabled or reported'
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/Error'
+                    examples:
+                        invalidApiKey:
+                            summary: 'Invalid API key'
+                            value:
+                                code: 403
+                                message: 'The provided API key is invalid. Please check it and try again.'
+                        disabled:
+                            summary: 'Link disabled'
+                            value:
+                                code: 403
+                                message: >-
+                                    The specified shortcut link has been disabled by its owner
+                                    or by an administrator.
+                        reported:
+                            summary: 'Link reported'
+                            value:
+                                code: 403
+                                message: >-
+                                    The specified shortcut link has been reported by one or more users.
+                                    This link must be verified by an administrator before it can be reached again.
+        LinkNotFound:
+            description: 'Link not found'
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/Error'
+                    example:
+                        code: 404
+                        message: 'The requested resource was not found.'
+        TooManyRequests:
+            description: 'Rate limit exceeded'
+            headers:
+                Retry-After:
+                    $ref: '#/components/headers/Retry-After'
+                X-RateLimit-Limit:
+                    $ref: '#/components/headers/X-RateLimit-Limit'
+                X-RateLimit-Remaining:
+                    $ref: '#/components/headers/X-RateLimit-Remaining'
+                X-RateLimit-Reset:
+                    $ref: '#/components/headers/X-RateLimit-Reset'
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/Error'
+                    example:
+                        code: 429
+                        message: >-
+                            Too many requests made for the current IP address.
+                            See response headers for more information.
+        InternalServerError:
+            description: 'Internal server error'
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/Error'
+                    example:
+                        code: 500
+                        message: 'There was an error while processing your request.'
+    schemas:
+        DateTime:
+            type: object
+            description: 'A date serialized as a PHP date object.'
+            required:
+                - date
+                - timezone_type
+                - timezone
+            properties:
+                date:
+                    type: string
+                    pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{6}$'
+                    description: 'The local date and time, with microseconds.'
+                    example: '2026-11-28 09:06:10.154645'
+                timezone_type:
+                    type: integer
+                    description: 'The PHP time zone type: 3 for a time zone name.'
+                    example: 3
+                timezone:
+                    type: string
+                    description: 'The time zone the date is expressed in.'
+                    example: Europe/Paris
+        NullableDateTime:
+            type: object
+            nullable: true
+            description: 'A date serialized as a PHP date object, or null when the date is not set.'
+            required:
+                - date
+                - timezone_type
+                - timezone
+            properties:
+                date:
+                    $ref: '#/components/schemas/DateTime/properties/date'
+                timezone_type:
+                    $ref: '#/components/schemas/DateTime/properties/timezone_type'
+                timezone:
+                    $ref: '#/components/schemas/DateTime/properties/timezone'
+        Link:
+            type: object
+            required:
+                - id
+                - url
+                - slug
+                - apiKey
+                - enabled
+                - trusted
+                - reported
+                - createdAt
+                - updatedAt
+                - visitedAt
+                - expiresAt
+            properties:
+                id:
+                    type: string
+                    format: uuid
+                    title: 'The unique identifier of the link'
+                    description: 'A UUID v7, usable in place of the slug in `/v1/link/{link}`.'
+                url:
+                    $ref: '#/components/schemas/LinkUrl'
+                slug:
+                    $ref: '#/components/schemas/LinkSlug'
+                apiKey:
+                    type: string
+                    nullable: true
+                    title: 'The API key of the link, returned only when the link is created'
+                    description: >-
+                        32 random bytes encoded in base64. Always `null` in the other responses.
+                enabled:
+                    type: boolean
+                    title: 'The activation state of the link'
+                    description: 'A disabled link must not redirect its visitors, and cannot be updated or deleted.'
+                trusted:
+                    type: boolean
+                    title: 'The trust state of the link'
+                    description: >-
+                        True when the target URL belongs to a trusted domain. A trusted link cannot be reported.
+                reported:
+                    type: boolean
+                    title: 'The report state of the link'
+                    description: >-
+                        True when the link has at least one report. A reported link cannot be updated or deleted.
+                createdAt:
+                    allOf:
+                        -   $ref: '#/components/schemas/DateTime'
+                    title: 'The creation date of the link'
+                updatedAt:
+                    allOf:
+                        -   $ref: '#/components/schemas/NullableDateTime'
+                    title: 'The last update date of the link'
+                visitedAt:
+                    allOf:
+                        -   $ref: '#/components/schemas/NullableDateTime'
+                    title: 'The last visit date of the link'
+                    description: >-
+                        Recorded at most once a day. A `GET` request returns the visit before its own.
+                expiresAt:
+                    allOf:
+                        -   $ref: '#/components/schemas/NullableDateTime'
+                    title: 'The expiration date of the link'
+        LinkUrl:
+            type: string
+            format: uri
+            description: >-
+                The URL to shorten, with a top-level domain. It must answer with a `200` status
+                (at most one redirection followed).
+            example: 'https://www.example.org/a/very/long/path'
+        LinkSlug:
+            type: string
+            minLength: 1
+            maxLength: 50
+            pattern: '^[a-zA-Z0-9-]+$'
+            description: >-
+                The custom slug for the short link: letters, digits and dashes.
+                When left out on creation, a random slug of 5 to 20 letters and digits is generated.
+            example: my-link
+        LinkPassword:
+            type: string
+            maxLength: 255
+            description: >-
+                The password to protect the short link, stored hashed. An empty string means no password.
+            example: 'correct horse battery staple'
+        LinkExpiration:
+            type: string
+            description: >-
+                The expiration date for the short link, between tomorrow and one year from now.
+                Any date understood by PHP is accepted; prefer ISO 8601 with a time zone offset.
+                An empty string means no expiration date.
+            example: '2027-06-30T23:59:59+02:00'
+        Report:
+            type: object
+            required:
+                - id
+                - link
+                - reason
+                - email
+                - createdAt
+                - updatedAt
+            properties:
+                id:
+                    type: string
+                    format: uuid
+                    title: 'The unique identifier of the report'
+                link:
+                    $ref: '#/components/schemas/Link'
+                reason:
+                    $ref: '#/components/schemas/ReportReason'
+                email:
+                    type: string
+                    format: email
+                    nullable: true
+                    description: 'The email of the reporter, or null for an anonymous report.'
+                createdAt:
+                    allOf:
+                        -   $ref: '#/components/schemas/DateTime'
+                    title: 'The creation date of the report'
+                updatedAt:
+                    allOf:
+                        -   $ref: '#/components/schemas/NullableDateTime'
+                    title: 'The last update date of the report'
+        ReportReason:
+            type: string
+            minLength: 10
+            maxLength: 500
+            description: 'The reason for reporting the link.'
+            example: 'This link leads to a phishing page.'
+        ReportEmail:
+            type: string
+            format: email
+            minLength: 10
+            maxLength: 100
+            description: >-
+                The email address of the reporter, so an administrator can reply. Its domain must be able
+                to receive mail.
+            example: jane.doe@example.org
+        Error:
+            type: object
+            required:
+                - code
+                - message
+            properties:
+                code:
+                    type: integer
+                    description: 'The HTTP status code.'
+                message:
+                    type: string
+                    description: 'The error message, translated according to the Accept-Language header.'
+        ValidationError:
+            allOf:
+                -   $ref: '#/components/schemas/Error'
+                -   type: object
+                    properties:
+                        errors:
+                            type: object
+                            description: 'The violations, grouped by field name.'
+                            additionalProperties:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Violation'
+        Violation:
+            type: object
+            required:
+                - code
+                - value
+                - message
+            properties:
+                code:
+                    type: string
+                    description: >-
+                        The machine-readable violation code, such as `INVALID_URL_ERROR`, `MISSING_TLD_ERROR`,
+                        `UNREACHABLE_URL_ERROR`, `DUPLICATE_SLUG_ERROR`, `REGEX_FAILED_ERROR`, `TOO_SHORT_ERROR`,
+                        `TOO_LONG_ERROR`, `NOT_IN_RANGE_ERROR`, `INVALID_DATE_ERROR`, `INVALID_FORMAT_ERROR`
+                        or `UNDELIVERABLE_ERROR`.
+                value:
+                    description: 'The rejected value.'
+                message:
+                    type: string
+                    description: 'The violation message, translated according to the Accept-Language header.'

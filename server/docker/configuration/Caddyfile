@@ -27,7 +27,7 @@
     php_server {
         resolve_root_symlink false
 
-        try_files {path} index.php
+        try_files {path} {path}/index.html index.php
 
         root /var/www/html/public
 
