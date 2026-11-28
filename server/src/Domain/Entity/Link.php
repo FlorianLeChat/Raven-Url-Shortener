@@ -6,6 +6,8 @@ use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
+use App\Domain\Enum\ReportStatus;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -200,14 +202,14 @@ class Link
     }
 
     /**
-     * Reports filed by visitors. A link with at least one report is locked until an administrator checks it.
-     * The collection is extra lazy: counting it runs a `COUNT` query instead of loading every report.
-     *
-     * @return Collection<int, Report>
+     * Tells whether a report still waits for an administrator: the link is locked until then.
+     * The collection is extra lazy: counting the matching reports runs a `COUNT` query instead of loading them.
      */
-    public function getReports()
+    public function hasPendingReports(): bool
     {
-        return $this->reports;
+        $pendingCriteria = Criteria::create()->where(Criteria::expr()->eq('status', ReportStatus::Pending));
+
+        return count($this->reports->matching($pendingCriteria)) > 0;
     }
 
     public function getApiKey(): ?ApiKey
@@ -237,7 +239,7 @@ class Link
             'apiKey' => $this->getApiKey()?->getPlainKey(),
             'enabled' => $this->isEnabled(),
             'trusted' => $this->isTrusted(),
-            'reported' => count($this->getReports()) > 0,
+            'reported' => $this->hasPendingReports(),
             'createdAt' => $this->getCreatedAt(),
             'updatedAt' => $this->getUpdatedAt(),
             'visitedAt' => $this->getVisitedAt(),

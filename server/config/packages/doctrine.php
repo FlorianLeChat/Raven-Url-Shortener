@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-$cacheDriver = [
-    'type' => 'pool',
-    'pool' => 'raven_cache_pool',
-];
-
 /**
+ * In production, the mapping metadata keeps the default cache of DoctrineBundle, a PHP file warmed in the build
+ *  directory, and the DQL to SQL cache uses the system pool: both are rebuilt with each image. Stored in Valkey,
+ *  which outlives a deployment under the same namespace, they would describe the entities of the previous version.
+ * Only the query results go to the shared pool.
+ *
  * @see https://symfony.com/doc/current/doctrine.html
  */
 return App::config([
@@ -58,9 +58,14 @@ return App::config([
             'orm' => [
                 'entity_managers' => [
                     'default' => [
-                        'metadata_cache_driver' => $cacheDriver,
-                        'query_cache_driver' => $cacheDriver,
-                        'result_cache_driver' => $cacheDriver,
+                        'query_cache_driver' => [
+                            'type' => 'pool',
+                            'pool' => 'doctrine.system_cache_pool',
+                        ],
+                        'result_cache_driver' => [
+                            'type' => 'pool',
+                            'pool' => 'app.shared_cache_pool',
+                        ],
                     ],
                 ],
             ],

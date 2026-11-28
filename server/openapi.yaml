@@ -3,7 +3,7 @@ info:
     title: 'Raven Url Shortener'
     version: '${VERSION}'
     contact:
-        name: 'Raven Url Shortener administrator'
+        name: 'Webmaster'
         email: 'contact@florian-dev.fr'
         url: 'https://url.florian-dev.fr'
     license:
@@ -40,6 +40,9 @@ info:
           again. It is required to update or delete the link.
         - **Link password** (`Authorization: Password <password>`): required to read the details of a link
           protected by a password.
+        - **Private API key** (`Authorization: Bearer <key>`): the key of the server itself. When the server
+          runs as a private API, every request must send it from an allowed origin. Whether the API is private
+          or public, the administrator endpoints also require it, such as the review of a report.
 
         # Errors
 
@@ -66,9 +69,11 @@ info:
         `{"date": "2026-11-28 09:06:10.000000", "timezone_type": 3, "timezone": "Europe/Paris"}`.
 servers:
     -   url: 'https://api.url.florian-dev.fr'
-        description: 'Production API'
+        description: 'Public API'
+    -   url: 'https://internal.florian-dev.fr/url-api'
+        description: 'Private API'
     -   url: 'http://localhost:8000'
-        description: 'Development API'
+        description: 'Local API'
 tags:
     -   name: Server
         description: 'Health of the API server.'
@@ -80,7 +85,8 @@ tags:
         description: 'Custom slugs, the readable part of a short link URL.'
     -   name: Report
         description: >-
-            Reports of malicious links. A reported link is locked until an administrator checks it.
+            Reports of malicious links. A link with a pending report is locked until an administrator
+            accepts or rejects the report.
 paths:
     /:
         get:
@@ -577,12 +583,14 @@ paths:
             summary: 'Create a report for a short link'
             description: |
                 Report a malicious short link, by its UUID or its custom slug. Once reported, the link is
-                locked until an administrator checks it: it can no longer be updated or deleted.
+                locked until an administrator reviews the report: it can no longer be updated or deleted.
 
                 - A trusted link cannot be reported (`403`).
-                - A link accepts 3 reports at most (`429`, without rate limit headers).
-                - An email address can report the same link only once (`409`). Its domain must be able
-                  to receive mail.
+                - A link accepts 3 pending reports at most (`429`, without rate limit headers).
+                - An email address can report the same link only once (`409`), even after the review. Its domain
+                  must be able to receive mail.
+                - The reporter who leaves an email address receives the outcome of the review, in the language
+                  of the `Accept-Language` header of this request (`en` or `fr`).
             security: []
             x-codeSamples:
                 -   lang: Shell
@@ -640,6 +648,8 @@ paths:
                                     expiresAt: null
                                 reason: 'This link leads to a phishing page.'
                                 email: jane.doe@example.org
+                                status: pending
+                                reviewedAt: null
                                 createdAt:
                                     date: '2026-11-30 14:21:37.004512'
                                     timezone_type: 3
@@ -701,6 +711,158 @@ paths:
                                             It cannot be reported again.
                 '500':
                     $ref: '#/components/responses/InternalServerError'
+    /v1/report/{report}:
+        parameters:
+            -   in: path
+                name: report
+                required: true
+                description: 'The UUID v7 of the report.'
+                schema:
+                    type: string
+                    format: uuid
+                example: 0196cb20-1c4a-7d3e-9f21-5a8b7c6d4e3f
+        patch:
+            tags:
+                - Report
+            operationId: reviewReport
+            summary: 'Accept or reject a report'
+            description: |
+                Close a pending report with the decision of an administrator. Reserved to the administrators:
+                the request requires the private API key.
+
+                - `accepted`: the link is disabled.
+                - `rejected`: the report no longer locks the link, which is released once no other report
+                  is pending. With `trusted` set to `true`, the link is also marked as trusted and cannot
+                  be reported again. `trusted` is ignored for an accepted report.
+
+                Each report is reviewed once: a report already accepted or rejected returns `409`.
+                When the reporter left an email address, they receive the outcome in the language of their report,
+                once the response is sent. A failure to send this email does not fail the review.
+            security:
+                -   PrivateApiKeyAuth: []
+            x-codeSamples:
+                -   lang: Shell
+                    label: cURL
+                    source: |
+                        curl -X PATCH https://api.url.florian-dev.fr/v1/report/0196cb20-1c4a-7d3e-9f21-5a8b7c6d4e3f \
+                            -H "Authorization: Bearer <private API key>" \
+                            -H "Content-Type: application/json" \
+                            -d '{"status": "rejected", "trusted": true}'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - status
+                            properties:
+                                status:
+                                    type: string
+                                    enum:
+                                        - accepted
+                                        - rejected
+                                    description: 'The decision of the administrator.'
+                                trusted:
+                                    type: boolean
+                                    default: false
+                                    description: 'Marks the link as trusted when the report is rejected.'
+                        examples:
+                            accepted:
+                                summary: 'Accept the report and disable the link'
+                                value:
+                                    status: accepted
+                            rejected:
+                                summary: 'Reject the report and trust the link'
+                                value:
+                                    status: rejected
+                                    trusted: true
+            responses:
+                '200':
+                    description: 'Report reviewed successfully'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Report'
+                            example:
+                                id: 0196cb20-1c4a-7d3e-9f21-5a8b7c6d4e3f
+                                link:
+                                    id: 0196cb17-b0f8-7e9c-b381-ef17aa05f3d9
+                                    url: 'https://www.example.org/a/very/long/path'
+                                    slug: my-link
+                                    apiKey: null
+                                    enabled: false
+                                    trusted: false
+                                    reported: false
+                                    createdAt:
+                                        date: '2026-11-28 09:06:10.154645'
+                                        timezone_type: 3
+                                        timezone: Europe/Paris
+                                    updatedAt: null
+                                    visitedAt: null
+                                    expiresAt: null
+                                reason: 'This link leads to a phishing page.'
+                                email: jane.doe@example.org
+                                status: accepted
+                                reviewedAt:
+                                    date: '2026-12-01 10:02:51.318274'
+                                    timezone_type: 3
+                                    timezone: Europe/Paris
+                                createdAt:
+                                    date: '2026-11-30 14:21:37.004512'
+                                    timezone_type: 3
+                                    timezone: Europe/Paris
+                                updatedAt:
+                                    date: '2026-12-01 10:02:51.318274'
+                                    timezone_type: 3
+                                    timezone: Europe/Paris
+                '400':
+                    description: 'Invalid decision'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ValidationError'
+                            example:
+                                code: 400
+                                message: 'An error occurred during data validation.'
+                                errors:
+                                    status:
+                                        -   code: NO_SUCH_CHOICE_ERROR
+                                            value: pending
+                                            message: 'The value you selected is not a valid choice.'
+                '401':
+                    $ref: '#/components/responses/ApiKeyMissing'
+                '403':
+                    description: 'Private API key invalid'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                            example:
+                                code: 403
+                                message: 'The provided API key is invalid. Please check it and try again.'
+                '404':
+                    description: 'Report not found'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                            example:
+                                code: 404
+                                message: 'The requested resource was not found.'
+                '409':
+                    description: 'Report already reviewed'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                            example:
+                                code: 409
+                                message: 'This report has already been reviewed by an administrator.'
+                '429':
+                    $ref: '#/components/responses/TooManyRequests'
+                '500':
+                    $ref: '#/components/responses/InternalServerError'
 components:
     securitySchemes:
         ApiKeyAuth:
@@ -715,6 +877,14 @@ components:
             name: Authorization
             description: >-
                 Password of a protected link, prefixed by `Password `: `Authorization: Password <password>`.
+        PrivateApiKeyAuth:
+            type: http
+            scheme: bearer
+            description: >-
+                Private API key, set by `APP_PRIVATE_API_KEY` on the server: required by every request of a private
+                API, and by the administrator endpoints of a private or public API.
+                Send it as `Authorization: Bearer <key>`. When the server sets no key, the administrator endpoints
+                refuse every request.
     parameters:
         Link:
             in: path
@@ -1030,7 +1200,8 @@ components:
                     type: boolean
                     title: 'The report state of the link'
                     description: >-
-                        True when the link has at least one report. A reported link cannot be updated or deleted.
+                        True when at least one report of the link waits for an administrator.
+                        A reported link cannot be updated or deleted.
                 createdAt:
                     allOf:
                         -   $ref: '#/components/schemas/DateTime'
@@ -1085,6 +1256,8 @@ components:
                 - link
                 - reason
                 - email
+                - status
+                - reviewedAt
                 - createdAt
                 - updatedAt
             properties:
@@ -1101,6 +1274,18 @@ components:
                     format: email
                     nullable: true
                     description: 'The email of the reporter, or null for an anonymous report.'
+                status:
+                    type: string
+                    enum:
+                        - pending
+                        - accepted
+                        - rejected
+                    title: 'The review state of the report'
+                    description: 'A pending report locks its link until an administrator accepts or rejects it.'
+                reviewedAt:
+                    allOf:
+                        -   $ref: '#/components/schemas/NullableDateTime'
+                    title: 'The review date of the report'
                 createdAt:
                     allOf:
                         -   $ref: '#/components/schemas/DateTime'
@@ -1160,8 +1345,8 @@ components:
                     description: >-
                         The machine-readable violation code, such as `INVALID_URL_ERROR`, `MISSING_TLD_ERROR`,
                         `UNREACHABLE_URL_ERROR`, `DUPLICATE_SLUG_ERROR`, `REGEX_FAILED_ERROR`, `TOO_SHORT_ERROR`,
-                        `TOO_LONG_ERROR`, `NOT_IN_RANGE_ERROR`, `INVALID_DATE_ERROR`, `INVALID_FORMAT_ERROR`
-                        or `UNDELIVERABLE_ERROR`.
+                        `TOO_LONG_ERROR`, `NOT_IN_RANGE_ERROR`, `INVALID_DATE_ERROR`, `INVALID_FORMAT_ERROR`,
+                        `UNDELIVERABLE_ERROR` or `NO_SUCH_CHOICE_ERROR`.
                 value:
                     description: 'The rejected value.'
                 message:

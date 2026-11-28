@@ -6,7 +6,9 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use App\Action\ServerIndexAction;
 use App\Tests\Mock\DnsRecordResolver;
+use App\Domain\Service\ReviewReportService;
 use App\Tests\Mock\HttpClientResponseFactory;
+use App\Infrastructure\Mailer\ReportReviewMailer;
 use App\Infrastructure\Command\UserReportSummary;
 use App\Infrastructure\EventListener\OriginListener;
 use App\Infrastructure\EventListener\LimiterListener;
@@ -42,6 +44,13 @@ return static function (ContainerConfigurator $container): void {
         ->bind('string $smtpUsername', '%env(string:SMTP_USERNAME)%')
         ->tag('console.command');
 
+    $services->set(ReportReviewMailer::class)
+        ->bind('bool $isSmtpEnabled', '%env(bool:SMTP_ENABLED)%')
+        ->tag('kernel.event_listener', ['event' => 'kernel.terminate', 'method' => 'sendQueuedOutcomes']);
+
+    $services->set(ReviewReportService::class)
+        ->bind('string $privateApiKey', '%env(string:APP_PRIVATE_API_KEY)%');
+
     $services->set(ServerIndexAction::class)
         ->bind('string $version', '%env(string:VERSION)%');
 
@@ -52,7 +61,8 @@ return static function (ContainerConfigurator $container): void {
         ->bind('bool $isPrivateApi', '%env(bool:APP_PRIVATE_API)%')
         ->bind('array $allowedOrigins', '%env(csv:APP_PRIVATE_API_ALLOWED_ORIGINS)%')
         ->bind('string $apiKey', '%env(string:APP_PRIVATE_API_KEY)%')
-        ->tag('kernel.event_listener');
+        ->tag('kernel.event_listener', ['event' => 'kernel.request', 'method' => 'onKernelRequest', 'priority' => 48])
+        ->tag('kernel.event_listener', ['event' => 'kernel.response', 'method' => 'onKernelResponse']);
 
     if ($container->env() === 'test') {
         $services->set(HttpClientResponseFactory::class);

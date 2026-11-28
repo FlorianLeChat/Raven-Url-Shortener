@@ -7,7 +7,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 $limiterPolicy = [
     'policy' => 'sliding_window',
     'interval' => '1 minute',
-    'cache_pool' => 'raven_cache_pool',
+    'cache_pool' => 'app.shared_cache_pool',
 ];
 
 /**

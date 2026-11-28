@@ -2,7 +2,6 @@
 
 namespace App\Tests\Infrastructure\Command;
 
-use App\Domain\Entity\Report;
 use App\Tests\TestHelperTrait;
 use Symfony\Component\Mime\Email;
 use Doctrine\ORM\EntityRepository;
@@ -24,12 +23,12 @@ final class UserReportSummaryTest extends KernelTestCase
     use TestHelperTrait;
 
     /**
-     * Creates the command with an entity manager answering the given number of reports.
+     * Creates the command with an entity manager answering the given number of pending reports.
      */
     private function createCommand(int $reports, MailerInterface $mailer): UserReportSummary
     {
         $repository = $this->createMock(EntityRepository::class);
-        $repository->method('findAll')->willReturn(array_fill(0, $reports, new Report()));
+        $repository->method('count')->willReturn($reports);
 
         $entityManager = $this->createMock(EntityManagerInterface::class);
         $entityManager->method('getRepository')->willReturn($repository);

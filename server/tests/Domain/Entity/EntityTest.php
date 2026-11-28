@@ -44,7 +44,6 @@ final class EntityTest extends TestCase
         self::assertFalse($data['enabled']);
         self::assertFalse($data['reported']);
         self::assertNull($data['apiKey']);
-        self::assertCount(0, $link->getReports());
     }
 
     public function testLinkDisclosesOnlyPlainApiKey(): void
@@ -98,6 +97,9 @@ final class EntityTest extends TestCase
         self::assertSame('example', $data['link']['slug']);
         self::assertSame('Spam content', $data['reason']);
         self::assertNull($data['email']);
+        self::assertSame('pending', $data['status']);
+        self::assertNull($data['reviewedAt']);
+        self::assertSame('en', $report->getLocale());
         self::assertSame($date, $data['createdAt']);
         self::assertSame($date, $data['updatedAt']);
         self::assertSame($link, $report->getLink());

@@ -221,15 +221,13 @@ abstract class BaseLinkService
     }
 
     /**
-     * @throws AccessDeniedHttpException When the link has been reported and waits for an administrator.
+     * @throws AccessDeniedHttpException When a report of the link still waits for an administrator.
      */
     protected function checkForReports(Link $link): void
     {
         $this->logger->debug(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
-        $reports = $link->getReports();
-
-        if (count($reports) > 0) {
+        if ($link->hasPendingReports()) {
             throw new AccessDeniedHttpException($this->translator->trans('link.reported'));
         }
     }

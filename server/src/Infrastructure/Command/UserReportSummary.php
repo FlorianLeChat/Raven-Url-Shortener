@@ -3,6 +3,7 @@
 namespace App\Infrastructure\Command;
 
 use App\Domain\Entity\Report;
+use App\Domain\Enum\ReportStatus;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\Address;
 use Doctrine\ORM\EntityManagerInterface;
@@ -66,13 +67,13 @@ final class UserReportSummary extends Command
     }
 
     /**
-     * Sends the summary only when reports exist and SMTP is enabled. Neither case fails the command.
+     * Sends the summary only when pending reports exist and SMTP is enabled. Neither case fails the command.
+     * Reviewed reports are left out: they no longer wait for an administrator.
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $repository = $this->entityManager->getRepository(Report::class);
-        $reports = $repository->findAll();
-        $count = count($reports);
+        $count = $repository->count(['status' => ReportStatus::Pending]);
 
         if ($count === 0) {
             $output->writeln('No user reports found.');
