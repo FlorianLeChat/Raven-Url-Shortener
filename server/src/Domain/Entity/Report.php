@@ -6,6 +6,7 @@ use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
+use App\Domain\Enum\ReportStatus;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use App\Infrastructure\Validator\DeliverableEmail;
 use App\Infrastructure\Repository\ReportRepository;
@@ -14,6 +15,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Report filed by a visitor against a link, with an optional email address to reach them,
  *  whose domain must be able to receive mail.
+ * The locale of the report request picks the language of the email telling the reporter the outcome of the review.
  */
 #[ORM\Entity(repositoryClass: ReportRepository::class)]
 class Report
@@ -39,6 +41,15 @@ class Report
     #[Assert\NoSuspiciousCharacters]
     #[DeliverableEmail]
     private ?string $email = null;
+
+    #[ORM\Column(type: Types::STRING, length: 2, options: ['default' => 'en'])]
+    private string $locale = 'en';
+
+    #[ORM\Column(type: Types::STRING, length: 10, enumType: ReportStatus::class, options: ['default' => 'pending'])]
+    private ReportStatus $status = ReportStatus::Pending;
+
+    #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE, nullable: true)]
+    private ?DateTimeImmutable $reviewedAt = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_IMMUTABLE)]
     private DateTimeImmutable $createdAt;
@@ -96,6 +107,42 @@ class Report
         return $this;
     }
 
+    public function getLocale(): string
+    {
+        return $this->locale;
+    }
+
+    public function setLocale(string $locale): static
+    {
+        $this->locale = $locale;
+
+        return $this;
+    }
+
+    public function getStatus(): ReportStatus
+    {
+        return $this->status;
+    }
+
+    public function setStatus(ReportStatus $status): static
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getReviewedAt(): ?DateTimeImmutable
+    {
+        return $this->reviewedAt;
+    }
+
+    public function setReviewedAt(?DateTimeImmutable $reviewedAt): static
+    {
+        $this->reviewedAt = $reviewedAt;
+
+        return $this;
+    }
+
     public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
@@ -132,6 +179,8 @@ class Report
             'link' => $this->getLink()->toArray(),
             'reason' => $this->getReason(),
             'email' => $this->getEmail(),
+            'status' => $this->getStatus()->value,
+            'reviewedAt' => $this->getReviewedAt(),
             'createdAt' => $this->getCreatedAt(),
             'updatedAt' => $this->getUpdatedAt()
         ];

@@ -13,11 +13,11 @@ return App::config([
     'when@prod' => [
         'framework' => [
             'cache' => [
-                'app' => 'raven_cache_pool',
+                'app' => 'app.shared_cache_pool',
                 'system' => 'cache.adapter.system',
                 'default_redis_provider' => 'redis://%env(CACHE_USERNAME)%:%env(CACHE_PASSWORD)%@%env(CACHE_HOST)%/',
                 'pools' => [
-                    'raven_cache_pool' => [
+                    'app.shared_cache_pool' => [
                         'tags' => true,
                         'public' => true,
                         'adapters' => [
@@ -25,6 +25,9 @@ return App::config([
                             'cache.adapter.doctrine_dbal',
                             'cache.adapter.filesystem',
                         ],
+                    ],
+                    'doctrine.system_cache_pool' => [
+                        'adapter' => 'cache.system',
                     ],
                 ],
             ],

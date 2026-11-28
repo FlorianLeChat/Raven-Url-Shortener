@@ -6,6 +6,7 @@ use App\Kernel;
 use App\Domain\Entity\Link;
 use Psr\Log\LoggerInterface;
 use App\Domain\Entity\Report;
+use App\Domain\Enum\ReportStatus;
 use App\Domain\Factory\ReportFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\ORMException;
@@ -87,13 +88,14 @@ final readonly class ReportLinkService
     }
 
     /**
-     * @throws TooManyRequestsHttpException When the link already has the maximum number of reports.
+     * Only pending reports count: once an administrator has reviewed them, the link can be reported again.
+     * @throws TooManyRequestsHttpException When the link already has the maximum number of pending reports.
      */
     private function checkMaximumReports(Link $link): void
     {
         $this->logger->debug(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
-        $reports = $this->repository->count(['link' => $link]);
+        $reports = $this->repository->count(['link' => $link, 'status' => ReportStatus::Pending]);
 
         if ($reports >= self::MAX_REPORTS_PER_LINK) {
             throw new TooManyRequestsHttpException(message: $this->translator->trans('report.maximum_reached', [
@@ -104,6 +106,7 @@ final readonly class ReportLinkService
 
     /**
      * Validates and saves the report. The email address is optional; when given, it can report the link once.
+     * The request locale, negotiated from `Accept-Language`, is the language of the review outcome email.
      * @throws UniqueConstraintViolationException|ORMException
      */
     public function createReport(Request $request, Link $link): Report
@@ -118,7 +121,7 @@ final readonly class ReportLinkService
         $email = $payload->getString('email') ?: null;
         $reason = $payload->getString('reason');
 
-        $report = ReportFactory::create($link, $reason, $email);
+        $report = ReportFactory::create($link, $reason, $email, $request->getLocale());
 
         $this->validateReport($report);
 

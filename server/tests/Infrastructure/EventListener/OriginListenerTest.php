@@ -3,9 +3,11 @@
 namespace App\Tests\Infrastructure\EventListener;
 
 use Psr\Log\NullLogger;
+use Psr\Log\LoggerInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use App\Infrastructure\EventListener\OriginListener;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -30,16 +32,21 @@ final class OriginListenerTest extends TestCase
      *
      * @param string[] $allowedOrigins
      */
-    private function createListener(bool $isPrivateApi, array $allowedOrigins = [self::ALLOWED_ORIGIN]): OriginListener
-    {
+    private function createListener(
+        bool $isPrivateApi,
+        array $allowedOrigins = [self::ALLOWED_ORIGIN],
+        LoggerInterface $logger = new NullLogger(),
+        string $apiKey = self::API_KEY
+    ): OriginListener {
         $translator = $this->createStub(TranslatorInterface::class);
         $translator->method('trans')->willReturnArgument(0);
 
-        return new OriginListener($isPrivateApi, $allowedOrigins, self::API_KEY, new NullLogger(), $translator);
+        return new OriginListener($isPrivateApi, $allowedOrigins, $apiKey, $logger, $translator);
     }
 
     /**
-     * Runs the listener on the response of a request and returns that response.
+     * Runs the listener as the kernel does: on the request, then on the response of the action.
+     * A refused request throws before the action, which never runs.
      *
      * @param array<string, string> $headers
      */
@@ -49,17 +56,20 @@ final class OriginListenerTest extends TestCase
         string $method = 'GET',
         string $ipAddress = self::PUBLIC_IP
     ): Response {
+        $kernel = $this->createStub(HttpKernelInterface::class);
         $request = Request::create('/v1/link', $method, server: ['REMOTE_ADDR' => $ipAddress]);
         $request->headers->add($headers);
 
+        $listener->onKernelRequest(new RequestEvent($kernel, $request, HttpKernelInterface::MAIN_REQUEST));
+
         $event = new ResponseEvent(
-            $this->createStub(HttpKernelInterface::class),
+            $kernel,
             $request,
             HttpKernelInterface::MAIN_REQUEST,
             new Response(status: Response::HTTP_NO_CONTENT)
         );
 
-        $listener($event);
+        $listener->onKernelResponse($event);
 
         return $event->getResponse();
     }
@@ -99,6 +109,14 @@ final class OriginListenerTest extends TestCase
         self::assertSame(self::ALLOWED_ORIGIN, $response->headers->get('Access-Control-Allow-Origin'));
     }
 
+    public function testPrivateApiWithoutConfiguredApiKey(): void
+    {
+        $listener = $this->createListener(true, apiKey: '');
+        $response = $this->dispatch($listener, ['Origin' => self::ALLOWED_ORIGIN, 'Authorization' => 'Bearer link-key']);
+
+        self::assertSame(Response::HTTP_NO_CONTENT, $response->getStatusCode());
+    }
+
     public function testPrivateApiWithWildcardOrigin(): void
     {
         $response = $this->dispatch($this->createListener(true, ['*']), [
@@ -133,7 +151,13 @@ final class OriginListenerTest extends TestCase
         $this->expectException(AccessDeniedHttpException::class);
         $this->expectExceptionMessage('http.invalid_api_key');
 
-        $this->dispatch($this->createListener(true), [
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->once())->method('error')->with(
+            self::logicalNot(self::stringContains('wrong-key')),
+            ['apiKey' => 'an invalid']
+        );
+
+        $this->dispatch($this->createListener(true, logger: $logger), [
             'Origin' => self::ALLOWED_ORIGIN,
             'Authorization' => 'Bearer wrong-key'
         ]);

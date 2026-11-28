@@ -5,6 +5,7 @@ namespace App\Infrastructure\EventListener;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -12,6 +13,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 /**
  * Adds the CORS headers to every response and, for a private API, restricts its access
  *  to the allowed origins (or the local network) holding the private API key.
+ * The restriction runs on `kernel.request` and the headers on `kernel.response` (see `config/services.php`).
  */
 final readonly class OriginListener
 {
@@ -67,6 +69,7 @@ final readonly class OriginListener
 
     /**
      * Compares the `Authorization: Bearer <key>` header with `APP_PRIVATE_API_KEY`, in constant time.
+     * The log only says whether a key was sent: a refused value can be a mistyped real key.
      * @throws AccessDeniedHttpException When the key is missing or does not match.
      */
     private function checkApiKey(Request $request): void
@@ -76,8 +79,8 @@ final readonly class OriginListener
         $isValidApiKey = hash_equals($this->apiKey, $headerApiKey);
 
         if (!$isValidApiKey) {
-            $this->logger->error('HTTP request with invalid API key: {apiKey}', [
-                'apiKey' => $headerApiKey !== '' ? $headerApiKey : '(none)'
+            $this->logger->error('HTTP request with {apiKey} private API key', [
+                'apiKey' => $headerApiKey !== '' ? 'an invalid' : 'no'
             ]);
 
             throw new AccessDeniedHttpException($this->translator->trans('http.invalid_api_key'));
@@ -100,9 +103,10 @@ final readonly class OriginListener
     }
 
     /**
-     * Answers the preflight `OPTIONS` requests with a 200 status before any check.
+     * Adds the CORS headers, including to the error responses, and answers the preflight `OPTIONS` requests
+     *  with a 200 status: no route accepts that method, so the router has answered them with a 405 error.
      */
-    public function __invoke(ResponseEvent $event): void
+    public function onKernelResponse(ResponseEvent $event): void
     {
         $request = $event->getRequest();
         $response = $event->getResponse();
@@ -114,16 +118,26 @@ final readonly class OriginListener
 
         if ($request->getMethod() === 'OPTIONS') {
             $response->setStatusCode(200);
+        }
+    }
 
-            $event->setResponse($response);
-            return;
+    /**
+     * Restricts a private API before the routing and the action run, so a refused request changes nothing.
+     * Preflight `OPTIONS` requests carry no credentials and are left to `onKernelResponse()`.
+     * An empty `APP_PRIVATE_API_KEY` restricts the private API to its origins, without key check.
+     * @throws AccessDeniedHttpException When the origin or the private API key is refused.
+     */
+    public function onKernelRequest(RequestEvent $event): void
+    {
+        $request = $event->getRequest();
+        $isCheckedRequest = $this->isPrivateApi && $event->isMainRequest() && $request->getMethod() !== 'OPTIONS';
+
+        if ($isCheckedRequest) {
+            $this->checkRequestOrigin($request, $request->headers->get('Origin') ?? '');
         }
 
-        if ($this->isPrivateApi) {
-            $this->checkRequestOrigin($request, $headerOrigin);
+        if ($isCheckedRequest && $this->apiKey !== '') {
             $this->checkApiKey($request);
         }
-
-        $event->setResponse($response);
     }
 }

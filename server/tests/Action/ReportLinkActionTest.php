@@ -2,8 +2,10 @@
 
 namespace App\Tests\Action;
 
+use App\Domain\Entity\Report;
 use App\Tests\TestHelperTrait;
 use App\Tests\Mock\DnsRecordResolver;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -99,9 +101,18 @@ final class ReportLinkActionTest extends WebTestCase
     {
         $this->client->request('POST', '/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d9/report', [
             'reason' => 'Inappropriate content',
-        ]);
+        ], server: ['HTTP_ACCEPT_LANGUAGE' => 'fr-FR,fr;q=0.9']);
 
         self::assertResponseIsSuccessful();
-        self::assertJson($this->client->getResponse()->getContent());
+
+        $content = json_decode((string) $this->client->getResponse()->getContent(), true);
+
+        /** @var EntityManagerInterface $entityManager */
+        $entityManager = self::getContainer()->get(EntityManagerInterface::class);
+        $report = $entityManager->find(Report::class, $content['id']);
+
+        self::assertSame('pending', $content['status']);
+        self::assertTrue($content['link']['reported']);
+        self::assertSame('fr', $report?->getLocale());
     }
 }
