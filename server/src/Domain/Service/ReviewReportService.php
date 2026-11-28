@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Infrastructure\Mailer\ReportReviewMailer;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Infrastructure\Exception\DataValidationException;
+use App\Infrastructure\EventListener\AdminApiKeyListener;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -20,8 +21,8 @@ use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 /**
  * Closes a report with the decision of an administrator, then tells the reporter the outcome.
- * Administrators are recognized by the private API key (`APP_PRIVATE_API_KEY`) until the API gets
- *  an authentication of its own.
+ * Administrators are recognized by the administrator API key (`ADMIN_API_KEY`, see AdminApiKeyListener)
+ *  until the API gets an authentication of its own.
  */
 final readonly class ReviewReportService
 {
@@ -30,12 +31,7 @@ final readonly class ReviewReportService
      */
     private const REVIEW_STATUSES = [ReportStatus::Accepted, ReportStatus::Rejected];
 
-    /**
-     * @param string $privateApiKey The private API key (`APP_PRIVATE_API_KEY`), which also identifies
-     *  the administrators. Empty, it refuses every request.
-     */
     public function __construct(
-        private string $privateApiKey,
         private LoggerInterface $logger,
         private ReportReviewMailer $mailer,
         private TranslatorInterface $translator,
@@ -44,26 +40,22 @@ final readonly class ReviewReportService
     }
 
     /**
-     * Compares the `Authorization: Bearer <key>` header with the private API key, in constant time.
+     * Requires the administrator API key in the `Authorization: Bearer <key>` header.
      * @throws UnauthorizedHttpException When the header is missing.
-     * @throws AccessDeniedHttpException When the key does not match, or no private API key is configured.
+     * @throws AccessDeniedHttpException When the key does not match, or no administrator API key is configured.
      */
-    private function checkPrivateApiKey(Request $request): void
+    private function checkAdminApiKey(Request $request): void
     {
         $this->logger->debug(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
         $headerApiKey = $request->headers->get('Authorization');
 
         if (empty($headerApiKey)) {
-            throw new UnauthorizedHttpException('Bearer', $this->translator->trans('api_key.missing'));
+            throw new UnauthorizedHttpException('Bearer', $this->translator->trans('missing', domain: 'api_key'));
         }
 
-        $headerApiKey = str_replace('Bearer ', '', $headerApiKey);
-        $isConfigured = $this->privateApiKey !== '';
-        $isValidApiKey = $isConfigured && hash_equals($this->privateApiKey, $headerApiKey);
-
-        if (!$isValidApiKey) {
-            throw new AccessDeniedHttpException($this->translator->trans('api_key.invalid'));
+        if (!$request->attributes->getBoolean(AdminApiKeyListener::IS_ADMIN)) {
+            throw new AccessDeniedHttpException($this->translator->trans('invalid', domain: 'api_key'));
         }
     }
 
@@ -75,7 +67,7 @@ final readonly class ReviewReportService
         $this->logger->debug(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
         if ($report->getStatus() !== ReportStatus::Pending) {
-            throw new ConflictHttpException($this->translator->trans('report.already_reviewed'));
+            throw new ConflictHttpException($this->translator->trans('already_reviewed', domain: 'report'));
         }
     }
 
@@ -114,7 +106,7 @@ final readonly class ReviewReportService
     {
         $this->logger->debug(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
-        $this->checkPrivateApiKey($request);
+        $this->checkAdminApiKey($request);
         $this->checkPending($report);
 
         $payload = $request->getPayload();

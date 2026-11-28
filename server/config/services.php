@@ -6,13 +6,14 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use App\Action\ServerIndexAction;
 use App\Tests\Mock\DnsRecordResolver;
-use App\Domain\Service\ReviewReportService;
 use App\Tests\Mock\HttpClientResponseFactory;
+use App\Infrastructure\Security\CaptchaVerifier;
 use App\Infrastructure\Mailer\ReportReviewMailer;
 use App\Infrastructure\Command\UserReportSummary;
 use App\Infrastructure\EventListener\OriginListener;
 use App\Infrastructure\EventListener\LimiterListener;
 use App\Infrastructure\EventListener\ExceptionListener;
+use App\Infrastructure\EventListener\AdminApiKeyListener;
 use Egulias\EmailValidator\Validation\DNSGetRecordWrapper;
 use Symfony\Component\HttpClient\NoPrivateNetworkHttpClient;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -21,6 +22,10 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
  * @see https://symfony.com/doc/current/service_container.html
  */
 return static function (ContainerConfigurator $container): void {
+    $container->parameters()
+        ->set('app.private_api', '%env(bool:PRIVATE_API)%')
+        ->set('app.captcha_hmac', '%env(string:CAPTCHA_HMAC)%');
+
     $services = $container->services()
         ->defaults()
         ->autowire()
@@ -48,8 +53,14 @@ return static function (ContainerConfigurator $container): void {
         ->bind('bool $isSmtpEnabled', '%env(bool:SMTP_ENABLED)%')
         ->tag('kernel.event_listener', ['event' => 'kernel.terminate', 'method' => 'sendQueuedOutcomes']);
 
-    $services->set(ReviewReportService::class)
-        ->bind('string $privateApiKey', '%env(string:APP_PRIVATE_API_KEY)%');
+    $services->set(AdminApiKeyListener::class)
+        ->bind('string $adminApiKey', '%env(string:ADMIN_API_KEY)%')
+        ->tag('kernel.event_listener', ['event' => 'kernel.request', 'method' => 'onKernelRequest', 'priority' => 128]);
+
+    $services->set(CaptchaVerifier::class)
+        ->bind('bool $isPrivateApi', '%app.private_api%')
+        ->bind('string $hmacKey', '%app.captcha_hmac%')
+        ->arg('$lockFactory', service('lock.captcha.factory'));
 
     $services->set(ServerIndexAction::class)
         ->bind('string $version', '%env(string:VERSION)%');
@@ -58,10 +69,10 @@ return static function (ContainerConfigurator $container): void {
         ->tag('kernel.event_listener');
 
     $services->set(OriginListener::class)
-        ->bind('bool $isPrivateApi', '%env(bool:APP_PRIVATE_API)%')
-        ->bind('array $allowedOrigins', '%env(csv:APP_PRIVATE_API_ALLOWED_ORIGINS)%')
-        ->bind('string $apiKey', '%env(string:APP_PRIVATE_API_KEY)%')
-        ->tag('kernel.event_listener', ['event' => 'kernel.request', 'method' => 'onKernelRequest', 'priority' => 48])
+        ->bind('bool $isPrivateApi', '%env(bool:PRIVATE_API)%')
+        ->bind('array $allowedOrigins', '%env(csv:PRIVATE_API_ALLOWED_ORIGINS)%')
+        ->bind('string $apiKey', '%env(string:PRIVATE_API_KEY)%')
+        ->tag('kernel.event_listener', ['event' => 'kernel.request', 'method' => 'onKernelRequest', 'priority' => 24])
         ->tag('kernel.event_listener', ['event' => 'kernel.response', 'method' => 'onKernelResponse']);
 
     if ($container->env() === 'test') {
@@ -79,7 +90,7 @@ return static function (ContainerConfigurator $container): void {
 
     if ($container->env() === 'prod') {
         $services->set(LimiterListener::class)
-            ->bind('bool $isRateLimitEnabled', '%env(bool:APP_RATE_LIMIT_ENABLED)%')
+            ->bind('bool $isRateLimitEnabled', '%env(bool:RATE_LIMIT_ENABLED)%')
             ->bind('array $enabledLocales', '%kernel.enabled_locales%')
             ->tag('kernel.event_listener', ['priority' => 64]);
     }

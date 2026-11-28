@@ -10,13 +10,13 @@ use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
- * Tests of `PATCH /v1/report/{id}`, authenticated by the `APP_PRIVATE_API_KEY` of `phpunit.xml`.
+ * Tests of `PATCH /v1/report/{id}`, authenticated by the `ADMIN_API_KEY` of `phpunit.xml`.
  */
 final class ReviewReportActionTest extends WebTestCase
 {
     use TestHelperTrait;
 
-    private const PRIVATE_API_KEY = 'test_private_api_key';
+    private const ADMIN_API_KEY = 'test_admin_api_key';
 
     protected KernelBrowser $client;
 
@@ -34,7 +34,7 @@ final class ReviewReportActionTest extends WebTestCase
      *
      * @param array<string, mixed> $body
      */
-    private function reviewFixtureReport(array $body, ?string $apiKey = self::PRIVATE_API_KEY): string
+    private function reviewFixtureReport(array $body, ?string $apiKey = self::ADMIN_API_KEY): string
     {
         /** @var EntityManagerInterface $entityManager */
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
@@ -75,7 +75,7 @@ final class ReviewReportActionTest extends WebTestCase
 
         self::assertResponseIsSuccessful();
 
-        $report = json_decode($content, true);
+        $report = json_decode($content, true, flags: JSON_THROW_ON_ERROR);
 
         self::assertSame('accepted', $report['status']);
         self::assertNotNull($report['reviewedAt']);
@@ -89,7 +89,7 @@ final class ReviewReportActionTest extends WebTestCase
 
         self::assertResponseIsSuccessful();
 
-        $report = json_decode($content, true);
+        $report = json_decode($content, true, flags: JSON_THROW_ON_ERROR);
 
         self::assertSame('rejected', $report['status']);
         self::assertTrue($report['link']['enabled']);

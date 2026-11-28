@@ -58,6 +58,6 @@ final class ExceptionListenerTest extends TestCase
         self::assertNotSame($firstEvent->getResponse(), $secondResponse);
         self::assertSame(500, $secondResponse->getStatusCode());
         self::assertFalse($secondResponse->headers->has('Retry-After'));
-        self::assertSame('{"code":500,"message":"http.internal_server_error"}', $secondResponse->getContent());
+        self::assertSame('{"code":500,"message":"internal_server_error"}', $secondResponse->getContent());
     }
 }

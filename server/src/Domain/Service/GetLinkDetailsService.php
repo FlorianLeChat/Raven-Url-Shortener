@@ -9,8 +9,10 @@ use App\Domain\Factory\LinkFactory;
 use Doctrine\ORM\Exception\ORMException;
 use Symfony\Component\HttpFoundation\Request;
 use App\Domain\Service\Abstract\BaseLinkService;
+use App\Infrastructure\EventListener\AdminApiKeyListener;
 use Symfony\Component\HttpKernel\Exception\GoneHttpException;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
@@ -31,7 +33,9 @@ final class GetLinkDetailsService extends BaseLinkService
         $headerPassword = $request->headers->get('Authorization');
 
         if (empty($headerPassword)) {
-            throw new UnauthorizedHttpException('Password', $this->translator->trans('link.password.missing'));
+            $message = $this->translator->trans('password.missing', domain: 'link');
+
+            throw new UnauthorizedHttpException('Password', $message);
         }
 
         /** @var string $storedPassword */
@@ -40,7 +44,23 @@ final class GetLinkDetailsService extends BaseLinkService
         $isValidPassword = LinkFactory::verifyPassword($storedPassword, $headerPassword);
 
         if (!$isValidPassword) {
-            throw new AccessDeniedHttpException($this->translator->trans('link.password.invalid'));
+            throw new AccessDeniedHttpException($this->translator->trans('password.invalid', domain: 'link'));
+        }
+    }
+
+    /**
+     * Refuses a password sent to a link without one: on a private API, the password replaces the private API key,
+     *  so ignoring it would give the details of the link to a request holding neither.
+     * @throws BadRequestHttpException When the header carries a password.
+     */
+    private function checkNoPassword(Request $request): void
+    {
+        $this->logger->debug(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
+
+        $headerPassword = $request->headers->get('Authorization') ?? '';
+
+        if (str_starts_with($headerPassword, 'Password ')) {
+            throw new BadRequestHttpException($this->translator->trans('password.unexpected', domain: 'link'));
         }
     }
 
@@ -77,7 +97,7 @@ final class GetLinkDetailsService extends BaseLinkService
         $isExpired = $expiresAt !== null && $expiresAt <= new DateTimeImmutable();
 
         if ($isExpired) {
-            throw new GoneHttpException($this->translator->trans('link.expired'));
+            throw new GoneHttpException($this->translator->trans('expired', domain: 'link'));
         }
     }
 
@@ -94,9 +114,12 @@ final class GetLinkDetailsService extends BaseLinkService
         $this->checkExpiration($link);
 
         $isPasswordProtected = !empty($link->getPassword());
+        $isAdmin = $request->attributes->getBoolean(AdminApiKeyListener::IS_ADMIN);
 
-        if ($isPasswordProtected) {
+        if ($isPasswordProtected && !$isAdmin) {
             $this->checkPassword($request, $link);
+        } elseif (!$isPasswordProtected) {
+            $this->checkNoPassword($request);
         }
 
         $currentDate = $link->getVisitedAt();

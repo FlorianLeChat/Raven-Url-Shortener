@@ -80,9 +80,9 @@ RUN apk add --no-cache gettext
 COPY .env openapi.yaml ./
 
 RUN export $(grep -E \
-        '^(VERSION|APP_RATE_LIMIT_ENABLED|APP_RATE_LIMIT_READ_API|APP_RATE_LIMIT_WRITE_API)=' \
+        '^(VERSION|RATE_LIMIT_ENABLED|RATE_LIMIT_READ_API|RATE_LIMIT_WRITE_API)=' \
         .env | xargs) && \
-    envsubst '${VERSION} ${APP_RATE_LIMIT_ENABLED} ${APP_RATE_LIMIT_READ_API} ${APP_RATE_LIMIT_WRITE_API}' \
+    envsubst '${VERSION} ${RATE_LIMIT_ENABLED} ${RATE_LIMIT_READ_API} ${RATE_LIMIT_WRITE_API}' \
         < openapi.yaml > openapi.resolved.yaml && \
     rm .env && \
     npx --yes @redocly/cli@2.78.0 lint openapi.resolved.yaml && \

@@ -18,6 +18,7 @@
         "php": ">=8.2",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "altcha-org/altcha": "^2.4",
         "doctrine/dbal": "4.4.*",
         "doctrine/doctrine-bundle": "2.18.*",
         "doctrine/doctrine-migrations-bundle": "3.7.*",
@@ -87,5 +88,11 @@
         "post-update-cmd": [
             "@auto-scripts"
         ]
+    },
+    "extra": {
+        "runtime": {
+            "env_var_name": "ENV_NAME",
+            "debug_var_name": "DEBUG"
+        }
     }
 }

@@ -11,7 +11,7 @@ use App\Tests\Mock\HttpClientResponseFactory;
  */
 return App::config([
     'framework' => [
-        'secret' => '%env(APP_SECRET)%',
+        'secret' => '%env(SECRET)%',
     ],
     'when@test' => [
         'framework' => [
@@ -26,7 +26,7 @@ return App::config([
             'app.trusted_proxies' => 'private_ranges',
         ],
         'framework' => [
-            'trusted_proxies' => (string) env('APP_TRUSTED_PROXIES')->default('app.trusted_proxies'),
+            'trusted_proxies' => (string) env('TRUSTED_PROXIES')->default('app.trusted_proxies'),
             'trusted_headers' => [
                 'x-forwarded-for',
                 'x-forwarded-host',

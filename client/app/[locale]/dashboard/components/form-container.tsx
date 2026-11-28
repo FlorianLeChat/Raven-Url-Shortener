@@ -18,7 +18,6 @@ import { Info, WandSparkles } from "lucide-react";
 import type { LinkProperties } from "@/interfaces/LinkProperties";
 import type { ErrorProperties } from "@/interfaces/ErrorProperties";
 import { solveCaptchaChallenge } from "@/utilities/captcha";
-import { verifyCaptchaResolution } from "../actions/check-captcha";
 import { lazy, useContext, useRef, useState, type FormEvent } from "react";
 
 import { ServerContext } from "@/components/provider-server";
@@ -104,9 +103,11 @@ export default function FormContainer()
 				};
 			}
 
+			const isCaptchaError = "errors" in json && json.errors?.captcha !== undefined;
+
 			return {
 				state: false,
-				message: messages( "errors.link.creation_failed" )
+				message: messages( isCaptchaError ? "errors.captcha.check_failed" : "errors.link.creation_failed" )
 			};
 		}
 		catch ( error )
@@ -141,9 +142,13 @@ export default function FormContainer()
 
 		const data = new FormData( event.currentTarget );
 		const captchaPayload = await solveCaptchaChallenge();
-		const isValidCaptcha = await verifyCaptchaResolution( captchaPayload );
 
-		if ( !isValidCaptcha )
+		if ( captchaPayload )
+		{
+			data.set( "captcha", captchaPayload );
+		}
+
+		if ( captchaPayload === null )
 		{
 			addToast( {
 				color: "danger",

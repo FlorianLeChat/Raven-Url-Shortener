@@ -14,11 +14,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
- * Tests of ReviewReportService without a configured private API key.
+ * Tests of ReviewReportService with a request AdminApiKeyListener did not recognize.
  */
 final class ReviewReportServiceTest extends TestCase
 {
-    public function testReviewWithoutConfiguredApiKey(): void
+    public function testReviewWithoutAdminApiKey(): void
     {
         $translator = $this->createStub(TranslatorInterface::class);
         $translator->method('trans')->willReturnArgument(0);
@@ -27,7 +27,6 @@ final class ReviewReportServiceTest extends TestCase
         $entityManager->expects($this->never())->method('flush');
 
         $service = new ReviewReportService(
-            '',
             new NullLogger(),
             new ReportReviewMailer(false, new NullLogger(), $this->createStub(MailerInterface::class), $translator),
             $translator,
@@ -35,10 +34,10 @@ final class ReviewReportServiceTest extends TestCase
         );
 
         $request = Request::create('/v1/report', 'PATCH', ['status' => 'accepted']);
-        $request->headers->set('Authorization', 'Bearer ');
+        $request->headers->set('Authorization', 'Bearer wrong-key');
 
         $this->expectException(AccessDeniedHttpException::class);
-        $this->expectExceptionMessage('api_key.invalid');
+        $this->expectExceptionMessage('invalid');
 
         $service->reviewReport($request, new Report());
     }

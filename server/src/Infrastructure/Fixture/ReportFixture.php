@@ -2,7 +2,6 @@
 
 namespace App\Infrastructure\Fixture;
 
-use DateTimeImmutable;
 use App\Domain\Entity\Link;
 use App\Domain\Entity\Report;
 use Doctrine\Persistence\ObjectManager;

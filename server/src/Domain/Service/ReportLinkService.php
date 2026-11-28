@@ -71,7 +71,7 @@ final readonly class ReportLinkService
         $result = $this->repository->findOneBy(['link' => $link, 'email' => $email]);
 
         if (!empty($result)) {
-            throw new ConflictHttpException($this->translator->trans('report.duplicated'));
+            throw new ConflictHttpException($this->translator->trans('duplicated', domain: 'report'));
         }
     }
 
@@ -83,7 +83,7 @@ final readonly class ReportLinkService
         $this->logger->debug(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
         if ($link->isTrusted()) {
-            throw new AccessDeniedHttpException($this->translator->trans('report.trusted_link'));
+            throw new AccessDeniedHttpException($this->translator->trans('trusted_link', domain: 'report'));
         }
     }
 
@@ -98,9 +98,9 @@ final readonly class ReportLinkService
         $reports = $this->repository->count(['link' => $link, 'status' => ReportStatus::Pending]);
 
         if ($reports >= self::MAX_REPORTS_PER_LINK) {
-            throw new TooManyRequestsHttpException(message: $this->translator->trans('report.maximum_reached', [
+            throw new TooManyRequestsHttpException(message: $this->translator->trans('maximum_reached', [
                 '%max%' => self::MAX_REPORTS_PER_LINK
-            ]));
+            ], 'report'));
         }
     }
 

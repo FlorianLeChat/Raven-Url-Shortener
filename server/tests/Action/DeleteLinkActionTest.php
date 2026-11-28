@@ -49,6 +49,12 @@ final class DeleteLinkActionTest extends WebTestCase
 
         self::assertJson($content);
         self::assertJsonStringEqualsJsonString('{"code":403,"message":"The provided API key is invalid. Please check it and try again."}', $content);
+
+        $this->client->request('DELETE', '/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d7', server: [
+            'HTTP_Authorization' => 'Bearer test_admin_api_key'
+        ]);
+
+        self::assertResponseStatusCodeSame(Response::HTTP_NO_CONTENT);
     }
 
     public function testDeleteDisabledLink(): void

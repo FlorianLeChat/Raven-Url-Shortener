@@ -105,7 +105,7 @@ final class ReportLinkActionTest extends WebTestCase
 
         self::assertResponseIsSuccessful();
 
-        $content = json_decode((string) $this->client->getResponse()->getContent(), true);
+        $content = json_decode((string) $this->client->getResponse()->getContent(), true, flags: JSON_THROW_ON_ERROR);
 
         /** @var EntityManagerInterface $entityManager */
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);

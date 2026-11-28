@@ -27,7 +27,7 @@ final class DeliverableEmailValidatorTest extends ConstraintValidatorTestCase
     {
         $this->validator->validate('', new DeliverableEmail());
 
-        self::assertNoViolation();
+        $this->assertNoViolation();
     }
 
     public function testTooDeepDomain(): void

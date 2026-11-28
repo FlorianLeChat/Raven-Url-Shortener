@@ -11,6 +11,7 @@ use App\Domain\Service\GetLinkDetailsService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Infrastructure\EventListener\OriginListener;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,7 +19,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 /**
  * Endpoint reading the details of a shortened link, used by the client before any redirection.
  */
-#[Route('/v{version}', requirements: ['version' => '1'], stateless: true)]
+#[Route(
+    '/v{version}',
+    requirements: ['version' => '1'],
+    defaults: [OriginListener::CREDENTIALS_ROUTE => OriginListener::LINK_PASSWORD],
+    stateless: true
+)]
 final class GetLinkDetailsAction extends AbstractController
 {
     public function __construct(

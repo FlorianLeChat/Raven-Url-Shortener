@@ -43,6 +43,25 @@ final class CreateLinkActionTest extends WebTestCase
         self::assertStringContainsString('IS_BLANK_ERROR', $content);
     }
 
+    public function testCreateLinkWithAuthorization(): void
+    {
+        $this->client->request('POST', '/v1/link', ['url' => 'https://www.google.com/'], server: [
+            'HTTP_Authorization' => 'Bearer 7hLtoMvpr3NDyd+l3FFeaZD68HGTffHniUUQPjwGy28='
+        ]);
+
+        self::assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
+        self::assertJsonStringEqualsJsonString(
+            '{"code":400,"message":"This endpoint does not read the \\"Authorization\\" HTTP header. Please remove it."}',
+            $this->client->getResponse()->getContent()
+        );
+
+        $this->client->request('POST', '/v1/link', ['url' => 'https://www.google.com/'], server: [
+            'HTTP_Authorization' => 'Bearer test_admin_api_key'
+        ]);
+
+        self::assertResponseStatusCodeSame(Response::HTTP_CREATED);
+    }
+
     public function testCreateLinkWithExistingSlug(): void
     {
         $this->client->request('POST', '/v1/link', [
@@ -96,7 +115,7 @@ final class CreateLinkActionTest extends WebTestCase
         $content = $this->client->getResponse()->getContent();
 
         self::assertJson($content);
-        $violation = json_decode($content, true)['errors']['expiresAt'][0];
+        $violation = json_decode($content, true, flags: JSON_THROW_ON_ERROR)['errors']['expiresAt'][0];
 
         self::assertSame('INVALID_DATE_ERROR', $violation['code']);
         self::assertSame('Cette valeur n\'est pas une date valide.', $violation['message']);
@@ -139,7 +158,7 @@ final class CreateLinkActionTest extends WebTestCase
 
         self::assertResponseIsSuccessful();
 
-        $content = json_decode($this->client->getResponse()->getContent(), true);
+        $content = json_decode($this->client->getResponse()->getContent(), true, flags: JSON_THROW_ON_ERROR);
 
         self::assertNull($content['apiKey']);
     }
@@ -153,24 +172,24 @@ final class CreateLinkActionTest extends WebTestCase
 
         self::assertResponseIsSuccessful();
 
-        $content = json_decode($this->client->getResponse()->getContent(), true);
+        $content = json_decode($this->client->getResponse()->getContent(), true, flags: JSON_THROW_ON_ERROR);
 
         self::assertMatchesRegularExpression(self::API_KEY_PATTERN, $content['apiKey']);
 
         $this->client->request('GET', '/v1/link/' . $content['id']);
 
         self::assertResponseIsSuccessful();
-        self::assertNull(json_decode($this->client->getResponse()->getContent(), true)['apiKey']);
+        self::assertNull(json_decode($this->client->getResponse()->getContent(), true, flags: JSON_THROW_ON_ERROR)['apiKey']);
 
         $this->client->request('PATCH', '/v1/link/' . $content['id'], server: [
             'HTTP_Authorization' => 'Bearer ' . $content['apiKey']
         ], content: json_encode([
             'field' => 'slug',
             'value' => 'managed-slug'
-        ]));
+        ], JSON_THROW_ON_ERROR));
 
         self::assertResponseIsSuccessful();
-        self::assertNull(json_decode($this->client->getResponse()->getContent(), true)['apiKey']);
+        self::assertNull(json_decode($this->client->getResponse()->getContent(), true, flags: JSON_THROW_ON_ERROR)['apiKey']);
     }
 
     public function testCreateLinkWithFailedUrl(): void

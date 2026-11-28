@@ -86,7 +86,7 @@ final class UpdateLinkActionTest extends WebTestCase
         ], content: json_encode([
             'field' => 'url',
             'value' => 'invalid_url'
-        ]));
+        ], JSON_THROW_ON_ERROR));
 
         self::assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
 
@@ -101,7 +101,7 @@ final class UpdateLinkActionTest extends WebTestCase
         ], content: json_encode([
             'field' => 'expiresAt',
             'value' => 'not a date'
-        ]));
+        ], JSON_THROW_ON_ERROR));
 
         self::assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
         self::assertStringContainsString('INVALID_DATE_ERROR', $this->client->getResponse()->getContent());
@@ -114,7 +114,7 @@ final class UpdateLinkActionTest extends WebTestCase
         ], content: json_encode([
             'field' => 'slug',
             'value' => 'test1'
-        ]));
+        ], JSON_THROW_ON_ERROR));
 
         self::assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
 
@@ -132,7 +132,7 @@ final class UpdateLinkActionTest extends WebTestCase
         ], content: json_encode([
             'field' => 'url',
             'value' => 'https://www.google.com/'
-        ]));
+        ], JSON_THROW_ON_ERROR));
 
         self::assertResponseStatusCodeSame(Response::HTTP_OK);
         self::assertJson($this->client->getResponse()->getContent());

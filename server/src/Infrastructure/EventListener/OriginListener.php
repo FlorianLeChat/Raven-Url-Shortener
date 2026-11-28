@@ -8,15 +8,28 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * Adds the CORS headers to every response and, for a private API, restricts its access
- *  to the allowed origins (or the local network) holding the private API key.
- * The restriction runs on `kernel.request` and the headers on `kernel.response` (see `config/services.php`).
+ *  to the allowed origins (or the local network) sending the private API key in the `X-Api-Key` header.
+ * The `Authorization` header carries the secrets of the routes: the API key or the password of a link,
+ *  or the administrator API key. A route reading it declares its secret in the `CREDENTIALS_ROUTE` default;
+ *  any other route refuses it, except with the administrator API key, which also skips the private API key
+ *  (see AdminApiKeyListener). An API reading no private API key refuses the `X-Api-Key` header.
+ * The checks run on `kernel.request`, after the routing, and the headers on `kernel.response`
+ *  (see `config/services.php`).
  */
 final readonly class OriginListener
 {
+    public const CREDENTIALS_ROUTE = '_credentials';
+    public const LINK_API_KEY = 'link_api_key';
+    public const LINK_PASSWORD = 'link_password';
+    public const ADMIN_API_KEY = 'admin_api_key';
+
+    private const API_KEY_HEADER = 'X-Api-Key';
+
     /**
      * @param string[] $allowedOrigins Allowed origins list for CORS requests.
      */
@@ -40,7 +53,7 @@ final readonly class OriginListener
             $ipAddress === '127.0.0.1' || $ipAddress === '::1' ||
             preg_match('/^192\.168\./', $ipAddress) ||
             preg_match('/^10\./', $ipAddress) ||
-            preg_match('/^172\.(1[6-9]|2[0-9]|3[0-1])\./', $ipAddress);
+            preg_match('/^172\.(1[6-9]|2\d|3[0-1])\./', $ipAddress);
     }
 
     /**
@@ -63,19 +76,18 @@ final readonly class OriginListener
                 'origin' => $headerOrigin
             ]);
 
-            throw new AccessDeniedHttpException($this->translator->trans('http.invalid_origin'));
+            throw new AccessDeniedHttpException($this->translator->trans('invalid_origin', domain: 'http'));
         }
     }
 
     /**
-     * Compares the `Authorization: Bearer <key>` header with `APP_PRIVATE_API_KEY`, in constant time.
+     * Compares the `X-Api-Key` header with `PRIVATE_API_KEY`, in constant time.
      * The log only says whether a key was sent: a refused value can be a mistyped real key.
      * @throws AccessDeniedHttpException When the key is missing or does not match.
      */
     private function checkApiKey(Request $request): void
     {
-        $headerApiKey = $request->headers->get('Authorization') ?? '';
-        $headerApiKey = str_replace('Bearer ', '', $headerApiKey);
+        $headerApiKey = $request->headers->get(self::API_KEY_HEADER) ?? '';
         $isValidApiKey = hash_equals($this->apiKey, $headerApiKey);
 
         if (!$isValidApiKey) {
@@ -83,7 +95,7 @@ final readonly class OriginListener
                 'apiKey' => $headerApiKey !== '' ? 'an invalid' : 'no'
             ]);
 
-            throw new AccessDeniedHttpException($this->translator->trans('http.invalid_api_key'));
+            throw new AccessDeniedHttpException($this->translator->trans('invalid_api_key', domain: 'http'));
         }
     }
 
@@ -99,7 +111,7 @@ final readonly class OriginListener
         }
 
         $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
-        $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+        $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Api-Key');
     }
 
     /**
@@ -122,21 +134,50 @@ final readonly class OriginListener
     }
 
     /**
-     * Restricts a private API before the routing and the action run, so a refused request changes nothing.
+     * Refuses the headers no check reads: the `X-Api-Key` header when the API reads no private API key,
+     *  and the `Authorization` header on a route without secret, unless it carries the administrator API key.
+     * @throws BadRequestHttpException When the request sends one of those headers.
+     */
+    private function checkUnreadHeaders(Request $request, bool $isApiKeyRead, bool $isAdmin): void
+    {
+        $hasCredentialsRoute = $request->attributes->has(self::CREDENTIALS_ROUTE);
+        $hasApiKey = $request->headers->has(self::API_KEY_HEADER);
+        $hasAuthorization = ($request->headers->get('Authorization') ?? '') !== '';
+
+        if (!$isApiKeyRead && $hasApiKey) {
+            throw new BadRequestHttpException($this->translator->trans('unexpected_api_key', domain: 'http'));
+        }
+
+        if (!$hasCredentialsRoute && !$isAdmin && $hasAuthorization) {
+            throw new BadRequestHttpException($this->translator->trans('unexpected_authorization', domain: 'http'));
+        }
+    }
+
+    /**
+     * Restricts a private API before the action runs, so a refused request changes nothing.
      * Preflight `OPTIONS` requests carry no credentials and are left to `onKernelResponse()`.
-     * An empty `APP_PRIVATE_API_KEY` restricts the private API to its origins, without key check.
+     * An empty `PRIVATE_API_KEY` restricts the private API to its origins, without key check.
      * @throws AccessDeniedHttpException When the origin or the private API key is refused.
+     * @throws BadRequestHttpException When the request sends a header no check reads.
      */
     public function onKernelRequest(RequestEvent $event): void
     {
         $request = $event->getRequest();
-        $isCheckedRequest = $this->isPrivateApi && $event->isMainRequest() && $request->getMethod() !== 'OPTIONS';
 
-        if ($isCheckedRequest) {
+        if (!$event->isMainRequest() || $request->getMethod() === 'OPTIONS') {
+            return;
+        }
+
+        if ($this->isPrivateApi) {
             $this->checkRequestOrigin($request, $request->headers->get('Origin') ?? '');
         }
 
-        if ($isCheckedRequest && $this->apiKey !== '') {
+        $isAdmin = $request->attributes->getBoolean(AdminApiKeyListener::IS_ADMIN);
+        $isApiKeyRead = $this->isPrivateApi && $this->apiKey !== '';
+
+        $this->checkUnreadHeaders($request, $isApiKeyRead, $isAdmin);
+
+        if ($isApiKeyRead && !$isAdmin) {
             $this->checkApiKey($request);
         }
     }

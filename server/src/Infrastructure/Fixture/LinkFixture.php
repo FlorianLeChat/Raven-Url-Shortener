@@ -4,7 +4,6 @@ namespace App\Infrastructure\Fixture;
 
 use DateTimeImmutable;
 use App\Domain\Entity\Link;
-use App\Domain\Factory\LinkFactory;
 use Symfony\Component\Uid\Uuid;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;

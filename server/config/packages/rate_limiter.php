@@ -17,8 +17,8 @@ return App::config([
     'when@prod' => [
         'framework' => [
             'rate_limiter' => [
-                'read_api' => ['limit' => '%env(int:APP_RATE_LIMIT_READ_API)%'] + $limiterPolicy,
-                'write_api' => ['limit' => '%env(int:APP_RATE_LIMIT_WRITE_API)%'] + $limiterPolicy,
+                'read_api' => ['limit' => '%env(int:RATE_LIMIT_READ_API)%'] + $limiterPolicy,
+                'write_api' => ['limit' => '%env(int:RATE_LIMIT_WRITE_API)%'] + $limiterPolicy,
             ],
         ],
     ],
