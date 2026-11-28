@@ -6,9 +6,11 @@ use JsonException;
 use DateTimeImmutable;
 use AltchaOrg\Altcha\V1\Altcha;
 use Symfony\Component\Lock\LockFactory;
+use App\Domain\Enum\AccessKeyCapability;
 use AltchaOrg\Altcha\V1\ChallengeOptions;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use App\Infrastructure\EventListener\AccessKeyListener;
 use App\Infrastructure\Exception\DataValidationException;
 use App\Infrastructure\EventListener\AdminApiKeyListener;
 use Symfony\Component\Lock\Exception\LockAcquiringException;
@@ -81,7 +83,8 @@ final readonly class CaptchaVerifier
 
     /**
      * Checks the solution sent in the `captcha` field when the API is private, and marks it as used.
-     * An administrator request needs none (see AdminApiKeyListener).
+     * An administrator request needs none (see AdminApiKeyListener), nor does a request whose access key grants
+     *  the `captcha_bypass` capability (see AccessKeyListener).
      * The check runs before the action changes anything, so a refused request leaves no trace.
      * @throws DataValidationException When the solution is missing, invalid, expired or already used.
      * @throws ServiceUnavailableHttpException When the lock store cannot be reached.
@@ -89,8 +92,9 @@ final readonly class CaptchaVerifier
     public function verifyRequest(Request $request): void
     {
         $isAdmin = $request->attributes->getBoolean(AdminApiKeyListener::IS_ADMIN);
+        $isBypassed = AccessKeyListener::hasCapability($request, AccessKeyCapability::CaptchaBypass);
 
-        if ($isAdmin || !$this->isRequired()) {
+        if ($isAdmin || $isBypassed || !$this->isRequired()) {
             return;
         }
 

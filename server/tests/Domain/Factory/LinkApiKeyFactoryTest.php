@@ -5,16 +5,16 @@ namespace App\Tests\Domain\Factory;
 use DateTimeImmutable;
 use App\Domain\Entity\Link;
 use PHPUnit\Framework\TestCase;
-use App\Domain\Factory\ApiKeyFactory;
+use App\Domain\Factory\LinkApiKeyFactory;
 
 /**
- * Tests of ApiKeyFactory.
+ * Tests of LinkApiKeyFactory.
  */
-final class ApiKeyFactoryTest extends TestCase
+final class LinkApiKeyFactoryTest extends TestCase
 {
     public function testCreateApiKey(): void
     {
-        $apiKey = ApiKeyFactory::create($this->createMock(Link::class));
+        $apiKey = LinkApiKeyFactory::create($this->createMock(Link::class));
 
         self::assertSame(44, strlen($apiKey->getPlainKey()));
         self::assertSame(hash('sha256', $apiKey->getPlainKey()), $apiKey->getKey());
@@ -25,12 +25,12 @@ final class ApiKeyFactoryTest extends TestCase
 
     public function testRotateApiKey(): void
     {
-        $apiKey = ApiKeyFactory::create($this->createMock(Link::class));
+        $apiKey = LinkApiKeyFactory::create($this->createMock(Link::class));
         $plainKey = $apiKey->getPlainKey();
 
-        self::assertNotEquals($apiKey->getKey(), ApiKeyFactory::rotate($apiKey)->getKey());
+        self::assertNotEquals($apiKey->getKey(), LinkApiKeyFactory::rotate($apiKey)->getKey());
         self::assertNotSame(hash('sha256', $plainKey), $apiKey->getKey());
-        self::assertNotEquals($apiKey->getExpiresAt(), ApiKeyFactory::rotate($apiKey)->getExpiresAt());
+        self::assertNotEquals($apiKey->getExpiresAt(), LinkApiKeyFactory::rotate($apiKey)->getExpiresAt());
         self::assertNotNull($apiKey->getUpdatedAt());
     }
 }

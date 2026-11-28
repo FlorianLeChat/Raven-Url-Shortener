@@ -13,6 +13,7 @@ use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 /**
  * Updates a shortened link on behalf of its owner.
+ * An access key granting `trusted_links` keeps the link trusted whatever its new URL.
  */
 final class UpdateLinkService extends BaseLinkService
 {
@@ -42,6 +43,7 @@ final class UpdateLinkService extends BaseLinkService
         }
 
         LinkFactory::patch($link, $field, $value);
+        $this->applyAccessKeyTrust($request, $link);
 
         $this->validateLink($link);
         $this->checkUrl($link->getUrl());
@@ -89,6 +91,7 @@ final class UpdateLinkService extends BaseLinkService
         }
 
         LinkFactory::update($link, $options);
+        $this->applyAccessKeyTrust($request, $link);
 
         $this->validateLink($link);
         $this->checkUrl($link->getUrl());

@@ -128,14 +128,15 @@ final class UpdateLinkActionTest extends WebTestCase
     public function testPatchLinkWithValidData(): void
     {
         $this->client->request('PATCH', '/v1/link/0196cb17-b0f8-7e9c-b381-ef17aa05f3d9', server: [
-            'HTTP_Authorization' => 'Bearer 7hLtoMvpr3NDyd+l3FFeaZD68HGTffHniUUQPjwGy28='
+            'HTTP_Authorization' => 'Bearer 7hLtoMvpr3NDyd+l3FFeaZD68HGTffHniUUQPjwGy28=',
+            'HTTP_X_API_KEY' => '91NknkOqck0+Jv0/7NUBBfixUKEjPwfY4ADVG4EmJpw='
         ], content: json_encode([
             'field' => 'url',
-            'value' => 'https://www.google.com/'
+            'value' => 'https://raven.example.com/'
         ], JSON_THROW_ON_ERROR));
 
         self::assertResponseStatusCodeSame(Response::HTTP_OK);
-        self::assertJson($this->client->getResponse()->getContent());
+        self::assertStringContainsString('"trusted":true', $this->client->getResponse()->getContent());
     }
 
     public function testPutLinkWithMissingApiKey(): void

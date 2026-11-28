@@ -44,14 +44,30 @@ info:
           such as the review of a report, whether the API is private or public. Sent to any endpoint, it
           replaces the private API key, the password and the API key of a link, skips the CAPTCHA and is not
           counted by the rate limiter. A link locked by a pending report still waits for its review.
+          An administrator endpoint checks this key before looking for the resource: without it, the answer
+          is `401` or `403`, never `404`.
 
         The **private API key** travels in its own header, `X-Api-Key: <key>`. When the server runs as
         a private API with a key, every request must send it from an allowed origin, beside the secret
         of the endpoint, unless it sends the administrator API key.
 
+        The `X-Api-Key` header can carry an **access key** instead: an administrator creates it with
+        `POST /v1/access-key`, or the `app:access-key` console command on the server, and hands it to a trusted
+        person. Each key grants its own capabilities:
+
+        - `private_api`: replaces the private API key on a private API. A script sending no `Origin` header
+          is accepted from anywhere; a browser only from the allowed origins of the server or from the
+          `allowedOrigins` the key declares, which also answer its preflight `OPTIONS` requests;
+        - `rate_limit_bypass`: the requests are not counted by the rate limiter;
+        - `captcha_bypass`: the requests of a private API require no CAPTCHA;
+        - `trusted_links`: the links created or updated with the key are trusted, and cannot be reported.
+
+        An access key never opens the administrator endpoints. Once expired or revoked, it is refused like
+        an unknown value: the API answers `403` to any `X-Api-Key` header holding neither the private API key
+        nor an active access key, whether the API is private or public.
+
         An endpoint answers `400` to an `Authorization` header it does not read, unless it carries the
-        administrator API key, and an API without private API key answers `400` to the `X-Api-Key` header.
-        Reading a link without password refuses a password the same way.
+        administrator API key. Reading a link without password refuses a password the same way.
 
         # CAPTCHA
 
@@ -59,8 +75,9 @@ info:
         link creation and report requests. Get a challenge from `GET /v1/captcha`, find the `number` whose
         SHA-256 hash of `salt` + `number` equals `challenge` (as `altcha-lib` does), then send the JSON object
         `{algorithm, challenge, number, salt, signature}` encoded in base64 in the `captcha` body field.
-        A challenge expires after 60 seconds and its solution is accepted only once. A public API, and a request
-        sending the administrator API key, require no CAPTCHA: the field is then ignored.
+        A challenge expires after 60 seconds and its solution is accepted only once. A public API, a request
+        sending the administrator API key and a request sending an access key granting `captcha_bypass`
+        require no CAPTCHA: the field is then ignored.
 
         # Errors
 
@@ -74,7 +91,8 @@ info:
         # Rate limiting
 
         When the rate limit of your IP address is reached, the API returns `429` with these headers.
-        The requests sending the administrator API key are not counted.
+        The requests sending the administrator API key, or an access key granting `rate_limit_bypass`,
+        are not counted.
 
         - `Retry-After`: seconds to wait before the next request;
         - `X-RateLimit-Limit`: number of requests allowed in the window;
@@ -108,6 +126,10 @@ tags:
         description: >-
             Reports of malicious links. A link with a pending report is locked until an administrator
             accepts or rejects the report.
+    -   name: Access key
+        description: >-
+            Keys an administrator hands to trusted people, sent in the `X-Api-Key` header, each with its own
+            capabilities. Reserved to the administrators.
 paths:
     /:
         get:
@@ -827,7 +849,8 @@ paths:
             summary: 'Accept or reject a report'
             description: |
                 Close a pending report with the decision of an administrator. Reserved to the administrators:
-                the request requires the administrator API key.
+                the request requires the administrator API key. The `app:report` console command lists and reviews
+                the reports from the server as well.
 
                 - `accepted`: the link is disabled.
                 - `rejected`: the report no longer locks the link, which is released once no other report
@@ -932,14 +955,7 @@ paths:
                 '401':
                     $ref: '#/components/responses/ApiKeyMissing'
                 '403':
-                    description: 'Administrator API key invalid'
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Error'
-                            example:
-                                code: 403
-                                message: 'The provided API key is invalid. Please check it and try again.'
+                    $ref: '#/components/responses/AdminApiKeyInvalid'
                 '404':
                     description: 'Report not found'
                     content:
@@ -958,6 +974,268 @@ paths:
                             example:
                                 code: 409
                                 message: 'This report has already been reviewed by an administrator.'
+                '429':
+                    $ref: '#/components/responses/TooManyRequests'
+                '500':
+                    $ref: '#/components/responses/InternalServerError'
+    /v1/access-key:
+        post:
+            tags:
+                - Access key
+            operationId: createAccessKey
+            summary: 'Create an access key'
+            description: |
+                Create an access key granting the chosen capabilities, to hand to a trusted person who sends it
+                in the `X-Api-Key` header. Reserved to the administrators.
+
+                The response holds the clear value of the key in `key`, returned only once: the server stores
+                its SHA-256 hash and can never disclose it again. A key without `expiration` never expires.
+            security:
+                -   AdminApiKeyAuth: []
+            x-codeSamples:
+                -   lang: Shell
+                    label: cURL
+                    source: |
+                        curl -X POST https://api.url.florian-dev.fr/v1/access-key \
+                            -H "Authorization: Bearer <administrator API key>" \
+                            -H "Content-Type: application/json" \
+                            -d '{"name": "Partner integration", "capabilities": ["rate_limit_bypass", "trusted_links"]}'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - name
+                                - capabilities
+                            properties:
+                                name:
+                                    $ref: '#/components/schemas/AccessKeyName'
+                                capabilities:
+                                    $ref: '#/components/schemas/AccessKeyCapabilities'
+                                allowedOrigins:
+                                    $ref: '#/components/schemas/AccessKeyAllowedOrigins'
+                                expiration:
+                                    type: string
+                                    description: >-
+                                        The expiration date of the key, between tomorrow and one year from now.
+                                        Any date understood by PHP is accepted; prefer ISO 8601 with a time zone
+                                        offset. Left out or empty, the key never expires.
+                                    example: '2027-06-30T23:59:59+02:00'
+                        example:
+                            name: 'Partner integration'
+                            capabilities:
+                                - rate_limit_bypass
+                                - trusted_links
+                            allowedOrigins:
+                                - 'https://partner.example.org'
+                            expiration: '2027-06-30T23:59:59+02:00'
+            responses:
+                '201':
+                    description: 'Access key created successfully'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/AccessKey'
+                            example:
+                                id: 01a2239e-23a4-771b-b71b-c2981e342853
+                                name: 'Partner integration'
+                                key: 'SKBCjPisiquPC/nF1K5LuCE99CsT4z3cEPHAfg9wgA0='
+                                capabilities:
+                                    - rate_limit_bypass
+                                    - trusted_links
+                                allowedOrigins:
+                                    - 'https://partner.example.org'
+                                active: true
+                                createdAt:
+                                    date: '2026-11-28 14:24:56.100471'
+                                    timezone_type: 3
+                                    timezone: Europe/Paris
+                                expiresAt:
+                                    date: '2027-06-30 23:59:59.000000'
+                                    timezone_type: 1
+                                    timezone: '+02:00'
+                                revokedAt: null
+                '400':
+                    description: 'Invalid name, capabilities or expiration date'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ValidationError'
+                            example:
+                                code: 400
+                                message: 'An error occurred during data validation.'
+                                errors:
+                                    name:
+                                        -   code: IS_BLANK_ERROR
+                                            value: ''
+                                            message: 'This value should not be blank.'
+                                    capabilities:
+                                        -   code: NO_SUCH_CHOICE_ERROR
+                                            value: admin
+                                            message: 'One or more of the given values is invalid.'
+                                    'allowedOrigins[0]':
+                                        -   code: REGEX_FAILED_ERROR
+                                            value: 'https://partner.example.org/path'
+                                            message: 'This value is not valid.'
+                '401':
+                    $ref: '#/components/responses/ApiKeyMissing'
+                '403':
+                    $ref: '#/components/responses/AdminApiKeyInvalid'
+                '429':
+                    $ref: '#/components/responses/TooManyRequests'
+                '500':
+                    $ref: '#/components/responses/InternalServerError'
+        get:
+            tags:
+                - Access key
+            operationId: listAccessKeys
+            summary: 'List the access keys'
+            description: >-
+                List every access key, the most recent first, expired and revoked ones included. The clear value
+                of a key is never returned again: `key` is always `null`. Reserved to the administrators.
+            security:
+                -   AdminApiKeyAuth: []
+            x-codeSamples:
+                -   lang: Shell
+                    label: cURL
+                    source: |
+                        curl https://api.url.florian-dev.fr/v1/access-key \
+                            -H "Authorization: Bearer <administrator API key>"
+            responses:
+                '200':
+                    description: 'Access keys listed successfully'
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/AccessKey'
+                            example:
+                                -   id: 01a2239e-23a4-771b-b71b-c2981e342853
+                                    name: 'Partner integration'
+                                    key: null
+                                    capabilities:
+                                        - rate_limit_bypass
+                                        - trusted_links
+                                    allowedOrigins:
+                                        - 'https://partner.example.org'
+                                    active: true
+                                    createdAt:
+                                        date: '2026-11-28 14:24:56.000000'
+                                        timezone_type: 3
+                                        timezone: Europe/Paris
+                                    expiresAt:
+                                        date: '2027-06-30 23:59:59.000000'
+                                        timezone_type: 3
+                                        timezone: Europe/Paris
+                                    revokedAt: null
+                                -   id: 01a2239d-a7b8-783a-baf5-c421d265a72d
+                                    name: 'Former partner'
+                                    key: null
+                                    capabilities:
+                                        - private_api
+                                        - rate_limit_bypass
+                                        - captcha_bypass
+                                        - trusted_links
+                                    allowedOrigins: []
+                                    active: false
+                                    createdAt:
+                                        date: '2026-11-28 14:24:24.000000'
+                                        timezone_type: 3
+                                        timezone: Europe/Paris
+                                    expiresAt: null
+                                    revokedAt:
+                                        date: '2026-11-28 14:25:10.000000'
+                                        timezone_type: 3
+                                        timezone: Europe/Paris
+                '401':
+                    $ref: '#/components/responses/ApiKeyMissing'
+                '403':
+                    $ref: '#/components/responses/AdminApiKeyInvalid'
+                '429':
+                    $ref: '#/components/responses/TooManyRequests'
+                '500':
+                    $ref: '#/components/responses/InternalServerError'
+    /v1/access-key/{id}:
+        parameters:
+            -   in: path
+                name: id
+                required: true
+                description: 'The UUID v7 of the access key.'
+                schema:
+                    type: string
+                    format: uuid
+                example: 01a2239e-23a4-771b-b71b-c2981e342853
+        delete:
+            tags:
+                - Access key
+            operationId: revokeAccessKey
+            summary: 'Revoke an access key'
+            description: >-
+                Revoke an access key: the requests sending it are refused from then on. The key stays listed,
+                with its revocation date, and cannot be enabled again. Reserved to the administrators.
+            security:
+                -   AdminApiKeyAuth: []
+            x-codeSamples:
+                -   lang: Shell
+                    label: cURL
+                    source: |
+                        curl -X DELETE \
+                            https://api.url.florian-dev.fr/v1/access-key/01a2239e-23a4-771b-b71b-c2981e342853 \
+                            -H "Authorization: Bearer <administrator API key>"
+            responses:
+                '200':
+                    description: 'Access key revoked successfully'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/AccessKey'
+                            example:
+                                id: 01a2239e-23a4-771b-b71b-c2981e342853
+                                name: 'Partner integration'
+                                key: null
+                                capabilities:
+                                    - rate_limit_bypass
+                                    - trusted_links
+                                allowedOrigins:
+                                    - 'https://partner.example.org'
+                                active: false
+                                createdAt:
+                                    date: '2026-11-28 14:24:56.000000'
+                                    timezone_type: 3
+                                    timezone: Europe/Paris
+                                expiresAt:
+                                    date: '2027-06-30 23:59:59.000000'
+                                    timezone_type: 3
+                                    timezone: Europe/Paris
+                                revokedAt:
+                                    date: '2026-11-28 14:24:56.139877'
+                                    timezone_type: 3
+                                    timezone: Europe/Paris
+                '401':
+                    $ref: '#/components/responses/ApiKeyMissing'
+                '403':
+                    $ref: '#/components/responses/AdminApiKeyInvalid'
+                '404':
+                    description: 'Access key not found'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                            example:
+                                code: 404
+                                message: 'The requested resource was not found.'
+                '409':
+                    description: 'Access key already revoked'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                            example:
+                                code: 409
+                                message: 'This access key has already been revoked.'
                 '429':
                     $ref: '#/components/responses/TooManyRequests'
                 '500':
@@ -1179,6 +1457,15 @@ components:
                     example:
                         code: 401
                         message: 'The API key is missing. Please provide it in the "Authorization" HTTP header.'
+        AdminApiKeyInvalid:
+            description: 'Administrator API key invalid'
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/Error'
+                    example:
+                        code: 403
+                        message: 'The provided API key is invalid. Please check it and try again.'
         ManagementForbidden:
             description: 'API key invalid, or link disabled or reported'
             content:
@@ -1336,7 +1623,9 @@ components:
                     type: boolean
                     title: 'The trust state of the link'
                     description: >-
-                        True when the target URL belongs to a trusted domain. A trusted link cannot be reported.
+                        True when the target URL belongs to a trusted domain, when an administrator trusted the link
+                        while rejecting a report, or when the request creating or updating the link sent an access key
+                        granting `trusted_links`. A trusted link cannot be reported.
                 reported:
                     type: boolean
                     title: 'The report state of the link'
@@ -1435,6 +1724,87 @@ components:
                     allOf:
                         -   $ref: '#/components/schemas/NullableDateTime'
                     title: 'The last update date of the report'
+        AccessKey:
+            type: object
+            required:
+                - id
+                - name
+                - key
+                - capabilities
+                - allowedOrigins
+                - active
+                - createdAt
+                - expiresAt
+                - revokedAt
+            properties:
+                id:
+                    type: string
+                    format: uuid
+                    title: 'The unique identifier of the access key'
+                name:
+                    $ref: '#/components/schemas/AccessKeyName'
+                key:
+                    type: string
+                    nullable: true
+                    title: 'The clear value of the access key, returned only when the key is created'
+                    description: >-
+                        32 random bytes encoded in base64, to send in the `X-Api-Key` header.
+                        Always `null` in the other responses.
+                capabilities:
+                    $ref: '#/components/schemas/AccessKeyCapabilities'
+                allowedOrigins:
+                    $ref: '#/components/schemas/AccessKeyAllowedOrigins'
+                active:
+                    type: boolean
+                    title: 'The state of the access key'
+                    description: 'False once the key has expired or been revoked: the API then refuses it.'
+                createdAt:
+                    allOf:
+                        -   $ref: '#/components/schemas/DateTime'
+                    title: 'The creation date of the access key'
+                expiresAt:
+                    allOf:
+                        -   $ref: '#/components/schemas/NullableDateTime'
+                    title: 'The expiration date of the access key, or null when it never expires'
+                revokedAt:
+                    allOf:
+                        -   $ref: '#/components/schemas/NullableDateTime'
+                    title: 'The revocation date of the access key'
+        AccessKeyName:
+            type: string
+            minLength: 1
+            maxLength: 100
+            description: 'The holder of the access key, so an administrator knows who uses it.'
+            example: 'Partner integration'
+        AccessKeyCapabilities:
+            type: array
+            minItems: 1
+            uniqueItems: true
+            description: 'The checks the access key relaxes (see the Authentication section).'
+            items:
+                type: string
+                enum:
+                    - private_api
+                    - rate_limit_bypass
+                    - captcha_bypass
+                    - trusted_links
+            example:
+                - rate_limit_bypass
+                - trusted_links
+        AccessKeyAllowedOrigins:
+            type: array
+            maxItems: 10
+            uniqueItems: true
+            default: []
+            description: >-
+                The browser origins allowed to call a private API with the access key, read only when the key grants
+                `private_api`. Each one is a scheme, a host and an optional port, without path; it is stored
+                lowercase and without trailing slash.
+            items:
+                type: string
+                pattern: '^https?://[a-z0-9.-]+(:\d{1,5})?$'
+            example:
+                - 'https://partner.example.org'
         ReportReason:
             type: string
             minLength: 10
@@ -1519,8 +1889,8 @@ components:
                         The machine-readable violation code, such as `INVALID_URL_ERROR`, `MISSING_TLD_ERROR`,
                         `UNREACHABLE_URL_ERROR`, `DUPLICATE_SLUG_ERROR`, `REGEX_FAILED_ERROR`, `TOO_SHORT_ERROR`,
                         `TOO_LONG_ERROR`, `NOT_IN_RANGE_ERROR`, `INVALID_DATE_ERROR`, `INVALID_FORMAT_ERROR`,
-                        `UNDELIVERABLE_ERROR`, `NO_SUCH_CHOICE_ERROR`, `CAPTCHA_MISSING_ERROR` or
-                        `CAPTCHA_INVALID_ERROR`.
+                        `UNDELIVERABLE_ERROR`, `NO_SUCH_CHOICE_ERROR`, `TOO_FEW_ERROR`, `TOO_MANY_ERROR`,
+                        `CAPTCHA_MISSING_ERROR` or `CAPTCHA_INVALID_ERROR`.
                 value:
                     description: 'The rejected value.'
                 message:

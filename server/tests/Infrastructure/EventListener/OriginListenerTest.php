@@ -5,6 +5,7 @@ namespace App\Tests\Infrastructure\EventListener;
 use Psr\Log\NullLogger;
 use Psr\Log\LoggerInterface;
 use PHPUnit\Framework\TestCase;
+use App\Domain\Enum\AccessKeyCapability;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -12,6 +13,7 @@ use App\Infrastructure\EventListener\OriginListener;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use App\Infrastructure\EventListener\AccessKeyListener;
 use App\Infrastructure\EventListener\AdminApiKeyListener;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -95,10 +97,10 @@ final class OriginListenerTest extends TestCase
         $this->dispatch($this->createListener(false), ['Authorization' => 'Bearer link-key']);
     }
 
-    public function testPublicApiWithUnexpectedApiKey(): void
+    public function testPublicApiWithUnknownApiKey(): void
     {
-        $this->expectException(BadRequestHttpException::class);
-        $this->expectExceptionMessage('unexpected_api_key');
+        $this->expectException(AccessDeniedHttpException::class);
+        $this->expectExceptionMessage('invalid_api_key');
 
         $this->dispatch($this->createListener(false), ['X-Api-Key' => self::API_KEY]);
     }
@@ -147,8 +149,8 @@ final class OriginListenerTest extends TestCase
 
         self::assertSame(Response::HTTP_NO_CONTENT, $response->getStatusCode());
 
-        $this->expectException(BadRequestHttpException::class);
-        $this->expectExceptionMessage('unexpected_api_key');
+        $this->expectException(AccessDeniedHttpException::class);
+        $this->expectExceptionMessage('invalid_api_key');
 
         $this->dispatch($listener, ['Origin' => self::ALLOWED_ORIGIN, 'X-Api-Key' => self::API_KEY]);
     }
@@ -171,6 +173,58 @@ final class OriginListenerTest extends TestCase
             $this->createListener(true),
             ['Origin' => self::ALLOWED_ORIGIN, 'Authorization' => 'Password link-password'],
             attributes: [OriginListener::CREDENTIALS_ROUTE => OriginListener::LINK_PASSWORD]
+        );
+    }
+
+    public function testPrivateApiWithAccessKey(): void
+    {
+        $keyOrigin = 'https://partner.com';
+        $privateAccess = [
+            AccessKeyListener::CAPABILITIES => [AccessKeyCapability::PrivateApi->value],
+            AccessKeyListener::ALLOWED_ORIGINS => [$keyOrigin]
+        ];
+
+        $scriptResponse = $this->dispatch(
+            $this->createListener(true),
+            ['X-Api-Key' => 'access-key'],
+            attributes: $privateAccess
+        );
+        $browserResponse = $this->dispatch(
+            $this->createListener(true),
+            ['Origin' => $keyOrigin, 'X-Api-Key' => 'access-key'],
+            attributes: $privateAccess
+        );
+        $preflightResponse = $this->dispatch(
+            $this->createListener(true),
+            ['Origin' => $keyOrigin],
+            'OPTIONS',
+            attributes: [AccessKeyListener::ALLOWED_ORIGINS => [$keyOrigin]]
+        );
+
+        self::assertSame(Response::HTTP_NO_CONTENT, $scriptResponse->getStatusCode());
+        self::assertSame($keyOrigin, $browserResponse->headers->get('Access-Control-Allow-Origin'));
+        self::assertSame(['Origin'], $browserResponse->getVary());
+        self::assertSame($keyOrigin, $preflightResponse->headers->get('Access-Control-Allow-Origin'));
+
+        $this->expectException(AccessDeniedHttpException::class);
+        $this->expectExceptionMessage('invalid_api_key');
+
+        $this->dispatch(
+            $this->createListener(true),
+            ['Origin' => self::ALLOWED_ORIGIN, 'X-Api-Key' => 'access-key'],
+            attributes: [AccessKeyListener::CAPABILITIES => [AccessKeyCapability::TrustedLinks->value]]
+        );
+    }
+
+    public function testPrivateApiWithAccessKeyFromUndeclaredOrigin(): void
+    {
+        $this->expectException(AccessDeniedHttpException::class);
+        $this->expectExceptionMessage('invalid_origin');
+
+        $this->dispatch(
+            $this->createListener(true),
+            ['Origin' => 'https://other.com', 'X-Api-Key' => 'access-key'],
+            attributes: [AccessKeyListener::CAPABILITIES => [AccessKeyCapability::PrivateApi->value]]
         );
     }
 

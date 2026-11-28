@@ -9,7 +9,7 @@ use Doctrine\Migrations\AbstractMigration;
 use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 
 /**
- * Stores the API keys as SHA-256 hashes, as ApiKeyFactory::hashKey() computes them.
+ * Stores the API keys as SHA-256 hashes, as SecretKey::hash() computes them.
  * The clear keys are lost: the migration cannot be reverted.
  */
 final class Version20261127150000 extends AbstractMigration

@@ -34,7 +34,8 @@ final class ReviewReportAction extends AbstractController
     }
 
     /**
-     * Records the decision on the report reached by its identifier and answers the closed report.
+     * Records the decision of the `status` and `trusted` body fields on the report reached by its identifier,
+     *  and answers the closed report.
      * @throws UniqueConstraintViolationException|ORMException
      */
     #[Route('/report/{id}', requirements: ['id' => Requirement::UUID_V7], methods: ['PATCH'])]
@@ -42,7 +43,12 @@ final class ReviewReportAction extends AbstractController
     {
         $this->logger->debug(sprintf(Kernel::LOG_FUNCTION, basename(__FILE__), __NAMESPACE__, __FUNCTION__, __LINE__));
 
-        $reviewedReport = $this->service->reviewReport($request, $report);
+        $payload = $request->getPayload();
+        $reviewedReport = $this->service->reviewReport(
+            $report,
+            $payload->getString('status'),
+            $payload->getBoolean('trusted')
+        );
 
         return new JsonResponse($reviewedReport->toArray(), Response::HTTP_OK);
     }

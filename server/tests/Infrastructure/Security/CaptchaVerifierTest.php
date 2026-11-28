@@ -6,6 +6,7 @@ use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 use AltchaOrg\Altcha\V1\Altcha;
 use Symfony\Component\Lock\LockFactory;
+use App\Domain\Enum\AccessKeyCapability;
 use AltchaOrg\Altcha\V1\Hasher\Algorithm;
 use AltchaOrg\Altcha\V1\ChallengeOptions;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,6 +14,7 @@ use Symfony\Component\Lock\Store\InMemoryStore;
 use App\Infrastructure\Security\CaptchaVerifier;
 use Symfony\Component\Lock\PersistingStoreInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use App\Infrastructure\EventListener\AccessKeyListener;
 use App\Infrastructure\Exception\DataValidationException;
 use App\Infrastructure\EventListener\AdminApiKeyListener;
 use Symfony\Component\Lock\Exception\LockStorageException;
@@ -101,8 +103,12 @@ final class CaptchaVerifierTest extends TestCase
     {
         $verifier = $this->createVerifier(true);
         $adminRequest = new Request(attributes: [AdminApiKeyListener::IS_ADMIN => true]);
+        $bypassRequest = new Request(attributes: [
+            AccessKeyListener::CAPABILITIES => [AccessKeyCapability::CaptchaBypass->value]
+        ]);
 
         $verifier->verifyRequest($adminRequest);
+        $verifier->verifyRequest($bypassRequest);
 
         self::assertSame('CAPTCHA_MISSING_ERROR', $this->getViolationCode($verifier, null));
         self::assertSame('CAPTCHA_MISSING_ERROR', $this->getViolationCode($verifier, ''));

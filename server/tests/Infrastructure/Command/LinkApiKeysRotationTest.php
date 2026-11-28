@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 /**
  * Tests of the `app:api-keys-rotation` command on the fixtures.
  */
-final class ApiKeysRotationTest extends KernelTestCase
+final class LinkApiKeysRotationTest extends KernelTestCase
 {
     use TestHelperTrait;
 

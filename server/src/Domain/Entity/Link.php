@@ -68,8 +68,13 @@ class Link
     )]
     private Collection $reports;
 
-    #[ORM\OneToOne(targetEntity: ApiKey::class, mappedBy: "link", cascade: ["persist", "remove"], orphanRemoval: true)]
-    private ?ApiKey $apiKey = null;
+    #[ORM\OneToOne(
+        targetEntity: LinkApiKey::class,
+        mappedBy: "link",
+        cascade: ["persist", "remove"],
+        orphanRemoval: true
+    )]
+    private ?LinkApiKey $apiKey = null;
 
     /**
      * Generates the identifier and stamps the creation date.
@@ -212,12 +217,12 @@ class Link
         return count($this->reports->matching($pendingCriteria)) > 0;
     }
 
-    public function getApiKey(): ?ApiKey
+    public function getApiKey(): ?LinkApiKey
     {
         return $this->apiKey;
     }
 
-    public function setApiKey(?ApiKey $apiKey): static
+    public function setApiKey(?LinkApiKey $apiKey): static
     {
         $this->apiKey = $apiKey;
 
